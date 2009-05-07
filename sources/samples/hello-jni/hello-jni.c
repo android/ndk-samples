@@ -24,7 +24,7 @@
  *   apps/samples/hello-jni/project/src/com/example/HelloJni/HelloJni.java
  */
 jstring
-Java_com_example_HelloJni_HelloJni_stringFromJNI( JNIEnv* env,
+Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env,
                                                   jobject thiz )
 {
     return (*env)->NewStringUTF(env, "Hello from JNI !");
