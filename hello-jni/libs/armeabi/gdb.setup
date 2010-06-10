@@ -1,3 +1,0 @@
-set solib-search-path /usr/local/google2/repo/kraken/ndk/samples/hello-jni/obj/local/armeabi
-directory /usr/local/google2/repo/kraken/ndk/build/platforms/android-8/arch-arm/usr/include
-directory /usr/local/google2/repo/kraken/ndk/samples/hello-jni/jni
