@@ -37,12 +37,12 @@ struct engine {
     int msgwrite;
     int msgpipe[2];
     
-    android_activity_t* activity;
+    ANativeActivity* activity;
     pthread_t thread;
     
     int running;
     int destroyed;
-    input_queue_t* inputQueue;
+    AInputQueue* inputQueue;
 };
 
 enum {
@@ -51,7 +51,8 @@ enum {
     ENGINE_CMD_DESTROY,
 };
 
-static int engine_entry(struct engine* engine) {
+static void* engine_entry(void* param) {
+    struct engine* engine = (struct engine*)param;
     struct pollfd pfd[2];
     int numfd;
     
@@ -70,7 +71,7 @@ static int engine_entry(struct engine* engine) {
     while (1) {
         if (engine->inputQueue != NULL) {
             numfd = 2;
-            pfd[1].fd = input_queue_get_fd(engine->inputQueue);
+            pfd[1].fd = AInputQueue_getFd(engine->inputQueue);
             pfd[1].events = POLLIN;
         } else {
             numfd = 1;
@@ -78,7 +79,7 @@ static int engine_entry(struct engine* engine) {
         
         pfd[0].revents = 0;
         pfd[1].revents = 0;
-        int nfd = poll(&pfd, numfd, -1);
+        int nfd = poll(pfd, numfd, -1);
         if (nfd <= 0) {
             LOGI("Engine error in poll: %s\n", strerror(errno));
             // Should cleanly exit!
@@ -106,17 +107,17 @@ static int engine_entry(struct engine* engine) {
                         pthread_cond_broadcast(&engine->cond);
                         pthread_mutex_unlock(&engine->mutex);
                         // Can't touch engine object after this.
-                        return 0;   // EXIT THREAD
+                        return NULL;   // EXIT THREAD
                 }
             } else {
                 LOGI("Failure reading engine cmd: %s\n", strerror(errno));
             }
             
         } else if (pfd[1].revents == POLLIN) {
-            input_event_t* event = NULL;
-            if (input_queue_get_event(engine->inputQueue, &event) >= 0) {
-                LOGI("New input event: type=%d\n", input_event_get_type(event));
-                input_queue_finish_event(engine->inputQueue, event, 0);
+            AInputEvent* event = NULL;
+            if (AInputQueue_getEvent(engine->inputQueue, &event) >= 0) {
+                LOGI("New input event: type=%d\n", AInputEvent_getType(event));
+                AInputQueue_finishEvent(engine->inputQueue, event, 0);
             } else {
                 LOGI("Failure reading next input event: %s\n", strerror(errno));
             }
@@ -124,7 +125,7 @@ static int engine_entry(struct engine* engine) {
     }
 }
 
-static struct engine* engine_create(android_activity_t* activity) {
+static struct engine* engine_create(ANativeActivity* activity) {
     struct engine* engine = (struct engine*)malloc(sizeof(struct engine));
     memset(engine, 0, sizeof(struct engine));
     engine->activity = activity;
@@ -160,7 +161,7 @@ static void engine_write_cmd(struct engine* engine, int8_t cmd) {
     }
 }
 
-static void engine_set_input(struct engine* engine, input_queue_t* inputQueue) {
+static void engine_set_input(struct engine* engine, AInputQueue* inputQueue) {
     pthread_mutex_lock(&engine->mutex);
     engine->inputQueue = inputQueue;
     engine_write_cmd(engine, ENGINE_CMD_GAIN_INPUT);
@@ -190,78 +191,78 @@ static void engine_destroy(struct engine* engine) {
     pthread_mutex_destroy(&engine->mutex);
 }
 
-static void onDestroy(android_activity_t* activity)
+static void onDestroy(ANativeActivity* activity)
 {
     LOGI("Destroy: %p\n", activity);
     engine_destroy((struct engine*)activity->instance);
 }
 
-static void onStart(android_activity_t* activity)
+static void onStart(ANativeActivity* activity)
 {
     LOGI("Start: %p\n", activity);
 }
 
-static void onResume(android_activity_t* activity)
+static void onResume(ANativeActivity* activity)
 {
     LOGI("Resume: %p\n", activity);
 }
 
-static void* onSaveInstanceState(android_activity_t* activity, size_t* outLen)
+static void* onSaveInstanceState(ANativeActivity* activity, size_t* outLen)
 {
     LOGI("SaveInstanceState: %p\n", activity);
     return NULL;
 }
 
-static void onPause(android_activity_t* activity)
+static void onPause(ANativeActivity* activity)
 {
     LOGI("Pause: %p\n", activity);
 }
 
-static void onStop(android_activity_t* activity)
+static void onStop(ANativeActivity* activity)
 {
     LOGI("Stop: %p\n", activity);
 }
 
-static void onLowMemory(android_activity_t* activity)
+static void onLowMemory(ANativeActivity* activity)
 {
     LOGI("LowMemory: %p\n", activity);
 }
 
-static void onWindowFocusChanged(android_activity_t* activity, int focused)
+static void onWindowFocusChanged(ANativeActivity* activity, int focused)
 {
     LOGI("WindowFocusChanged: %p -- %d\n", activity, focused);
 }
 
-static void onSurfaceCreated(android_activity_t* activity, android_surface_t* surface)
+static void onSurfaceCreated(ANativeActivity* activity, ASurfaceHolder* surface)
 {
     LOGI("SurfaceCreated: %p -- %p\n", activity, surface);
 }
 
-static void onSurfaceChanged(android_activity_t* activity, android_surface_t* surface,
+static void onSurfaceChanged(ANativeActivity* activity, ASurfaceHolder* surface,
         int format, int width, int height)
 {
     LOGI("SurfaceChanged: %p -- %p fmt=%d w=%d h=%d\n", activity, surface,
             format, width, height);
 }
 
-static void onSurfaceDestroyed(android_activity_t* activity, android_surface_t* surface)
+static void onSurfaceDestroyed(ANativeActivity* activity, ASurfaceHolder* surface)
 {
     LOGI("SurfaceDestroyed: %p -- %p\n", activity, surface);
 }
 
-static void onInputQueueCreated(android_activity_t* activity, input_queue_t* queue)
+static void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 {
     LOGI("InputQueueCreated: %p -- %p\n", activity, queue);
     engine_set_input((struct engine*)activity->instance, queue);
 }
 
-static void onInputQueueDestroyed(android_activity_t* activity, input_queue_t* queue)
+static void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
     LOGI("InputQueueDestroyed: %p -- %p\n", activity, queue);
     engine_clear_input((struct engine*)activity->instance);
 }
 
-void android_onCreateActivity(android_activity_t* activity,
+void ANativeActivity_onCreate(ANativeActivity* activity,
         void* savedState, size_t savedStateSize)
 {
     LOGI("Creating: %p\n", activity);
