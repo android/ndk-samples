@@ -35,7 +35,6 @@ struct engine {
     
     int msgread;
     int msgwrite;
-    int msgpipe[2];
     
     ANativeActivity* activity;
     pthread_t thread;
@@ -43,11 +42,14 @@ struct engine {
     int running;
     int destroyed;
     AInputQueue* inputQueue;
+    ANativeWindow* window;
+    AInputQueue* pendingInputQueue;
+    ANativeWindow* pendingWindow;
 };
 
 enum {
-    ENGINE_CMD_GAIN_INPUT,
-    ENGINE_CMD_LOSE_INPUT,
+    ENGINE_CMD_INPUT_CHANGED,
+    ENGINE_CMD_WINDOW_CHANGED,
     ENGINE_CMD_DESTROY,
 };
 
@@ -90,13 +92,17 @@ static void* engine_entry(void* param) {
             int8_t cmd;
             if (read(engine->msgread, &cmd, sizeof(cmd)) == sizeof(cmd)) {
                 switch (cmd) {
-                    case ENGINE_CMD_GAIN_INPUT:
-                        LOGI("Engine: ENGINE_CMD_GAIN_INPUT\n");
-                        break;
-                    case ENGINE_CMD_LOSE_INPUT:
-                        LOGI("Engine: ENGINE_CMD_LOSE_INPUT\n");
+                    case ENGINE_CMD_INPUT_CHANGED:
+                        LOGI("Engine: ENGINE_CMD_INPUT_CHANGED\n");
                         pthread_mutex_lock(&engine->mutex);
-                        engine->inputQueue = NULL;
+                        engine->inputQueue = engine->pendingInputQueue;
+                        pthread_cond_broadcast(&engine->cond);
+                        pthread_mutex_unlock(&engine->mutex);
+                        break;
+                    case ENGINE_CMD_WINDOW_CHANGED:
+                        LOGI("Engine: ENGINE_CMD_WINDOW_CHANGED\n");
+                        pthread_mutex_lock(&engine->mutex);
+                        engine->window = engine->pendingWindow;
                         pthread_cond_broadcast(&engine->cond);
                         pthread_mutex_unlock(&engine->mutex);
                         break;
@@ -113,7 +119,7 @@ static void* engine_entry(void* param) {
                 LOGI("Failure reading engine cmd: %s\n", strerror(errno));
             }
             
-        } else if (pfd[1].revents == POLLIN) {
+        } else if (engine->inputQueue != NULL && pfd[1].revents == POLLIN) {
             AInputEvent* event = NULL;
             if (AInputQueue_getEvent(engine->inputQueue, &event) >= 0) {
                 LOGI("New input event: type=%d\n", AInputEvent_getType(event));
@@ -163,15 +169,19 @@ static void engine_write_cmd(struct engine* engine, int8_t cmd) {
 
 static void engine_set_input(struct engine* engine, AInputQueue* inputQueue) {
     pthread_mutex_lock(&engine->mutex);
-    engine->inputQueue = inputQueue;
-    engine_write_cmd(engine, ENGINE_CMD_GAIN_INPUT);
+    engine->pendingInputQueue = inputQueue;
+    engine_write_cmd(engine, ENGINE_CMD_INPUT_CHANGED);
+    while (engine->inputQueue != engine->pendingInputQueue) {
+        pthread_cond_wait(&engine->cond, &engine->mutex);
+    }
     pthread_mutex_unlock(&engine->mutex);
 }
 
-static void engine_clear_input(struct engine* engine) {
+static void engine_set_window(struct engine* engine, ANativeWindow* window) {
     pthread_mutex_lock(&engine->mutex);
-    engine_write_cmd(engine, ENGINE_CMD_LOSE_INPUT);
-    while (engine->inputQueue != NULL) {
+    engine->pendingWindow = window;
+    engine_write_cmd(engine, ENGINE_CMD_WINDOW_CHANGED);
+    while (engine->window != engine->pendingWindow) {
         pthread_cond_wait(&engine->cond, &engine->mutex);
     }
     pthread_mutex_unlock(&engine->mutex);
@@ -185,8 +195,8 @@ static void engine_destroy(struct engine* engine) {
     }
     pthread_mutex_unlock(&engine->mutex);
     
-    close(engine->msgpipe[0]);
-    close(engine->msgpipe[1]);
+    close(engine->msgread);
+    close(engine->msgwrite);
     pthread_cond_destroy(&engine->cond);
     pthread_mutex_destroy(&engine->mutex);
 }
@@ -233,21 +243,22 @@ static void onWindowFocusChanged(ANativeActivity* activity, int focused)
     LOGI("WindowFocusChanged: %p -- %d\n", activity, focused);
 }
 
-static void onSurfaceCreated(ANativeActivity* activity, ASurfaceHolder* surface)
+static void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
-    LOGI("SurfaceCreated: %p -- %p\n", activity, surface);
+    LOGI("NativeWindowCreated: %p -- %p\n", activity, window);
+    engine_set_window((struct engine*)activity->instance, window);
 }
 
-static void onSurfaceChanged(ANativeActivity* activity, ASurfaceHolder* surface,
-        int format, int width, int height)
+static void onNativeWindowChanged(ANativeActivity* activity, ANativeWindow* window)
 {
-    LOGI("SurfaceChanged: %p -- %p fmt=%d w=%d h=%d\n", activity, surface,
-            format, width, height);
+    LOGI("NativeWindowChanged: %p -- %p\n", activity, window);
+    engine_set_window((struct engine*)activity->instance, window);
 }
 
-static void onSurfaceDestroyed(ANativeActivity* activity, ASurfaceHolder* surface)
+static void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 {
-    LOGI("SurfaceDestroyed: %p -- %p\n", activity, surface);
+    LOGI("NativeWindowDestroyed: %p -- %p\n", activity, window);
+    engine_set_window((struct engine*)activity->instance, NULL);
 }
 
 static void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
@@ -259,7 +270,7 @@ static void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 static void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
     LOGI("InputQueueDestroyed: %p -- %p\n", activity, queue);
-    engine_clear_input((struct engine*)activity->instance);
+    engine_set_input((struct engine*)activity->instance, NULL);
 }
 
 void ANativeActivity_onCreate(ANativeActivity* activity,
@@ -274,9 +285,9 @@ void ANativeActivity_onCreate(ANativeActivity* activity,
     activity->callbacks->onStop = onStop;
     activity->callbacks->onLowMemory = onLowMemory;
     activity->callbacks->onWindowFocusChanged = onWindowFocusChanged;
-    activity->callbacks->onSurfaceCreated = onSurfaceCreated;
-    activity->callbacks->onSurfaceChanged = onSurfaceChanged;
-    activity->callbacks->onSurfaceDestroyed = onSurfaceDestroyed;
+    activity->callbacks->onNativeWindowCreated = onNativeWindowCreated;
+    activity->callbacks->onNativeWindowChanged = onNativeWindowChanged;
+    activity->callbacks->onNativeWindowDestroyed = onNativeWindowDestroyed;
     activity->callbacks->onInputQueueCreated = onInputQueueCreated;
     activity->callbacks->onInputQueueDestroyed = onInputQueueDestroyed;
     
