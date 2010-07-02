@@ -15,9 +15,6 @@
  *
  */
 
-#include <android/native_activity.h>
-#include <android/log.h>
-
 #include <jni.h>
 
 #include <errno.h>
@@ -27,7 +24,11 @@
 #include <string.h>
 #include <sys/resource.h>
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
+#include "glutils.h"
+
+// --------------------------------------------------------------------
+// Rendering and input engine thread
+// --------------------------------------------------------------------
 
 struct engine {
     pthread_mutex_t mutex;
@@ -45,13 +46,118 @@ struct engine {
     ANativeWindow* window;
     AInputQueue* pendingInputQueue;
     ANativeWindow* pendingWindow;
+    
+    // private to engine thread.
+    int animating;
+    EGLDisplay display;
+    EGLSurface surface;
+    EGLContext context;
+    int32_t width;
+    int32_t height;
+    float angle;
+    int32_t x;
+    int32_t y;
 };
 
 enum {
     ENGINE_CMD_INPUT_CHANGED,
     ENGINE_CMD_WINDOW_CHANGED,
+    ENGINE_CMD_GAINED_FOCUS,
+    ENGINE_CMD_LOST_FOCUS,
     ENGINE_CMD_DESTROY,
 };
+
+static int engine_init_display(struct engine* engine) {
+    // initialize opengl and egl
+    const EGLint attribs[] = {
+            EGL_DEPTH_SIZE, 16,
+            EGL_NONE
+    };
+    EGLint w, h, dummy;
+    EGLint numConfigs;
+    EGLConfig config;
+    EGLSurface surface;
+    EGLContext context;
+
+    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+    eglInitialize(display, 0, 0);
+    selectConfigForNativeWindow(display, attribs, engine->window, &config);
+    surface = eglCreateWindowSurface(display, config, engine->window, NULL);
+    context = eglCreateContext(display, config, NULL, NULL);
+    eglQuerySurface(display, surface, EGL_WIDTH, &w);
+    eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+
+    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+        LOGW("Unable to eglMakeCurrent");
+        return -1;
+    }
+
+    engine->display = display;
+    engine->context = context;
+    engine->surface = surface;
+    engine->width = w;
+    engine->height = h;
+    engine->angle = 0;
+    
+    // Initialize GL state.
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+    glEnable(GL_CULL_FACE);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_DEPTH_TEST);
+    
+    return 0;
+}
+
+static void engine_draw_frame(struct engine* engine) {
+    if (engine->display == NULL) {
+        // No display.
+        return;
+    }
+    
+    glClearColor(((float)engine->x)/engine->width, engine->angle,
+            ((float)engine->y)/engine->height, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+#if 0
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(0, 0, -3.0f);
+    glRotatef(engine->angle,        0, 1, 0);
+    glRotatef(engine->angle*0.25f,  1, 0, 0);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+
+    //mCube.draw(gl);
+
+    glRotatef(engine->angle*2.0f, 0, 1, 1);
+    glTranslatef(0.5f, 0.5f, 0.5f);
+
+    //mCube.draw(gl);
+#endif
+
+    eglSwapBuffers(engine->display, engine->surface);
+    
+    //engine->angle += 1.2f;
+}
+
+static int engine_term_display(struct engine* engine) {
+    if (engine->display != EGL_NO_DISPLAY) {
+        eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        if (engine->context != EGL_NO_CONTEXT) {
+            eglDestroyContext(engine->display, engine->context);
+        }
+        if (engine->surface != EGL_NO_SURFACE) {
+            eglDestroySurface(engine->display, engine->surface);
+        }
+        eglTerminate(engine->display);
+    }
+    engine->animating = 0;
+    engine->display = EGL_NO_DISPLAY;
+    engine->context = EGL_NO_CONTEXT;
+    engine->surface = EGL_NO_SURFACE;
+}
 
 static void* engine_entry(void* param) {
     struct engine* engine = (struct engine*)param;
@@ -81,8 +187,16 @@ static void* engine_entry(void* param) {
         
         pfd[0].revents = 0;
         pfd[1].revents = 0;
-        int nfd = poll(pfd, numfd, -1);
-        if (nfd <= 0) {
+        int nfd = poll(pfd, numfd, engine->animating ? 0 : -1);
+        if (nfd == 0 && engine->animating) {
+            // There is no work to do -- step next animation.
+            engine->angle += .01f;
+            if (engine->angle > 1) {
+                engine->angle = 0;
+            }
+            engine_draw_frame(engine);
+        }
+        if (nfd < 0) {
             LOGI("Engine error in poll: %s\n", strerror(errno));
             // Should cleanly exit!
             continue;
@@ -102,13 +216,23 @@ static void* engine_entry(void* param) {
                     case ENGINE_CMD_WINDOW_CHANGED:
                         LOGI("Engine: ENGINE_CMD_WINDOW_CHANGED\n");
                         pthread_mutex_lock(&engine->mutex);
+                        engine_term_display(engine);
                         engine->window = engine->pendingWindow;
+                        if (engine->window != NULL) {
+                            engine_init_display(engine);
+                            engine_draw_frame(engine);
+                        }
                         pthread_cond_broadcast(&engine->cond);
                         pthread_mutex_unlock(&engine->mutex);
+                        break;
+                    case ENGINE_CMD_LOST_FOCUS:
+                        engine->animating = 0;
+                        engine_draw_frame(engine);
                         break;
                     case ENGINE_CMD_DESTROY:
                         LOGI("Engine: ENGINE_CMD_DESTROY\n");
                         pthread_mutex_lock(&engine->mutex);
+                        engine_term_display(engine);
                         engine->destroyed = 1;
                         pthread_cond_broadcast(&engine->cond);
                         pthread_mutex_unlock(&engine->mutex);
@@ -123,6 +247,12 @@ static void* engine_entry(void* param) {
             AInputEvent* event = NULL;
             if (AInputQueue_getEvent(engine->inputQueue, &event) >= 0) {
                 LOGI("New input event: type=%d\n", AInputEvent_getType(event));
+                if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_MOTION) {
+                    engine->animating = 1;
+                    engine->x = AMotionEvent_getX(event, 0);
+                    engine->y = AMotionEvent_getY(event, 0);
+                    engine_draw_frame(engine);
+                }
                 AInputQueue_finishEvent(engine->inputQueue, event, 0);
             } else {
                 LOGI("Failure reading next input event: %s\n", strerror(errno));
@@ -201,6 +331,10 @@ static void engine_destroy(struct engine* engine) {
     pthread_mutex_destroy(&engine->mutex);
 }
 
+// --------------------------------------------------------------------
+// Native activity interaction (called from main thread)
+// --------------------------------------------------------------------
+
 static void onDestroy(ANativeActivity* activity)
 {
     LOGI("Destroy: %p\n", activity);
@@ -241,17 +375,13 @@ static void onLowMemory(ANativeActivity* activity)
 static void onWindowFocusChanged(ANativeActivity* activity, int focused)
 {
     LOGI("WindowFocusChanged: %p -- %d\n", activity, focused);
+    engine_write_cmd((struct engine*)activity->instance,
+            focused ? ENGINE_CMD_GAINED_FOCUS : ENGINE_CMD_LOST_FOCUS);
 }
 
 static void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
     LOGI("NativeWindowCreated: %p -- %p\n", activity, window);
-    engine_set_window((struct engine*)activity->instance, window);
-}
-
-static void onNativeWindowChanged(ANativeActivity* activity, ANativeWindow* window)
-{
-    LOGI("NativeWindowChanged: %p -- %p\n", activity, window);
     engine_set_window((struct engine*)activity->instance, window);
 }
 
@@ -286,7 +416,6 @@ void ANativeActivity_onCreate(ANativeActivity* activity,
     activity->callbacks->onLowMemory = onLowMemory;
     activity->callbacks->onWindowFocusChanged = onWindowFocusChanged;
     activity->callbacks->onNativeWindowCreated = onNativeWindowCreated;
-    activity->callbacks->onNativeWindowChanged = onNativeWindowChanged;
     activity->callbacks->onNativeWindowDestroyed = onNativeWindowDestroyed;
     activity->callbacks->onInputQueueCreated = onInputQueueCreated;
     activity->callbacks->onInputQueueDestroyed = onInputQueueDestroyed;
