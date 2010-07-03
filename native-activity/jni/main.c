@@ -42,12 +42,14 @@ struct engine {
     
     int running;
     int destroyed;
+    ALooper* looper;
     AInputQueue* inputQueue;
     ANativeWindow* window;
     AInputQueue* pendingInputQueue;
     ANativeWindow* pendingWindow;
     
     // private to engine thread.
+    int destroyRequested;
     int animating;
     EGLDisplay display;
     EGLSurface surface;
@@ -159,104 +161,120 @@ static int engine_term_display(struct engine* engine) {
     engine->surface = EGL_NO_SURFACE;
 }
 
+static int engine_process_event(int fd, int events, void* param) {
+    struct engine* engine = (struct engine*)param;
+    
+    AInputEvent* event = NULL;
+    if (AInputQueue_getEvent(engine->inputQueue, &event) >= 0) {
+        LOGI("New input event: type=%d\n", AInputEvent_getType(event));
+        if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_MOTION) {
+            engine->animating = 1;
+            engine->x = AMotionEvent_getX(event, 0);
+            engine->y = AMotionEvent_getY(event, 0);
+            AInputQueue_finishEvent(engine->inputQueue, event, 1);
+        } else {
+            AInputQueue_finishEvent(engine->inputQueue, event, 0);
+        }
+    } else {
+        LOGI("Failure reading next input event: %s\n", strerror(errno));
+    }
+    
+    return 1;
+}
+
+static int engine_process_cmd(int fd, int events, void* param) {
+    struct engine* engine = (struct engine*)param;
+    
+    int8_t cmd;
+    if (read(engine->msgread, &cmd, sizeof(cmd)) == sizeof(cmd)) {
+        switch (cmd) {
+            case ENGINE_CMD_INPUT_CHANGED:
+                LOGI("Engine: ENGINE_CMD_INPUT_CHANGED\n");
+                pthread_mutex_lock(&engine->mutex);
+                if (engine->inputQueue != NULL) {
+                    AInputQueue_detachLooper(engine->inputQueue);
+                }
+                engine->inputQueue = engine->pendingInputQueue;
+                if (engine->inputQueue != NULL) {
+                    LOGI("Attaching input queue to looper");
+                    AInputQueue_attachLooper(engine->inputQueue,
+                            engine->looper, engine_process_event, engine);
+                }
+                pthread_cond_broadcast(&engine->cond);
+                pthread_mutex_unlock(&engine->mutex);
+                break;
+
+            case ENGINE_CMD_WINDOW_CHANGED:
+                LOGI("Engine: ENGINE_CMD_WINDOW_CHANGED\n");
+                engine_term_display(engine);
+                pthread_mutex_lock(&engine->mutex);
+                engine->window = engine->pendingWindow;
+                pthread_cond_broadcast(&engine->cond);
+                pthread_mutex_unlock(&engine->mutex);
+                if (engine->window != NULL) {
+                    engine_init_display(engine);
+                    engine_draw_frame(engine);
+                }
+                break;
+
+            case ENGINE_CMD_LOST_FOCUS:
+                engine->animating = 0;
+                engine_draw_frame(engine);
+                break;
+
+            case ENGINE_CMD_DESTROY:
+                LOGI("Engine: ENGINE_CMD_DESTROY\n");
+                engine->destroyRequested = 1;
+                break;
+        }
+    } else {
+        LOGW("No data on command pipe!");
+    }
+    
+    return 1;
+}
+
 static void* engine_entry(void* param) {
     struct engine* engine = (struct engine*)param;
-    struct pollfd pfd[2];
-    int numfd;
+    
+    ALooper* looper = ALooper_prepare();
+    ALooper_setCallback(looper, engine->msgread, POLLIN, engine_process_cmd, engine);
+    engine->looper = looper;
     
     pthread_mutex_lock(&engine->mutex);
     engine->running = 1;
     pthread_cond_broadcast(&engine->cond);
     pthread_mutex_unlock(&engine->mutex);
     
-    // loop waiting for stuff to do.  we wait for input events or
-    // commands from the main thread.
-    
-    pfd[0].fd = engine->msgread;
-    pfd[0].events = POLLIN;
-    pfd[0].revents = 0;
+    // loop waiting for stuff to do.
     
     while (1) {
-        if (engine->inputQueue != NULL) {
-            numfd = 2;
-            pfd[1].fd = AInputQueue_getFd(engine->inputQueue);
-            pfd[1].events = POLLIN;
-        } else {
-            numfd = 1;
+        // Read all pending events.
+        while (ALooper_pollOnce(engine->animating ? 0 : -1)) {
+            ;
         }
         
-        pfd[0].revents = 0;
-        pfd[1].revents = 0;
-        int nfd = poll(pfd, numfd, engine->animating ? 0 : -1);
-        if (nfd == 0 && engine->animating) {
-            // There is no work to do -- step next animation.
+        if (engine->destroyRequested) {
+            LOGI("Engine thread destroy requested!");
+            pthread_mutex_lock(&engine->mutex);
+            engine_term_display(engine);
+            if (engine->inputQueue != NULL) {
+                AInputQueue_detachLooper(engine->inputQueue);
+            }
+            engine->destroyed = 1;
+            pthread_cond_broadcast(&engine->cond);
+            pthread_mutex_unlock(&engine->mutex);
+            // Can't touch engine object after this.
+            return NULL;   // EXIT THREAD
+        }
+        
+        if (engine->animating) {
+            // Done with events; draw next animation frame.
             engine->angle += .01f;
             if (engine->angle > 1) {
                 engine->angle = 0;
             }
             engine_draw_frame(engine);
-        }
-        if (nfd < 0) {
-            LOGI("Engine error in poll: %s\n", strerror(errno));
-            // Should cleanly exit!
-            continue;
-        }
-        
-        if (pfd[0].revents == POLLIN) {
-            int8_t cmd;
-            if (read(engine->msgread, &cmd, sizeof(cmd)) == sizeof(cmd)) {
-                switch (cmd) {
-                    case ENGINE_CMD_INPUT_CHANGED:
-                        LOGI("Engine: ENGINE_CMD_INPUT_CHANGED\n");
-                        pthread_mutex_lock(&engine->mutex);
-                        engine->inputQueue = engine->pendingInputQueue;
-                        pthread_cond_broadcast(&engine->cond);
-                        pthread_mutex_unlock(&engine->mutex);
-                        break;
-                    case ENGINE_CMD_WINDOW_CHANGED:
-                        LOGI("Engine: ENGINE_CMD_WINDOW_CHANGED\n");
-                        pthread_mutex_lock(&engine->mutex);
-                        engine_term_display(engine);
-                        engine->window = engine->pendingWindow;
-                        if (engine->window != NULL) {
-                            engine_init_display(engine);
-                            engine_draw_frame(engine);
-                        }
-                        pthread_cond_broadcast(&engine->cond);
-                        pthread_mutex_unlock(&engine->mutex);
-                        break;
-                    case ENGINE_CMD_LOST_FOCUS:
-                        engine->animating = 0;
-                        engine_draw_frame(engine);
-                        break;
-                    case ENGINE_CMD_DESTROY:
-                        LOGI("Engine: ENGINE_CMD_DESTROY\n");
-                        pthread_mutex_lock(&engine->mutex);
-                        engine_term_display(engine);
-                        engine->destroyed = 1;
-                        pthread_cond_broadcast(&engine->cond);
-                        pthread_mutex_unlock(&engine->mutex);
-                        // Can't touch engine object after this.
-                        return NULL;   // EXIT THREAD
-                }
-            } else {
-                LOGI("Failure reading engine cmd: %s\n", strerror(errno));
-            }
-            
-        } else if (engine->inputQueue != NULL && pfd[1].revents == POLLIN) {
-            AInputEvent* event = NULL;
-            if (AInputQueue_getEvent(engine->inputQueue, &event) >= 0) {
-                LOGI("New input event: type=%d\n", AInputEvent_getType(event));
-                if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_MOTION) {
-                    engine->animating = 1;
-                    engine->x = AMotionEvent_getX(event, 0);
-                    engine->y = AMotionEvent_getY(event, 0);
-                    engine_draw_frame(engine);
-                }
-                AInputQueue_finishEvent(engine->inputQueue, event, 0);
-            } else {
-                LOGI("Failure reading next input event: %s\n", strerror(errno));
-            }
         }
     }
 }
@@ -329,6 +347,7 @@ static void engine_destroy(struct engine* engine) {
     close(engine->msgwrite);
     pthread_cond_destroy(&engine->cond);
     pthread_mutex_destroy(&engine->mutex);
+    free(engine);
 }
 
 // --------------------------------------------------------------------

@@ -17,6 +17,8 @@
 
 #include "glutils.h"
 
+#include <string.h>
+
 const char *EGLstrerror(EGLint err) {
     switch (err) {
         case EGL_SUCCESS:           return "EGL_SUCCESS";
