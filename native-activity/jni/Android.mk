@@ -18,6 +18,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := native-activity
 LOCAL_SRC_FILES := main.c glutils.c
-LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv1_CM
+LOCAL_LDLIBS    := -lthreaded_app -llog -landroid -lEGL -lGLESv1_CM
 
 include $(BUILD_SHARED_LIBRARY)
