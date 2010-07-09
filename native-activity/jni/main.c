@@ -148,26 +148,29 @@ static int engine_do_ui_event(struct engine* engine) {
     return 1;
 }
 
-static void engine_do_main_cmd(struct engine* engine) {
+static int32_t engine_do_main_cmd(struct engine* engine) {
+    int32_t res;
     int8_t cmd = android_app_read_cmd(engine->app);
     switch (cmd) {
         case APP_CMD_WINDOW_CHANGED:
             engine_term_display(engine);
-            android_app_exec_cmd(engine->app, cmd);
+            res = android_app_exec_cmd(engine->app, cmd);
             if (engine->app->window != NULL) {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
             break;
         case APP_CMD_LOST_FOCUS:
-            android_app_exec_cmd(engine->app, cmd);
+            res = android_app_exec_cmd(engine->app, cmd);
             engine->animating = 0;
             engine_draw_frame(engine);
             break;
         default:
-            android_app_exec_cmd(engine->app, cmd);
+            res = android_app_exec_cmd(engine->app, cmd);
             break;
     }
+    
+    return res;
 }
 
 void android_main(struct android_app* state) {
@@ -185,23 +188,20 @@ void android_main(struct android_app* state) {
         int events;
         void* data;
         while ((fd=ALooper_pollAll(engine.animating ? 0 : -1, &events, &data)) >= 0) {
-            LOGI("Poll returned: %d", (int)data);
             switch ((int)data) {
                 case LOOPER_ID_MAIN:
-                    engine_do_main_cmd(&engine);
+                    if (!engine_do_main_cmd(&engine)) {
+                        LOGI("Engine thread destroy requested!");
+                        engine_term_display(&engine);
+                        android_app_destroy(state);
+                        // Can't touch android_app object after this.
+                        return;
+                    }
                     break;
                 case LOOPER_ID_EVENT:
                     engine_do_ui_event(&engine);
                     break;
             }
-        }
-        
-        if (state->destroyRequested) {
-            LOGI("Engine thread destroy requested!");
-            engine_term_display(&engine);
-            android_app_destroy(state);
-            // Can't touch android_app object after this.
-            return;
         }
         
         if (engine.animating) {
