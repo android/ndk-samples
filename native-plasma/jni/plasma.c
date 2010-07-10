@@ -480,8 +480,6 @@ void android_main(struct android_app* state) {
                     if (!engine_do_main_cmd(&engine)) {
                         LOGI("Engine thread destroy requested!");
                         engine_term_display(&engine);
-                        android_app_destroy(state);
-                        // Can't touch android_app object after this.
                         return;
                     }
                     break;
