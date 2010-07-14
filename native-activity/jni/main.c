@@ -19,13 +19,13 @@
 
 #include <errno.h>
 
-#include <android_glue/threaded_app.h>
+#include <android_native_app_glue.h>
 
 #include "glutils.h"
 
 struct engine {
     struct android_app* app;
-    
+
     int animating;
     EGLDisplay display;
     EGLSurface surface;
@@ -69,13 +69,13 @@ static int engine_init_display(struct engine* engine) {
     engine->width = w;
     engine->height = h;
     engine->angle = 0;
-    
+
     // Initialize GL state.
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
-    
+
     return 0;
 }
 
@@ -84,7 +84,7 @@ static void engine_draw_frame(struct engine* engine) {
         // No display.
         return;
     }
-    
+
     glClearColor(((float)engine->x)/engine->width, engine->angle,
             ((float)engine->y)/engine->height, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -108,7 +108,7 @@ static void engine_draw_frame(struct engine* engine) {
 #endif
 
     eglSwapBuffers(engine->display, engine->surface);
-    
+
     //engine->angle += 1.2f;
 }
 
@@ -144,7 +144,7 @@ static int engine_do_ui_event(struct engine* engine) {
     } else {
         LOGI("Failure reading next input event: %s\n", strerror(errno));
     }
-    
+
     return 1;
 }
 
@@ -169,19 +169,19 @@ static int32_t engine_do_main_cmd(struct engine* engine) {
             res = android_app_exec_cmd(engine->app, cmd);
             break;
     }
-    
+
     return res;
 }
 
 void android_main(struct android_app* state) {
     struct engine engine;
-    
+
     memset(&engine, 0, sizeof(engine));
     state->userData = &engine;
     engine.app = state;
-    
+
     // loop waiting for stuff to do.
-    
+
     while (1) {
         // Read all pending events.
         int fd;
@@ -201,7 +201,7 @@ void android_main(struct android_app* state) {
                     break;
             }
         }
-        
+
         if (engine.animating) {
             // Done with events; draw next animation frame.
             engine.angle += .01f;

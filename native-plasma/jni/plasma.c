@@ -15,7 +15,7 @@
  *
  */
 
-#include <android_glue/threaded_app.h>
+#include <android_native_app_glue.h>
 
 #include <errno.h>
 #include <jni.h>
@@ -374,9 +374,9 @@ stats_endFrame( Stats*  s )
 
 struct engine {
     struct android_app* app;
-    
+
     Stats stats;
-    
+
     int animating;
 };
 
@@ -385,20 +385,20 @@ static void engine_draw_frame(struct engine* engine) {
         // No window.
         return;
     }
-    
+
     ANativeWindow_Buffer buffer;
     if (ANativeWindow_lock(engine->app->window, &buffer, NULL) < 0) {
         LOGW("Unable to lock window buffer");
         return;
     }
-    
+
     stats_startFrame(&engine->stats);
 
     struct timespec t;
     t.tv_sec = t.tv_nsec = 0;
     clock_gettime(CLOCK_MONOTONIC, &t);
     int64_t time_ms = (((int64_t)t.tv_sec)*1000000000LL + t.tv_nsec)/1000000;
-    
+
     /* Now fill the values with a nice little plasma */
     fill_plasma(&buffer, time_ms);
 
@@ -429,7 +429,7 @@ static int engine_do_ui_event(struct engine* engine) {
     } else {
         LOGI("Failure reading next input event: %s\n", strerror(errno));
     }
-    
+
     return 1;
 }
 
@@ -453,7 +453,7 @@ static int32_t engine_do_main_cmd(struct engine* engine) {
             res = android_app_exec_cmd(engine->app, cmd);
             break;
     }
-    
+
     return res;
 }
 
@@ -461,20 +461,20 @@ void android_main(struct android_app* state) {
     static int init;
 
     struct engine engine;
-    
+
     memset(&engine, 0, sizeof(engine));
     state->userData = &engine;
     engine.app = state;
-    
+
     if (!init) {
         init_tables();
         init = 1;
     }
-    
+
     stats_init(&engine.stats);
-        
+
     // loop waiting for stuff to do.
-    
+
     while (1) {
         // Read all pending events.
         int fd;
@@ -494,7 +494,7 @@ void android_main(struct android_app* state) {
                     break;
             }
         }
-        
+
         if (engine.animating) {
             engine_draw_frame(&engine);
         }
