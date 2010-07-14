@@ -202,9 +202,9 @@ static void fill_plasma(ANativeWindow_Buffer* buffer, double  t)
 #define  YT2_INCR   FIXED_FROM_FLOAT(1/163.)
 
     void* pixels = buffer->bits;
-    LOGI("width=%d height=%d stride=%d format=%d", buffer->width, buffer->height,
-            buffer->stride, buffer->format);
-            
+    //LOGI("width=%d height=%d stride=%d format=%d", buffer->width, buffer->height,
+    //        buffer->stride, buffer->format);
+
     int  yy;
     for (yy = 0; yy < buffer->height; yy++) {
         uint16_t*  line = (uint16_t*)pixels;
@@ -417,6 +417,12 @@ static int engine_do_ui_event(struct engine* engine) {
         if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_MOTION) {
             engine->animating = 1;
             AInputQueue_finishEvent(engine->app->inputQueue, event, 1);
+        } else if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_KEY) {
+            LOGI("Key event: action=%d keyCode=%d metaState=0x%x",
+                    AKeyEvent_getAction(event),
+                    AKeyEvent_getKeyCode(event),
+                    AKeyEvent_getMetaState(event));
+            AInputQueue_finishEvent(engine->app->inputQueue, event, 0);
         } else {
             AInputQueue_finishEvent(engine->app->inputQueue, event, 0);
         }
