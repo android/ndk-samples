@@ -133,6 +133,9 @@ static int engine_do_ui_event(struct engine* engine) {
     AInputEvent* event = NULL;
     if (AInputQueue_getEvent(engine->app->inputQueue, &event) >= 0) {
         LOGI("New input event: type=%d\n", AInputEvent_getType(event));
+        if (AInputQueue_preDispatchEvent(engine->app->inputQueue, event)) {
+            return 1;
+        }
         if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_MOTION) {
             engine->animating = 1;
             engine->x = AMotionEvent_getX(event, 0);

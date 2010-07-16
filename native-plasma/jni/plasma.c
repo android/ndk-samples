@@ -414,6 +414,9 @@ static int engine_term_display(struct engine* engine) {
 static int engine_do_ui_event(struct engine* engine) {
     AInputEvent* event = NULL;
     if (AInputQueue_getEvent(engine->app->inputQueue, &event) >= 0) {
+        if (AInputQueue_preDispatchEvent(engine->app->inputQueue, event)) {
+            return 1;
+        }
         if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_MOTION) {
             engine->animating = 1;
             AInputQueue_finishEvent(engine->app->inputQueue, event, 1);
