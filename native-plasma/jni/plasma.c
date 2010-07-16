@@ -417,10 +417,10 @@ static int engine_do_ui_event(struct engine* engine) {
         if (AInputQueue_preDispatchEvent(engine->app->inputQueue, event)) {
             return 1;
         }
-        if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_MOTION) {
+        if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
             engine->animating = 1;
             AInputQueue_finishEvent(engine->app->inputQueue, event, 1);
-        } else if (AInputEvent_getType(event) == INPUT_EVENT_TYPE_KEY) {
+        } else if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
             LOGI("Key event: action=%d keyCode=%d metaState=0x%x",
                     AKeyEvent_getAction(event),
                     AKeyEvent_getKeyCode(event),
