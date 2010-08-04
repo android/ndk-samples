@@ -15,6 +15,7 @@
  *
  */
 
+//BEGIN_INCLUDE(all)
 #include <jni.h>
 
 #include <errno.h>
@@ -23,6 +24,18 @@
 
 #include "glutils.h"
 
+/**
+ * Our saved state data.
+ */
+struct saved_state {
+    float angle;
+    int32_t x;
+    int32_t y;
+};
+
+/**
+ * Shared state for our app.
+ */
 struct engine {
     struct android_app* app;
 
@@ -32,11 +45,12 @@ struct engine {
     EGLContext context;
     int32_t width;
     int32_t height;
-    float angle;
-    int32_t x;
-    int32_t y;
+    struct saved_state state;
 };
 
+/**
+ * Initialize an EGL context for the current display.
+ */
 static int engine_init_display(struct engine* engine) {
     // initialize opengl and egl
     const EGLint attribs[] = {
@@ -68,7 +82,7 @@ static int engine_init_display(struct engine* engine) {
     engine->surface = surface;
     engine->width = w;
     engine->height = h;
-    engine->angle = 0;
+    engine->state.angle = 0;
 
     // Initialize GL state.
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
@@ -79,39 +93,26 @@ static int engine_init_display(struct engine* engine) {
     return 0;
 }
 
+/**
+ * Just the current frame in the display.
+ */
 static void engine_draw_frame(struct engine* engine) {
     if (engine->display == NULL) {
         // No display.
         return;
     }
 
-    glClearColor(((float)engine->x)/engine->width, engine->angle,
-            ((float)engine->y)/engine->height, 1);
+    // Just fill the screen with a color.
+    glClearColor(((float)engine->state.x)/engine->width, engine->state.angle,
+            ((float)engine->state.y)/engine->height, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-#if 0
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -3.0f);
-    glRotatef(engine->angle,        0, 1, 0);
-    glRotatef(engine->angle*0.25f,  1, 0, 0);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-
-    //mCube.draw(gl);
-
-    glRotatef(engine->angle*2.0f, 0, 1, 1);
-    glTranslatef(0.5f, 0.5f, 0.5f);
-
-    //mCube.draw(gl);
-#endif
-
     eglSwapBuffers(engine->display, engine->surface);
-
-    //engine->angle += 1.2f;
 }
 
+/**
+ * Tear down the EGL context currently associated with the display.
+ */
 static int engine_term_display(struct engine* engine) {
     if (engine->display != EGL_NO_DISPLAY) {
         eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -129,59 +130,68 @@ static int engine_term_display(struct engine* engine) {
     engine->surface = EGL_NO_SURFACE;
 }
 
-static int engine_do_ui_event(struct engine* engine) {
-    AInputEvent* event = NULL;
-    if (AInputQueue_getEvent(engine->app->inputQueue, &event) >= 0) {
-        LOGI("New input event: type=%d\n", AInputEvent_getType(event));
-        if (AInputQueue_preDispatchEvent(engine->app->inputQueue, event)) {
-            return 1;
-        }
-        if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-            engine->animating = 1;
-            engine->x = AMotionEvent_getX(event, 0);
-            engine->y = AMotionEvent_getY(event, 0);
-            AInputQueue_finishEvent(engine->app->inputQueue, event, 1);
-        } else {
-            AInputQueue_finishEvent(engine->app->inputQueue, event, 0);
-        }
-    } else {
-        LOGI("Failure reading next input event: %s\n", strerror(errno));
+/**
+ * Process the next input event.
+ */
+static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
+    struct engine* engine = (struct engine*)app->userData;
+    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+        engine->animating = 1;
+        engine->state.x = AMotionEvent_getX(event, 0);
+        engine->state.y = AMotionEvent_getY(event, 0);
+        return 1;
     }
-
-    return 1;
+    return 0;
 }
 
-static int32_t engine_do_main_cmd(struct engine* engine) {
-    int32_t res;
-    int8_t cmd = android_app_read_cmd(engine->app);
+/**
+ * Process the next main command.
+ */
+static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
+    struct engine* engine = (struct engine*)app->userData;
     switch (cmd) {
-        case APP_CMD_WINDOW_CHANGED:
-            engine_term_display(engine);
-            res = android_app_exec_cmd(engine->app, cmd);
+        case APP_CMD_SAVE_STATE:
+            engine->app->savedState = malloc(sizeof(struct saved_state));
+            *((struct saved_state*)engine->app->savedState) = engine->state;
+            engine->app->savedStateSize = sizeof(struct saved_state);
+            break;
+        case APP_CMD_INIT_WINDOW:
             if (engine->app->window != NULL) {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
             break;
+        case APP_CMD_TERM_WINDOW:
+            engine_term_display(engine);
+            break;
         case APP_CMD_LOST_FOCUS:
-            res = android_app_exec_cmd(engine->app, cmd);
             engine->animating = 0;
             engine_draw_frame(engine);
             break;
-        default:
-            res = android_app_exec_cmd(engine->app, cmd);
-            break;
     }
-
-    return res;
 }
 
+/**
+ * This is the main entry point of a native application that is using
+ * android_native_app_glue.  It runs in its own thread, with its own
+ * event loop for receiving input events and doing other things.
+ */
 void android_main(struct android_app* state) {
     struct engine engine;
 
+    // Make sure glue isn't stripped.
+    app_dummy();
+
     memset(&engine, 0, sizeof(engine));
     state->userData = &engine;
+    state->onAppCmd = engine_handle_cmd;
+    state->onInputEvent = engine_handle_input;
     engine.app = state;
+
+    if (state->savedState != NULL) {
+        // We are starting with a previous saved state; restore from it.
+        engine.state = *(struct saved_state*)state->savedState;
+    }
 
     // loop waiting for stuff to do.
 
@@ -189,29 +199,37 @@ void android_main(struct android_app* state) {
         // Read all pending events.
         int fd;
         int events;
-        void* data;
-        while ((fd=ALooper_pollAll(engine.animating ? 0 : -1, &events, &data)) >= 0) {
-            switch ((int)data) {
-                case LOOPER_ID_MAIN:
-                    if (!engine_do_main_cmd(&engine)) {
-                        LOGI("Engine thread destroy requested!");
-                        engine_term_display(&engine);
-                        return;
-                    }
-                    break;
-                case LOOPER_ID_EVENT:
-                    engine_do_ui_event(&engine);
-                    break;
+        struct android_poll_source* source;
+
+        // If not animating, we will block forever waiting for events.
+        // If animating, we loop until all events are read, then continue
+        // to draw the next frame of animation.
+        while ((fd=ALooper_pollAll(engine.animating ? 0 : -1, &events,
+                (void**)&source)) >= 0) {
+
+            // Process this event.
+            if (source != NULL) {
+                source->process(state);
+            }
+
+            // Check if we are exiting.
+            if (state->destroyRequested != 0) {
+                engine_term_display(&engine);
+                return;
             }
         }
 
         if (engine.animating) {
             // Done with events; draw next animation frame.
-            engine.angle += .01f;
-            if (engine.angle > 1) {
-                engine.angle = 0;
+            engine.state.angle += .01f;
+            if (engine.state.angle > 1) {
+                engine.state.angle = 0;
             }
+
+            // Drawing is throttled to the screen update rate, so there
+            // is no need to do timing here.
             engine_draw_frame(&engine);
         }
     }
 }
+//END_INCLUDE(all)
