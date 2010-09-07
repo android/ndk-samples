@@ -469,19 +469,19 @@ void android_main(struct android_app* state) {
 
     while (1) {
         // Read all pending events.
-        int fd;
+        int ident;
         int events;
         struct android_poll_source* source;
 
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((fd=ALooper_pollAll(engine.animating ? 0 : -1, &events,
+        while ((ident=ALooper_pollAll(engine.animating ? 0 : -1, &events,
                 (void**)&source)) >= 0) {
 
             // Process this event.
             if (source != NULL) {
-                source->process(state);
+                source->process(state, source);
             }
 
             // Check if we are exiting.

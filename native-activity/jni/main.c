@@ -17,8 +17,9 @@
 
 //BEGIN_INCLUDE(all)
 #include <jni.h>
-
 #include <errno.h>
+
+#include <android/sensor.h>
 
 #include <android_native_app_glue.h>
 
@@ -38,6 +39,10 @@ struct saved_state {
  */
 struct engine {
     struct android_app* app;
+
+    ASensorManager* sensorManager;
+    const ASensor* accelerometerSensor;
+    ASensorEventQueue* sensorEventQueue;
 
     int animating;
     EGLDisplay display;
@@ -151,20 +156,40 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
     struct engine* engine = (struct engine*)app->userData;
     switch (cmd) {
         case APP_CMD_SAVE_STATE:
+            // The system has asked us to save our current state.  Do so.
             engine->app->savedState = malloc(sizeof(struct saved_state));
             *((struct saved_state*)engine->app->savedState) = engine->state;
             engine->app->savedStateSize = sizeof(struct saved_state);
             break;
         case APP_CMD_INIT_WINDOW:
+            // The window is being shown, get it ready.
             if (engine->app->window != NULL) {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
             break;
         case APP_CMD_TERM_WINDOW:
+            // The window is being hidden or closed, clean it up.
             engine_term_display(engine);
             break;
+        case APP_CMD_GAINED_FOCUS:
+            // When our app gains focus, we start monitoring the accelerometer.
+            if (engine->accelerometerSensor != NULL) {
+                ASensorEventQueue_enableSensor(engine->sensorEventQueue,
+                        engine->accelerometerSensor);
+                // We'd like to get 60 events per second (in us).
+                ASensorEventQueue_setEventRate(engine->sensorEventQueue,
+                        engine->accelerometerSensor, (1000L/60)*1000);
+            }
+            break;
         case APP_CMD_LOST_FOCUS:
+            // When our app loses focus, we stop monitoring the accelerometer.
+            // This is to avoid consuming battery while not being used.
+            if (engine->accelerometerSensor != NULL) {
+                ASensorEventQueue_disableSensor(engine->sensorEventQueue,
+                        engine->accelerometerSensor);
+            }
+            // Also stop animating.
             engine->animating = 0;
             engine_draw_frame(engine);
             break;
@@ -188,6 +213,13 @@ void android_main(struct android_app* state) {
     state->onInputEvent = engine_handle_input;
     engine.app = state;
 
+    // Prepare to monitor accelerometer
+    engine.sensorManager = ASensorManager_getInstance();
+    engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,
+            ASENSOR_TYPE_ACCELEROMETER);
+    engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,
+            state->looper, LOOPER_ID_USER, NULL, NULL);
+
     if (state->savedState != NULL) {
         // We are starting with a previous saved state; restore from it.
         engine.state = *(struct saved_state*)state->savedState;
@@ -197,19 +229,32 @@ void android_main(struct android_app* state) {
 
     while (1) {
         // Read all pending events.
-        int fd;
+        int ident;
         int events;
         struct android_poll_source* source;
 
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((fd=ALooper_pollAll(engine.animating ? 0 : -1, &events,
+        while ((ident=ALooper_pollAll(engine.animating ? 0 : -1, &events,
                 (void**)&source)) >= 0) {
 
             // Process this event.
             if (source != NULL) {
-                source->process(state);
+                source->process(state, source);
+            }
+
+            // If a sensor has data, process it now.
+            if (ident == LOOPER_ID_USER) {
+                if (engine.accelerometerSensor != NULL) {
+                    ASensorEvent event;
+                    while (ASensorEventQueue_getEvents(engine.sensorEventQueue,
+                            &event, 1) > 0) {
+                        LOGI("accelerometer: x=%f y=%f z=%f",
+                                event.acceleration.x, event.acceleration.y,
+                                event.acceleration.z);
+                    }
+                }
             }
 
             // Check if we are exiting.
