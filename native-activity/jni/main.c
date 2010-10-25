@@ -59,7 +59,7 @@ struct engine {
 static int engine_init_display(struct engine* engine) {
     // initialize opengl and egl
     const EGLint attribs[] = {
-            EGL_DEPTH_SIZE, 16,
+            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
             EGL_NONE
     };
     EGLint w, h, dummy;
@@ -72,6 +72,7 @@ static int engine_init_display(struct engine* engine) {
 
     eglInitialize(display, 0, 0);
     selectConfigForNativeWindow(display, attribs, engine->app->window, &config);
+
     surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
     context = eglCreateContext(display, config, NULL, NULL);
 
@@ -94,7 +95,7 @@ static int engine_init_display(struct engine* engine) {
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
-    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
 
     return 0;
 }
@@ -111,7 +112,7 @@ static void engine_draw_frame(struct engine* engine) {
     // Just fill the screen with a color.
     glClearColor(((float)engine->state.x)/engine->width, engine->state.angle,
             ((float)engine->state.y)/engine->height, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     eglSwapBuffers(engine->display, engine->surface);
 }
