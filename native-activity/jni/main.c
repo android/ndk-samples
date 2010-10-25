@@ -119,7 +119,7 @@ static void engine_draw_frame(struct engine* engine) {
 /**
  * Tear down the EGL context currently associated with the display.
  */
-static int engine_term_display(struct engine* engine) {
+static void engine_term_display(struct engine* engine) {
     if (engine->display != EGL_NO_DISPLAY) {
         eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         if (engine->context != EGL_NO_CONTEXT) {
