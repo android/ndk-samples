@@ -36,7 +36,7 @@ LOCAL_C_INCLUDES += \
 		$(TOPDIR)development/ndk/sources/android/native_app_glue
 
 LOCAL_SRC_FILES := \
-	jni/main.c jni/glutils.c \
+	jni/main.c \
 	../../../../sources/android/native_app_glue/android_native_app_glue.c
 
 LOCAL_NDK_VERSION := 4
