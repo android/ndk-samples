@@ -44,7 +44,7 @@ LOCAL_SDK_VERSION := 8
 
 LOCAL_SHARED_LIBRARIES := liblog libandroid libEGL libGLESv1_CM
 
-LOCAL_PRELINK_MODULE := false
+
 
 LOCAL_MODULE := libnative-activity
 
