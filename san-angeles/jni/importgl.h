@@ -36,12 +36,6 @@ extern "C" {
 #include <GLES/egl.h>
 #endif /* !ANDROID_NDK */
 
-/* Use DISABLE_IMPORTGL if you want to link the OpenGL ES at
- * compile/link time and not import it dynamically runtime.
- */
-#ifndef DISABLE_IMPORTGL
-
-
 /* Dynamically fetches pointers to the egl & gl functions.
  * Should be called once on application initialization.
  * Returns non-zero on success and 0 on failure.
@@ -51,6 +45,11 @@ extern int importGLInit();
 /* Frees the handle to egl & gl functions library.
  */
 extern void importGLDeinit();
+
+/* Use DISABLE_IMPORTGL if you want to link the OpenGL ES at
+ * compile/link time and not import it dynamically runtime.
+ */
+#ifndef DISABLE_IMPORTGL
 
 
 #ifndef IMPORTGL_API
