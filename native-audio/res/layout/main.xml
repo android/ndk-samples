@@ -26,6 +26,11 @@
     android:layout_height="wrap_content"
     android:text="@string/hello"
     />
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
 <Button
     android:id="@+id/hello"
     android:text="Hello"
@@ -45,20 +50,123 @@
     android:layout_height="wrap_content"
     />
 <Button
+    android:id="@+id/embedded_soundtrack"
+    android:text="Embedded\nsoundtrack"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+<Button
     android:id="@+id/reverb"
     android:text="Reverb"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
-    android:id="@+id/embedded_soundtrack"
-    android:text="Embedded soundtrack"
+    android:id="@+id/mute_uri"
+    android:text="Mute"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
+    android:id="@+id/enable_stereo_position_uri"
+    android:text="Enable SP"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+<Spinner
+    android:id="@+id/uri_spinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="URI spinner"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+<Button
     android:id="@+id/uri_soundtrack"
-    android:text="URI soundtrack"
+    android:text="URI\nsoundtrack"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/pause_uri"
+    android:text="Pause\nURI"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/play_uri"
+    android:text="Play\nURI"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/loop_uri"
+    android:text="Loop\nURI"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <Button
+        android:id="@+id/mute_left_uri"
+        android:text="mute left"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/mute_right_uri"
+        android:text="mute right"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/solo_left_uri"
+        android:text="solo left"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/solo_right_uri"
+        android:text="solo right"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>
+<Button
+    android:id="@+id/channels_uri"
+    android:text="Get channels"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<SeekBar
+    android:id="@+id/volume_uri"
+    android:text="Volume"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<SeekBar
+    android:id="@+id/pan_uri"
+    android:text="Pan"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
