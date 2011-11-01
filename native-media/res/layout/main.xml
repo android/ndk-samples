@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/hello"
+    />
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/source_select"
+    />
+<Spinner
+    android:id="@+id/source_spinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/source_prompt"
+    />
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/sink_select"
+    />
+<Spinner
+    android:id="@+id/sink_spinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/sink_prompt"
+    />
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <Button
+        android:id="@+id/start_java"
+        android:text="@string/start_java"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/start_native"
+        android:text="@string/start_native"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/finish"
+        android:text="@string/finish"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <Button
+        android:id="@+id/rewind_java"
+        android:text="@string/rewind_java"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/rewind_native"
+        android:text="@string/rewind_native"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="S1"
+        />
+    <SurfaceView
+        android:id="@+id/surfaceview1"
+        android:layout_width="320px"
+        android:layout_height="240px"
+        />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="S2"
+        />
+    <SurfaceView
+        android:id="@+id/surfaceview2"
+        android:layout_width="400px"
+        android:layout_height="224px"
+        />
+</LinearLayout>
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="ST1"
+        />
+    <com.example.nativemedia.MyGLSurfaceView
+        android:id="@+id/glsurfaceview1"
+        android:layout_width="320px"
+        android:layout_height="240px"
+        />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="ST2"
+        />
+    <com.example.nativemedia.MyGLSurfaceView
+        android:id="@+id/glsurfaceview2"
+        android:layout_width="320px"
+        android:layout_height="240px"
+        />
+</LinearLayout>
+
+</LinearLayout>
