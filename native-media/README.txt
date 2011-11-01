@@ -1,2 +1,8 @@
-The documentation for Android native media based on OpenMAX AL 1.0.1
-references this directory, but the example is not yet available.
+This sample app requires an MPEG-2 Transport Stream file to be
+placed in /sdcard/NativeMedia.ts and encoded as:
+
+  video: H.264 baseline profile
+  audio: AAC LC stereo
+
+For demonstration purposes we have supplied such a .ts file.
+Any actual stream must be created according to the MPEG-2 specification.
