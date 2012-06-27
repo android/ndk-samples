@@ -1,4 +1,4 @@
-package com.example.TwoLib;
+package com.example.twolibs;
 
 import android.test.ActivityInstrumentationTestCase;
 
@@ -9,13 +9,13 @@ import android.test.ActivityInstrumentationTestCase;
  * <p/>
  * To run this test, you can type:
  * adb shell am instrument -w \
- * -e class com.example.TwoLib.TwoLibTest \
- * com.example.TwoLib.tests/android.test.InstrumentationTestRunner
+ * -e class com.example.twolibs.TwoLibsTest \
+ * com.example.twolibs.tests/android.test.InstrumentationTestRunner
  */
-public class TwoLibTest extends ActivityInstrumentationTestCase<TwoLib> {
+public class TwoLibsTest extends ActivityInstrumentationTestCase<TwoLibs> {
 
-    public TwoLibTest() {
-        super("com.example.TwoLib", TwoLib.class);
+    public TwoLibsTest() {
+        super("com.example.twolibs", TwoLibs.class);
     }
 
 }
