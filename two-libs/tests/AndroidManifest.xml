@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- package name must be unique so suffix with "tests" so package loader doesn't ignore us -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.TwoLib.tests"
+          package="com.example.twolibs.tests"
           android:versionCode="1"
           android:versionName="1.0">
     <!-- We add an application tag here just so that we can indicate that
@@ -12,10 +12,10 @@
     </application>
     <!--
     This declares that this application uses the instrumentation test runner targeting
-    the package of com.example.TwoLib.  To run the tests use the command:
-    "adb shell am instrument -w com.example.TwoLib.tests/android.test.InstrumentationTestRunner"
+    the package of com.example.twolibs.  To run the tests use the command:
+    "adb shell am instrument -w com.example.twolibs.tests/android.test.InstrumentationTestRunner"
     -->
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-                     android:targetPackage="com.example.TwoLib"
-                     android:label="Tests for TwoLib"/>
+                     android:targetPackage="com.example.twolibs"
+                     android:label="Tests for TwoLibs"/>
 </manifest>
