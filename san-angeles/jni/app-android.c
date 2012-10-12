@@ -47,9 +47,7 @@ Java_com_example_SanAngeles_DemoRenderer_nativeInit( JNIEnv*  env )
 {
     importGLInit();
     appInit();
-    gAppAlive    = 1;
-    sDemoStopped = 0;
-    sTimeOffsetInit = 0;
+    gAppAlive  = 1;
 }
 
 void
@@ -71,19 +69,44 @@ Java_com_example_SanAngeles_DemoRenderer_nativeDone( JNIEnv*  env )
 /* This is called to indicate to the render loop that it should
  * stop as soon as possible.
  */
+
+void _pause()
+{
+  /* we paused the animation, so store the current
+   * time in sTimeStopped for future nativeRender calls */
+    sDemoStopped = 1;
+    sTimeStopped = _getTime();
+}
+
+void _resume()
+{
+  /* we resumed the animation, so adjust the time offset
+   * to take care of the pause interval. */
+    sDemoStopped = 0;
+    sTimeOffset -= _getTime() - sTimeStopped;
+}
+
+
+void
+Java_com_example_SanAngeles_DemoGLSurfaceView_nativeTogglePauseResume( JNIEnv*  env )
+{
+    sDemoStopped = !sDemoStopped;
+    if (sDemoStopped)
+        _pause();
+    else
+        _resume();
+}
+
 void
 Java_com_example_SanAngeles_DemoGLSurfaceView_nativePause( JNIEnv*  env )
 {
-    sDemoStopped = !sDemoStopped;
-    if (sDemoStopped) {
-        /* we paused the animation, so store the current
-         * time in sTimeStopped for future nativeRender calls */
-        sTimeStopped = _getTime();
-    } else {
-        /* we resumed the animation, so adjust the time offset
-         * to take care of the pause interval. */
-        sTimeOffset -= _getTime() - sTimeStopped;
-    }
+    _pause();
+}
+
+void
+Java_com_example_SanAngeles_DemoGLSurfaceView_nativeResume( JNIEnv*  env )
+{
+    _resume();
 }
 
 /* Call to render the next GL frame */
