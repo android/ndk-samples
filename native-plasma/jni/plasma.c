@@ -407,7 +407,7 @@ static void engine_draw_frame(struct engine* engine) {
     stats_endFrame(&engine->stats);
 }
 
-static int engine_term_display(struct engine* engine) {
+static void engine_term_display(struct engine* engine) {
     engine->animating = 0;
 }
 

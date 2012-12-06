@@ -259,7 +259,7 @@ jboolean Java_com_example_nativeaudio_NativeAudio_createUriAudioPlayer(JNIEnv* e
     SLresult result;
 
     // convert Java string to UTF-8
-    const jbyte *utf8 = (*env)->GetStringUTFChars(env, uri, NULL);
+    const char *utf8 = (*env)->GetStringUTFChars(env, uri, NULL);
     assert(NULL != utf8);
 
     // configure audio source
@@ -545,13 +545,13 @@ jboolean Java_com_example_nativeaudio_NativeAudio_createAssetAudioPlayer(JNIEnv*
     SLresult result;
 
     // convert Java string to UTF-8
-    const jbyte *utf8 = (*env)->GetStringUTFChars(env, filename, NULL);
+    const char *utf8 = (*env)->GetStringUTFChars(env, filename, NULL);
     assert(NULL != utf8);
 
     // use asset manager to open asset by filename
     AAssetManager* mgr = AAssetManager_fromJava(env, assetManager);
     assert(NULL != mgr);
-    AAsset* asset = AAssetManager_open(mgr, (const char *) utf8, AASSET_MODE_UNKNOWN);
+    AAsset* asset = AAssetManager_open(mgr, utf8, AASSET_MODE_UNKNOWN);
 
     // release the Java string and UTF-8
     (*env)->ReleaseStringUTFChars(env, filename, utf8);

@@ -1,4 +1,5 @@
 #include "bar.h"
+#include "foo.h"
 
 int  bar(int  x)
 {
