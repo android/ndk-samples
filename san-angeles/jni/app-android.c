@@ -22,6 +22,8 @@
 #include <time.h>
 #include <android/log.h>
 #include <stdint.h>
+#include "importgl.h"
+#include "app.h"
 
 int   gAppAlive   = 1;
 
