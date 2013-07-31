@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <EGL/egl.h>
 #include "gl3stub.h"
 
 GLboolean gl3stubInit() {
