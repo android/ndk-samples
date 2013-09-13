@@ -863,10 +863,10 @@ public:
     void dump()
     {
         int32_t i = 0;
-        LOGI("%f %f %f %f", f[i++], f[i++], f[i++], f[i++]);
-        LOGI("%f %f %f %f", f[i++], f[i++], f[i++], f[i++]);
-        LOGI("%f %f %f %f", f[i++], f[i++], f[i++], f[i++]);
-        LOGI("%f %f %f %f", f[i++], f[i++], f[i++], f[i++]);
+        LOGI("%f %f %f %f", f[0], f[1], f[2], f[3]);
+        LOGI("%f %f %f %f", f[4], f[5], f[6], f[7]);
+        LOGI("%f %f %f %f", f[8], f[9], f[10], f[11]);
+        LOGI("%f %f %f %f", f[12], f[13], f[14], f[15]);
     }
 };
 
