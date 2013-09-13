@@ -21,6 +21,8 @@ import android.content.Context;
 import android.view.View;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.view.Display;
+import android.view.WindowManager;
 
 public class Plasma extends Activity
 {
@@ -29,7 +31,8 @@ public class Plasma extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(new PlasmaView(this));
+        Display display = getWindowManager().getDefaultDisplay();
+        setContentView(new PlasmaView(this, display.getWidth(), display.getHeight()));
     }
 
     /* load our native library */
@@ -45,13 +48,9 @@ class PlasmaView extends View {
     /* implementend by libplasma.so */
     private static native void renderPlasma(Bitmap  bitmap, long time_ms);
 
-    public PlasmaView(Context context) {
+    public PlasmaView(Context context, int width, int height) {
         super(context);
-
-        final int W = 200;
-        final int H = 200;
-
-        mBitmap = Bitmap.createBitmap(W, H, Bitmap.Config.RGB_565);
+        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         mStartTime = System.currentTimeMillis();
     }
 
