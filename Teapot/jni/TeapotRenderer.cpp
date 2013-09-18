@@ -62,7 +62,7 @@ void TeapotRenderer::init()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     //Create VBO
-    _iNumVertices = sizeof(teapotPositions) / sizeof(teapotPositions[0]);
+    _iNumVertices = sizeof(teapotPositions) / sizeof(teapotPositions[0]) / 3;
     int32_t iStride = sizeof(TEAPOT_VERTEX);
     int32_t iIndex = 0;
     TEAPOT_VERTEX* p = new TEAPOT_VERTEX[_iNumVertices];
