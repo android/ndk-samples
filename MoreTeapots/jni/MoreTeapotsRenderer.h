@@ -15,11 +15,11 @@
  */
 
 //--------------------------------------------------------------------------------
-// Teapot Renderer.h
+// MoreTeapotsRenderer.h
 // Renderer for teapots
 //--------------------------------------------------------------------------------
-#ifndef _TEAPOTRENDERER_H
-#define _TEAPOTRENDERER_H
+#ifndef _MoreTeapotsRenderer_H
+#define _MoreTeapotsRenderer_H
 
 //--------------------------------------------------------------------------------
 // Include files
@@ -39,10 +39,9 @@
 #include <cpu-features.h>
 
 #define CLASS_NAME "android/app/NativeActivity"
-#define APPLICATION_CLASS_NAME "com/sample/teapot/TeapotApplication"
+#define APPLICATION_CLASS_NAME "com/sample/moreteapotss/MoreTeapotsApplication"
 
 #include "NDKHelper.h"
-
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -53,7 +52,7 @@ struct TEAPOT_VERTEX
 };
 
 enum SHADER_ATTRIBUTES {
-    ATTRIB_VERTEX, ATTRIB_NORMAL, ATTRIB_UV,
+    ATTRIB_VERTEX, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_UV
 };
 
 struct SHADER_PARAMS
@@ -70,30 +69,47 @@ struct SHADER_PARAMS
 
 struct TEAPOT_MATERIALS
 {
-    float diffuse_color[ 3 ];
     float specular_color[ 4 ];
     float ambient_color[ 3 ];
 };
 
-class TeapotRenderer
+class MoreTeapotsRenderer
 {
     int32_t _iNumIndices;
     int32_t _iNumVertices;
     GLuint _ibo;
     GLuint _vbo;
+    GLuint _ubo;
 
     SHADER_PARAMS _shaderParam;
     bool loadShaders(SHADER_PARAMS* params, const char* strVsh, const char* strFsh);
+    bool loadShadersES3(SHADER_PARAMS* params,
+            const char* strVsh, const char* strFsh,
+            std::map<std::string, std::string>&shaderParameters );
+
 
      mat4 _mProjection;
      mat4 _mView;
-     mat4 _mModel;
+     std::vector<mat4> _mModels;
+     std::vector<vec3> _mColors;
+     std::vector<vec2> _mVecRotation;
+     std::vector<vec2> _mCurrentRotation;
 
      tapCamera* _camera;
+
+     int32_t _iX;
+     int32_t _iY;
+     int32_t _iZ;
+     int32_t _uboMatrixStride;
+     int32_t _uboVectorStride;
+     bool _bGeometryInstancingSupport;
+     bool _bARBSupport;
+
+     std::string toString( const int32_t i );
 public:
-    TeapotRenderer();
-    virtual ~TeapotRenderer();
-    void init();
+    MoreTeapotsRenderer();
+    virtual ~MoreTeapotsRenderer();
+    void init( const int32_t numX, const int32_t numY, const int32_t numZ );
     void render();
     void update(float dTime);
     bool bind(tapCamera* camera);

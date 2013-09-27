@@ -85,6 +85,15 @@ void TeapotRenderer::init()
 
     delete[] p;
 
+    updateViewport();
+    _mModel = mat4::translation(0, 0, -15.f);
+
+    mat4 mat = mat4::rotationX(M_PI / 3);
+    _mModel = mat * _mModel;
+}
+
+void TeapotRenderer::updateViewport()
+{
     //Init Projection matrices
     int32_t viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -95,10 +104,6 @@ void TeapotRenderer::init()
     bool bRotate = false;
     _mProjection = mat4::perspective(fAspect, 1.f,
             CAM_NEAR, CAM_FAR);
-    _mModel = mat4::translation(0, 0, -15.f);
-
-    mat4 mat = mat4::rotationX(M_PI / 3);
-    _mModel = mat * _mModel;
 }
 
 void TeapotRenderer::unload()
