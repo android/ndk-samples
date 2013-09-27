@@ -21,7 +21,6 @@
 #include <errno.h>
 
 #include <vector>
-
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 
@@ -31,16 +30,18 @@
 #include <android/native_window_jni.h>
 #include <cpu-features.h>
 
-#include "TeapotRenderer.h"
-#include "NDKHelper.h"
+#include "MoreTeapotsRenderer.h"
 
+const int32_t NUM_TEAPOTS_X = 8;
+const int32_t NUM_TEAPOTS_Y = 8;
+const int32_t NUM_TEAPOTS_Z = 6;
 
 //-------------------------------------------------------------------------
 //Shared state for our app.
 //-------------------------------------------------------------------------
 struct android_app;
 class engine {
-    TeapotRenderer _renderer;
+    MoreTeapotsRenderer _renderer;
 
     GLContext* _glContext;
 
@@ -113,7 +114,7 @@ engine::~engine()
  */
 void engine::loadResources()
 {
-    _renderer.init();
+    _renderer.init(NUM_TEAPOTS_X, NUM_TEAPOTS_Y, NUM_TEAPOTS_Z);
     _renderer.bind(&_tapCamera);
 }
 
@@ -160,7 +161,7 @@ int engine::initDisplay()
     _renderer.updateViewport();
 
     _tapCamera.setFlip(1.f, -1.f, -1.f);
-    _tapCamera.setPinchTransformFactor(2.f, 2.f, 8.f);
+    _tapCamera.setPinchTransformFactor(10.f, 10.f, 8.f);
 
     return 0;
 }
@@ -480,3 +481,4 @@ void android_main(android_app* state)
         }
     }
 }
+

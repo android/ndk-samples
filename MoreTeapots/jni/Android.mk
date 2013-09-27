@@ -3,11 +3,10 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := NativeActivity
-LOCAL_SRC_FILES := TeapotNativeActivity.cpp \
-TeapotRenderer.cpp \
+LOCAL_SRC_FILES := MoreTeapotsNativeActivity.cpp \
+MoreTeapotsRenderer.cpp \
 
-LOCAL_C_INCLUDES :=
-
+LOCAL_C_INCLUDES := 
 LOCAL_CFLAGS :=
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2

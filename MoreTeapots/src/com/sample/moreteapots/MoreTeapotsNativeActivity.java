@@ -1,4 +1,4 @@
-package com.sample.teapot;
+package com.sample.moreteapots;
 
 import android.app.NativeActivity;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-public class TeapotNativeActivity extends NativeActivity {
+public class MoreTeapotsNativeActivity extends NativeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,20 +22,27 @@ public class TeapotNativeActivity extends NativeActivity {
 
         //Hide toolbar
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if(SDK_INT >= 11 && SDK_INT < 14)
-        {
+        if(SDK_INT >= 11 && SDK_INT < 14) {
             getWindow().getDecorView().setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
-        }
-        else if(SDK_INT >= 14)
-        {
+        }else if(SDK_INT >= 14){
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LOW_PROFILE);
         }
 
     }
 
+    protected void onPause()
+    {
+        super.onPause();
+        if (_popupWindow != null) {
+
+            _popupWindow.dismiss();
+            _popupWindow = null;
+        }
+    }
+    
     // Our popup window, you will call it from your C/C++ code later
 
-    TeapotNativeActivity _activity;
+    MoreTeapotsNativeActivity _activity;
     PopupWindow _popupWindow;
     TextView _label;
 
