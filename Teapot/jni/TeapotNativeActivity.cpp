@@ -444,7 +444,7 @@ void android_main( android_app* state )
     state->onInputEvent = Engine::HandleInput;
 
 #ifdef USE_NDK_PROFILER
-    monstartup("libNativeActivity.so");
+    monstartup("libTeapotNativeActivity.so");
 #endif
 
     // Prepare to monitor accelerometer
