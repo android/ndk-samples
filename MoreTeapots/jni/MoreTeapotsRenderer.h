@@ -47,74 +47,79 @@
 
 struct TEAPOT_VERTEX
 {
-    float fPos[3];
-    float fNormal[3];
+    float pos[3];
+    float normal[3];
 };
 
-enum SHADER_ATTRIBUTES {
+enum SHADER_ATTRIBUTES
+{
     ATTRIB_VERTEX, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_UV
 };
 
 struct SHADER_PARAMS
 {
-    GLuint _program;
-    GLuint _uiLight0;
-    GLuint _uiMaterialDiffuse;
-    GLuint _uiMaterialAmbient;
-    GLuint _uiMaterialSpecular;
+    GLuint program_;
+    GLuint light0_;
+    GLuint material_diffuse_;
+    GLuint material_ambient_;
+    GLuint material_specular_;
 
-    GLuint _uiMatrixP;
-    GLuint _uiMatrixView;
+    GLuint matrix_projection_;
+    GLuint matrix_view_;
 };
 
 struct TEAPOT_MATERIALS
 {
-    float specular_color[ 4 ];
-    float ambient_color[ 3 ];
+    float specular_color[4];
+    float ambient_color[3];
 };
 
 class MoreTeapotsRenderer
 {
-    int32_t _iNumIndices;
-    int32_t _iNumVertices;
-    GLuint _ibo;
-    GLuint _vbo;
-    GLuint _ubo;
+    int32_t num_indices_;
+    int32_t num_vertices_;
+    GLuint ibo_;
+    GLuint vbo_;
+    GLuint ubo_;
 
-    SHADER_PARAMS _shaderParam;
-    bool loadShaders(SHADER_PARAMS* params, const char* strVsh, const char* strFsh);
-    bool loadShadersES3(SHADER_PARAMS* params,
-            const char* strVsh, const char* strFsh,
+    SHADER_PARAMS shader_param_;
+    bool LoadShaders( SHADER_PARAMS* params,
+            const char* strVsh,
+            const char* strFsh );
+    bool LoadShadersES3( SHADER_PARAMS* params,
+            const char* strVsh,
+            const char* strFsh,
             std::map<std::string, std::string>&shaderParameters );
 
+    ndk_helper::Mat4 mat_projection_;
+    ndk_helper::Mat4 mat_view_;
+    std::vector<ndk_helper::Mat4> vec_mat_models_;
+    std::vector<ndk_helper::Vec3> vec_colors_;
+    std::vector<ndk_helper::Vec2> vec_rotations_;
+    std::vector<ndk_helper::Vec2> vec_current_rotations_;
 
-     mat4 _mProjection;
-     mat4 _mView;
-     std::vector<mat4> _mModels;
-     std::vector<vec3> _mColors;
-     std::vector<vec2> _mVecRotation;
-     std::vector<vec2> _mCurrentRotation;
+    ndk_helper::TapCamera* camera_;
 
-     tapCamera* _camera;
+    int32_t teapot_x_;
+    int32_t teapot_y_;
+    int32_t teapot_z_;
+    int32_t ubo_matrix_stride_;
+    int32_t ubo_vector_stride_;
+    bool geometry_instancing_support_;
+    bool arb_support_;
 
-     int32_t _iX;
-     int32_t _iY;
-     int32_t _iZ;
-     int32_t _uboMatrixStride;
-     int32_t _uboVectorStride;
-     bool _bGeometryInstancingSupport;
-     bool _bARBSupport;
-
-     std::string toString( const int32_t i );
+    std::string ToString( const int32_t i );
 public:
     MoreTeapotsRenderer();
     virtual ~MoreTeapotsRenderer();
-    void init( const int32_t numX, const int32_t numY, const int32_t numZ );
-    void render();
-    void update(float dTime);
-    bool bind(tapCamera* camera);
-    void unload();
-    void updateViewport();
+    void Init( const int32_t numX,
+            const int32_t numY,
+            const int32_t numZ );
+    void Render();
+    void Update( float dTime );
+    bool Bind( ndk_helper::TapCamera* camera );
+    void Unload();
+    void UpdateViewport();
 };
 
 #endif

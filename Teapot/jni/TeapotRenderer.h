@@ -43,62 +43,62 @@
 
 #include "NDKHelper.h"
 
-
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 struct TEAPOT_VERTEX
 {
-    float fPos[3];
-    float fNormal[3];
+    float pos[3];
+    float normal[3];
 };
 
-enum SHADER_ATTRIBUTES {
+enum SHADER_ATTRIBUTES
+{
     ATTRIB_VERTEX, ATTRIB_NORMAL, ATTRIB_UV,
 };
 
 struct SHADER_PARAMS
 {
-    GLuint _program;
-    GLuint _uiLight0;
-    GLuint _uiMaterialDiffuse;
-    GLuint _uiMaterialAmbient;
-    GLuint _uiMaterialSpecular;
+    GLuint program_;
+    GLuint light0_;
+    GLuint material_diffuse_;
+    GLuint material_ambient_;
+    GLuint material_specular_;
 
-    GLuint _uiMatrixP;
-    GLuint _uiMatrixView;
+    GLuint matrix_projection_;
+    GLuint matrix_view_;
 };
 
 struct TEAPOT_MATERIALS
 {
-    float diffuse_color[ 3 ];
-    float specular_color[ 4 ];
-    float ambient_color[ 3 ];
+    float diffuse_color[3];
+    float specular_color[4];
+    float ambient_color[3];
 };
 
 class TeapotRenderer
 {
-    int32_t _iNumIndices;
-    int32_t _iNumVertices;
-    GLuint _ibo;
-    GLuint _vbo;
+    int32_t num_indices_;
+    int32_t num_vertices_;
+    GLuint ibo_;
+    GLuint vbo_;
 
-    SHADER_PARAMS _shaderParam;
-    bool loadShaders(SHADER_PARAMS* params, const char* strVsh, const char* strFsh);
+    SHADER_PARAMS shader_param_;
+    bool LoadShaders( SHADER_PARAMS* params, const char* strVsh, const char* strFsh );
 
-     mat4 _mProjection;
-     mat4 _mView;
-     mat4 _mModel;
+    ndk_helper::Mat4 mat_projection_;
+    ndk_helper::Mat4 mat_view_;
+    ndk_helper::Mat4 mat_model_;
 
-     tapCamera* _camera;
+    ndk_helper::TapCamera* camera_;
 public:
     TeapotRenderer();
     virtual ~TeapotRenderer();
-    void init();
-    void render();
-    void update(float dTime);
-    bool bind(tapCamera* camera);
-    void unload();
-    void updateViewport();
+    void Init();
+    void Render();
+    void Update( float dTime );
+    bool Bind( ndk_helper::TapCamera* camera );
+    void Unload();
+    void UpdateViewport();
 };
 
 #endif
