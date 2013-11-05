@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := NativeActivity
+LOCAL_MODULE    := MoreTeapotsNativeActivity
 LOCAL_SRC_FILES := MoreTeapotsNativeActivity.cpp \
 MoreTeapotsRenderer.cpp \
 
