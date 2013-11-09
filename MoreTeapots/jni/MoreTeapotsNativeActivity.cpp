@@ -41,7 +41,7 @@
 //-------------------------------------------------------------------------
 const int32_t NUM_TEAPOTS_X = 8;
 const int32_t NUM_TEAPOTS_Y = 8;
-const int32_t NUM_TEAPOTS_Z = 6;
+const int32_t NUM_TEAPOTS_Z = 8;
 
 //-------------------------------------------------------------------------
 //Shared state for our app.
