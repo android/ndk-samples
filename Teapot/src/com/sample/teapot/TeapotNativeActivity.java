@@ -31,6 +31,22 @@ public class TeapotNativeActivity extends NativeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Hide toolbar
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if(SDK_INT >= 19)
+        {
+            setImmersiveSticky();
+
+            View decorView = getWindow().getDecorView();
+            decorView.setOnSystemUiVisibilityChangeListener
+                    (new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int visibility) {
+                    setImmersiveSticky();
+                }
+            });
+        }
+
     }
 
     protected void onResume() {
@@ -48,13 +64,21 @@ public class TeapotNativeActivity extends NativeActivity {
         }
         else if(SDK_INT >= 19)
         {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            setImmersiveSticky();
         }
 
     }
     // Our popup window, you will call it from your C/C++ code later
+
+    void setImmersiveSticky() {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
 
     TeapotNativeActivity _activity;
     PopupWindow _popupWindow;
