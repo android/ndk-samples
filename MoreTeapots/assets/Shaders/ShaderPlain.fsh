@@ -3,7 +3,7 @@
 //
 
 uniform lowp vec3       vMaterialAmbient;
-uniform lowp vec4       vMaterialSpecular;
+uniform mediump vec4       vMaterialSpecular;
 
 varying lowp vec4 colorDiffuse;
 
