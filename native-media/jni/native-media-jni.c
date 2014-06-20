@@ -288,7 +288,7 @@ static jboolean enqueueInitialBuffers(jboolean discontinuity)
         LOGV("Dropping last packet because it is not whole");
     }
     size_t packetsRead = bytesRead / MPEG2_TS_PACKET_SIZE;
-    LOGV("Initially queueing %u packets", packetsRead);
+    LOGV("Initially queueing %zu packets", packetsRead);
 
     /* Enqueue the content of our cache before starting to play,
        we don't want to starve the player */
