@@ -215,7 +215,7 @@ static void fill_plasma( AndroidBitmapInfo*  info, void*  pixels, double  t )
         uint16_t*  line_end = line + info->width;
 
         if (line < line_end) {
-            if (((uint32_t)line & 3) != 0) {
+            if (((uint32_t)(uintptr_t)line & 3) != 0) {
                 Fixed ii = base + fixed_sin(xt1) + fixed_sin(xt2);
 
                 xt1 += XT1_INCR;
