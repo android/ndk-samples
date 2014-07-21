@@ -14,6 +14,7 @@
  */
 
 #include <GLES2/gl2.h>
+#include <android/api-level.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,9 +55,11 @@ GLboolean gl3stubInit();
 /* OpenGL ES 3.0 */
 
 typedef unsigned short   GLhalf;
+#if __ANDROID_API__ <= 19
 typedef khronos_int64_t  GLint64;
 typedef khronos_uint64_t GLuint64;
 typedef struct __GLsync *GLsync;
+#endif
 
 /*-------------------------------------------------------------------------
  * Token definitions
