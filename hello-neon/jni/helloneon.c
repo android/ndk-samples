@@ -81,6 +81,7 @@ Java_com_example_neon_HelloNeon_stringFromJNI( JNIEnv* env,
                                                jobject thiz )
 {
     char*  str;
+    AndroidCpuFamily family;
     uint64_t features;
     char buffer[512];
     char tryNeon = 0;
@@ -112,20 +113,27 @@ Java_com_example_neon_HelloNeon_stringFromJNI( JNIEnv* env,
 
     strlcat(buffer, "Neon version   : ", sizeof buffer);
 
-    if (android_getCpuFamily() != ANDROID_CPU_FAMILY_ARM) {
-        strlcat(buffer, "Not an ARM CPU !\n", sizeof buffer);
+    family = android_getCpuFamily();
+    if ((family != ANDROID_CPU_FAMILY_ARM) &&
+        (family != ANDROID_CPU_FAMILY_X86))
+    {
+        strlcat(buffer, "Not an ARM and not an X86 CPU !\n", sizeof buffer);
         goto EXIT;
     }
 
     features = android_getCpuFeatures();
-    if ((features & ANDROID_CPU_ARM_FEATURE_ARMv7) == 0) {
-        strlcat(buffer, "Not an ARMv7 CPU !\n", sizeof buffer);
+    if (((features & ANDROID_CPU_ARM_FEATURE_ARMv7) == 0) &&
+        ((features & ANDROID_CPU_X86_FEATURE_SSSE3) == 0))
+    {
+        strlcat(buffer, "Not an ARMv7 and not an X86 SSSE3 CPU !\n", sizeof buffer);
         goto EXIT;
     }
 
     /* HAVE_NEON is defined in Android.mk ! */
 #ifdef HAVE_NEON
-    if ((features & ANDROID_CPU_ARM_FEATURE_NEON) == 0) {
+    if (((features & ANDROID_CPU_ARM_FEATURE_NEON) == 0) &&
+        ((features & ANDROID_CPU_X86_FEATURE_SSSE3) == 0))
+    {
         strlcat(buffer, "CPU doesn't support NEON !\n", sizeof buffer);
         goto EXIT;
     }
