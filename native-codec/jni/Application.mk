@@ -1,2 +1,2 @@
-APP_PLATFORM := android-20
+APP_PLATFORM := android-L
 APP_ABI := all
