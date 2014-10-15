@@ -15,7 +15,7 @@
 
     </application>
 
-    <uses-sdk android:minSdkVersion="19" />
+    <uses-sdk android:minSdkVersion="21" />
 
     <!-- INTERNET is needed to use a URI-based media player, depending on the URI -->
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
