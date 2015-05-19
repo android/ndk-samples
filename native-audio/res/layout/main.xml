@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright (C) 2010 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/hello"
+    />
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+<Button
+    android:id="@+id/hello"
+    android:text="Hello"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/android"
+    android:text="Android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/sawtooth"
+    android:text="Sawtooth"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/embedded_soundtrack"
+    android:text="Embedded\nsoundtrack"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+<Button
+    android:id="@+id/reverb"
+    android:text="Reverb"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/mute_uri"
+    android:text="Mute"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/enable_stereo_position_uri"
+    android:text="Enable SP"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+<Spinner
+    android:id="@+id/uri_spinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="URI spinner"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+<Button
+    android:id="@+id/uri_soundtrack"
+    android:text="URI\nsoundtrack"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/pause_uri"
+    android:text="Pause\nURI"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/play_uri"
+    android:text="Play\nURI"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/loop_uri"
+    android:text="Loop\nURI"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <Button
+        android:id="@+id/mute_left_uri"
+        android:text="mute left"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/mute_right_uri"
+        android:text="mute right"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/solo_left_uri"
+        android:text="solo left"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/solo_right_uri"
+        android:text="solo right"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>
+<Button
+    android:id="@+id/channels_uri"
+    android:text="Get channels"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<SeekBar
+    android:id="@+id/volume_uri"
+    android:text="Volume"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<SeekBar
+    android:id="@+id/pan_uri"
+    android:text="Pan"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/record"
+    android:text="Record"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+<Button
+    android:id="@+id/playback"
+    android:text="Playback"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>

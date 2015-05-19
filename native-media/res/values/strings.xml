@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello, Android, using native media!</string>
+    <string name="app_name">NativeMedia</string>
+
+    <string name="start_java">Start/Pause\nJava MediaPlayer</string>
+    <string name="start_native">Start/Pause\nnative MediaPlayer</string>
+    <string name="finish">Finish</string>
+
+    <string name="rewind_java">Rewind\nJava MediaPlayer</string>
+    <string name="rewind_native">Rewind\nnative MediaPlayer</string>
+
+    <string name="source_select">Please select the media source</string>
+    <string name="source_prompt">Media source</string>
+    <string-array name="source_array">
+        <item>/sdcard/NativeMedia.ts</item>
+    </string-array>
+
+    <string name="sink_select">Please select the video sink</string>
+    <string name="sink_prompt">Video sink</string>
+    <string-array name="sink_array">
+        <item>Surface 1</item>
+        <item>Surface 2</item>
+        <item>SurfaceTexture 1</item>
+        <item>SurfaceTexture 2</item>
+    </string-array>
+
+</resources>

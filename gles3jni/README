@@ -1,0 +1,33 @@
+This sample demonstrates how to use OpenGL ES 3.0 from JNI/native code.
+
+The sample can be built two different ways:
+  * Compatible with API level 11 and later [*1]
+  * Require API level 18 or later.
+Both versions include an OpenGL ES 2.0 fallback path for devices that don't
+support OpenGL ES 3.0.
+
+To build and install the sample:
+$ ln -s AndroidManifest-$N.xml AndroidManifest.xml
+$ ln -s Android-$N.mk jni/Android.mk
+$ $ANDROID_SDK/tools/android update project --path . --target android-$N
+$ ../../ndk-build
+$ ant debug
+$ adb install bin/GLES3JNIActivity-debug.apk
+where $N is '11' or '18' and
+ANDROID_SDK is the root of your SDK installation.
+
+The OpenGL ES 3.0 rendering path uses a few new features compared to the
+OpenGL ES 2.0 path:
+
+* Instanced rendering and vertex attribute divisor to reduce the number of
+  draw calls and uniform changes.
+* Vertex array objects to reduce the number of calls required to set up
+  vertex attribute state on each frame.
+* Explicit assignment of attribute locations, eliminating the need to query
+  assignments.
+
+
+[*1] The only dependency on API level 11 is the call to
+     setEGLContextClientVersion in GLES3JNIView. With a custom
+     EGLConfigChooser and EGLContextFactory the sample would be compatible
+     with older API levels.
