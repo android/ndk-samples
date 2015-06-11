@@ -1,0 +1,44 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 21
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            applicationId    = "com.android.gl2jni"
+            minSdkVersion.apiLevel    = 5
+            targetSdkVersion.apiLevel = 5
+        }
+    }
+    android.ndk {
+        moduleName = "gl2jni"
+        cppFlags  += "-Werror"
+        ldLibs    += ["log", "GLESv2"]
+    }
+
+    android.buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles  += file('proguard-rules.txt')
+        }
+    }
+
+    android.productFlavors {
+        create ("arm7") {
+            ndkConfig.abiFilters += "armeabi-v7a"
+        }
+        create ("arm8") {
+            ndkConfig.abiFilters += "arm64-v8a"
+        }
+        create ("x86-32") {
+            ndkConfig.abiFilters += "x86"
+        }
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+
+        // build one including all cpu architectures
+        create("all")
+    }
+}
+

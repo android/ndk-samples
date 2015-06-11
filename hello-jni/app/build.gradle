@@ -1,0 +1,63 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 21
+        buildToolsVersion ="22.0.1"
+
+        defaultConfig.with {
+            applicationId = "com.example.hellojni"
+            minSdkVersion.apiLevel      = 3
+            targetSdkVersion.apiLevel   = 3
+
+            testApplicationId         = "com.example.hellojni.tests"
+            testInstrumentationRunner = "android.test.InstrumentationTestRunner"
+        }
+    }
+    /*
+     * native build settings
+     */
+    android.ndk {
+        moduleName = "hello-jni"
+        /*
+         * Other ndk flags configurable here are
+         * cppFlags += "-fno-rtti"
+         * cppFlags += "-fno-exceptions"
+         * ldLibs    = ["android", "log"]
+         * stl       = "system"
+         */
+    }
+    android.buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles  += file('proguard-rules.txt')
+        }
+    }
+    android.productFlavors {
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+        create("arm") {
+            ndkConfig.abiFilters += "armeabi"
+        }
+        create("arm7") {
+            ndkConfig.abiFilters += "armeabi-v7a"
+        }
+        create("arm8") {
+            ndkConfig.abiFilters += "arm64-v8a"
+        }
+        create("x86") {
+            ndkConfig.abiFilters += "x86"
+        }
+        create("x86-64") {
+            ndkConfig.abiFilters += "x86_64"
+        }
+        create("mips") {
+            ndkConfig.abiFilters += "mips"
+        }
+        create("mips-64") {
+            ndkConfig.abiFilters += "mips64"
+        }
+        // To include all cpu architectures, leaves abiFilters empty
+        create("all")
+    }
+}
