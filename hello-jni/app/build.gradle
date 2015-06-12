@@ -9,9 +9,6 @@ model {
             applicationId = "com.example.hellojni"
             minSdkVersion.apiLevel      = 3
             targetSdkVersion.apiLevel   = 3
-
-            testApplicationId         = "com.example.hellojni.tests"
-            testInstrumentationRunner = "android.test.InstrumentationTestRunner"
         }
     }
     /*
