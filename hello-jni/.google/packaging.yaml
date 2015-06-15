@@ -1,0 +1,9 @@
+status:       PUBLISHED
+technologies: [Android, NDK]
+categories:   [Getting Started, Native]
+languages:    [C++, Java]
+solutions:    [Mobile]
+github:       googlesamples/android-ndk
+level:        BEGINNER
+icon:         hello-jni/screenshot.png
+license:      apache2
