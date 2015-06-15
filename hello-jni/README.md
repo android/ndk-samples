@@ -1,6 +1,6 @@
 Hello JNI
 =========
-This sample show how to call Native C++ code from a Android Java activity using JNI. Note this require a preview build of Android Studio and the experimental version Android Gradle plugin, see the [Pre-requisites](#pre-requisites) and [Getting Started](#getting-started) instructions.
+This sample shows how to call Native C++ code from a Android Java Activity using JNI. Note this requires a preview build of Android Studio and the experimental version Android Gradle plugin, see the [Pre-requisites](#pre-requisites) and [Getting Started](#getting-started) instructions.
 
 Pre-requisites
 --------------
