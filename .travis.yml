@@ -9,4 +9,4 @@ before_install:
   - git clone https://github.com/proppy/android-ndk.git --branch gradle-repo --single-branch $HOME/gradle-repo
   - export CUSTOM_REPO=$HOME/gradle-repo
 script:
-  - cd hello-jni && ./gradlew build
+  - find . -maxdepth 2 -name build.gradle | xargs -I@ echo '(cd $(dirname @) && ./gradlew build)' | bash -x
