@@ -2,6 +2,7 @@ NDK Samples
 ===========
 
 This repository contains samples for [Android NDK][0].
+[![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg?branch=master)](https://travis-ci.org/googlesamples/android-ndk)
 
 Pre-requisites
 --------------
