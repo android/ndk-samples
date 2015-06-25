@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "org.gradle:gradle-tooling-api:+"
+    compile 'org.slf4j:slf4j-api:1.7.7'
+    testCompile 'junit:junit:4.12'
+}
+
+test {
+    testLogging.showStandardStreams = true
+}
