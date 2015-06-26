@@ -1,19 +1,9 @@
 NDK Samples
 ===========
 
-This repository contains samples for [Android NDK][0].
+This repository contains [Android NDK][0] samples using the new Android Studio 1.3 preview [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
 
-Pre-requisites
---------------
-
-- [Android NDK][0]
-
-Getting Started
----------------
-
-These samples use the NDK build system, you can build them by
-following the instructions in the
-[NDK documentation](https://developer.android.com/tools/sdk/ndk/index.html#Samples).
+For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
 
 Support
 -------
@@ -21,9 +11,9 @@ Support
 - [Google+ Community](https://plus.google.com/communities/105153134372062985968)
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android)
 
-If you've found an error in this sample, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
-Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
+Patches and new samples are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
 submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 License
