@@ -34,25 +34,25 @@ model {
         // for detailed abiFilter descriptions, refer to "Supported ABIs" @
         // https://developer.android.com/ndk/guides/abis.html#sa
         create("arm") {
-            ndk.abiFilters += "armeabi"
+            ndkConfig.abiFilters += "armeabi"
         }
         create("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
+            ndkConfig.abiFilters += "armeabi-v7a"
         }
         create("arm8") {
-            ndk.abiFilters += "arm64-v8a"
+            ndkConfig.abiFilters += "arm64-v8a"
         }
         create("x86") {
-            ndk.abiFilters += "x86"
+            ndkConfig.abiFilters += "x86"
         }
         create("x86-64") {
-            ndk.abiFilters += "x86_64"
+            ndkConfig.abiFilters += "x86_64"
         }
         create("mips") {
-            ndk.abiFilters += "mips"
+            ndkConfig.abiFilters += "mips"
         }
         create("mips-64") {
-            ndk.abiFilters += "mips64"
+            ndkConfig.abiFilters += "mips64"
         }
         // To include all cpu architectures, leaves abiFilters empty
         create("all")
