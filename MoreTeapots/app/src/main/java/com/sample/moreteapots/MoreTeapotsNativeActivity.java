@@ -16,6 +16,7 @@
 
 package com.sample.moreteapots;
 
+import android.annotation.SuppressLint;
 import android.app.NativeActivity;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -95,6 +96,7 @@ public class MoreTeapotsNativeActivity extends NativeActivity {
     PopupWindow _popupWindow;
     TextView _label;
 
+    @SuppressLint("InflateParams")
     public void showUI()
     {
         if( _popupWindow != null )
@@ -120,7 +122,7 @@ public class MoreTeapotsNativeActivity extends NativeActivity {
                 _activity.setContentView(mainLayout, params);
 
                 // Show our UI over NativeActivity window
-                _popupWindow.showAtLocation(mainLayout, Gravity.TOP | Gravity.LEFT, 10, 10);
+                _popupWindow.showAtLocation(mainLayout, Gravity.TOP | Gravity.START, 10, 10);
                 _popupWindow.update();
 
                 _label = (TextView)popupView.findViewById(R.id.textViewFPS);
