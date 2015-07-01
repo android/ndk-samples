@@ -1,20 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        /* for android studio plugin, 2 ways to get it
-         *  1) build your local version: follow instructions @ http://tools.android.com/build and
-         *     set your local repo here
-         *  2) check availability on jcenter
-         */
-        maven { url System.getenv('CUSTOM_REPO') }
-        jcenter()
+       maven {
+       	 url  "http://dl.bintray.com/android/android-tools"
+       }
     }
     dependencies {
-        /* check correct plugin version and put it here ---
-         *    if you build locally, go to $your_src_dir/out/repo/com/android/tools/build
-         *    find the version under the plugin name directory[gradle-experimental].
-         */
-        classpath 'com.android.tools.build:gradle-experimental:1.3.0-beta4'
+        classpath 'com.android.tools.build:gradle-experimental:0.1.0'
     }
 }
 
