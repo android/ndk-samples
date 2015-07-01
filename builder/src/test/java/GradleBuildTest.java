@@ -44,32 +44,32 @@ public class GradleBuildTest {
 	  treeWalk.setRecursive(false);
 	  treeWalk.setFilter(TreeFilter.ANY_DIFF);
 	  while (treeWalk.next()) {
-	      System.err.println("modified:" + treeWalk.getPathString());
 	      File f = new File("../" + treeWalk.getPathString());
-	      if (f.getName() == ".travis.yml") {
+	      System.err.println("dirty: " + f.getName());	      
+	      if (f.getName().equals(".travis.yml")) {
 		  System.err.println("travis modified");
 		  return allProjects();
 	      }
-	      if (f.isDirectory() && f.getName() == "builder") {
+	      if (f.isDirectory() && f.getName().equals("builder")) {
 		  System.err.println("builder modified");
 		  return allProjects();
 	      }
 	      if (isProject(f)) {
-		  System.err.println("added project:" + f.getName());		  
+		  System.err.println("added project: " + f.getName());		  
 		  dirtyProjects.add(f);
 	      } else {
-		  System.err.println("not a project:" + f.getName());
+		  System.err.println("not a project: " + f.getName());
 	      }
 	  }
       } catch (java.io.IOException e) {
-	  System.err.println("error opening git repository:" + e);
+	  System.err.println("error opening git repository: " + e);
 	  return allProjects();
       } catch (GitAPIException e) {
-	  System.err.println("error reading git repository log:" + e);
+	  System.err.println("error reading git repository log: " + e);
 	  return allProjects();
       }
       if (dirtyProjects.size() > 0) {
-	  System.err.println("building modified projects:" + dirtyProjects.toString());	  
+	  System.err.println("building modified projects: " + dirtyProjects.toString());	  
 	  return dirtyProjects;
       }
       System.err.println("no modified projects");
