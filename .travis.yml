@@ -6,7 +6,5 @@ android:
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
-  - git clone https://github.com/proppy/android-ndk.git --branch gradle-repo --single-branch $HOME/gradle-repo
-  - export CUSTOM_REPO=$HOME/gradle-repo
 script:
   - cd builder && ./gradlew test
