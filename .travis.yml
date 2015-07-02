@@ -3,6 +3,7 @@ sudo: false
 android:
   components:
     - build-tools-22.0.1
+    - android-22
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
