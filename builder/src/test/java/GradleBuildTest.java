@@ -10,7 +10,6 @@ import org.gradle.tooling.ProjectConnection;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -20,7 +19,6 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
