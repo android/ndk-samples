@@ -22,12 +22,13 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 
 @RunWith(Parameterized.class)
 public class GradleBuildTest {    
   @Parameters
   public static Collection<File> data() {
-      ArrayList<File> dirtyProjects = new ArrayList<File>(); 
+      LinkedHashSet<File> projects = new LinkedHashSet<File>(); 
       try {
 	  Repository repository = new FileRepositoryBuilder()
 	      .readEnvironment() // scan environment GIT_* variables
@@ -45,42 +46,23 @@ public class GradleBuildTest {
 	  treeWalk.setFilter(TreeFilter.ANY_DIFF);
 	  while (treeWalk.next()) {
 	      File f = new File("../" + treeWalk.getPathString());
-	      System.err.println("dirty: " + f.getName());	      
-	      if (f.getName().equals(".travis.yml")) {
-		  System.err.println("travis modified");
-		  return allProjects();
-	      }
-	      if (f.isDirectory() && f.getName().equals("builder")) {
-		  System.err.println("builder modified");
-		  return allProjects();
-	      }
 	      if (isProject(f)) {
-		  System.err.println("added project: " + f.getName());		  
-		  dirtyProjects.add(f);
-	      } else {
-		  System.err.println("not a project: " + f.getName());
+		  System.err.println("project changed: " + f.getName());
+		  projects.add(f);
 	      }
 	  }
       } catch (java.io.IOException e) {
 	  System.err.println("error opening git repository: " + e);
-	  return allProjects();
       } catch (GitAPIException e) {
 	  System.err.println("error reading git repository log: " + e);
-	  return allProjects();
       }
-      if (dirtyProjects.size() > 0) {
-	  System.err.println("building modified projects: " + dirtyProjects.toString());	  
-	  return dirtyProjects;
-      }
-      System.err.println("no modified projects");
-      return allProjects();
-  }
 
-  private static Collection<File> allProjects() {
-      System.err.println("building all projects");
-      return Arrays.asList(new File("..").listFiles(new FileFilter() {
+      for (File p : new File("..").listFiles(new FileFilter() {
 	      public boolean accept(File f) { return isProject(f); }
-	  }));
+	  })) {
+	  projects.add(p);
+      }
+      return projects;
   }
 
   private static boolean isProject(File f) {
