@@ -4,6 +4,7 @@ buildscript {
        maven {
        	 url  "http://dl.bintray.com/android/android-tools"
        }
+       jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle-experimental:0.1.0'
