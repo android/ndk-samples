@@ -82,16 +82,12 @@ public class GradleBuildTest {
 	  launcher.setStandardOutput(System.out);
 	  launcher.setStandardError(System.err);	  
 
-	  //launcher.forTasks("clean");
-	  //launcher.run();
-	  
 	  launcher.forTasks("app:lint");
 	  launcher.run();
 
 	  launcher.forTasks("build");
 	  launcher.run();	  
       } finally {
-	  // Clean up
 	  connection.close();
       }
   }
