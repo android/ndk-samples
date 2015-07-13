@@ -1,9 +1,10 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import org.gradle.tooling.BuildException;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
@@ -18,15 +19,16 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.ByteArrayOutputStream;    
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
 @RunWith(Parameterized.class)
 public class GradleBuildTest {    
-  @Parameters
-  public static Collection<File> data() {
-      LinkedHashSet<File> projects = new LinkedHashSet<File>(); 
+  @Parameters(name="TestBuild{0}")
+  public static Collection<String> data() {
+      LinkedHashSet<String> projects = new LinkedHashSet<String>(); 
       try {
 	  Repository repository = new FileRepositoryBuilder()
 	      .readEnvironment() // scan environment GIT_* variables
@@ -46,7 +48,7 @@ public class GradleBuildTest {
 	      File f = new File("../" + treeWalk.getPathString());
 	      if (isProject(f)) {
 		  System.err.println("project changed: " + f.getName());
-		  projects.add(f);
+		  projects.add(f.getName());
 	      }
 	  }
       } catch (java.io.IOException e) {
@@ -58,7 +60,7 @@ public class GradleBuildTest {
       for (File p : new File("..").listFiles(new FileFilter() {
 	      public boolean accept(File f) { return isProject(f); }
 	  })) {
-	  projects.add(p);
+	  projects.add(p.getName());
       }
       return projects;
   }
@@ -68,8 +70,8 @@ public class GradleBuildTest {
   }
     
   private File gradleProject;
-  public GradleBuildTest(File gradleProject) {
-      this.gradleProject = gradleProject;
+  public GradleBuildTest(String projectDirectory) {
+      this.gradleProject = new File("../" + projectDirectory);
   }
 
   @Test
@@ -77,21 +79,21 @@ public class GradleBuildTest {
       GradleConnector connector = GradleConnector.newConnector();
       connector.forProjectDirectory(gradleProject);
       ProjectConnection connection = connector.connect();
+      ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+      ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+      BuildLauncher launcher = connection.newBuild();
+      launcher.setStandardOutput(stdout);
+      launcher.setStandardError(stderr);
       try {
-	  BuildLauncher launcher = connection.newBuild();
-	  launcher.setStandardOutput(System.out);
-	  launcher.setStandardError(System.err);	  
-
-	  launcher.forTasks("clean");
-	  launcher.run();
-	  
 	  launcher.forTasks("app:lint");
 	  launcher.run();
-
+	  
 	  launcher.forTasks("build");
 	  launcher.run();	  
+      } catch (BuildException e) {
+	  fail(String.format("Exception: %s\nSTDOUT: %s\nSTDERR: %s",
+			     e, stdout, stderr));
       } finally {
-	  // Clean up
 	  connection.close();
       }
   }
