@@ -4,8 +4,12 @@ android:
   components:
     - build-tools-22.0.1
     - android-22
+addons:
+  apt_packages:
+    - pandoc
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 script:
   - cd builder && ./gradlew test
+  - pandoc build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'

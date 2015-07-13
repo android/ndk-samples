@@ -24,9 +24,9 @@ import java.util.LinkedHashSet;
 
 @RunWith(Parameterized.class)
 public class GradleBuildTest {    
-  @Parameters
-  public static Collection<File> data() {
-      LinkedHashSet<File> projects = new LinkedHashSet<File>(); 
+  @Parameters(name="TestBuild{0}")
+  public static Collection<String> data() {
+      LinkedHashSet<String> projects = new LinkedHashSet<String>(); 
       try {
 	  Repository repository = new FileRepositoryBuilder()
 	      .readEnvironment() // scan environment GIT_* variables
@@ -46,7 +46,7 @@ public class GradleBuildTest {
 	      File f = new File("../" + treeWalk.getPathString());
 	      if (isProject(f)) {
 		  System.err.println("project changed: " + f.getName());
-		  projects.add(f);
+		  projects.add(f.getName());
 	      }
 	  }
       } catch (java.io.IOException e) {
@@ -58,7 +58,7 @@ public class GradleBuildTest {
       for (File p : new File("..").listFiles(new FileFilter() {
 	      public boolean accept(File f) { return isProject(f); }
 	  })) {
-	  projects.add(p);
+	  projects.add(p.getName());
       }
       return projects;
   }
@@ -68,8 +68,8 @@ public class GradleBuildTest {
   }
     
   private File gradleProject;
-  public GradleBuildTest(File gradleProject) {
-      this.gradleProject = gradleProject;
+  public GradleBuildTest(String projectDirectory) {
+      this.gradleProject = new File("../" + projectDirectory);
   }
 
   @Test
@@ -82,8 +82,8 @@ public class GradleBuildTest {
 	  launcher.setStandardOutput(System.out);
 	  launcher.setStandardError(System.err);	  
 
-	  launcher.forTasks("clean");
-	  launcher.run();
+	  //launcher.forTasks("clean");
+	  //launcher.run();
 	  
 	  launcher.forTasks("app:lint");
 	  launcher.run();
