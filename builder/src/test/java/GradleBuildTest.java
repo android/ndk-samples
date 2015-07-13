@@ -17,12 +17,17 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.ByteArrayOutputStream;    
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+
+import com.google.common.io.ByteStreams;
 
 @RunWith(Parameterized.class)
 public class GradleBuildTest {    
@@ -81,18 +86,27 @@ public class GradleBuildTest {
       ProjectConnection connection = connector.connect();
       ByteArrayOutputStream stdout = new ByteArrayOutputStream();
       ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+      String lintOutput = "no lint output";
       BuildLauncher launcher = connection.newBuild();
       launcher.setStandardOutput(stdout);
       launcher.setStandardError(stderr);
       try {
 	  launcher.forTasks("app:lint");
 	  launcher.run();
-	  
+
 	  launcher.forTasks("build");
-	  launcher.run();	  
-      } catch (BuildException e) {
-	  fail(String.format("Exception: %s\nSTDOUT: %s\nSTDERR: %s",
-			     e, stdout, stderr));
+	  launcher.run();
+
+	  String lintReportPath = gradleProject.getPath() +  "/app/build/outputs/lint-results.html";
+	  Process p = new ProcessBuilder("/usr/local/bin/pandoc",
+					 lintReportPath,
+					 "-t",
+					 "plain").redirectErrorStream(true).start();
+	  lintOutput = new String(ByteStreams.toByteArray(p.getInputStream()));
+	  p.waitFor();
+      } catch (Exception e) {
+	  fail(String.format("Exception: %s\nSTDOUT: %s\nSTDERR: %s\nLINT: %s",
+			     e, stdout, stderr, lintOutput));
       } finally {
 	  connection.close();
       }
