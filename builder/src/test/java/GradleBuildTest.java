@@ -1,9 +1,10 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import org.gradle.tooling.BuildException;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
@@ -18,6 +19,7 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.ByteArrayOutputStream;    
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -77,16 +79,20 @@ public class GradleBuildTest {
       GradleConnector connector = GradleConnector.newConnector();
       connector.forProjectDirectory(gradleProject);
       ProjectConnection connection = connector.connect();
+      ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+      ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+      BuildLauncher launcher = connection.newBuild();
+      launcher.setStandardOutput(stdout);
+      launcher.setStandardError(stderr);
       try {
-	  BuildLauncher launcher = connection.newBuild();
-	  launcher.setStandardOutput(System.out);
-	  launcher.setStandardError(System.err);	  
-
 	  launcher.forTasks("app:lint");
 	  launcher.run();
-
+	  
 	  launcher.forTasks("build");
 	  launcher.run();	  
+      } catch (BuildException e) {
+	  fail(String.format("Exception: %s\nSTDOUT: %s\nSTDERR: %s",
+			     e, stdout, stderr));
       } finally {
 	  connection.close();
       }
