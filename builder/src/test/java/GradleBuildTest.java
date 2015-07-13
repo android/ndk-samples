@@ -96,7 +96,7 @@ public class GradleBuildTest {
 	  launcher.run();
 
 	  String lintReportPath = gradleProject.getPath() +  "/app/build/outputs/lint-results.html";
-	  Process p = new ProcessBuilder("/usr/local/bin/pandoc",
+	  Process p = new ProcessBuilder("pandoc",
 					 lintReportPath,
 					 "-t",
 					 "plain").redirectErrorStream(true).start();
