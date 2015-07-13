@@ -20,8 +20,6 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStream;
 
 import java.util.Arrays;
 import java.util.Collection;
