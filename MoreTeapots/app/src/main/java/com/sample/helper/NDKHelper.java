@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.annotation.TargetApi;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
@@ -178,6 +180,7 @@ public class NDKHelper
         return "/system/lib/";
     }
 
+    @TargetApi(17)
     public int getNativeAudioBufferSize()
     {
         int SDK_INT = android.os.Build.VERSION.SDK_INT;

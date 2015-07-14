@@ -9,8 +9,8 @@
         android:id="@+id/textViewFPS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="0.0 FPS"
+        android:gravity="end"
+        android:text="@string/fps"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
 

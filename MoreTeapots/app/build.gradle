@@ -2,14 +2,13 @@ apply plugin: 'com.android.model.application'
 
 model {
     android {
-        compileSdkVersion    = 19
+        compileSdkVersion    = 22
         buildToolsVersion    ="22.0.1"
 
         defaultConfig.with {
             applicationId    = "com.sample.moreteapots"
             minSdkVersion.apiLevel    = 11
-            targetSdkVersion.apiLevel = 19
-
+            targetSdkVersion.apiLevel = 22
         }
     }
     android.ndk {
