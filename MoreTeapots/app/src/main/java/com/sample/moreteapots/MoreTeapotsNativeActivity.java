@@ -17,6 +17,7 @@
 package com.sample.moreteapots;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.NativeActivity;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class MoreTeapotsNativeActivity extends NativeActivity {
 
     }
 
+    @TargetApi(19)
     protected void onResume() {
         super.onResume();
 
@@ -82,6 +84,7 @@ public class MoreTeapotsNativeActivity extends NativeActivity {
     }
     // Our popup window, you will call it from your C/C++ code later
 
+    @TargetApi(19)
     void setImmersiveSticky() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN

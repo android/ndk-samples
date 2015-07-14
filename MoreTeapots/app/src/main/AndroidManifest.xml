@@ -12,7 +12,6 @@
         android:theme="@style/AppTheme"
         android:hasCode="true"
         android:name="com.sample.moreteapots.MoreTeapotsApplication"
-	android:supportsRtl="true"
         >
 
         <!-- Our activity is the built-in NativeActivity framework class.
