@@ -102,8 +102,8 @@ public class GradleBuildTest {
 					     "-t",
 					     "plain").redirectErrorStream(true).start();
 	      p.waitFor();
-	      fail(String.format("BUILD FAILED: %s: %s\nSTDOUT: %s\nSTDERR: %s\nLINT: %s",
-				 e, stdout, stderr, ByteStreams.toByteArray(p.getInputStream())));
+	      fail(String.format("BUILD FAILED: %s\nSTDOUT: %s\nSTDERR: %s\nLINT: %s",
+				 e, stdout, stderr, new String(ByteStreams.toByteArray(p.getInputStream()))));
 	  } catch (Exception pe) {
 	      fail(String.format("failed to get lint report: %s", pe.toString()));
 	  }
