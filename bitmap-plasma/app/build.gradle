@@ -9,7 +9,6 @@ model {
             applicationId = "com.example.plasma"
             minSdkVersion.apiLevel    = 8
             targetSdkVersion.apiLevel = 8
-
         }
 
     }

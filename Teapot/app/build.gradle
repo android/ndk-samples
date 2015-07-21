@@ -8,7 +8,7 @@ model {
         defaultConfig.with {
             applicationId = "com.sample.teapot"
             minSdkVersion.apiLevel = 11
-            targetSdkVersion.apiLevel = 19
+            targetSdkVersion.apiLevel = 22
         }
 
     }
