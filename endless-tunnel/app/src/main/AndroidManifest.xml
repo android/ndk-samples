@@ -18,14 +18,10 @@
 <!-- TODO: when building this sample, replace the package name below 
      (com.google.example.games.tunnel) by your own package name -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.google.example.games.tunnel"
-      android:versionCode="1"
-      android:versionName="1.0">
-
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="22" />
+      package="com.google.example.games.tunnel">
 
     <application android:label="@string/app_name"
-                 android:icon="@drawable/ic_launcher"
+                 android:icon="@mipmap/ic_launcher"
                  android:allowBackup="true">
         <activity android:name="android.app.NativeActivity"
                   android:label="@string/app_name"
