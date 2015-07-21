@@ -42,7 +42,7 @@ model {
 
     android.buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
         }
     }
 
@@ -63,9 +63,3 @@ model {
         create("all")
     }
 }
-
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-}
-
