@@ -37,9 +37,16 @@
 const int LOOPER_ID_USER = 3;
 const int SENSOR_HISTORY_LENGTH = 100;
 const int SENSOR_REFRESH_RATE = 20;
-const float GRAVITY = 9.81f;
 
-GLfloat gSensorData[SENSOR_HISTORY_LENGTH*2];
+
+
+struct AccelerometerData {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+};
+AccelerometerData gSensorData[SENSOR_HISTORY_LENGTH*2];
+
 int gSensorDataIndex = 0;
 GLfloat gPositionX[SENSOR_HISTORY_LENGTH];
 void initializePositionX() {
@@ -130,6 +137,7 @@ GLuint createProgram(const std::string& pVertexSource, const std::string& pFragm
 GLuint gProgram;
 GLuint gvPositionXHandle;
 GLuint gvSensorValueHandle;
+GLuint guFragColorHandle;
 
 
 bool init(AAssetManager *assetManager, jint w, jint h) {
@@ -169,6 +177,11 @@ bool init(AAssetManager *assetManager, jint w, jint h) {
     LOGI("glGetAttribLocation(\"vSensorValue\") = %d\n",
          gvSensorValueHandle);
 
+    guFragColorHandle = glGetUniformLocation(gProgram, "uFragColor");
+    checkGlError("glGetUniformLocation");
+    LOGI("glGetUniformLocation(\"uFragColor\") = %d\n",
+         guFragColorHandle);
+
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
 
@@ -192,9 +205,12 @@ void update() {
     ALooper_pollAll(0, NULL, NULL, NULL);
     ASensorEvent event;
     while (ASensorEventQueue_getEvents(gAccQueue, &event, 1) > 0) {
-        float accX = event.acceleration.x / GRAVITY;
-        gSensorData[gSensorDataIndex] = accX;
-        gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex] = accX;
+        float x = event.acceleration.x;
+        float y = event.acceleration.y;
+        float z = event.acceleration.z;
+        gSensorData[gSensorDataIndex].x = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].x = x;
+        gSensorData[gSensorDataIndex].y = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].y = y;
+        gSensorData[gSensorDataIndex].z = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].z = z;
     }
     gSensorDataIndex = (gSensorDataIndex + 1) % SENSOR_HISTORY_LENGTH;
 }
@@ -208,14 +224,29 @@ void render() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
 
-    glVertexAttribPointer(gvPositionXHandle, 1, GL_FLOAT, GL_FALSE, 0, gPositionX);
-    checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionXHandle);
     checkGlError("glEnableVertexAttribArray");
-    glVertexAttribPointer(gvSensorValueHandle, 1, GL_FLOAT, GL_FALSE, 0, gSensorData+gSensorDataIndex);
+    glVertexAttribPointer(gvPositionXHandle, 1, GL_FLOAT, GL_FALSE, 0, gPositionX);
     checkGlError("glVertexAttribPointer");
+
     glEnableVertexAttribArray(gvSensorValueHandle);
     checkGlError("glEnableVertexAttribArray");
+    glVertexAttribPointer(gvSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData), &gSensorData[gSensorDataIndex].x);
+    checkGlError("glVertexAttribPointer");
+
+    glUniform4f(guFragColorHandle, 1.0f, 1.0f, 0.0f, 1.0f);
+    glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
+    checkGlError("glDrawArrays");
+
+    glVertexAttribPointer(gvSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData), &gSensorData[gSensorDataIndex].y);
+    checkGlError("glVertexAttribPointer");
+    glUniform4f(guFragColorHandle, 1.0f, 0.0f, 1.0f, 1.0f);
+    glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
+    checkGlError("glDrawArrays");
+
+    glVertexAttribPointer(gvSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData), &gSensorData[gSensorDataIndex].z);
+    checkGlError("glVertexAttribPointer");
+    glUniform4f(guFragColorHandle, 0.0f, 1.0f, 1.0f, 1.0f);
     glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
     checkGlError("glDrawArrays");
 }
