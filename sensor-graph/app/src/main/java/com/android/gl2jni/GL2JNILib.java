@@ -32,4 +32,6 @@ public class GL2JNILib {
      */
      public static native void init(AssetManager assetManager, int width, int height);
      public static native void step();
+     public static native void pause();
+     public static native void resume();
 }

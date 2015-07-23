@@ -37,10 +37,22 @@ public class GL2JNIActivity extends Activity {
     @Override protected void onPause() {
         super.onPause();
         mView.onPause();
+        mView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                GL2JNILib.pause();
+            }
+        });
     }
 
     @Override protected void onResume() {
         super.onResume();
         mView.onResume();
+        mView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                GL2JNILib.resume();
+            }
+        });
     }
 }

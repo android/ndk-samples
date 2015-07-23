@@ -55,7 +55,8 @@ void initializePositionX() {
         gPositionX[i] = -1.f * (1.f - t) + 1.f * t;
     }
 }
-ASensorEventQueue* gAccQueue;
+const ASensor *gAccSensor = NULL;
+ASensorEventQueue *gAccQueue = NULL;
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
@@ -187,18 +188,23 @@ bool init(AAssetManager *assetManager, jint w, jint h) {
 
     initializePositionX();
 
-    ASensorManager* sensorManager = ASensorManager_getInstance();
-    assert(sensorManager != NULL);
-    const ASensor* acc = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
-    assert(acc != NULL);
-    ALooper* looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
-    assert(looper != NULL);
-    gAccQueue = ASensorManager_createEventQueue(sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
-    assert(gAccQueue != NULL);
-    int setEventRateResult = ASensorEventQueue_setEventRate(gAccQueue, acc, int32_t(1000000 / SENSOR_REFRESH_RATE));
-    LOGI("ASensorEventQueue_setEventRate result: %d", setEventRateResult);
-    int enableSensorResult = ASensorEventQueue_enableSensor(gAccQueue, acc);
-    assert(enableSensorResult >= 0);
+    if (gAccSensor == NULL) {
+        ASensorManager *sensorManager = ASensorManager_getInstance();
+        assert(sensorManager != NULL);
+        gAccSensor = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+        assert(gAccSensor != NULL);
+        ALooper *looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
+        assert(looper != NULL);
+        gAccQueue = ASensorManager_createEventQueue(sensorManager, looper, LOOPER_ID_USER, NULL,
+                                                    NULL);
+        assert(gAccQueue != NULL);
+        int setEventRateResult = ASensorEventQueue_setEventRate(gAccQueue, gAccSensor,
+                                                                int32_t(1000000 /
+                                                                        SENSOR_REFRESH_RATE));
+        LOGI("ASensorEventQueue_setEventRate result: %d", setEventRateResult);
+        int enableSensorResult = ASensorEventQueue_enableSensor(gAccQueue, gAccSensor);
+        assert(enableSensorResult >= 0);
+    }
     return true;
 }
 
@@ -253,8 +259,9 @@ void render() {
     checkGlError("glDrawArrays");
 }
 
+
 extern "C" {
-    JNIEXPORT void JNICALL
+JNIEXPORT void JNICALL
     Java_com_android_gl2jni_GL2JNILib_init(JNIEnv *env, jclass type, jobject assetManager, jint width,
                                            jint height) {
         AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
@@ -266,5 +273,22 @@ extern "C" {
     Java_com_android_gl2jni_GL2JNILib_step(JNIEnv *env, jclass type) {
         update();
         render();
+    }
+
+
+    JNIEXPORT void JNICALL
+    Java_com_android_gl2jni_GL2JNILib_pause(JNIEnv *env, jclass type) {
+        if (gAccSensor) {
+            auto disableSensorResult = ASensorEventQueue_disableSensor(gAccQueue, gAccSensor);
+            LOGI("disableSensorResult: %d", disableSensorResult);
+        }
+    }
+
+    JNIEXPORT void JNICALL
+    Java_com_android_gl2jni_GL2JNILib_resume(JNIEnv *env, jclass type) {
+        if (gAccSensor) {
+            auto enableSensorResult = ASensorEventQueue_enableSensor(gAccQueue, gAccSensor);
+            LOGI("enableSensorResult: %d", enableSensorResult);
+        }
     }
 }
