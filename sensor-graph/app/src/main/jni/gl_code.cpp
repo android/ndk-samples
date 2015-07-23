@@ -36,9 +36,7 @@
 
 const int LOOPER_ID_USER = 3;
 const int SENSOR_HISTORY_LENGTH = 100;
-const int SENSOR_REFRESH_RATE = 20;
-
-
+const int SENSOR_REFRESH_RATE = 100;
 
 struct AccelerometerData {
     GLfloat x;
@@ -46,6 +44,8 @@ struct AccelerometerData {
     GLfloat z;
 };
 AccelerometerData gSensorData[SENSOR_HISTORY_LENGTH*2];
+AccelerometerData gSensorDataFilter;
+const float FILTER_ALPHA = 0.1f;
 
 int gSensorDataIndex = 0;
 GLfloat gPositionX[SENSOR_HISTORY_LENGTH];
@@ -195,7 +195,8 @@ bool init(AAssetManager *assetManager, jint w, jint h) {
     assert(looper != NULL);
     gAccQueue = ASensorManager_createEventQueue(sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
     assert(gAccQueue != NULL);
-    ASensorEventQueue_setEventRate(gAccQueue, acc, int32_t(10000000 / SENSOR_REFRESH_RATE));
+    int setEventRateResult = ASensorEventQueue_setEventRate(gAccQueue, acc, int32_t(1000000 / SENSOR_REFRESH_RATE));
+    LOGI("ASensorEventQueue_setEventRate result: %d", setEventRateResult);
     int enableSensorResult = ASensorEventQueue_enableSensor(gAccQueue, acc);
     assert(enableSensorResult >= 0);
     return true;
@@ -204,14 +205,15 @@ bool init(AAssetManager *assetManager, jint w, jint h) {
 void update() {
     ALooper_pollAll(0, NULL, NULL, NULL);
     ASensorEvent event;
+    float a = FILTER_ALPHA;
     while (ASensorEventQueue_getEvents(gAccQueue, &event, 1) > 0) {
-        float x = event.acceleration.x;
-        float y = event.acceleration.y;
-        float z = event.acceleration.z;
-        gSensorData[gSensorDataIndex].x = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].x = x;
-        gSensorData[gSensorDataIndex].y = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].y = y;
-        gSensorData[gSensorDataIndex].z = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].z = z;
+        gSensorDataFilter.x = a * event.acceleration.x + (1.0f - a) * gSensorDataFilter.x;
+        gSensorDataFilter.y = a * event.acceleration.y + (1.0f - a) * gSensorDataFilter.y;
+        gSensorDataFilter.z = a * event.acceleration.z + (1.0f - a) * gSensorDataFilter.z;
     }
+    gSensorData[gSensorDataIndex].x = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].x = gSensorDataFilter.x;
+    gSensorData[gSensorDataIndex].y = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].y = gSensorDataFilter.y;
+    gSensorData[gSensorDataIndex].z = gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex].z = gSensorDataFilter.z;
     gSensorDataIndex = (gSensorDataIndex + 1) % SENSOR_HISTORY_LENGTH;
 }
 
