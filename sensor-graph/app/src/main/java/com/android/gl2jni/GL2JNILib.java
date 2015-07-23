@@ -18,6 +18,8 @@ package com.android.gl2jni;
 
 // Wrapper for native library
 
+import android.content.res.AssetManager;
+
 public class GL2JNILib {
 
      static {
@@ -28,6 +30,6 @@ public class GL2JNILib {
      * @param width the current view width
      * @param height the current view height
      */
-     public static native void init(int width, int height);
+     public static native void init(AssetManager assetManager, int width, int height);
      public static native void step();
 }

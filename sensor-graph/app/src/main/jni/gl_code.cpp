@@ -20,15 +20,19 @@
 #include <android/log.h>
 
 #include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cassert>
+#include <string>
+
+#include <android/asset_manager_jni.h>
+#include <android/asset_manager.h>
 
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
@@ -42,22 +46,11 @@ static void checkGlError(const char* op) {
     }
 }
 
-static const char gVertexShader[] = 
-    "attribute vec4 vPosition;\n"
-    "void main() {\n"
-    "  gl_Position = vPosition;\n"
-    "}\n";
-
-static const char gFragmentShader[] = 
-    "precision mediump float;\n"
-    "void main() {\n"
-    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-    "}\n";
-
-GLuint loadShader(GLenum shaderType, const char* pSource) {
+GLuint loadShader(GLenum shaderType, const std::string& pSource) {
     GLuint shader = glCreateShader(shaderType);
     if (shader) {
-        glShaderSource(shader, 1, &pSource, NULL);
+        const char *sourceBuf = pSource.c_str();
+        glShaderSource(shader, 1, &sourceBuf, NULL);
         glCompileShader(shader);
         GLint compiled = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
@@ -80,7 +73,7 @@ GLuint loadShader(GLenum shaderType, const char* pSource) {
     return shader;
 }
 
-GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
+GLuint createProgram(const std::string& pVertexSource, const std::string& pFragmentSource) {
     GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader) {
         return 0;
@@ -121,14 +114,29 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
 GLuint gProgram;
 GLuint gvPositionHandle;
 
-bool setupGraphics(int w, int h) {
+bool setupGraphics(AAssetManager *assetManager, jint w, jint h) {
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
 
     LOGI("setupGraphics(%d, %d)", w, h);
-    gProgram = createProgram(gVertexShader, gFragmentShader);
+    AAsset *vertexShader = AAssetManager_open(assetManager, "shader.glslv", AASSET_MODE_BUFFER);
+    assert(vertexShader != NULL);
+    const void *vertexShaderBuf = AAsset_getBuffer(vertexShader);
+    assert(vertexShaderBuf != NULL);
+    int vertexShaderLength = AAsset_getLength(vertexShader);
+    std::string vertexShaderSource((const char*)vertexShaderBuf, vertexShaderLength);
+
+    AAsset *fragmentShader = AAssetManager_open(assetManager, "shader.glslf", AASSET_MODE_BUFFER);
+    assert(fragmentShader != NULL);
+    const void *fragmentShaderBuf = AAsset_getBuffer(fragmentShader);
+    assert(fragmentShaderBuf != NULL);
+    int fragmentShaderLength = AAsset_getLength(fragmentShader);
+    std::string fragmentShaderSource((const char*)fragmentShaderBuf, fragmentShaderLength);
+
+
+    gProgram = createProgram(vertexShaderSource, fragmentShaderSource);
     if (!gProgram) {
         LOGE("Could not create program.");
         return false;
@@ -169,16 +177,16 @@ void renderFrame() {
 }
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height);
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj);
-};
+    JNIEXPORT void JNICALL
+    Java_com_android_gl2jni_GL2JNILib_init(JNIEnv *env, jclass type, jobject assetManager, jint width,
+                                           jint height) {
+        AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
+        setupGraphics(nativeAssetManager, width, height);
+    }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height)
-{
-    setupGraphics(width, height);
-}
+    JNIEXPORT void JNICALL
+    Java_com_android_gl2jni_GL2JNILib_step(JNIEnv *env, jclass type) {
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj)
-{
-    renderFrame();
+        renderFrame();
+    }
 }
