@@ -28,14 +28,17 @@
 #include <string>
 
 #include <android/asset_manager_jni.h>
-#include <android/asset_manager.h>
+#include <android/sensor.h>
 
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
-
+const int LOOPER_ID_USER = 3;
 const int SENSOR_HISTORY_LENGTH = 100;
+const int SENSOR_REFRESH_RATE = 20;
+const float GRAVITY = 9.81f;
+
 GLfloat gSensorData[SENSOR_HISTORY_LENGTH*2];
 int gSensorDataIndex = 0;
 GLfloat gPositionX[SENSOR_HISTORY_LENGTH];
@@ -45,6 +48,7 @@ void initializePositionX() {
         gPositionX[i] = -1.f * (1.f - t) + 1.f * t;
     }
 }
+ASensorEventQueue* gAccQueue;
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
@@ -169,14 +173,29 @@ bool init(AAssetManager *assetManager, jint w, jint h) {
     checkGlError("glViewport");
 
     initializePositionX();
+
+    ASensorManager* sensorManager = ASensorManager_getInstance();
+    assert(sensorManager != NULL);
+    const ASensor* acc = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+    assert(acc != NULL);
+    ALooper* looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
+    assert(looper != NULL);
+    gAccQueue = ASensorManager_createEventQueue(sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
+    assert(gAccQueue != NULL);
+    ASensorEventQueue_setEventRate(gAccQueue, acc, int32_t(10000000 / SENSOR_REFRESH_RATE));
+    int enableSensorResult = ASensorEventQueue_enableSensor(gAccQueue, acc);
+    assert(enableSensorResult >= 0);
     return true;
 }
 
 void update() {
-
-    float value = cos(gSensorDataIndex);
-    gSensorData[gSensorDataIndex] = value;
-    gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex] = value;
+    ALooper_pollAll(0, NULL, NULL, NULL);
+    ASensorEvent event;
+    while (ASensorEventQueue_getEvents(gAccQueue, &event, 1) > 0) {
+        float accX = event.acceleration.x / GRAVITY;
+        gSensorData[gSensorDataIndex] = accX;
+        gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex] = accX;
+    }
     gSensorDataIndex = (gSensorDataIndex + 1) % SENSOR_HISTORY_LENGTH;
 }
 
