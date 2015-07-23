@@ -24,6 +24,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
+#include <cmath>
 #include <string>
 
 #include <android/asset_manager_jni.h>
@@ -35,6 +36,8 @@
 
 
 const int SENSOR_HISTORY_LENGTH = 100;
+GLfloat gSensorData[SENSOR_HISTORY_LENGTH*2];
+int gSensorDataIndex = 0;
 GLfloat gPositionX[SENSOR_HISTORY_LENGTH];
 void initializePositionX() {
     for (auto i = 0; i < SENSOR_HISTORY_LENGTH; i++) {
@@ -121,9 +124,11 @@ GLuint createProgram(const std::string& pVertexSource, const std::string& pFragm
 }
 
 GLuint gProgram;
-GLuint gvPositionHandle;
+GLuint gvPositionXHandle;
+GLuint gvSensorValueHandle;
 
-bool setupGraphics(AAssetManager *assetManager, jint w, jint h) {
+
+bool init(AAssetManager *assetManager, jint w, jint h) {
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
@@ -150,10 +155,15 @@ bool setupGraphics(AAssetManager *assetManager, jint w, jint h) {
         LOGE("Could not create program.");
         return false;
     }
-    gvPositionHandle = glGetAttribLocation(gProgram, "vPositionX");
+    gvPositionXHandle = glGetAttribLocation(gProgram, "vPositionX");
     checkGlError("glGetAttribLocation");
-    LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-            gvPositionHandle);
+    LOGI("glGetAttribLocation(\"vPositionX\") = %d\n",
+            gvPositionXHandle);
+
+    gvSensorValueHandle = glGetAttribLocation(gProgram, "vSensorValue");
+    checkGlError("glGetAttribLocation");
+    LOGI("glGetAttribLocation(\"vSensorValue\") = %d\n",
+         gvSensorValueHandle);
 
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
@@ -162,8 +172,15 @@ bool setupGraphics(AAssetManager *assetManager, jint w, jint h) {
     return true;
 }
 
+void update() {
 
-void renderFrame() {
+    float value = cos(gSensorDataIndex);
+    gSensorData[gSensorDataIndex] = value;
+    gSensorData[SENSOR_HISTORY_LENGTH+gSensorDataIndex] = value;
+    gSensorDataIndex = (gSensorDataIndex + 1) % SENSOR_HISTORY_LENGTH;
+}
+
+void render() {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     checkGlError("glClearColor");
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -172,9 +189,13 @@ void renderFrame() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
 
-    glVertexAttribPointer(gvPositionHandle, 1, GL_FLOAT, GL_FALSE, 0, gPositionX);
+    glVertexAttribPointer(gvPositionXHandle, 1, GL_FLOAT, GL_FALSE, 0, gPositionX);
     checkGlError("glVertexAttribPointer");
-    glEnableVertexAttribArray(gvPositionHandle);
+    glEnableVertexAttribArray(gvPositionXHandle);
+    checkGlError("glEnableVertexAttribArray");
+    glVertexAttribPointer(gvSensorValueHandle, 1, GL_FLOAT, GL_FALSE, 0, gSensorData+gSensorDataIndex);
+    checkGlError("glVertexAttribPointer");
+    glEnableVertexAttribArray(gvSensorValueHandle);
     checkGlError("glEnableVertexAttribArray");
     glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
     checkGlError("glDrawArrays");
@@ -185,12 +206,13 @@ extern "C" {
     Java_com_android_gl2jni_GL2JNILib_init(JNIEnv *env, jclass type, jobject assetManager, jint width,
                                            jint height) {
         AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
-        setupGraphics(nativeAssetManager, width, height);
+        init(nativeAssetManager, width, height);
     }
+
 
     JNIEXPORT void JNICALL
     Java_com_android_gl2jni_GL2JNILib_step(JNIEnv *env, jclass type) {
-
-        renderFrame();
+        update();
+        render();
     }
 }
