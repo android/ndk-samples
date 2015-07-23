@@ -34,6 +34,15 @@
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 
+const int SENSOR_HISTORY_LENGTH = 100;
+GLfloat gPositionX[SENSOR_HISTORY_LENGTH];
+void initializePositionX() {
+    for (auto i = 0; i < SENSOR_HISTORY_LENGTH; i++) {
+        float t = float(i) / float(SENSOR_HISTORY_LENGTH - 1);
+        gPositionX[i] = -1.f * (1.f - t) + 1.f * t;
+    }
+}
+
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("GL %s = %s\n", name, v);
@@ -141,26 +150,21 @@ bool setupGraphics(AAssetManager *assetManager, jint w, jint h) {
         LOGE("Could not create program.");
         return false;
     }
-    gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
+    gvPositionHandle = glGetAttribLocation(gProgram, "vPositionX");
     checkGlError("glGetAttribLocation");
     LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
             gvPositionHandle);
 
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
+
+    initializePositionX();
     return true;
 }
 
-const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f };
 
 void renderFrame() {
-    static float grey;
-    grey += 0.01f;
-    if (grey > 1.0f) {
-        grey = 0.0f;
-    }
-    glClearColor(grey, grey, grey, 1.0f);
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
     checkGlError("glClearColor");
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
@@ -168,11 +172,11 @@ void renderFrame() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
 
-    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+    glVertexAttribPointer(gvPositionHandle, 1, GL_FLOAT, GL_FALSE, 0, gPositionX);
     checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
     checkGlError("glEnableVertexAttribArray");
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
     checkGlError("glDrawArrays");
 }
 
