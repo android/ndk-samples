@@ -30,8 +30,9 @@ public class GL2JNILib {
      * @param width the current view width
      * @param height the current view height
      */
-     public static native void init(AssetManager assetManager, int width, int height);
-     public static native void step();
+     public static native void init(AssetManager assetManager);
+     public static native void surfaceChanged(int width, int height);
+     public static native void drawFrame();
      public static native void pause();
      public static native void resume();
 }

@@ -31,6 +31,12 @@ public class GL2JNIActivity extends Activity {
     @Override protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         mView = new GL2JNIView(getApplication());
+        mView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                GL2JNILib.init(getAssets());
+            }
+        });
 	    setContentView(mView);
     }
 
