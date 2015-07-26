@@ -2,7 +2,7 @@ apply plugin: 'com.android.model.application'
 
 model {
     android {
-        compileSdkVersion = 21
+        compileSdkVersion = 22
         buildToolsVersion ="22.0.1"
 
         defaultConfig.with {
@@ -11,6 +11,12 @@ model {
             targetSdkVersion.apiLevel   = 3
         }
     }
+
+    android.compileOptions.with {
+        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility = JavaVersion.VERSION_1_7
+    }
+
     /*
      * native build settings
      */
