@@ -42,7 +42,7 @@ model {
 
     android.buildTypes {
         release {
-            isMinifyEnabled = false
+            minifyEnabled = false
         }
     }
 
