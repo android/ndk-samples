@@ -23,15 +23,12 @@
 #include <android/asset_manager_jni.h>
 #include <android/sensor.h>
 
-#include <cstdio>
-#include <cstdlib>
+#include <cstdint>
 #include <cassert>
-#include <cmath>
 #include <string>
 
 #define  LOG_TAG    "sensorgraph"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 const int LOOPER_ID_USER = 3;
 const int SENSOR_HISTORY_LENGTH = 100;
@@ -216,36 +213,47 @@ sensorgraph gSensorGraph;
 
 extern "C" {
 JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_SensorGraphJNI_init(JNIEnv *env, jclass type, jobject assetManager) {
+    Java_com_android_sensorgraph_SensorGraphJNI_init(JNIEnv *env, jclass type, jobject assetManager) {
+        (void)type;
         AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
         gSensorGraph.init(nativeAssetManager);
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_SensorGraphJNI_surfaceCreated(JNIEnv *env, jclass type) {
+    Java_com_android_sensorgraph_SensorGraphJNI_surfaceCreated(JNIEnv *env, jclass type) {
+        (void)env;
+        (void)type;
         gSensorGraph.surfaceCreated();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_SensorGraphJNI_surfaceChanged(JNIEnv *env, jclass type, jint width,
+    Java_com_android_sensorgraph_SensorGraphJNI_surfaceChanged(JNIEnv *env, jclass type, jint width,
                                                      jint height) {
+        (void)env;
+        (void)type;
         gSensorGraph.surfaceChanged(width, height);
     }
 
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_SensorGraphJNI_drawFrame(JNIEnv *env, jclass type) {
+    Java_com_android_sensorgraph_SensorGraphJNI_drawFrame(JNIEnv *env, jclass type) {
+        (void)env;
+        (void)type;
         gSensorGraph.update();
         gSensorGraph.render();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_SensorGraphJNI_pause(JNIEnv *env, jclass type) {
+    Java_com_android_sensorgraph_SensorGraphJNI_pause(JNIEnv *env, jclass type) {
+        (void)env;
+        (void)type;
         gSensorGraph.pause();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_SensorGraphJNI_resume(JNIEnv *env, jclass type) {
+    Java_com_android_sensorgraph_SensorGraphJNI_resume(JNIEnv *env, jclass type) {
+        (void)env;
+        (void)type;
         gSensorGraph.resume();
     }
 }

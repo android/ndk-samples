@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.gl2jni;
+package com.android.sensorgraph;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
