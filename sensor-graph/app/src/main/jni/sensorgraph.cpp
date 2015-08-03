@@ -17,9 +17,11 @@
 // OpenGL ES 2.0 code
 
 #include <jni.h>
-#include <android/log.h>
-
 #include <GLES2/gl2.h>
+
+#include <android/log.h>
+#include <android/asset_manager_jni.h>
+#include <android/sensor.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -27,12 +29,9 @@
 #include <cmath>
 #include <string>
 
-#include <android/asset_manager_jni.h>
-#include <android/sensor.h>
-
 #define  LOG_TAG    "sensorgraph"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 const int LOOPER_ID_USER = 3;
 const int SENSOR_HISTORY_LENGTH = 100;
@@ -63,24 +62,28 @@ class sensorgraph {
     AccelerometerData sensorDataFilter;
     int sensorDataIndex;
 
-public:
+ public:
     sensorgraph() : sensorDataIndex(0) {}
 
     void init(AAssetManager *assetManager) {
-        AAsset *vertexShaderAsset = AAssetManager_open(assetManager, "shader.glslv", AASSET_MODE_BUFFER);
+        AAsset *vertexShaderAsset = AAssetManager_open(assetManager, "shader.glslv",
+                                                       AASSET_MODE_BUFFER);
         assert(vertexShaderAsset != NULL);
         const void *vertexShaderBuf = AAsset_getBuffer(vertexShaderAsset);
         assert(vertexShaderBuf != NULL);
         off_t vertexShaderLength = AAsset_getLength(vertexShaderAsset);
-        vertexShaderSource = std::string((const char*)vertexShaderBuf, (size_t)vertexShaderLength);
+        vertexShaderSource = std::string((const char*)vertexShaderBuf,
+                                         (size_t)vertexShaderLength);
         AAsset_close(vertexShaderAsset);
 
-        AAsset *fragmentShaderAsset = AAssetManager_open(assetManager, "shader.glslf", AASSET_MODE_BUFFER);
+        AAsset *fragmentShaderAsset = AAssetManager_open(assetManager, "shader.glslf",
+                                                         AASSET_MODE_BUFFER);
         assert(fragmentShaderAsset != NULL);
         const void *fragmentShaderBuf = AAsset_getBuffer(fragmentShaderAsset);
         assert(fragmentShaderBuf != NULL);
         off_t fragmentShaderLength = AAsset_getLength(fragmentShaderAsset);
-        fragmentShaderSource = std::string((const char*)fragmentShaderBuf, (size_t)fragmentShaderLength);
+        fragmentShaderSource = std::string((const char*)fragmentShaderBuf,
+                                           (size_t)fragmentShaderLength);
         AAsset_close(fragmentShaderAsset);
 
         sensorManager = ASensorManager_getInstance();
@@ -89,13 +92,15 @@ public:
         assert(accelerometer != NULL);
         looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
         assert(looper != NULL);
-        accelerometerEventQueue = ASensorManager_createEventQueue(sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
+        accelerometerEventQueue = ASensorManager_createEventQueue(sensorManager, looper,
+                                                                  LOOPER_ID_USER, NULL, NULL);
         assert(accelerometerEventQueue != NULL);
         int setEventRateResult = ASensorEventQueue_setEventRate(accelerometerEventQueue,
                                                                 accelerometer,
                                                                 int32_t(1000000 /
                                                                         SENSOR_REFRESH_RATE));
-        int enableSensorResult = ASensorEventQueue_enableSensor(accelerometerEventQueue, accelerometer);
+        int enableSensorResult = ASensorEventQueue_enableSensor(accelerometerEventQueue,
+                                                                accelerometer);
         assert(enableSensorResult >= 0);
 
         generateXPos();
@@ -126,7 +131,7 @@ public:
 
     void generateXPos() {
         for (auto i = 0; i < SENSOR_HISTORY_LENGTH; i++) {
-            float t = float(i) / float(SENSOR_HISTORY_LENGTH - 1);
+            float t = static_cast<float>(i) / static_cast<float>(SENSOR_HISTORY_LENGTH - 1);
             xPos[i] = -1.f * (1.f - t) + 1.f * t;
         }
     }
@@ -166,13 +171,14 @@ public:
             sensorDataFilter.y = a * event.acceleration.y + (1.0f - a) * sensorDataFilter.y;
             sensorDataFilter.z = a * event.acceleration.z + (1.0f - a) * sensorDataFilter.z;
         }
-        sensorData[sensorDataIndex] = sensorData[SENSOR_HISTORY_LENGTH+sensorDataIndex] = sensorDataFilter;
+        sensorData[sensorDataIndex] = sensorDataFilter;
+        sensorData[SENSOR_HISTORY_LENGTH+sensorDataIndex] = sensorDataFilter;
         sensorDataIndex = (sensorDataIndex + 1) % SENSOR_HISTORY_LENGTH;
     }
 
     void render() {
         glClearColor(0.f, 0.f, 0.f, 1.0f);
-        glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
 
@@ -180,16 +186,19 @@ public:
         glVertexAttribPointer(vPositionHandle, 1, GL_FLOAT, GL_FALSE, 0, xPos);
 
         glEnableVertexAttribArray(vSensorValueHandle);
-        glVertexAttribPointer(vSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData), &sensorData[sensorDataIndex].x);
+        glVertexAttribPointer(vSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData),
+                              &sensorData[sensorDataIndex].x);
 
         glUniform4f(uFragColorHandle, 1.0f, 1.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
 
-        glVertexAttribPointer(vSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData), &sensorData[sensorDataIndex].y);
+        glVertexAttribPointer(vSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData),
+                              &sensorData[sensorDataIndex].y);
         glUniform4f(uFragColorHandle, 1.0f, 0.0f, 1.0f, 1.0f);
         glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
 
-        glVertexAttribPointer(vSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData), &sensorData[sensorDataIndex].z);
+        glVertexAttribPointer(vSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData),
+                              &sensorData[sensorDataIndex].z);
         glUniform4f(uFragColorHandle, 0.0f, 1.0f, 1.0f, 1.0f);
         glDrawArrays(GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
     }
