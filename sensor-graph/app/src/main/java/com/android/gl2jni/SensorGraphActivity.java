@@ -41,7 +41,6 @@ public class SensorGraphActivity extends Activity {
             @Override
             public void onSurfaceChanged(GL10 gl, int width, int height) {
                 SensorGraphJNI.surfaceChanged(width, height);
-
             }
 
             @Override

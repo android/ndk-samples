@@ -40,8 +40,7 @@ const int SENSOR_REFRESH_RATE = 100;
 const float SENSOR_FILTER_ALPHA = 0.1f;
 
 
-class SensorGraphDemo {
-
+class sensorgraph {
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
     ASensorManager *sensorManager;
@@ -50,7 +49,7 @@ class SensorGraphDemo {
     ALooper *looper;
 
     GLuint shaderProgram;
-    GLuint vPositionXHandle;
+    GLuint vPositionHandle;
     GLuint vSensorValueHandle;
     GLuint uFragColorHandle;
     GLfloat xPos[SENSOR_HISTORY_LENGTH];
@@ -65,23 +64,23 @@ class SensorGraphDemo {
     int sensorDataIndex;
 
 public:
-    SensorGraphDemo() : sensorDataIndex(0) {}
+    sensorgraph() : sensorDataIndex(0) {}
 
     void init(AAssetManager *assetManager) {
         AAsset *vertexShaderAsset = AAssetManager_open(assetManager, "shader.glslv", AASSET_MODE_BUFFER);
         assert(vertexShaderAsset != NULL);
         const void *vertexShaderBuf = AAsset_getBuffer(vertexShaderAsset);
         assert(vertexShaderBuf != NULL);
-        int vertexShaderLength = AAsset_getLength(vertexShaderAsset);
-        vertexShaderSource = std::string((const char*)vertexShaderBuf, vertexShaderLength);
+        off_t vertexShaderLength = AAsset_getLength(vertexShaderAsset);
+        vertexShaderSource = std::string((const char*)vertexShaderBuf, (size_t)vertexShaderLength);
         AAsset_close(vertexShaderAsset);
 
         AAsset *fragmentShaderAsset = AAssetManager_open(assetManager, "shader.glslf", AASSET_MODE_BUFFER);
         assert(fragmentShaderAsset != NULL);
         const void *fragmentShaderBuf = AAsset_getBuffer(fragmentShaderAsset);
         assert(fragmentShaderBuf != NULL);
-        int fragmentShaderLength = AAsset_getLength(fragmentShaderAsset);
-        fragmentShaderSource = std::string((const char*)fragmentShaderBuf, fragmentShaderLength);
+        off_t fragmentShaderLength = AAsset_getLength(fragmentShaderAsset);
+        fragmentShaderSource = std::string((const char*)fragmentShaderBuf, (size_t)fragmentShaderLength);
         AAsset_close(fragmentShaderAsset);
 
         sensorManager = ASensorManager_getInstance();
@@ -110,12 +109,15 @@ public:
 
         shaderProgram = createProgram(vertexShaderSource, fragmentShaderSource);
         assert(shaderProgram != 0);
-        vPositionXHandle = glGetAttribLocation(shaderProgram, "vPositionX");
-        assert(vPositionXHandle != -1);
-        vSensorValueHandle = glGetAttribLocation(shaderProgram, "vSensorValue");
-        assert(vSensorValueHandle != -1);
-        uFragColorHandle = glGetUniformLocation(shaderProgram, "uFragColor");
-        assert(uFragColorHandle != -1);
+        GLint getPositionLocationResult = glGetAttribLocation(shaderProgram, "vPosition");
+        assert(getPositionLocationResult != -1);
+        vPositionHandle = (GLuint)getPositionLocationResult;
+        GLint getSensorValueLocationResult = glGetAttribLocation(shaderProgram, "vSensorValue");
+        assert(getSensorValueLocationResult != -1);
+        vSensorValueHandle = (GLuint)getSensorValueLocationResult;
+        GLint getFragColorLocationResult = glGetUniformLocation(shaderProgram, "uFragColor");
+        assert(getFragColorLocationResult != -1);
+        uFragColorHandle = (GLuint)getFragColorLocationResult;
     }
 
     void surfaceChanged(int w, int h) {
@@ -174,8 +176,8 @@ public:
 
         glUseProgram(shaderProgram);
 
-        glEnableVertexAttribArray(vPositionXHandle);
-        glVertexAttribPointer(vPositionXHandle, 1, GL_FLOAT, GL_FALSE, 0, xPos);
+        glEnableVertexAttribArray(vPositionHandle);
+        glVertexAttribPointer(vPositionHandle, 1, GL_FLOAT, GL_FALSE, 0, xPos);
 
         glEnableVertexAttribArray(vSensorValueHandle);
         glVertexAttribPointer(vSensorValueHandle, 1, GL_FLOAT, GL_FALSE, sizeof(AccelerometerData), &sensorData[sensorDataIndex].x);
@@ -201,40 +203,40 @@ public:
     }
 };
 
-SensorGraphDemo gSensorGraphDemo;
+sensorgraph gSensorGraph;
 
 extern "C" {
 JNIEXPORT void JNICALL
     Java_com_android_gl2jni_SensorGraphJNI_init(JNIEnv *env, jclass type, jobject assetManager) {
         AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
-        gSensorGraphDemo.init(nativeAssetManager);
+        gSensorGraph.init(nativeAssetManager);
     }
 
     JNIEXPORT void JNICALL
     Java_com_android_gl2jni_SensorGraphJNI_surfaceCreated(JNIEnv *env, jclass type) {
-        gSensorGraphDemo.surfaceCreated();
+        gSensorGraph.surfaceCreated();
     }
 
     JNIEXPORT void JNICALL
     Java_com_android_gl2jni_SensorGraphJNI_surfaceChanged(JNIEnv *env, jclass type, jint width,
                                                      jint height) {
-        gSensorGraphDemo.surfaceChanged(width, height);
+        gSensorGraph.surfaceChanged(width, height);
     }
 
 
     JNIEXPORT void JNICALL
     Java_com_android_gl2jni_SensorGraphJNI_drawFrame(JNIEnv *env, jclass type) {
-        gSensorGraphDemo.update();
-        gSensorGraphDemo.render();
+        gSensorGraph.update();
+        gSensorGraph.render();
     }
 
     JNIEXPORT void JNICALL
     Java_com_android_gl2jni_SensorGraphJNI_pause(JNIEnv *env, jclass type) {
-        gSensorGraphDemo.pause();
+        gSensorGraph.pause();
     }
 
     JNIEXPORT void JNICALL
     Java_com_android_gl2jni_SensorGraphJNI_resume(JNIEnv *env, jclass type) {
-        gSensorGraphDemo.resume();
+        gSensorGraph.resume();
     }
 }
