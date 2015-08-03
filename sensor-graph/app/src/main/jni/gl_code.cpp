@@ -30,7 +30,7 @@
 #include <android/asset_manager_jni.h>
 #include <android/sensor.h>
 
-#define  LOG_TAG    "libgl2jni"
+#define  LOG_TAG    "sensorgraph"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
@@ -38,6 +38,7 @@ const int LOOPER_ID_USER = 3;
 const int SENSOR_HISTORY_LENGTH = 100;
 const int SENSOR_REFRESH_RATE = 100;
 const float SENSOR_FILTER_ALPHA = 0.1f;
+
 
 class SensorGraphDemo {
 
@@ -97,16 +98,28 @@ public:
                                                                         SENSOR_REFRESH_RATE));
         int enableSensorResult = ASensorEventQueue_enableSensor(accelerometerEventQueue, accelerometer);
         assert(enableSensorResult >= 0);
+
+        generateXPos();
     }
-    void surfaceChanged(int w, int h) {
+
+    void surfaceCreated() {
+        LOGI("GL_VERSION: %s", glGetString(GL_VERSION));
+        LOGI("GL_VENDOR: %s", glGetString(GL_VENDOR));
+        LOGI("GL_RENDERER: %s", glGetString(GL_RENDERER));
+        LOGI("GL_EXTENSIONS: %s", glGetString(GL_EXTENSIONS));
+
         shaderProgram = createProgram(vertexShaderSource, fragmentShaderSource);
         assert(shaderProgram != 0);
         vPositionXHandle = glGetAttribLocation(shaderProgram, "vPositionX");
+        assert(vPositionXHandle != -1);
         vSensorValueHandle = glGetAttribLocation(shaderProgram, "vSensorValue");
+        assert(vSensorValueHandle != -1);
         uFragColorHandle = glGetUniformLocation(shaderProgram, "uFragColor");
+        assert(uFragColorHandle != -1);
+    }
 
+    void surfaceChanged(int w, int h) {
         glViewport(0, 0, w, h);
-        generateXPos();
     }
 
     void generateXPos() {
@@ -124,9 +137,9 @@ public:
         glAttachShader(program, vertexShader);
         glAttachShader(program, pixelShader);
         glLinkProgram(program);
-        GLint linked = 0;
-        glGetProgramiv(program, GL_LINK_STATUS, &linked);
-        assert(linked != 0);
+        GLint programLinked = 0;
+        glGetProgramiv(program, GL_LINK_STATUS, &programLinked);
+        assert(programLinked != 0);
         return program;
     }
 
@@ -136,9 +149,9 @@ public:
         const char *sourceBuf = pSource.c_str();
         glShaderSource(shader, 1, &sourceBuf, NULL);
         glCompileShader(shader);
-        GLint compiled = 0;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-        assert(compiled != 0);
+        GLint shaderCompiled = 0;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &shaderCompiled);
+        assert(shaderCompiled != 0);
         return shader;
     }
 
@@ -192,31 +205,36 @@ SensorGraphDemo gSensorGraphDemo;
 
 extern "C" {
 JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_GL2JNILib_init(JNIEnv *env, jclass type, jobject assetManager) {
+    Java_com_android_gl2jni_SensorGraphJNI_init(JNIEnv *env, jclass type, jobject assetManager) {
         AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
         gSensorGraphDemo.init(nativeAssetManager);
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_GL2JNILib_surfaceChanged(JNIEnv *env, jclass type, jint width,
+    Java_com_android_gl2jni_SensorGraphJNI_surfaceCreated(JNIEnv *env, jclass type) {
+        gSensorGraphDemo.surfaceCreated();
+    }
+
+    JNIEXPORT void JNICALL
+    Java_com_android_gl2jni_SensorGraphJNI_surfaceChanged(JNIEnv *env, jclass type, jint width,
                                                      jint height) {
         gSensorGraphDemo.surfaceChanged(width, height);
     }
 
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_GL2JNILib_drawFrame(JNIEnv *env, jclass type) {
+    Java_com_android_gl2jni_SensorGraphJNI_drawFrame(JNIEnv *env, jclass type) {
         gSensorGraphDemo.update();
         gSensorGraphDemo.render();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_GL2JNILib_pause(JNIEnv *env, jclass type) {
+    Java_com_android_gl2jni_SensorGraphJNI_pause(JNIEnv *env, jclass type) {
         gSensorGraphDemo.pause();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_gl2jni_GL2JNILib_resume(JNIEnv *env, jclass type) {
+    Java_com_android_gl2jni_SensorGraphJNI_resume(JNIEnv *env, jclass type) {
         gSensorGraphDemo.resume();
     }
 }

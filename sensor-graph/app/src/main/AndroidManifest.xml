@@ -20,12 +20,12 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.gl2jni">
-    <uses-feature android:glEsVersion="0x00020000"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
     <application
             android:icon="@mipmap/ic_launcher"
             android:allowBackup="false"
             android:label="@string/gl2jni_activity">
-        <activity android:name="GL2JNIActivity"
+        <activity android:name=".SensorGraphActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             	android:launchMode="singleTask"
             	android:configChanges="orientation|keyboardHidden">
