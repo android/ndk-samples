@@ -1,6 +1,6 @@
 More Teapots
 ============
-More Teapots is an Android C++ sample that draws multiple instances of the same Teapot mesh using the GLES 3.0 Instanced Rendering and a [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
+More Teapots is an Android C++ sample that draws multiple instances of the same Teapot mesh using GLES 3.0 Instanced Rendering and [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
 
 Pre-requisites
 --------------

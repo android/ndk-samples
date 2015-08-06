@@ -1,6 +1,6 @@
 Hello JNI
 =========
-Hello JNI is an Android C++ sample that call C++ code from a Android Java Activity using JNI.
+Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
 
 Pre-requisites
 --------------

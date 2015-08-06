@@ -2,7 +2,7 @@ San Angeles
 ===========
 San Angeles is a Android port of a demo that uses GLES C/API to render a procedural scene.
 
-See the original [README](app/src/main/jni/README.txt) more details about the port.
+See the original [README](app/src/main/jni/README.txt) more details about the original GLES port.
 
 Pre-requisites
 --------------
