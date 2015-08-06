@@ -1,33 +1,29 @@
 San Angeles
 ===========
+San Angeles is a Android port of a demo that uses GLES C/API to render a procedural scene.
+
+See the original [README](app/src/main/jni/README.txt) more details about the port.
 
 Pre-requisites
 --------------
-
-- [Android NDK](https://developer.android.com/ndk/)
-- Android Studio 1.3 Preview from the [canary channel](http://tools.android.com/download/studio/canary)
-- Experimental version of Android Plugin for Gradle [build from sources](http://tools.android.com/build/gradleplugin).
+- Android Studio 1.3 with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
-
-1. [Download](http://tools.android.com/download/studio/canary) or [switch](http://tools.android.com/download/studio/canary) to Android Studio canary channel.
-1. Follow [instructions](http://tools.android.com/build/gradleplugin) to build the experimental version of the Android Plugin for Gradle.
+1. [Download Android Studio](http://developer.android.com/sdk/index.html)
 1. Launch Android Studio.
-1. Open `android-ndk/san-angeles` sample.
+1. Open the sample directory.
 1. Open *File/Project Structure...*
   1. Click *Download* or *Select NDK location*.
-1. Click *Tools/Android/Sync Project with Gradle Files*.
-1. Click *Run/Run 'app'*.
+  1. Click *Tools/Android/Sync Project with Gradle Files*.
+  1. Click *Run/Run 'app'*.
 
 Screenshots
 -----------
-
 ![screenshot](screenshot.png)
 
 Support
 -------
-
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
 Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
@@ -39,20 +35,4 @@ submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUT
 
 License
 -------
-
-Copyright 2015 Google, Inc.
-
-Licensed to the Apache Software Foundation (ASF) under one or more contributor
-license agreements.  See the NOTICE file distributed with this work for
-additional information regarding copyright ownership.  The ASF licenses this
-file to you under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License.  You may obtain a copy of
-the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
-License for the specific language governing permissions and limitations under
-the License.
+See the original [licensing](app/src/main/jni/license.txt) information.
