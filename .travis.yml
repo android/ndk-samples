@@ -13,3 +13,5 @@ before_install:
 script:
   - cd builder && ./gradlew test
   - pandoc build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
+  - for f in  */README.md; do sed -n '/Support/,$p' $f > /tmp/$(dirname $f).readme; done && diff -u --from-file=/tmp/hello-jni.readme /tmp/*.readme
+  
