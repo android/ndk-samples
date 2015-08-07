@@ -1,6 +1,6 @@
 Native Activity
 ===============
-Native Activity is an Android sample that initializes a GLES 2.0 context and read accelerometer value from C code using [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html).
+Native Activity is an Android sample that initializes a GLES 2.0 context and reads accelerometer data from C code using [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html).
 
 Pre-requisites
 --------------

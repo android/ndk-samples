@@ -1,6 +1,6 @@
 Native Audio
 ============
-Native Audio is an Android sample that play and record sounds with the C++ OpenSLES API using JNI.
+Native Audio is an Android sample that plays and records sounds with the C++ OpenSLES API using JNI.
 
 Pre-requisites
 --------------

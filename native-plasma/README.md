@@ -1,6 +1,6 @@
 Native Plasma
 =============
-Native Plasma is an Android sample that render a plasma effect in a Bitmap from C code using [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html).
+Native Plasma is an Android sample that renders a plasma effect in a Bitmap from C code using [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html).
 
 Pre-requisites
 --------------

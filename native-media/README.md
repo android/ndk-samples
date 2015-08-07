@@ -1,6 +1,6 @@
 Native Media
 ============
-Native Media is an Android sample that uses OpenMAX AL to a play video.
+Native Media is an Android sample that uses OpenMAX AL to play a video.
 
 Note: This sample requires an MPEG-2 Transport Stream file to be
 placed in /sdcard/NativeMedia.ts and encoded as:

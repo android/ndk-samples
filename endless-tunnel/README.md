@@ -3,7 +3,7 @@ Endless Tunnel
 Endless Tunnel is a sample game that shows how to:
 - use the Android Studio C++ support
 - implement a game using Android native glue
-- implement joystick support, including robust DPAD navigation for no-touch screens
+- implement joystick support, including robust DPAD navigation for non-touch screens
 
 It is NOT the goal of this sample to show the best way to write the
 game logic, load resources, etc. The game itself was intentionally
@@ -47,7 +47,7 @@ Most of this code was written by [Bruno Oliveira](https://plus.google.com/+Bruno
 
 Walkthrough
 -----------
-Source code are under app, it only contains C++ code, which is
+Source code is under app, it only contains C++ code, which is
 sitting at its default location (same as for other samples) at
 app/jni.
 
@@ -77,7 +77,7 @@ scene.
 
 Input arrives by way of the engine_handle_input function, which
 does some basic input classification and delivers the input to
-the scene manager. Incidentally, here we also synthethise DPAD events based
+the scene manager. Incidentally, here we also synthesise DPAD events based
 on the joystick hat axes (many game controllers generate hat events
 when you press the directional pad), because that way we can use that
 directional pad to drive UI navigation in the main screen.
