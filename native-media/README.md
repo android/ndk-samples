@@ -1,6 +1,15 @@
-Hello JNI
-=========
-Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
+Native Media
+============
+Native Media is an Android sample that uses OpenMAX AL to play a video.
+
+Note: This sample requires an MPEG-2 Transport Stream file to be
+placed in /sdcard/NativeMedia.ts and encoded as:
+```
+  video: H.264 baseline profile
+  audio: AAC LC stereo
+```
+For demonstration purposes we have supplied such a .ts file, any
+actual stream must be created according to the MPEG-2 specification.
 
 Pre-requisites
 --------------

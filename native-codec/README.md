@@ -1,6 +1,9 @@
-Hello JNI
-=========
-Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
+Native Codec
+============
+Native Codec is an Android C++ sample that uses the Native Media Codec API to play a video.
+
+Note: It requires a video file to be placed in /sdcard/testfile.mp4
+For demonstration purposes we have supplied such a file.
 
 Pre-requisites
 --------------

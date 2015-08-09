@@ -1,6 +1,8 @@
-Hello JNI
-=========
-Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
+San Angeles
+===========
+San Angeles is an Android port of a demo that uses GLES C/API to render a procedural scene.
+
+See the original [README](app/src/main/jni/README.txt) for more details about the original GLES port.
 
 Pre-requisites
 --------------
@@ -33,19 +35,4 @@ submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUT
 
 License
 -------
-Copyright 2015 Google, Inc.
-
-Licensed to the Apache Software Foundation (ASF) under one or more contributor
-license agreements.  See the NOTICE file distributed with this work for
-additional information regarding copyright ownership.  The ASF licenses this
-file to you under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License.  You may obtain a copy of
-the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
-License for the specific language governing permissions and limitations under
-the License.
+See the original [licensing](app/src/main/jni/license.txt) information.

@@ -1,6 +1,6 @@
-Hello JNI
-=========
-Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
+Teapot
+======
+Teapot is an Android C++ sample that draws a Teapot mesh using GLES 2.0 API and [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
 
 Pre-requisites
 --------------

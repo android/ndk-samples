@@ -1,6 +1,6 @@
-Hello JNI
-=========
-Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
+Native Plasma
+=============
+Native Plasma is an Android sample that renders a plasma effect in a Bitmap from C code using [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html).
 
 Pre-requisites
 --------------

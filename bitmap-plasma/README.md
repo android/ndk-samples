@@ -1,6 +1,6 @@
-Hello JNI
-=========
-Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
+Bitmap Plasma
+=============
+Bitmap Plasma is an Android sample that uses JNI to render a plasma effect in an Android [Bitmap](http://developer.android.com/reference/android/graphics/Bitmap.html) from C code.
 
 Pre-requisites
 --------------

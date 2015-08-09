@@ -1,6 +1,6 @@
-Hello JNI
-=========
-Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
+Native Audio
+============
+Native Audio is an Android sample that plays and records sounds with the C++ OpenSLES API using JNI.
 
 Pre-requisites
 --------------
