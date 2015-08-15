@@ -8,7 +8,7 @@ model {
         defaultConfig.with {
             applicationId="com.example.native_plasma"
             minSdkVersion.apiLevel   = 9
-            targetSdkVersion.apiLevel= 9
+            targetSdkVersion.apiLevel= 22
         }
     }
     android.ndk {

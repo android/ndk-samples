@@ -8,7 +8,7 @@ model {
         defaultConfig.with {
             applicationId = "com.example.nativemedia"
             minSdkVersion.apiLevel = 14
-            targetSdkVersion.apiLevel = 14
+            targetSdkVersion.apiLevel = 22
 
         }
     }

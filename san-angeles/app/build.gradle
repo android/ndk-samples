@@ -8,7 +8,7 @@ model {
         defaultConfig.with {
             applicationId = "com.example.SanAngeles"
             minSdkVersion.apiLevel    = 4
-            targetSdkVersion.apiLevel = 4
+            targetSdkVersion.apiLevel = 22
         }
     }
     android.ndk {

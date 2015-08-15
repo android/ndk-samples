@@ -2,13 +2,13 @@ apply plugin: 'com.android.model.application'
 
 model {
     android {
-        compileSdkVersion = 21
+        compileSdkVersion = 22
         buildToolsVersion = "22.0.1"
 
         defaultConfig.with {
             applicationId = "com.example.nativecodec"
             minSdkVersion.apiLevel    = 21
-            targetSdkVersion.apiLevel =  21
+            targetSdkVersion.apiLevel =  22
         }
     }
     android.buildTypes {
