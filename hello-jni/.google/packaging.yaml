@@ -1,6 +1,6 @@
 status:       DRAFT
 technologies: [Android, NDK]
-categories:   [Getting Started, Native]
+categories:   [Getting Started, NDK, C++]
 languages:    [C++, Java]
 solutions:    [Mobile]
 github:       googlesamples/android-ndk
