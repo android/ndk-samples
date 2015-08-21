@@ -133,7 +133,7 @@ short* createResampledBuf(uint32_t idx, uint32_t srcRate, unsigned *size) {
     short  *src = NULL;
     short  *workBuf;
     int    upSampleRate;
-    int32_t srcSampleCount =0;
+    int32_t srcSampleCount = 0;
 
     if(0 == bqPlayerSampleRate) {
         return NULL;
