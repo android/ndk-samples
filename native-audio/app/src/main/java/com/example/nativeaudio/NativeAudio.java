@@ -63,6 +63,12 @@ public class NativeAudio extends Activity {
 
         int sampleRate = 0;
         int bufSize = 0;
+        /*
+         * retrieve fast audio path sample rate and buf size; if we have it, we pass to native
+         * side to create a player with fast audio enabled [ fast audio == low latency audio ];
+         * IF we do not have a fast audio path, we pass 0 for sampleRate, which will force native
+         * side to pick up the 8Khz sample rate.
+         */
         if( android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
             AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             String nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
