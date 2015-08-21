@@ -62,6 +62,10 @@ static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 static SLEffectSendItf bqPlayerEffectSend;
 static SLMuteSoloItf bqPlayerMuteSolo;
 static SLVolumeItf bqPlayerVolume;
+static SLmilliHertz bqPlayerSampleRate = 0;
+static jint   bqPlayerBufSize = 0;
+static short *resampleBuf = NULL;
+static volatile int  bqPlayerRecorderBusy = 0;
 
 // aux effect on the output mix, used by the buffer queue player
 static const SLEnvironmentalReverbSettings reverbSettings =
@@ -94,7 +98,6 @@ static short sawtoothBuffer[SAWTOOTH_FRAMES];
 #define RECORDER_FRAMES (16000 * 5)
 static short recorderBuffer[RECORDER_FRAMES];
 static unsigned recorderSize = 0;
-static SLmilliHertz recorderSR;
 
 // pointer and size of the next player buffer to enqueue, and number of remaining buffers
 static short *nextBuffer;
@@ -111,6 +114,76 @@ __attribute__((constructor)) static void onDlOpen(void)
     }
 }
 
+void releaseResampleBuf(void) {
+    if( 0 == bqPlayerSampleRate) {
+        /*
+         * we are not using fast path, so we were not creating buffers, nothing to do
+         */
+        return;
+    }
+
+    free(resampleBuf);
+    resampleBuf = NULL;
+}
+
+/*
+ * Only support up-sampling
+ */
+short* createResampledBuf(uint32_t idx, uint32_t srcRate, unsigned *size) {
+    short  *src = NULL;
+    short  *workBuf;
+    int    upSampleRate;
+    int32_t srcSampleCount = 0;
+
+    if(0 == bqPlayerSampleRate) {
+        return NULL;
+    }
+    if(bqPlayerSampleRate % srcRate) {
+        /*
+         * simple up-sampling, must be divisible
+         */
+        return NULL;
+    }
+    upSampleRate = bqPlayerSampleRate / srcRate;
+
+    switch (idx) {
+        case 0:
+            return NULL;
+        case 1: // HELLO_CLIP
+            srcSampleCount = sizeof(hello) >> 1;
+            src = (short*)hello;
+            break;
+        case 2: // ANDROID_CLIP
+            srcSampleCount = sizeof(android) >> 1;
+            src = (short*) android;
+            break;
+        case 3: // SAWTOOTH_CLIP
+            srcSampleCount = SAWTOOTH_FRAMES;
+            src = sawtoothBuffer;
+            break;
+        case 4: // captured frames
+            srcSampleCount = recorderSize / sizeof(short);
+            src =  recorderBuffer;
+            break;
+        default:
+            assert(0);
+            return NULL;
+    }
+
+    resampleBuf = (short*) malloc((srcSampleCount * upSampleRate) << 1);
+    if(resampleBuf == NULL) {
+        return resampleBuf;
+    }
+    workBuf = resampleBuf;
+    for(int sample=0; sample < srcSampleCount; sample++) {
+        for(int dup = 0; dup  < upSampleRate; dup++) {
+            *workBuf++ = src[sample];
+        }
+    }
+
+    *size = (srcSampleCount * upSampleRate) << 1;     // sample format is 16 bit
+    return resampleBuf;
+}
 
 // this callback handler is called every time a buffer finishes playing
 void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
@@ -126,6 +199,9 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
         // which for this code example would indicate a programming error
         assert(SL_RESULT_SUCCESS == result);
         (void)result;
+    } else {
+        releaseResampleBuf();
+        bqPlayerRecorderBusy = 0;
     }
 }
 
@@ -141,8 +217,8 @@ void bqRecorderCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
     result = (*recorderRecord)->SetRecordState(recorderRecord, SL_RECORDSTATE_STOPPED);
     if (SL_RESULT_SUCCESS == result) {
         recorderSize = RECORDER_FRAMES * sizeof(short);
-        recorderSR = SL_SAMPLINGRATE_16;
     }
+    bqPlayerRecorderBusy = 0;
 }
 
 
@@ -196,28 +272,48 @@ void Java_com_example_nativeaudio_NativeAudio_createEngine(JNIEnv* env, jclass c
 
 // create buffer queue audio player
 void Java_com_example_nativeaudio_NativeAudio_createBufferQueueAudioPlayer(JNIEnv* env,
-        jclass clazz)
+        jclass clazz, jint sampleRate, jint bufSize)
 {
     SLresult result;
+    if (sampleRate >= 0 && bufSize >= 0 ) {
+        bqPlayerSampleRate = sampleRate * 1000;
+        /*
+         * device native buffer size is another factor to minimize audio latency, not used in this
+         * sample: we only play one giant buffer here
+         */
+        bqPlayerBufSize = bufSize;
+    }
 
     // configure audio source
     SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
     SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
         SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
         SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
+    /*
+     * Enable Fast Audio when possible:  once we set the same rate to be the native, fast audio path
+     * will be triggered
+     */
+    if(bqPlayerSampleRate) {
+        format_pcm.samplesPerSec = bqPlayerSampleRate;       //sample rate in mili second
+    }
     SLDataSource audioSrc = {&loc_bufq, &format_pcm};
 
     // configure audio sink
     SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
     SLDataSink audioSnk = {&loc_outmix, NULL};
 
-    // create audio player
-    const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND,
-            /*SL_IID_MUTESOLO,*/ SL_IID_VOLUME};
-    const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE,
-            /*SL_BOOLEAN_TRUE,*/ SL_BOOLEAN_TRUE};
+    /*
+     * create audio player:
+     *     fast audio does not support when SL_IID_EFFECTSEND is required, skip it
+     *     for fast audio case
+     */
+    const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_VOLUME, SL_IID_EFFECTSEND,
+                                    /*SL_IID_MUTESOLO,*/};
+    const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE,
+                                   /*SL_BOOLEAN_TRUE,*/ };
+
     result = (*engineEngine)->CreateAudioPlayer(engineEngine, &bqPlayerObject, &audioSrc, &audioSnk,
-            3, ids, req);
+            bqPlayerSampleRate? 2 : 3, ids, req);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
@@ -243,10 +339,13 @@ void Java_com_example_nativeaudio_NativeAudio_createBufferQueueAudioPlayer(JNIEn
     (void)result;
 
     // get the effect send interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_EFFECTSEND,
-            &bqPlayerEffectSend);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+    bqPlayerEffectSend = NULL;
+    if( 0 == bqPlayerSampleRate) {
+        result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_EFFECTSEND,
+                                                 &bqPlayerEffectSend);
+        assert(SL_RESULT_SUCCESS == result);
+        (void)result;
+    }
 
 #if 0   // mute/solo is not supported for sources that are known to be mono, as this is
     // get the mute/solo interface
@@ -498,6 +597,12 @@ jboolean Java_com_example_nativeaudio_NativeAudio_enableReverb(JNIEnv* env, jcla
         return JNI_FALSE;
     }
 
+    if(bqPlayerSampleRate) {
+        /*
+         * we are in fast audio, reverb is not supported.
+         */
+        return JNI_FALSE;
+    }
     result = (*bqPlayerEffectSend)->EnableEffectSend(bqPlayerEffectSend,
             outputMixEnvironmentalReverb, (SLboolean) enabled, (SLmillibel) 0);
     // and even if environmental reverb was present, it might no longer be available
@@ -507,7 +612,6 @@ jboolean Java_com_example_nativeaudio_NativeAudio_enableReverb(JNIEnv* env, jcla
 
     return JNI_TRUE;
 }
-
 
 // select the desired clip and play count, and enqueue the first buffer if idle
 jboolean Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv* env, jclass clazz, jint which,
@@ -519,29 +623,38 @@ jboolean Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv* env, jclass
         nextSize = 0;
         break;
     case 1:     // CLIP_HELLO
-        nextBuffer = (short *) hello;
-        nextSize = sizeof(hello);
+        nextBuffer = createResampledBuf(1, SL_SAMPLINGRATE_8, &nextSize);
+        if(!nextBuffer) {
+            nextBuffer = (short*)hello;
+            nextSize  = sizeof(hello);
+        }
         break;
     case 2:     // CLIP_ANDROID
-        nextBuffer = (short *) android;
-        nextSize = sizeof(android);
+        nextBuffer = createResampledBuf(2, SL_SAMPLINGRATE_8, &nextSize);
+        if(!nextBuffer) {
+            nextBuffer = (short*)android;
+            nextSize  = sizeof(android);
+        }
         break;
     case 3:     // CLIP_SAWTOOTH
-        nextBuffer = sawtoothBuffer;
-        nextSize = sizeof(sawtoothBuffer);
+        nextBuffer = createResampledBuf(3, SL_SAMPLINGRATE_8, &nextSize);
+        if(!nextBuffer) {
+            nextBuffer = (short*)sawtoothBuffer;
+            nextSize  = sizeof(sawtoothBuffer);
+        }
         break;
     case 4:     // CLIP_PLAYBACK
+        nextBuffer = createResampledBuf(4, SL_SAMPLINGRATE_16, &nextSize);
         // we recorded at 16 kHz, but are playing buffers at 8 Khz, so do a primitive down-sample
-        if (recorderSR == SL_SAMPLINGRATE_16) {
+        if(!nextBuffer) {
             unsigned i;
             for (i = 0; i < recorderSize; i += 2 * sizeof(short)) {
                 recorderBuffer[i >> 2] = recorderBuffer[i >> 1];
             }
-            recorderSR = SL_SAMPLINGRATE_8;
             recorderSize >>= 1;
+            nextBuffer = recorderBuffer;
+            nextSize = recorderSize;
         }
-        nextBuffer = recorderBuffer;
-        nextSize = recorderSize;
         break;
     default:
         nextBuffer = NULL;
@@ -555,6 +668,7 @@ jboolean Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv* env, jclass
         SLresult result;
         result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
         if (SL_RESULT_SUCCESS != result) {
+            bqPlayerRecorderBusy = 1;
             return JNI_FALSE;
         }
     }
@@ -642,7 +756,6 @@ jboolean Java_com_example_nativeaudio_NativeAudio_createAssetAudioPlayer(JNIEnv*
     return JNI_TRUE;
 }
 
-
 // set the playing state for the asset audio player
 void Java_com_example_nativeaudio_NativeAudio_setPlayingAssetAudioPlayer(JNIEnv* env,
         jclass clazz, jboolean isPlaying)
@@ -660,7 +773,6 @@ void Java_com_example_nativeaudio_NativeAudio_setPlayingAssetAudioPlayer(JNIEnv*
     }
 
 }
-
 
 // create audio recorder
 jboolean Java_com_example_nativeaudio_NativeAudio_createAudioRecorder(JNIEnv* env, jclass clazz)
@@ -721,6 +833,9 @@ void Java_com_example_nativeaudio_NativeAudio_startRecording(JNIEnv* env, jclass
 {
     SLresult result;
 
+    if( bqPlayerRecorderBusy) {
+        return;
+    }
     // in case already recording, stop recording and clear buffer queue
     result = (*recorderRecord)->SetRecordState(recorderRecord, SL_RECORDSTATE_STOPPED);
     assert(SL_RESULT_SUCCESS == result);
@@ -745,6 +860,7 @@ void Java_com_example_nativeaudio_NativeAudio_startRecording(JNIEnv* env, jclass
     result = (*recorderRecord)->SetRecordState(recorderRecord, SL_RECORDSTATE_RECORDING);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
+    bqPlayerRecorderBusy = 1;
 }
 
 
