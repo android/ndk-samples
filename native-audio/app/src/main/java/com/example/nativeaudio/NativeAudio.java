@@ -17,7 +17,9 @@
 package com.example.nativeaudio;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 //import android.util.Log;
 import android.view.View;
@@ -57,9 +59,18 @@ public class NativeAudio extends Activity {
         assetManager = getAssets();
 
         // initialize native audio system
-
         createEngine();
-        createBufferQueueAudioPlayer();
+
+        int sampleRate = 0;
+        int bufSize = 0;
+        if( android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            String nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
+            sampleRate = Integer.parseInt(nativeParam);
+            nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
+            bufSize = Integer.parseInt(nativeParam);
+        }
+        createBufferQueueAudioPlayer(sampleRate, bufSize);
 
         // initialize URI spinner
         Spinner uriSpinner = (Spinner) findViewById(R.id.uri_spinner);
@@ -288,7 +299,7 @@ public class NativeAudio extends Activity {
 
     /** Native methods, implemented in jni folder */
     public static native void createEngine();
-    public static native void createBufferQueueAudioPlayer();
+    public static native void createBufferQueueAudioPlayer(int rate, int size);
     public static native boolean createAssetAudioPlayer(AssetManager assetManager, String filename);
     // true == PLAYING, false == PAUSED
     public static native void setPlayingAssetAudioPlayer(boolean isPlaying);

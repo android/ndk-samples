@@ -15,6 +15,7 @@ model {
     android.ndk {
         moduleName = "native-audio-jni"
         ldLibs += ["android","OpenSLES", "log"]
+        CFlags += ['-std=c99']
     }
     android.buildTypes {
         release {
