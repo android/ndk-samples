@@ -24,7 +24,7 @@ in your logcat output when you create audio recorder, you could "assume" you are
 
 Tune-ups
 --------
-A couple of knobs could be used for lower latency purpose. For example, audio buffer size, and how many audio buffers cached before kicking start player: the lower you go with these 2 factors, the lower latency you will have; going with it is the audio processing efficiency demand-- to have a continously playing audio, all processing has to be completed within the capture/playback time for the same amount of the audio frames, minus other software layers' overhead(audio driver, framework, and bufferqueue callbacks etc). Besides that, the irregularity of the buffer queue player/capture callback time -- the assumption of the regularity of evenly distributed callback time need to be highly verified on your interested platforms; the highly tuned up low latency audio path has better chance to "look" more regular than other audio paths. Taking iregularity into your consideration, you might have to increase the audio buffer size or caches more buffers between recorder and player. Finding the right trade-off between those factors could be a very interesting experience [alos high efficient code taking very little time to get work done] -- like what it is said "perfection is a journey". The knobs in the code are commented accordingly.
+A couple of knobs could be used for lower latency purpose. For example, audio buffer size, and how many audio buffers cached before kicking start player: the lower you go with these 2 factors, the lower latency you will have; going with it is the audio processing efficiency demand-- to have a continously playing audio, all processing has to be completed within the capture/playback time for the same amount of the audio frames, minus other software layers' overhead(audio driver, framework, and bufferqueue callbacks etc). Besides that, the irregularity of the buffer queue player/capture callback time -- the assumption of the regularity of evenly distributed callback time need to be highly verified on your interested platforms; the highly tuned up low latency audio path has better chance to "look" more regular than other audio paths. Taking iregularity into your consideration, you might have to increase the audio buffer size or caches more buffers between recorder and player. Finding the right trade-off between those factors could be a very interesting experience  -- like what it is said "perfection is a journey". The knobs in the code are commented accordingly.
 
 Credits
 =======
@@ -34,10 +34,10 @@ Credits
 
 Pre-requisites
 =============
-If you need reference to how to use Android Studio for native samples, please refer to Sample Hello-Jni
+If you need reference to how to use Android Studio for native samples, please refer to Sample hello-jni
 
 Support
-=======
+-------
 
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
