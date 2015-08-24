@@ -1,5 +1,5 @@
-Echo
-====
+Audio-Echo
+==========
 The sample demos how to use OpenSL ES to create a player and recorder in Android Fast Audio Path, and connect them to loopback audio. On most android devices, there is a optimized audio path that is tuned up for low latency purpose. The sample creates player/recorder to work in this highly optimized audio path(sometimes called native audio path, [low latency path](http://stackoverflow.com/questions/14842803/low-latency-audio-playback-on-android?rq=1), or fast audio path). The application is validated against the following configurations:
   *   Android L    AndroidOne
   *   Android M    Nexus 5, Nexus 9
@@ -12,29 +12,55 @@ Low Latency Verification
 ------------------------
 
 1. execute "adb shell dumpsys media.audio_flinger". Find a list of the running processes
-    Name Active Client Type      Fmt Chn mask Session fCount S F SRate  L dB  R dB    Server Main buf  Aux Buf Flags UndFrmCnt
-    F  2     no    704    1 00000001 00000003     562  13248 S 1 48000  -inf  -inf  000033C0 0xabab8480 0x0 0x600         0 
-    F  5     no    597    1 00000001 00000003     257   6000 A 2 48000    -6    -6  00073B90 0xabab8480 0x0 0x600         0 
-    F  1     no    597    1 00000001 00000003       9   6000 S 1 48000  -inf  -inf  00075300 0xabab8480 0x0 0x600         0 
-    F  6    yes   9345    3 00000001 00000001     576    128 A 1 48000     0     0  0376AA00 0xabab8480 0x0 0x400       256 
 
-2. execute adb shell ps  | grep echo; find the sample app pid; with the pid, check with result on step 1.: if there is one "F" in the front of your echo pid, player is on fast audio path; otherwise, it is not; for fast audio capture[it is totally different story], if you do NOT see 
-    com.example.nativeaudio W/AudioRecord﹕ AUDIO_INPUT_FLAG_FAST denied by client
-in your logcat output when you create audio recorder, you could "assume" you are on the fast path. If your system image was built muted ALOGW, you will not see the above warning message; in which case you would pray and trust [if you created recorder with optimized frequency!].
+   Name Active Client Type      Fmt Chn mask Session fCount S F SRate  L dB  R dB    Server Main buf  Aux Buf Flags UndFrmCnt  
+   F  2     no    704    1 00000001 00000003     562  13248 S 1 48000  -inf  -inf  000033C0 0xabab8480 0x0 0x600         0  
+   F  6    yes   9345    3 00000001 00000001     576    128 A 1 48000     0     0  0376AA00 0xabab8480 0x0 0x400       256 
+
+1. execute adb shell ps  | grep echo  
+  * find the sample app pid  
+  * check with result on step 1.  
+   if there is one "F" in the front of your echo pid, **player** is on fast audio path  
+   For fast audio capture [it is totally different story], if you do **NOT** see  
+   com.example.nativeaudio W/AudioRecord﹕ AUDIO_INPUT_FLAG_FAST denied by client  
+in your logcat output when you are creating audio recorder, you could "assume" you are on the fast path.  
+If your system image was built with muted ALOGW, you will not be able to see the above warning message.
 
 Tune-ups
 --------
-A couple of knobs could be used for lower latency purpose. For example, audio buffer size, and how many audio buffers cached before kicking start player: the lower you go with these 2 factors, the lower latency you will have; going with it is the audio processing efficiency demand-- to have a continously playing audio, all processing has to be completed within the capture/playback time for the same amount of the audio frames, minus other software layers' overhead(audio driver, framework, and bufferqueue callbacks etc). Besides that, the irregularity of the buffer queue player/capture callback time -- the assumption of the regularity of evenly distributed callback time need to be highly verified on your interested platforms; the highly tuned up low latency audio path has better chance to "look" more regular than other audio paths. Taking iregularity into your consideration, you might have to increase the audio buffer size or caches more buffers between recorder and player. Finding the right trade-off between those factors could be a very interesting experience  -- like what it is said "perfection is a journey". The knobs in the code are commented accordingly.
+A couple of knobs in the code for lower latency purpose:
+  * audio buffer size
+  * number of audio buffers cached before kicking start player
+
+The lower you go with them, the lower latency you get and also the lower budget for audio processing. All audio processing has to be completed in the time period they are captured / played back, plus extra time needed for:
+  * audio driver
+  * audio flinger framework,
+  * bufferqueue callbacks etc  
+
+Besides those, the irregularity of the buffer queue player/capture callback time is another factor. The callback from openSL may not as regular as you assumed, the more irregularity it is, the more likely have choopy audio. To fight that, more buffering is needed, which defeats the low-latency purpose! The low latency path is highly tuned up so you have better chance to get more regular callbacks. You may experiment with your platform to find the best parameters for lower latency and continuously playback audio experience.  
+
+The app capture and playback are on the same device [most of times the same chip], capture and playback clocks are assumed synchronized naturally [so we are not dealing with it]
 
 Credits
 =======
   * The sample is greatly inspired by native-audio sample
-  * Don Turner @ Goolge for the helping of low latency path
+  * Don Turner @ Google for the helping of low latency path
   * Ian Ni-Lewis @ Google for producer/consumer queue and many others
 
 Pre-requisites
-=============
-If you need reference to how to use Android Studio for native samples, please refer to Sample hello-jni
+--------------
+- Android Studio 1.3 with [NDK](https://developer.android.com/ndk/) bundle.
+
+Getting Started
+---------------
+1. [Download Android Studio](http://developer.android.com/sdk/index.html)
+1. Launch Android Studio.
+1. Open the sample directory.
+1. Open *File/Project Structure...*
+  1. Click *Download* or *Select NDK location*.
+  1. Click *Tools/Android/Sync Project with Gradle Files*.
+  1. Click *Run/Run 'app'*.
+
 
 Support
 -------

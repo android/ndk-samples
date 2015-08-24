@@ -22,29 +22,7 @@
 
 static const char* FILE_PREFIX="/sdcard/data/audio";
 
-void debug_write_file(void* buf, uint32_t size) {
-    static int file_index = 0;
-    if(file_index >= 2)
-        return;
-    char fileName[64];
-
-    if(!buf || size == 0 ) {
-        LOGE("not enought data to write( %p, %d)", buf, size);
-    }
-    sprintf(fileName, "/sdcard/data/audio_%d", file_index++);
-    FILE* file = fopen(fileName,"wb");
-
-    if (file == NULL) {
-        LOGE("====failed to open file %s", fileName);
-        return;
-    }
-
-    fwrite(buf, size, 1, file);
-    fflush(file);
-    fclose(file);
-}
-
-uint32_t AndroidLog::fileIdx_ = 0;
+volatile uint32_t AndroidLog::fileIdx_ = 0;
 AndroidLog::AndroidLog() : fp_(NULL), prevTick_(static_cast<uint64_t>(0)) {
     fileName_ = FILE_PREFIX;
     openFile();

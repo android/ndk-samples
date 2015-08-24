@@ -47,7 +47,7 @@ public:
     void log(const char* fmt, ...);
     void logTime();
     void flush();
-    static uint32_t fileIdx_;
+    static volatile uint32_t fileIdx_;
 private:
     uint64_t getCurrentTicks();
     FILE*   fp_;
