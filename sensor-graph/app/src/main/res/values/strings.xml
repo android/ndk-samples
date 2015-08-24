@@ -23,7 +23,7 @@
 
 <resources>
     <!-- Simple strings. -->
-    <string name="gl2jni_activity">GL2JNI</string>
+    <string name="sensorgraph_activity">Sensor Graph</string>
 
 </resources>
 

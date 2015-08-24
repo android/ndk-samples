@@ -24,7 +24,7 @@
     <application
             android:icon="@mipmap/ic_launcher"
             android:allowBackup="false"
-            android:label="@string/gl2jni_activity">
+            android:label="@string/sensorgraph_activity">
         <activity android:name="com.android.sensorgraph.SensorGraphActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             	android:launchMode="singleTask"

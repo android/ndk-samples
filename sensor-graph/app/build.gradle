@@ -6,7 +6,7 @@ model {
         buildToolsVersion = "22.0.1"
 
         defaultConfig.with {
-            applicationId    = "com.android.gl2jni"
+            applicationId    = "com.android.sensorgraph"
             minSdkVersion.apiLevel    = 8
             targetSdkVersion.apiLevel = 8
         }
