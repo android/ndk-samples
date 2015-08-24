@@ -8,6 +8,8 @@ Usage
 -----
 App will capture audio from android devices and playback on the same device; the playback on speaker will be captured immediately and played back...! So to verify it, it is recommended to "mute" the playback audio with a earspeaker/earphone/earbug so it does not get looped back.  Some device like Nexus 9, once you plug in an external headphone/headspeaker, it stops to use onboard microphone AND speaker anymore -- in this case, you need turn on the microphone coming with your headphone.
 
+When swithing between external headphone and internal one, the volume is very low/muted sometimes; recommend to increase the playback volume with volume buttons on the phone/pad after plugging external headphone.
+
 Low Latency Verification
 ------------------------
 
