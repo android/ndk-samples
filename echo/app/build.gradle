@@ -7,8 +7,8 @@ model {
 
         defaultConfig.with {
             applicationId="com.google.sample.echo"
-            minSdkVersion.apiLevel = 21
-            targetSdkVersion.apiLevel = 22
+            minSdkVersion.apiLevel = 17
+            targetSdkVersion.apiLevel = 23
             versionCode = 1
             versionName = "1.0"
         }
@@ -19,19 +19,17 @@ model {
     }
     android.ndk {
         moduleName = "echo"
-//        cppFlags  += ["-std=c++11", "-fno-rtti", "-fno-exceptions"]
         cppFlags  += ["-std=c++11"]
         ldLibs += ['android', 'log', 'OpenSLES']
         stl     = "gnustl_static"
     }
     android.buildTypes {
         release {
-            isMinifyEnabled=false
+            minifyEnabled=false
             proguardFiles+=file('proguard-android.txt')
         }
         debug {
-//            debuggable = true
-//            jniDebuggable=true
+            debuggable = true
         }
     }
     android.productFlavors {
