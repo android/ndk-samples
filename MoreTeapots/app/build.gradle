@@ -3,7 +3,7 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "22.0.1
+        buildToolsVersion = "23.0.0"
 
         defaultConfig.with {
             applicationId    = "com.sample.moreteapots"
