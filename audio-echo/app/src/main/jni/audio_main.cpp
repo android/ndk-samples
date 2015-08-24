@@ -188,22 +188,6 @@ Java_com_google_sample_echo_MainActivity_stopPlay(JNIEnv *env, jclass type) {
     engine.recorder_ = NULL;
     engine.player_ = NULL;
 }
-/*
- * filter function, match the incoming and outgoing sample format
- */
-SLboolean filterAudioSamples(void) {
-    /*
-     * the passthrough filtering ...
-     */
-    if(++engine.frameCount_ == PLAY_KICKSTART_BUFFER_COUNT) {
-        engine.player_->PlayAudioBuffers(PLAY_KICKSTART_BUFFER_COUNT);
-    }
-    /*
-     * AS for passthrough, we did not have to cache any buffers, directly go through
-        notifyPlayerDataAvailable(engine.player);    //notify there is data available to player
-     */
-    return SL_BOOLEAN_TRUE;
-}
 
 JNIEXPORT void JNICALL
 Java_com_google_sample_echo_MainActivity_deleteSLEngine(JNIEnv *env, jclass type) {

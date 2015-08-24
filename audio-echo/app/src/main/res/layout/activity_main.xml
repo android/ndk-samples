@@ -10,13 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/StartEcho"
-        android:onClick="StartEcho" />
+        android:onClick="startEcho" />
     <Button
         android:id="@+id/button_stop_capture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/StopEcho"
-        android:onClick="StopEcho"
+        android:onClick="stopEcho"
         android:layout_alignBottom="@+id/button_start_capture"
         android:layout_alignParentEnd="true" />
     <Button
@@ -26,7 +26,7 @@
         android:id="@+id/get_parameter_button"
         android:layout_above="@+id/statusView"
         android:layout_alignParentStart="true"
-        android:onClick="GetLowLatencyParameters" />
+        android:onClick="getLowLatencyParameters" />
     <TextView android:text="@string/init_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
