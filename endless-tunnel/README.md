@@ -129,14 +129,14 @@ on a 4:3 screen, these are the coordinates of the four corners
 of the screen:
 
 ```
-(0.000,1.000)       (1.3+33,1.000)
+(0.000,1.000)       (1.333,1.000)
        +--------------+
        |              |
        |              |
        |              |
        |              |
        +--------------+
-(0.000,0.000)       (1.3+33,0.000)
+(0.000,0.000)       (1.333,0.000)
 ```
 
 What this means is that Y=0.5 is always the vertical center of the
