@@ -6,7 +6,7 @@ model {
         buildToolsVersion = "23.0.0"
 
         defaultConfig.with {
-            applicationId = "com.mycompany.android.codelab.proppy.lollygagger"
+            applicationId = "com.example.android.native_playgameservices"
             minSdkVersion.apiLevel    = 9
             targetSdkVersion.apiLevel = 23
         }

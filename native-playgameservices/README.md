@@ -17,7 +17,9 @@ Getting Started
 1. Open *File/Project Structure...*
   - Click *Download* or *Select NDK location*.
 1. Click *Tools/Android/Sync Project with Gradle Files*.
-1. Set `APP_ID` in `res/values/ids.xml` to the ID your project in the *Game services* section of the Google Play console.
+1. Update the source with the details of your project:
+  - Update the package name in `app/build.gradle` and  `app/src/main/AndroidManifest.xml`.
+  - Set `APP_ID` in `app/res/values/ids.xml` to the ID your project in the *Game services* section of the Google Play console.
 1. Click *Run/Run 'app'*.
 
 Screenshots
