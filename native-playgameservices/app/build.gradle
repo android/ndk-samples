@@ -1,0 +1,40 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.0"
+
+        defaultConfig.with {
+            applicationId = "com.mycompany.android.codelab.proppy.lollygagger"
+            minSdkVersion.apiLevel    = 9
+            targetSdkVersion.apiLevel = 23
+        }
+    }
+    android.ndk {
+        moduleName = "native-activity"
+        cppFlags += "-I${file("src/main/jni")}".toString()
+        cppFlags += "-I${file("../gpg-cpp-sdk/android/include")}".toString()
+        ldLibs += ["log", "android", "EGL", "GLESv1_CM", "gpg", "z"]
+        stl    = "c++_static"
+    }
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles  += file('proguard-rules.txt')
+        }
+    }
+    android.productFlavors {
+        create ("arm7") {
+            ndk.abiFilters += "armeabi-v7a"
+            ndk.ldFlags += "-L${file("../gpg-cpp-sdk/android/lib/c++/armeabi-v7a")}".toString()
+        }
+    }
+}
+
+dependencies {
+    compile 'com.google.android.gms:play-services-games:7+'
+    compile 'com.google.android.gms:play-services-base:7+'
+    compile 'com.google.android.gms:play-services-appstate:7+'
+    compile 'com.google.android.gms:play-services-nearby:7+'
+}
