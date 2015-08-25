@@ -18,6 +18,7 @@ Low Latency Verification
    F  6    yes   9345    3 00000001 00000001     576    128 A 1 48000     0     0  0376AA00 0xabab8480 0x0 0x400       256 
 
 1. execute adb shell ps  | grep echo  
+
   * find the sample app pid  
   * check with result on step 1.  
    if there is one "F" in the front of your echo pid, **player** is on fast audio path  
@@ -31,18 +32,15 @@ Tune-ups
 A couple of knobs in the code for lower latency purpose:
   * audio buffer size
   * number of audio buffers cached before kicking start player
-
 The lower you go with them, the lower latency you get and also the lower budget for audio processing. All audio processing has to be completed in the time period they are captured / played back, plus extra time needed for:
   * audio driver
   * audio flinger framework,
-  * bufferqueue callbacks etc  
-
-Besides those, the irregularity of the buffer queue player/capture callback time is another factor. The callback from openSL may not as regular as you assumed, the more irregularity it is, the more likely have choopy audio. To fight that, more buffering is needed, which defeats the low-latency purpose! The low latency path is highly tuned up so you have better chance to get more regular callbacks. You may experiment with your platform to find the best parameters for lower latency and continuously playback audio experience.  
-
-The app capture and playback are on the same device [most of times the same chip], capture and playback clocks are assumed synchronized naturally [so we are not dealing with it]
+  * bufferqueue callbacks etc
+Besides those, the irregularity of the buffer queue player/capture callback time is another factor. The callback from openSL may not as regular as you assumed, the more irregularity it is, the more likely have choopy audio. To fight that, more buffering is needed, which defeats the low-latency purpose! The low latency path is highly tuned up so you have better chance to get more regular callbacks. You may experiment with your platform to find the best parameters for lower latency and continuously playback audio experience.
+The app capture and playback on the same device [most of times the same chip], capture and playback clocks are assumed synchronized naturally [so we are not dealing with it]
 
 Credits
-=======
+-------
   * The sample is greatly inspired by native-audio sample
   * Don Turner @ Google for the helping of low latency path
   * Ian Ni-Lewis @ Google for producer/consumer queue and many others
