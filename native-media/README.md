@@ -13,7 +13,7 @@ actual stream must be created according to the MPEG-2 specification.
 
 Pre-requisites
 --------------
-- Android Studio 1.3 with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
@@ -21,9 +21,9 @@ Getting Started
 1. Launch Android Studio.
 1. Open the sample directory.
 1. Open *File/Project Structure...*
-  1. Click *Download* or *Select NDK location*.
-  1. Click *Tools/Android/Sync Project with Gradle Files*.
-  1. Click *Run/Run 'app'*.
+  - Click *Download* or *Select NDK location*.
+1. Click *Tools/Android/Sync Project with Gradle Files*.
+1. Click *Run/Run 'app'*.
 
 Screenshots
 -----------

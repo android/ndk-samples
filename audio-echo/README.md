@@ -4,6 +4,20 @@ The sample demos how to use OpenSL ES to create a player and recorder in Android
   *   Android L    AndroidOne
   *   Android M    Nexus 5, Nexus 9
 
+Pre-requisites
+--------------
+- Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.
+
+Getting Started
+---------------
+1. [Download Android Studio](http://developer.android.com/sdk/index.html)
+1. Launch Android Studio.
+1. Open the sample directory.
+1. Open *File/Project Structure...*
+  - Click *Download* or *Select NDK location*.
+1. Click *Tools/Android/Sync Project with Gradle Files*.
+1. Click *Run/Run 'app'*.
+
 Usage
 -----
 App will capture audio from android devices and playback on the same device; the playback on speaker will be captured immediately and played back...! So to verify it, it is recommended to "mute" the playback audio with a earspeaker/earphone/earbug so it does not get looped back.  Some device like Nexus 9, once you plug in an external headphone/headspeaker, it stops to use onboard microphone AND speaker anymore -- in this case, you need turn on the microphone coming with your headphone. Another point, when switching between external headphone and internal one, the volume is sometimes very low/muted; recommend to increase the playback volume with volume buttons on the phone/pad after plugging external headphone.
@@ -44,21 +58,6 @@ Credits
   * The sample is greatly inspired by native-audio sample
   * Don Turner @ Google for the helping of low latency path
   * Ian Ni-Lewis @ Google for producer/consumer queue and many others
-
-Pre-requisites
---------------
-- Android Studio 1.3 with [NDK](https://developer.android.com/ndk/) bundle.
-
-Getting Started
----------------
-1. [Download Android Studio](http://developer.android.com/sdk/index.html)
-1. Launch Android Studio.
-1. Open the sample directory.
-1. Open *File/Project Structure...*
-  1. Click *Download* or *Select NDK location*.
-  1. Click *Tools/Android/Sync Project with Gradle Files*.
-  1. Click *Run/Run 'app'*.
-
 
 Support
 -------
