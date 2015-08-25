@@ -7,7 +7,7 @@ For demonstration purposes we have supplied such a file.
 
 Pre-requisites
 --------------
-- Android Studio 1.3 with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
@@ -15,9 +15,9 @@ Getting Started
 1. Launch Android Studio.
 1. Open the sample directory.
 1. Open *File/Project Structure...*
-  1. Click *Download* or *Select NDK location*.
-  1. Click *Tools/Android/Sync Project with Gradle Files*.
-  1. Click *Run/Run 'app'*.
+  - Click *Download* or *Select NDK location*.
+1. Click *Tools/Android/Sync Project with Gradle Files*.
+1. Click *Run/Run 'app'*.
 
 Screenshots
 -----------
@@ -31,7 +31,7 @@ Patches are encouraged, and may be submitted by [forking this project](https://g
 submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
-- [Google+ Community](https://plus.google.com/communities/105153134372062985968)
+- [Google+ Community](https://plus.google.com/communities/1051.3+134372062985968)
 - [Android Tools Feedbacks](http://tools.android.com/feedback)
 
 License
