@@ -10,15 +10,14 @@ Pre-requisites
 Getting Started
 ---------------
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
-1. unzip Play Game C++ SDK in the sample directory.
-  - it should create the following directory:
-        android-ndk/native-playgameservices/gpg-cpp-sdk
+1. unzip Play Game C++ SDK in the sample directory:
+  - This should create the following directory: `android-ndk/native-playgameservices/gpg-cpp-sdk`
 1. Launch Android Studio.
 1. Open the sample directory.
 1. Open *File/Project Structure...*
   - Click *Download* or *Select NDK location*.
 1. Click *Tools/Android/Sync Project with Gradle Files*.
-1. Set your `APP_ID` in `res/values/ids.xml` to the ID your project in the *Game services* of the Google Play console.
+1. Set `APP_ID` in `res/values/ids.xml` to the ID your project in the *Game services* section of the Google Play console.
 1. Click *Run/Run 'app'*.
 
 Screenshots
