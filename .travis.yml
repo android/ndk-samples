@@ -3,7 +3,9 @@ sudo: false
 android:
   components:
     - build-tools-22.0.1
+    - build-tools-23.0.0
     - android-22
+    - android-23
 addons:
   apt_packages:
     - pandoc
