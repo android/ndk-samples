@@ -15,31 +15,10 @@
 
 #include "StateManager.h"
 
-#ifdef __APPLE__
-// Logging for CoreFoundation
-#include <CoreFoundation/CoreFoundation.h>
-
-extern "C" void NSLog(CFStringRef format, ...);
-const int32_t BUFFER_SIZE = 256;
-
-// Wrap macro in do/while to ensure ;
-#define LOGI(...) do { \
-    char c[BUFFER_SIZE]; \
-    snprintf(c, BUFFER_SIZE, __VA_ARGS__); \
-    CFStringRef str = CFStringCreateWithCString(kCFAllocatorDefault, c, \
-                                                kCFStringEncodingMacRoman); \
-    NSLog(str); \
-    CFRelease(str); \
-  } while (false)
-
-#else
-
 #include "android/log.h"
 #define DEBUG_TAG "TeapotNativeActivity"
 #define LOGI(...) \
     ((void)__android_log_print(ANDROID_LOG_INFO, DEBUG_TAG, __VA_ARGS__))
-
-#endif
 
 #include "gpg/achievement_manager.h"
 bool StateManager::is_auth_in_progress_ = false;
