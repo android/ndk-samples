@@ -16,10 +16,6 @@
 #ifndef TEAPOT_JNI_STATE_MANAGER_H
 #define TEAPOT_JNI_STATE_MANAGER_H
 
-#ifdef __OBJC__
-#include <objc/NSObjCRuntime.h>
-#endif
-
 #include "gpg/achievement.h"
 #include "gpg/achievement_manager.h"
 #include "gpg/builder.h"
