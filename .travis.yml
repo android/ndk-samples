@@ -6,6 +6,8 @@ android:
     - build-tools-23.0.0
     - android-22
     - android-23
+    - extra-google-google_play_services
+    - extra-google-m2repository
 addons:
   apt_packages:
     - pandoc
