@@ -1,6 +1,6 @@
-Native Play Game Services
-=========================
-Native Play Games Services is an Android C++ sample that demonstrates a minimal use case for the Google Play Game Services API from a Native Activity.
+Hello Third Party
+=================
+Hello Third Party Lib is an Android C++ sample that depends on a prebuilt static library (Play Game C++ SDK).
 
 Pre-requisites
 --------------
