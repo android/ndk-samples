@@ -8,6 +8,7 @@ android:
     - android-23
     - extra-google-google_play_services
     - extra-google-m2repository
+    - extra-android-support
 addons:
   apt_packages:
     - pandoc
