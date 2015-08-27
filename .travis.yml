@@ -2,13 +2,10 @@ language: android
 sudo: false
 android:
   components:
-    - build-tools-22.0.1
     - build-tools-23.0.0
-    - android-22
     - android-23
-    - extra-google-google_play_services
     - extra-google-m2repository
-    - extra-android-support
+    - extra-android-m2repository
 addons:
   apt_packages:
     - pandoc

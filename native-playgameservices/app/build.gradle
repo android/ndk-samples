@@ -37,5 +37,4 @@ dependencies {
     compile 'com.google.android.gms:play-services-base:7+'
     compile 'com.google.android.gms:play-services-appstate:7+'
     compile 'com.google.android.gms:play-services-nearby:7+'
-    compile 'com.android.support:support-v4:23+'    
 }
