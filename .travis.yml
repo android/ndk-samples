@@ -13,7 +13,9 @@ before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 script:
-  - (cd builder && ./gradlew test && pandoc build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p')
+  - (cd builder && ./gradlew test)
+  - pandoc builder/build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
   - for f in */README.md; do sed -n '/Support/,/License/p' $f > /tmp/$(dirname $f).readme; done && diff -u --from-file=/tmp/hello-jni.readme /tmp/*.readme
-  - test `grep -h compileSdkVersion */app/build.gradle | awk -F= '{gsub(/ /, "", $2); print $2;}' | sort | uniq | wc -l` = "1"
-  - test `grep -h targetSdkVersion */app/build.gradle | awk -F= '{gsub(/ /, "", $2); print $2;}' | sort | uniq | wc -l` = "1"
+  - test "$(grep -H compileSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
+  - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
+  - test "$(grep -H buildToolsVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
