@@ -11,7 +11,7 @@ Getting Started
 ---------------
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
 1. unzip Play Game C++ SDK in the sample directory:
-  - This should create the following directory: `android-ndk/native-playgameservices/gpg-cpp-sdk`
+  - This should create the following directory: `android-ndk/hello-thirdparty/gpg-cpp-sdk`
 1. Launch Android Studio.
 1. Open the sample directory.
 1. Open *File/Project Structure...*
