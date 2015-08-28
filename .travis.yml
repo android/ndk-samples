@@ -1,5 +1,8 @@
 language: android
 sudo: false
+os:
+  - linux
+  - osx
 android:
   components:
     - build-tools-22.0.1
