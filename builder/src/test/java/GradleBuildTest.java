@@ -8,6 +8,8 @@ import org.gradle.tooling.BuildException;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.model.GradleProject;
+import org.gradle.tooling.model.GradleTask;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -83,6 +85,10 @@ public class GradleBuildTest {
       GradleConnector connector = GradleConnector.newConnector();
       connector.forProjectDirectory(gradleProject);
       ProjectConnection connection = connector.connect();
+      GradleProject project = connection.getModel(GradleProject.class);
+      for(GradleTask task : project.getChildren().getAt(0).getTasks()) {
+	  System.err.println("task: " + task.getName());
+      }
       ByteArrayOutputStream stdout = new ByteArrayOutputStream();
       ByteArrayOutputStream stderr = new ByteArrayOutputStream();
       BuildLauncher launcher = connection.newBuild();
@@ -91,9 +97,10 @@ public class GradleBuildTest {
       try {
 	  launcher.forTasks("app:lint");
 	  launcher.run();
-
-	  launcher.forTasks("build");
+	  launcher.forTasks("assembleDebug");
 	  launcher.run();
+	  launcher.forTasks("assembleRelease");
+	  launcher.run();	  
       } catch (BuildException e) {
 	  try {
 	      String lintReportPath = gradleProject.getPath() +  "/app/build/outputs/lint-results.html";	      
