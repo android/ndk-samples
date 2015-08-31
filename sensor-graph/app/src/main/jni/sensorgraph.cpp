@@ -144,6 +144,8 @@ class sensorgraph {
         GLint programLinked = 0;
         glGetProgramiv(program, GL_LINK_STATUS, &programLinked);
         assert(programLinked != 0);
+        glDeleteShader(vertexShader);
+        glDeleteShader(pixelShader);
         return program;
     }
 
