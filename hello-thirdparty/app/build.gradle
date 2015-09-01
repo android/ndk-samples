@@ -20,7 +20,7 @@ model {
     android.ndk {
         moduleName = "native-activity"
         cppFlags += "-I${file("src/main/jni")}".toString()
-        cppFlags += "-I${gpg_sdk_path+"/include"}".toString()
+        cppFlags += "-I${gpg_sdk_path}/include".toString()
         ldLibs += ["log", "android", "EGL", "GLESv1_CM", "gpg", "z"]
         stl    = "c++_static"
     }
