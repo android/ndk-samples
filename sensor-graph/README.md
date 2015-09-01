@@ -8,12 +8,10 @@ It demonstrate usage of the following Native C++ API:
 
 Pre-requisites
 --------------
-
 - Android Studio 1.3 with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
-
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
 1. Launch Android Studio.
 1. Open `android-ndk/sensor-graph` sample.
@@ -24,12 +22,10 @@ Getting Started
 
 Screenshots
 -----------
-
 ![screenshot](screenshot.png)
 
 Support
 -------
-
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
 Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
@@ -41,7 +37,6 @@ submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUT
 
 License
 -------
-
 Copyright 2015 Google, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
