@@ -25,7 +25,9 @@ Project structure
 -----------------
 This project consists of 2 sub-projects.  The first the "app" and contains
 the application code and resources.  It is dependendent on the second sub-project
-"thirdparty-gpg-sdk" which downloads and unzips the Google Play Games SDK.
+"thirdparty/gpg-sdk" which downloads and unzips the Google Play Games SDK.
+
+This demonstrates one way to organize and manage thirdparty libraries.
 
 Screenshots
 -----------
