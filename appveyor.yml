@@ -14,5 +14,6 @@ install:
 - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --filter android-23,build-tools-23.0.0,extra-google-m2repository,extra-android-m2repository > nul
 - choco install pandoc
 build_script:
+- set PATH=C:\ProgramData\chocolatey\bin;%PATH%
 - cd builder
 - gradlew test
