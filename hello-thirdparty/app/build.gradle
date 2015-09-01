@@ -33,7 +33,7 @@ model {
     android.productFlavors {
         create ("arm7") {
             ndk.abiFilters += "armeabi-v7a"
-            ndk.ldFlags += "-L${gpg_sdk_path+"/lib/c++/armeabi-v7a"}".toString()
+            ndk.ldFlags += "-L${gpg_sdk_path}/lib/c++/armeabi-v7a".toString()
         }
     }
 }
