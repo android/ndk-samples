@@ -102,18 +102,7 @@ public class GradleBuildTest {
 	  launcher.forTasks("assembleRelease");
 	  launcher.run();	  
       } catch (BuildException e) {
-	  try {
-	      String lintReportPath = gradleProject.getPath() +  "/app/build/outputs/lint-results.html";	      
-	      Process p = new ProcessBuilder("pandoc",
-					     lintReportPath,
-					     "-t",
-					     "plain").redirectErrorStream(true).start();
-	      p.waitFor();
-	      fail(String.format("BUILD FAILED: %s\nSTDOUT: %s\nSTDERR: %s\nLINT: %s",
-				 e, stdout, stderr, new String(ByteStreams.toByteArray(p.getInputStream()))));
-	  } catch (Exception pe) {
-	      fail(String.format("failed to get lint report: %s", pe.toString()));
-	  }
+	  fail(String.format("BUILD FAILED: %s\nSTDOUT: %s\nSTDERR: %s", e, stdout, stderr));
       } finally {
 	  connection.close();
       }
