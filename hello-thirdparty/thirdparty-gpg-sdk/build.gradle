@@ -5,11 +5,11 @@ apply plugin: 'java'
 project.ext {
     gpg_sdk_link = 'https://developers.google.com/games/services/downloads/gpg-cpp-sdk.v1.4.1.zip'
 }
-task fetch_gpg_sdk(dependsOn:'unzip_gpg_sdk') {
+task download_and_stage_gpg_sdk(dependsOn:'unzip_gpg_sdk') {
 
 }
 
-task get_gpg_cpp_sdk () {
+task fetch_gpg_cpp_sdk () {
 
     doFirst {
         ant.get(src: gpg_sdk_link, dest: 'gpg_cpp_sdk.zip', skipexisting: 'true')
@@ -20,7 +20,7 @@ task get_gpg_cpp_sdk () {
     outputs.files('gpg_cpp_sdk.zip')
     outputs.upToDateWhen {file('gpg_cpp_sdk.zip').exists()}
 }
-get_gpg_cpp_sdk.description = "Download the gpg sdk from the specified location"
+fetch_gpg_cpp_sdk.description = "Download the gpg sdk from the specified location"
 
 task unzip_gpg_sdk() {
     doFirst {
@@ -29,13 +29,13 @@ task unzip_gpg_sdk() {
                 exclude 'gpg_cpp_sdk/ios'
             }
 
-            into { '.' }
+            into { project.projectDir }
         }
     }
     outputs.dir('gpg_cpp_sdk/android')
     outputs.upToDateWhen {file('gpg_cpp_sdk/android').exists()}
     description = "Unzips the GPG SDK into the correct dir for NDK"
-    dependsOn get_gpg_cpp_sdk
+    dependsOn fetch_gpg_cpp_sdk
 }
 
 task clean_sdk () {
@@ -49,6 +49,6 @@ task clean_sdk () {
 }
 tasks['clean'].dependsOn('clean_sdk')
 
-defaultTasks = ['fetch_gpg_sdk']
+defaultTasks = ['download_and_stage_gpg_sdk']
 
-tasks['jar'].dependsOn('fetch_gpg_sdk')
+tasks['jar'].dependsOn('download_and_stage_gpg_sdk')

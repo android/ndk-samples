@@ -1,5 +1,8 @@
 apply plugin: 'com.android.model.application'
 
+
+ def gpg_sdk_path = file(project(':thirdparty-gpg-sdk').projectDir).absolutePath + "/gpg-cpp-sdk/android"
+
 model {
     android {
         compileSdkVersion = 23
@@ -17,7 +20,7 @@ model {
     android.ndk {
         moduleName = "native-activity"
         cppFlags += "-I${file("src/main/jni")}".toString()
-        cppFlags += "-I${file(project(':gpg-sdk').projectDir.absolutePath+"/gpg-cpp-sdk/android/include").absolutePath}".toString()
+        cppFlags += "-I${gpg_sdk_path+"/include"}".toString()
         ldLibs += ["log", "android", "EGL", "GLESv1_CM", "gpg", "z"]
         stl    = "c++_static"
     }
@@ -30,7 +33,7 @@ model {
     android.productFlavors {
         create ("arm7") {
             ndk.abiFilters += "armeabi-v7a"
-            ndk.ldFlags += "-L${file(project(':gpg-sdk').projectDir.absolutePath+"/gpg-cpp-sdk/android/lib/c++/armeabi-v7a")}".toString()
+            ndk.ldFlags += "-L${gpg_sdk_path+"/lib/c++/armeabi-v7a"}".toString()
         }
     }
 }
@@ -41,6 +44,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-base:7+'
     compile 'com.google.android.gms:play-services-appstate:7+'
     compile 'com.google.android.gms:play-services-nearby:7+'
-    compile project(':gpg-sdk')
+    compile project(':thirdparty-gpg-sdk')
 }
 

@@ -6,12 +6,6 @@ Pre-requisites
 --------------
 - Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.
 
-Project structure
------------------
-This project consists of 2 sub-projects.  The first the "app" and contains
-the application code and resources.  It is dependendent on the second sub-project
-"gpg-sdk" which downloads and unzips the Google Play Games SDK.
-
 Getting Started
 ---------------
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
@@ -25,6 +19,13 @@ Getting Started
   - Set `APP_ID` in `app/res/values/ids.xml` to the ID your project in the *Game services* section of the Google Play console.
     __NOTE:__ If you fail to set the app ID or package name correctly, the sample will crash or behave unexpectedly.
 1. Click *Run/Run 'app'*.
+
+
+Project structure
+-----------------
+This project consists of 2 sub-projects.  The first the "app" and contains
+the application code and resources.  It is dependendent on the second sub-project
+"thirdparty-gpg-sdk" which downloads and unzips the Google Play Games SDK.
 
 Screenshots
 -----------
