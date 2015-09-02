@@ -20,5 +20,6 @@ script:
   - test "$(grep -H compileSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
   - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
   - test "$(grep -H buildToolsVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
-  - grep "\t" */app/src/main/AndroidManifest.xml | cat -t && false
-  - grep -E "\s+$" */app/src/main/AndroidManifest.xml | cat -e && false
+  - 'grep -n "\t" */app/src/main/AndroidManifest.xml | cat -t && false'
+  - 'grep -n -E "\s+$" */app/src/main/AndroidManifest.xml | cat -e && false'
+  
