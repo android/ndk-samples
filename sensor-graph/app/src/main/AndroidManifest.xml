@@ -20,10 +20,10 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.sensorgraph">
-    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+  <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
     <application
         android:allowBackup="false"
-	android:fullBackupContent="false"	
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/sensorgraph_activity">
       <activity android:name="com.android.sensorgraph.SensorGraphActivity"
@@ -35,5 +35,5 @@
           <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
-    </application>
+    </application>  
 </manifest>
