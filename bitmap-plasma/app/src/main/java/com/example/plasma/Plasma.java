@@ -27,7 +27,7 @@ import android.view.WindowManager;
 
 public class Plasma extends Activity
 {
-    /** Called when the activity is first created. */
+    // Called when the activity is first created.
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -36,18 +36,22 @@ public class Plasma extends Activity
         setContentView(new PlasmaView(this, display.getWidth(), display.getHeight()));
     }
 
-    /* load our native library */
+    // load our native library
     static {
         System.loadLibrary("plasma");
     }
 }
 
+// Custom view for rendering plasma.
+//
+// Note: suppressing lint wrarning for ViewConstructor since it is
+//       manually set from the activity and not used in any layout.
 @SuppressLint("ViewConstructor")
 class PlasmaView extends View {
     private Bitmap mBitmap;
     private long mStartTime;
 
-    /* implementend by libplasma.so */
+    // implementend by libplasma.so
     private static native void renderPlasma(Bitmap  bitmap, long time_ms);
 
     public PlasmaView(Context context, int width, int height) {
@@ -57,7 +61,6 @@ class PlasmaView extends View {
     }
 
     @Override protected void onDraw(Canvas canvas) {
-        //canvas.drawColor(0xFFCCCCCC);
         renderPlasma(mBitmap, System.currentTimeMillis() - mStartTime);
         canvas.drawBitmap(mBitmap, 0, 0, null);
         // force a redraw, with a different time-based pattern.
