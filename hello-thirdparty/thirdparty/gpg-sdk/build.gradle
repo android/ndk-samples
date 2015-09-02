@@ -1,0 +1,54 @@
+/*
+    sub module to download the Google Play games
+ */
+apply plugin: 'java'
+project.ext {
+    gpg_sdk_link = 'https://developers.google.com/games/services/downloads/gpg-cpp-sdk.v1.4.1.zip'
+}
+task download_and_stage_gpg_sdk(dependsOn:'unzip_gpg_sdk') {
+
+}
+
+task fetch_gpg_cpp_sdk () {
+
+    doFirst {
+        ant.get(src: gpg_sdk_link, dest: 'gpg_cpp_sdk.zip', skipexisting: 'true')
+    }
+    doLast {
+        println "Got ${gpg_sdk_link} as gpg_cpp_sdk.zip"
+    }
+    outputs.files('gpg_cpp_sdk.zip')
+    outputs.upToDateWhen {file('gpg_cpp_sdk.zip').exists()}
+}
+fetch_gpg_cpp_sdk.description = "Download the gpg sdk from the specified location"
+
+task unzip_gpg_sdk() {
+    doFirst {
+        copy {
+            from(zipTree('gpg_cpp_sdk.zip')) {
+                exclude 'gpg_cpp_sdk/ios'
+            }
+
+            into { project.projectDir }
+        }
+    }
+    outputs.dir('gpg_cpp_sdk/android')
+    outputs.upToDateWhen {file('gpg_cpp_sdk/android').exists()}
+    description = "Unzips the GPG SDK into the correct dir for NDK"
+    dependsOn fetch_gpg_cpp_sdk
+}
+
+task clean_sdk () {
+    doFirst {
+        file('gpg_cpp_sdk.zip').delete()
+    }
+    doLast {
+        delete 'gpg-cpp-sdk'
+        delete 'build'
+    }
+}
+tasks['clean'].dependsOn('clean_sdk')
+
+defaultTasks = ['download_and_stage_gpg_sdk']
+
+tasks['jar'].dependsOn('download_and_stage_gpg_sdk')
