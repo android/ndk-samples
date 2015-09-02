@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.native_plasma"
-    android:versionCode="1"
-    android:versionName="1.0">
+	  package="com.example.native_plasma"
+	  android:versionCode="1"
+	  android:versionName="1.0">
   <application
       android:allowBackup="false"
-      android:fullBackupContent="false" 
+      android:fullBackupContent="false"
       android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
       android:hasCode="false">
@@ -19,4 +19,4 @@
       </intent-filter>
     </activity>
   </application>
-</manifest> 
+</manifest>

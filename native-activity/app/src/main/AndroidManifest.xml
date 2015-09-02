@@ -9,7 +9,7 @@
   <application
       android:allowBackup="false"
       android:fullBackupContent="false"
-      android:icon="@mipmap/ic_launcher"      
+      android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
       android:hasCode="false">
 
@@ -28,5 +28,5 @@
     </activity>
   </application>
 
-</manifest> 
+</manifest>
 <!-- END_INCLUDE(manifest) -->
