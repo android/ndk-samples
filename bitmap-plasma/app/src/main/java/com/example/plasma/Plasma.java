@@ -15,6 +15,7 @@
  */
 package com.example.plasma;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.Context;
@@ -41,6 +42,7 @@ public class Plasma extends Activity
     }
 }
 
+@SuppressLint("ViewConstructor")
 class PlasmaView extends View {
     private Bitmap mBitmap;
     private long mStartTime;

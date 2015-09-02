@@ -22,17 +22,18 @@
     package="com.android.sensorgraph">
     <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
     <application
-            android:icon="@mipmap/ic_launcher"
-            android:allowBackup="false"
-            android:label="@string/sensorgraph_activity">
-        <activity android:name="com.android.sensorgraph.SensorGraphActivity"
+        android:allowBackup="false"
+	android:fullBackupContent="false"	
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/sensorgraph_activity">
+      <activity android:name="com.android.sensorgraph.SensorGraphActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            	android:launchMode="singleTask"
-            	android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+                android:launchMode="singleTask"
+                android:configChanges="orientation|keyboardHidden">
+        <intent-filter>
+          <action android:name="android.intent.action.MAIN" />
+          <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+      </activity>
     </application>
 </manifest>

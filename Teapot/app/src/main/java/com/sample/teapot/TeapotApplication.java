@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 public class TeapotApplication extends Application {
     public void onCreate(){
+        super.onCreate();	
         Log.w("native-activity", "onCreate");
 
         final PackageManager pm = getApplicationContext().getPackageManager();
