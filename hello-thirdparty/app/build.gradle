@@ -12,7 +12,7 @@ model {
             //
             //  NOTE: change the application ID to match the play console linked application.
             //
-            applicationId = "com.example.android.native_playgameservices"
+            applicationId = "com.example.android.hello_thirdparty"
             minSdkVersion.apiLevel    = 9
             targetSdkVersion.apiLevel = 23
         }
@@ -40,10 +40,10 @@ model {
 
 
 dependencies {
-    compile 'com.google.android.gms:play-services-games:7+'
-    compile 'com.google.android.gms:play-services-base:7+'
-    compile 'com.google.android.gms:play-services-appstate:7+'
-    compile 'com.google.android.gms:play-services-nearby:7+'
+    compile 'com.google.android.gms:play-services-games:7.8.0'
+    compile 'com.google.android.gms:play-services-base:7.8.0'
+    compile 'com.google.android.gms:play-services-appstate:7.8.0'
+    compile 'com.google.android.gms:play-services-nearby:7.8.0'
     compile project(':thirdparty:gpg-sdk')
 }
 
