@@ -58,3 +58,13 @@ model {
         create("all")
     }
 }
+
+configurations {
+    testCompile
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.9.5'
+}
