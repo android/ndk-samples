@@ -16,4 +16,4 @@ build_script:
   - cd builder
   - gradlew test
 artifacts:
-  - path: *
+  - path: '*'
