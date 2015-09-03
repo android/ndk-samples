@@ -20,6 +20,7 @@ script:
   - test "$(grep -H compileSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
   - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
   - test "$(grep -H buildToolsVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
-  - (! grep -n "\t" */app/src/main/AndroidManifest.xml) | cat -t; test ${PIPESTATUS[0]} -eq 0
-  - (! grep -E "\s+$" */app/src/main/AndroidManifest.xml) | cat -e; test ${PIPESTATUS[0]} -eq 0
-  
+  - |-
+    (! grep -n "\t" */app/src/main/AndroidManifest.xml) | cat -t; test ${PIPESTATUS[0]} -eq 0
+  - |-
+    (! grep -E "\s+$" */app/src/main/AndroidManifest.xml) | cat -e; test ${PIPESTATUS[0]} -eq 0
