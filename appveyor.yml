@@ -16,4 +16,5 @@ build_script:
   - cd builder
   - gradlew test
 artifacts:
-  - path: '*'
+  - path: '**/build/outputs/lint-results.html'
+    name: lint results
