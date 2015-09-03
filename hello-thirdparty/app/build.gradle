@@ -17,6 +17,12 @@ model {
             targetSdkVersion.apiLevel = 23
         }
     }
+
+    compileOptions.with {
+        sourceCompatibility=JavaVersion.VERSION_1_7
+        targetCompatibility=JavaVersion.VERSION_1_7
+    }
+
     android.ndk {
         moduleName = "native-activity"
         cppFlags += "-I${file("src/main/jni")}".toString()
