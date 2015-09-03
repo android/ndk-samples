@@ -13,9 +13,6 @@ before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
 script:
-  - (cd builder && ./gradlew test)
-  - pandoc builder/build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
-  - for f in */app/build/outputs/lint-results.html; do pandoc $f -t plain; done
   - for f in */README.md; do sed -n '/Support/,/License/p' $f > /tmp/$(dirname $f).readme; done && diff -u --from-file=/tmp/hello-jni.readme /tmp/*.readme
   - test "$(grep -H compileSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
   - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
@@ -23,4 +20,7 @@ script:
   - |-
     (! grep -n $'\t' */app/src/main/AndroidManifest.xml) | cat -t; test ${PIPESTATUS[0]} -eq 0
   - |-
-    (! grep -E "\s+$" */app/src/main/AndroidManifest.xml) | cat -e; test ${PIPESTATUS[0]} -eq 0
+    (! grep -E '\s+$' */app/src/main/AndroidManifest.xml) | cat -e; test ${PIPESTATUS[0]} -eq 0  
+  - (cd builder && ./gradlew test)
+  - pandoc builder/build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
+  - for f in */app/build/outputs/lint-results.html; do pandoc $f -t plain; done
