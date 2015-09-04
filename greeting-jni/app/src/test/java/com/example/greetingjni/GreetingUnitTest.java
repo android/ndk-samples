@@ -42,11 +42,11 @@ public class GreetingUnitTest {
     private String mGreeting;
 
     @Before
-    public void setup() {
+    public void setUp() {
         suppress(method(Greeter.class, "initLibrary"));
-        // Real instance to call the real methods
+        // Real instance to call and test the real methods
         mGreeter = new Greeter();
-        // spy the instance to intercept calls to JNI methods
+        // spy the instance to intercept calls to native methods
         mGreeter = spy(mGreeter);
     }
 
@@ -62,6 +62,7 @@ public class GreetingUnitTest {
     }
 
     private void whenGreeterSendNameToC() {
+        // returning the same name and not calling the native method
         doReturn(mName).when(mGreeter).stringFromJNI(anyString());
         mGreeting = mGreeter.sendName(mName);
     }
