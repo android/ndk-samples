@@ -38,10 +38,10 @@ Getting Started
 
 Optionally you can switch API level version with:
 ```
-$ ln -s app/src/main/AndroidManifest-$N.xml app/src/main/AndroidManifest.xml
-$ ln -s app/build-$N.gradle app/build.gradle
+$ cp app/src/main/AndroidManifest-$N.xml app/src/main/AndroidManifest.xml
+$ cp app/build-$N.gradle app/build.gradle
 ```
-where `$N` is '11' or '18' and `$ANDROID_SDK` is the root of your SDK installation.
+where `$N` is the desired minSdkVersion: '11' or '18'.
 
 Screenshots
 -----------
