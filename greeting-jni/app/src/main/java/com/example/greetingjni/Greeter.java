@@ -21,12 +21,16 @@ public class Greeter {
     return stringFromJNI(name);
   }
 
+  public void callUnimplementedJniMethod() {
+    unimplementedStringFromJNI();
+  }
+
 
   /* A native method that is implemented by the
     * 'greeting-jni' native library, which is packaged
     * with this application.
     */
-  public native String  stringFromJNI(String parameter);
+  private native String  stringFromJNI(String parameter);
 
   /* This is another native method declaration that is *not*
      * implemented by 'greeting-jni'. This is simply to show that
@@ -38,7 +42,7 @@ public class Greeter {
      * Trying to call this function will result in a
      * java.lang.UnsatisfiedLinkError exception !
      */
-  public native String  unimplementedStringFromJNI();
+  private native String  unimplementedStringFromJNI();
 
   /* this is used to load the 'greeting-jni' library on application
    * startup. The library has already been unpacked into

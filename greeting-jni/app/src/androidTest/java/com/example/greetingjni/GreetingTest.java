@@ -23,7 +23,8 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.assertTrue;
 
 /**
- * This test uses Instrumentation Tests and loads the library to test
+ * This test uses Instrumentation Tests
+ * It loads the "greeting-jni" library to test
  * with System dependencies.
  */
 @RunWith(AndroidJUnit4.class)
@@ -43,6 +44,15 @@ public class GreetingTest {
         givenName("someName");
         whenGreeterSendNameToC();
         thenGreetingShouldContainName();
+    }
+
+    @Test(expected = java.lang.UnsatisfiedLinkError.class)
+    public void shouldThrowExceptionForUnimplementedJniMethod() {
+        whenGreeterCallUnimplementedJniMethod();
+    }
+
+    private void whenGreeterCallUnimplementedJniMethod() {
+        mGreeter.callUnimplementedJniMethod();
     }
 
     private void givenName(String someName) {
