@@ -12,6 +12,12 @@ model {
         }
 
     }
+
+    compileOptions.with {
+        sourceCompatibility=JavaVersion.VERSION_1_7
+        targetCompatibility=JavaVersion.VERSION_1_7
+    }
+
     android.ndk {
         moduleName = "plasma"
         ldLibs += ["m","log","jnigraphics"]

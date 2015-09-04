@@ -28,6 +28,12 @@ model {
             versionName     = "1.0"
        }
     }
+
+    compileOptions.with {
+        sourceCompatibility=JavaVersion.VERSION_1_7
+        targetCompatibility=JavaVersion.VERSION_1_7
+    }
+
     android.ndk {
             moduleName = "game"
             cppFlags  += "-I${file("src/main/jni/native_app_glue")}".toString()
