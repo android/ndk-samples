@@ -7,8 +7,9 @@ model {
 
         defaultConfig.with {
             applicationId = "com.example.greetingjni"
-            minSdkVersion.apiLevel = 4
+            minSdkVersion.apiLevel = 8
             targetSdkVersion.apiLevel = 23
+            testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         }
     }
     /*
@@ -61,10 +62,18 @@ model {
 
 configurations {
     testCompile
+    androidTestCompile
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    androidTestCompile 'com.android.support.test:runner:0.3'
+    // Set this dependency to use JUnit 4 rules
+    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'org.mockito:mockito-core:1.9.5'
+
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.9.5'
 }
