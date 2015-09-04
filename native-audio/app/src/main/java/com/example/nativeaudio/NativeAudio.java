@@ -236,7 +236,9 @@ public class NativeAudio extends Activity {
                 new OnSeekBarChangeListener() {
             int lastProgress = 100;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                assert progress >= 0 && progress <= 100;
+                if (BuildConfig.DEBUG && !(progress >= 0 && progress <= 100)) {
+                    throw new AssertionError();
+                }
                 lastProgress = progress;
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -252,7 +254,9 @@ public class NativeAudio extends Activity {
                 new OnSeekBarChangeListener() {
             int lastProgress = 100;
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                assert progress >= 0 && progress <= 100;
+                if (BuildConfig.DEBUG && !(progress >= 0 && progress <= 100)) {
+                    throw new AssertionError();
+                }               
                 lastProgress = progress;
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
