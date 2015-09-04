@@ -16,6 +16,7 @@
 
 package com.example.nativeaudio;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -52,6 +53,7 @@ public class NativeAudio extends Activity {
 
     /** Called when the activity is first created. */
     @Override
+    @TargetApi(17)
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
@@ -69,7 +71,7 @@ public class NativeAudio extends Activity {
          * IF we do not have a fast audio path, we pass 0 for sampleRate, which will force native
          * side to pick up the 8Khz sample rate.
          */
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             String nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
             sampleRate = Integer.parseInt(nativeParam);
