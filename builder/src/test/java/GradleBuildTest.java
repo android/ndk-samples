@@ -85,15 +85,9 @@ public class GradleBuildTest {
       GradleConnector connector = GradleConnector.newConnector();
       connector.forProjectDirectory(gradleProject);
       ProjectConnection connection = connector.connect();
-      GradleProject project = connection.getModel(GradleProject.class);
-      for(GradleTask task : project.getChildren().getAt(0).getTasks()) {
-	  System.err.println("task: " + task.getName());
-      }
-      ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-      ByteArrayOutputStream stderr = new ByteArrayOutputStream();
       BuildLauncher launcher = connection.newBuild();
-      launcher.setStandardOutput(stdout);
-      launcher.setStandardError(stderr);
+      launcher.setStandardOutput(System.out);
+      launcher.setStandardError(System.err);      
       try {
 	  launcher.forTasks("app:lint");
 	  launcher.run();
@@ -102,7 +96,7 @@ public class GradleBuildTest {
 	  launcher.forTasks("assembleRelease");
 	  launcher.run();	  
       } catch (BuildException e) {
-	  fail(String.format("BUILD FAILED: %s\nSTDOUT: %s\nSTDERR: %s", e, stdout, stderr));
+	  fail(String.format("BUILD FAILED: %s", e));
       } finally {
 	  connection.close();
       }
