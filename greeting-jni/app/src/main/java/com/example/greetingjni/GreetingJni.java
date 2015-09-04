@@ -16,32 +16,39 @@
 package com.example.greetingjni;
 
 import android.app.Activity;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.os.Bundle;
 
 
 public class GreetingJni extends Activity
 {
+    private EditText mEditText;
+    private TextView mTextView;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.greeting);
+        mEditText = (EditText) findViewById(R.id.editText);
+        mTextView = (TextView) findViewById(R.id.greetingTextView);
+    }
 
-        /* Create a TextView and set its content.
-         * the text is retrieved by calling a native
-         * function.
+    public void sendName(View view) {
+        /* The text is retrieved by calling a native
+         * function and set into a TextView.
          */
-        TextView  tv = new TextView(this);
-        tv.setText( stringFromJNI() );
-        setContentView(tv);
+        mTextView.setText(stringFromJNI(mEditText.getText().toString()));
     }
 
     /* A native method that is implemented by the
      * 'greeting-jni' native library, which is packaged
      * with this application.
      */
-    public native String  stringFromJNI();
+    public native String  stringFromJNI(String parameter);
 
     /* This is another native method declaration that is *not*
      * implemented by 'greeting-jni'. This is simply to show that

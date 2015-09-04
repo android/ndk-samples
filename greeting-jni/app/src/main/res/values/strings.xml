@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GreetingJni</string>
+    <string name="TypeName">Type your name</string>
+    <string name="ButtonLabel">Send Name</string>
 </resources>
