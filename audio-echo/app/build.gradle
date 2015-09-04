@@ -17,6 +17,12 @@ model {
             targetCompatibility=JavaVersion.VERSION_1_7
         }
     }
+
+    compileOptions.with {
+        sourceCompatibility=JavaVersion.VERSION_1_7
+        targetCompatibility=JavaVersion.VERSION_1_7
+    }
+
     android.ndk {
         moduleName = "echo"
         cppFlags  += ["-std=c++11"]

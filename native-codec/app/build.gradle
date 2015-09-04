@@ -17,6 +17,12 @@ model {
             proguardFiles  += file('proguard-rules.txt')
         }
     }
+
+    compileOptions.with {
+        sourceCompatibility=JavaVersion.VERSION_1_7
+        targetCompatibility=JavaVersion.VERSION_1_7
+    }
+
     android.ndk {
         moduleName = "native-codec-jni"
         cppFlags += "-UNDEBUG"
