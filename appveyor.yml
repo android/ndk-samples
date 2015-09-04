@@ -15,5 +15,3 @@ install:
 build_script:
   - cd builder
   - gradlew test
-on_failure:
-  - cmd: appveyor PushArtifact C:\projects\android-ndk\MoreTeapots\app\build\outputs\lint-results.xml
