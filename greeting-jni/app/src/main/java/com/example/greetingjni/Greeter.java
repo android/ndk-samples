@@ -30,7 +30,7 @@ public class Greeter {
     * 'greeting-jni' native library, which is packaged
     * with this application.
     */
-  private native String  stringFromJNI(String parameter);
+  protected native String  stringFromJNI(String parameter);
 
   /* This is another native method declaration that is *not*
      * implemented by 'greeting-jni'. This is simply to show that
@@ -42,7 +42,7 @@ public class Greeter {
      * Trying to call this function will result in a
      * java.lang.UnsatisfiedLinkError exception !
      */
-  private native String  unimplementedStringFromJNI();
+  protected native String  unimplementedStringFromJNI();
 
   /* this is used to load the 'greeting-jni' library on application
    * startup. The library has already been unpacked into
@@ -50,6 +50,14 @@ public class Greeter {
    * installation time by the package manager.
    */
   static {
+    initLibrary();
+  }
+
+  /*
+   * Using this technique to encapsulate the static loadLibrary block
+   * to be able to UnitTest it.
+   */
+  static void initLibrary() {
     System.loadLibrary("greeting-jni");
   }
 }
