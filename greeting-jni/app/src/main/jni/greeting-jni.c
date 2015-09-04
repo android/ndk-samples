@@ -24,8 +24,8 @@
  *   apps/samples/greeting-jni/project/src/com/example/greetingjni/GreetingJni.java
  */
 jstring
-Java_com_example_greetingjni_GreetingJni_stringFromJNI( JNIEnv* env,
-                                                  jobject thiz )
+Java_com_example_greetingjni_Greeter_stringFromJNI( JNIEnv* env,
+                                                  jobject thiz, jstring name)
 {
 #if defined(__arm__)
   #if defined(__ARM_ARCH_7A__)
@@ -59,5 +59,17 @@ Java_com_example_greetingjni_GreetingJni_stringFromJNI( JNIEnv* env,
    #define ABI "unknown"
 #endif
 
-    return (*env)->NewStringUTF(env, "Greeting from JNI !  Compiled with ABI " ABI ".");
+    const char *cName = (*env)->GetStringUTFChars(env, name, NULL);
+    jstring helloWorld = ". Greetings from JNI !  Compiled with ABI " ABI ".";
+    char *concat = malloc(strlen(helloWorld) + strlen(cName) + 1);
+
+    stpcpy(concat, cName);
+    strcat(concat, helloWorld);
+
+    jstring greeting = (*env) -> NewStringUTF(env, concat);
+
+    (*env)->ReleaseStringUTFChars(env, name, cName);
+    free(concat);
+
+    return greeting;
 }
