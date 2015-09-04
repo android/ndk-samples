@@ -12,6 +12,12 @@ model {
             testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         }
     }
+
+    compileOptions.with {
+        sourceCompatibility=JavaVersion.VERSION_1_7
+        targetCompatibility=JavaVersion.VERSION_1_7
+    }
+
     /*
      * native build settings
      */
