@@ -15,6 +15,5 @@ install:
 build_script:
   - cd builder
   - gradlew test
-artifacts:
-  - path: '**/build/outputs/lint-results.html'
-    name: lint results
+on_failure:
+  - ps: Get-ChildItem .\**\build\outputs\lint-results.html | % { Push-AppveyorArtifact $_.FullName -FileName $_.FullName }
