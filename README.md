@@ -1,4 +1,4 @@
-NDK Samples [![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg?branch=master)](https://travis-ci.org/googlesamples/android-ndk)
+NDK Samples [![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg?branch=master)](https://travis-ci.org/googlesamples/android-ndk) [![Build status](https://ci.appveyor.com/api/projects/status/48tbtqwg4heytmnq?svg=true)](https://ci.appveyor.com/project/proppy/android-ndk)
 ===========
 
 This repository contains [Android NDK][0] samples using the new Android Studio 1.3 preview [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
