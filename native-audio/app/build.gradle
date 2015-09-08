@@ -8,7 +8,7 @@ model {
         defaultConfig.with {
             applicationId    = "com.example.nativeaudio"
             minSdkVersion.apiLevel    = 9
-            targetSdkVersion.apiLevel = 23
+            targetSdkVersion.apiLevel = 22
 
         }
     }

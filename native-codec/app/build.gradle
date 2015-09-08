@@ -8,7 +8,7 @@ model {
         defaultConfig.with {
             applicationId = "com.example.nativecodec"
             minSdkVersion.apiLevel    = 21
-            targetSdkVersion.apiLevel = 23
+            targetSdkVersion.apiLevel = 22
         }
     }
     android.buildTypes {
