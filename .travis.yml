@@ -15,7 +15,7 @@ before_install:
 script:
   - for f in */README.md; do sed -n '/Support/,/License/p' $f > /tmp/$(dirname $f).readme; done && diff -u --from-file=/tmp/hello-jni.readme /tmp/*.readme
   - test "$(grep -H compileSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
-  - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
+  - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "2"
   - test "$(grep -H buildToolsVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
   - |-
     (! grep -n $'\t' */app/src/main/AndroidManifest.xml) | cat -t; test ${PIPESTATUS[0]} -eq 0
