@@ -27,8 +27,14 @@ model {
         moduleName = "native-activity"
         cppFlags += "-I${file("src/main/jni")}".toString()
         cppFlags += "-I${gpg_sdk_path}/include".toString()
-        ldLibs += ["log", "android", "EGL", "GLESv1_CM", "gpg", "z"]
         stl    = "c++_static"
+        ldLibs += ["log", "android", "EGL", "GLESv1_CM", "z"]
+        //
+        //  NOTE: since libgpg is also linked to the stl:
+        //  libc++ explicitly follows it in the list of libraries
+        //  to prevent unresolved stl symbols.
+        //
+        ldLibs += ["gpg", "c++_static"]
     }
     android.buildTypes {
         release {
