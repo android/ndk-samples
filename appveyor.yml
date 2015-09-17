@@ -1,0 +1,18 @@
+version: '{build}'
+clone_folder: c:\projects\android-ndk
+init:
+  - cd \
+  - appveyor DownloadFile http://dl.google.com/android/android-sdk_r24.3.4-windows.zip
+  - 7z x android-sdk_r24.3.4-windows.zip > nul
+  - appveyor DownloadFile http://dl.google.com/android/ndk/android-ndk-r10e-windows-x86_64.exe
+  - android-ndk-r10e-windows-x86_64.exe > nul
+  - cd c:\projects\android-ndk
+environment:
+  ANDROID_NDK_HOME: C:\android-ndk-r10e
+  ANDROID_HOME: C:\android-sdk-windows
+install:
+  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter android-23,platform-tools,tools,build-tools-23.0.0,extra-google-m2repository,extra-android-m2repository
+build_script:
+  - cd builder
+  - gradlew test
+test: off
