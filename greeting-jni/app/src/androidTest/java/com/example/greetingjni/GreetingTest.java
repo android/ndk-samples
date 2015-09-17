@@ -35,7 +35,7 @@ public class GreetingTest {
     private String mGreeting;
 
     @Before
-    public void setUp() throws Exception {
+    public void initGreeter() throws Exception {
         mGreeter = new Greeter();
     }
 
