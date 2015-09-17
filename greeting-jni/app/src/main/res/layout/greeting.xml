@@ -5,13 +5,14 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editTextUserInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/TypeName"
         />
 
     <Button
+        android:id="@+id/sendNameToJniButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ButtonLabel"

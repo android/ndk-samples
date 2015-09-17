@@ -34,7 +34,7 @@ public class GreetingJni extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.greeting);
-        mEditText = (EditText) findViewById(R.id.editText);
+        mEditText = (EditText) findViewById(R.id.editTextUserInput);
         mTextView = (TextView) findViewById(R.id.greetingTextView);
         mGreeter = new Greeter();
     }
