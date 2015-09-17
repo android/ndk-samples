@@ -22,7 +22,7 @@ Screenshots
 ![screenshot](screenshot.png)
 
 
-Instrumentation Tests
+Instrumentation Tests (Espresso)
 -------
 Greeting JNI contains a sample tests that run the JNI code using the AndroidJUnit4 Instrumentation Runner.
 Use the following steps to run/debug the Instrumentations Tests:
@@ -37,28 +37,9 @@ Use the following steps to run/debug the Instrumentations Tests:
 
 Please read the following documentation for more information:
 
+- [Android Testing Samples](https://github.com/googlesamples/android-testing)
 - [Testing Fundamentals](http://developer.android.com/tools/testing/testing_android.html)
 - [InstrumentationTestRunner](http://developer.android.com/reference/android/test/InstrumentationTestRunner.html)
-
-Unit Tests - Java
--------
-Greeting JNI also contains an example of unit tests configuration using gradle.
-This UnitTest are not calling the native libraries, but it shows you one strategy on how to
-unit test classes that are using native methods with the help of libraries like Mockito and PowerMock.
-
-Use the following steps to run/debug the Unit Tests:
-
-1. Using Android Studio in the *Build Variants/Test Artifacts* be sure to select *Unit Tests*.
-1. Create a *JUnit Run/Debug configuration*.
-1. Click *Apply*, and *Run/Debug* the tests.
-
-![unit tests run-debug configuration](unittestsampleruntimeconfiguration.png)
-
-Please read the following documentation for more information:
-
-- [Unit Testing Support](http://tools.android.com/tech-docs/unit-testing-support)
-- [Building Local Unit Tests](https://developer.android.com/training/testing/unit-testing/local-unit-tests.html)
-
 
 Support
 -------
