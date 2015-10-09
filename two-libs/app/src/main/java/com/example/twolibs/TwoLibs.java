@@ -34,7 +34,7 @@ public class TwoLibs extends Activity
         // here, we dynamically load the library at runtime
         // before calling the native method.
         //
-        System.loadLibrary("twolib-second");
+        System.loadLibrary("libtwolib-second");
 
         int  z = add(x, y);
 
