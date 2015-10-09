@@ -1,0 +1,14 @@
+buildscript {
+    repositories {
+       jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle-experimental:0.3.0-alpha7'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
