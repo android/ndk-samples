@@ -379,6 +379,8 @@ struct engine {
     int animating;
 };
 
+static struct timespec now;
+static int64_t start_ms;
 static void engine_draw_frame(struct engine* engine) {
     if (engine->app->window == NULL) {
         // No window.
@@ -393,10 +395,9 @@ static void engine_draw_frame(struct engine* engine) {
 
     stats_startFrame(&engine->stats);
 
-    struct timespec t;
-    t.tv_sec = t.tv_nsec = 0;
-    clock_gettime(CLOCK_MONOTONIC, &t);
-    int64_t time_ms = (((int64_t)t.tv_sec)*1000000000LL + t.tv_nsec)/1000000;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    int64_t time_ms = (((int64_t)now.tv_sec)*1000000000LL + now.tv_nsec)/1000000;
+    time_ms -= start_ms;
 
     /* Now fill the values with a nice little plasma */
     fill_plasma(&buffer, time_ms);
@@ -461,6 +462,9 @@ void android_main(struct android_app* state) {
         init_tables();
         init = 1;
     }
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    start_ms = (((int64_t)now.tv_sec)*1000000000LL + now.tv_nsec)/1000000;
 
     stats_init(&engine.stats);
 
