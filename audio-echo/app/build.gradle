@@ -34,9 +34,6 @@ model {
             minifyEnabled=false
             proguardFiles+=file('proguard-android.txt')
         }
-        debug {
-            debuggable = true
-        }
     }
     android.productFlavors {
         create('all')
