@@ -25,14 +25,14 @@ model {
 
     android.ndk {
         moduleName = "echo"
-        cppFlags  += ["-std=c++11"]
-        ldLibs += ['android', 'log', 'OpenSLES']
+        cppFlags.add("-std=c++11")
+        ldLibs.addAll(['android', 'log', 'OpenSLES'])
         stl     = "gnustl_static"
     }
     android.buildTypes {
         release {
             minifyEnabled=false
-            proguardFiles+=file('proguard-android.txt')
+            proguardFiles.add(file('proguard-android.txt'))
         }
     }
     android.productFlavors {

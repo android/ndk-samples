@@ -25,27 +25,27 @@ model {
 
     android.ndk {
         moduleName = "native-activity"
-        cppFlags += "-I${file("src/main/jni")}".toString()
-        cppFlags += "-I${gpg_sdk_path}/include".toString()
+        cppFlags.addAll(["-I${file("src/main/jni")}".toString(),
+	                 "-I${gpg_sdk_path}/include".toString()])
         stl    = "c++_static"
-        ldLibs += ["log", "android", "EGL", "GLESv1_CM", "z"]
+        ldLibs.addAll(["log", "android", "EGL", "GLESv1_CM", "z"])
         //
         //  NOTE: since libgpg is also linked to the stl:
         //  libc++ explicitly follows it in the list of libraries
         //  to prevent unresolved stl symbols.
         //
-        ldLibs += ["gpg", "c++_static"]
+        ldLibs.addAll(["gpg", "c++_static"])
     }
     android.buildTypes {
         release {
             minifyEnabled = false
-            proguardFiles  += file('proguard-rules.txt')
+            proguardFiles.add(file('proguard-rules.txt'))
         }
     }
     android.productFlavors {
         create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
-            ndk.ldFlags += "-L${gpg_sdk_path}/lib/c++/armeabi-v7a".toString()
+            ndk.abiFilters.add("armeabi-v7a")
+            ndk.ldFlags.add("-L${gpg_sdk_path}/lib/c++/armeabi-v7a".toString())
         }
     }
 }
