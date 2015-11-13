@@ -20,26 +20,24 @@ model {
 
     android.ndk {
         moduleName = "plasma"
-        ldLibs += ["m","log","jnigraphics"]
+        ldLibs.addAll(["m","log","jnigraphics"])
     }
 
     android.buildTypes {
         release {
             minifyEnabled = false
-            proguardFiles += file('proguard-rules.txt')
-
-            println(proguardFiles)
+            proguardFiles.add(file('proguard-rules.txt'))
         }
     }
     android.productFlavors {
         create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
+            ndk.abiFilters.add("armeabi-v7a")
         }
         create ("arm8") {
-            ndk.abiFilters += "arm64-v8a"
+            ndk.abiFilters.add("arm64-v8a")
         }
         create ("x86-32") {
-            ndk.abiFilters += "x86"
+            ndk.abiFilters.add("x86")
         }
         // for detailed abiFilter descriptions, refer to "Supported ABIs" @
         // https://developer.android.com/ndk/guides/abis.html#sa

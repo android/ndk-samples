@@ -18,15 +18,13 @@ model {
     }
 
     android.ndk {
-        moduleName ="MoreTeapotsNativeActivity"
-        cppFlags   += "-I${file("src/main/jni/cpufeatures")}".toString()
-        cppFlags   += "-I${file("src/main/jni/native_app_glue")}".toString()
-        cppFlags   += "-I${file("src/main/jni/ndk_helper")}".toString()
-
+        moduleName = "MoreTeapotsNativeActivity"
+        cppFlags.addAll(["-I${file("src/main/jni/cpufeatures")}".toString(),
+                         "-I${file("src/main/jni/native_app_glue")}".toString(),
+                         "-I${file("src/main/jni/ndk_helper")}".toString()])
         // CFlags is configured in similiar way as cppFlags
-        // CFlags    += "-I${file("src/main/jni/native_app_glue")}".toString()
-
-        ldLibs     += ["android", "EGL", "GLESv2","log"]
+        // CFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
+        ldLibs.addAll(["android", "EGL", "GLESv2","log"])
         stl         = "stlport_static"
     }
 
@@ -42,13 +40,13 @@ model {
 
     android.productFlavors {
         create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
+            ndk.abiFilters.add("armeabi-v7a")
         }
         create ("arm8") {
-            ndk.abiFilters += "arm64-v8a"
+            ndk.abiFilters.add("arm64-v8a")
         }
         create ("x86-32") {
-            ndk.abiFilters += "x86"
+            ndk.abiFilters.add("x86")
         }
         // for detailed abiFilter descriptions, refer to "Supported ABIs" @
         // https://developer.android.com/ndk/guides/abis.html#sa
