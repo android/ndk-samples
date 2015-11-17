@@ -379,7 +379,6 @@ struct engine {
     int animating;
 };
 
-static struct timespec now;
 static int64_t start_ms;
 static void engine_draw_frame(struct engine* engine) {
     if (engine->app->window == NULL) {
@@ -395,6 +394,7 @@ static void engine_draw_frame(struct engine* engine) {
 
     stats_startFrame(&engine->stats);
 
+    struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     int64_t time_ms = (((int64_t)now.tv_sec)*1000000000LL + now.tv_nsec)/1000000;
     time_ms -= start_ms;
@@ -463,6 +463,7 @@ void android_main(struct android_app* state) {
         init = 1;
     }
 
+    struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     start_ms = (((int64_t)now.tv_sec)*1000000000LL + now.tv_nsec)/1000000;
 
