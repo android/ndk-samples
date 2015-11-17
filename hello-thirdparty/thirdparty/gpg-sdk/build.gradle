@@ -1,7 +1,6 @@
 /*
     sub module to download the Google Play games
  */
-apply plugin: 'java'
 project.ext {
     gpg_sdk_link = 'https://developers.google.com/games/services/downloads/gpg-cpp-sdk.v1.4.1.zip'
 }
@@ -47,8 +46,5 @@ task clean_sdk () {
         delete 'build'
     }
 }
-tasks['clean'].dependsOn('clean_sdk')
 
 defaultTasks = ['download_and_stage_gpg_sdk']
-
-tasks['jar'].dependsOn('download_and_stage_gpg_sdk')
