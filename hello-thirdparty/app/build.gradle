@@ -33,7 +33,7 @@ model {
         moduleName = "native-activity"
         platformVersion = 9 //same as minSdkVersion.apiLevel for better compatibility
         stl    = "c++_static"
-        ldLibs.addAll(["atomic", "log", "android", "EGL", "GLESv1_CM", "z"])
+        ldLibs.addAll(["atomic", "log", "android", "EGL", "GLESv1_CM", "z"]) //gpg depends on atomic, log and z
         abiFilters.addAll(["armeabi", "armeabi-v7a", "x86", "arm64-v8a"]) //filtering ABIs on the ones Google Play Games library is compatible with.
     }
 
