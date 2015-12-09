@@ -1,7 +1,5 @@
 apply plugin: "com.android.model.application"
 
-def libfirst_path = file(project(':lib').projectDir).absolutePath
-
 model {
     android {
         compileSdkVersion = 23
@@ -22,7 +20,7 @@ model {
         main {
              jni {
 	         dependencies {
-		     project ":lib" buildType "debug" linkage "static"
+		     project ":firstlib" buildType "debug" linkage "static"
 		 }
              }
 	     // TODO(proppy): show jniLibs dependencies on .so
