@@ -18,8 +18,8 @@ model {
     }
 
     android.ndk {
-        moduleName ="native-softkeyboard"
-        cppFlags += "-I${file("src/main/jni/native_app_glue")}".toString()
-        ldLibs += ["log", "android", "EGL", "GLESv1_CM"]
+        moduleName = "native-softkeyboard"
+        cppFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
+        ldLibs.addAll(["log", "android", "EGL", "GLESv1_CM"])
     }
 }
