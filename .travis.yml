@@ -10,6 +10,7 @@ android:
 addons:
   apt_packages:
     - pandoc
+  artifacts: true
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
