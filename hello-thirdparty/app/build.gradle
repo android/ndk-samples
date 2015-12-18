@@ -8,12 +8,8 @@ model {
         libs(PrebuiltLibraries) {
             gpg {
                 headers.srcDir "${gpg_sdk_path}/include"
-                binaries.withType(SharedLibraryBinary) {
-                    //
-                    // NOTE: this block should be "StaticLibraryBinary"/staticLibraryFile - but SharedLibraryBinary works and StaticLibraryBinary doesn't as of 0.6.0-alpha2
-                    // bug reported here: https://code.google.com/p/android/issues/detail?id=196065
-                    //
-                    sharedLibraryFile = file("${gpg_sdk_path}/lib/c++/${targetPlatform.getName()}/libgpg.a")
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file("${gpg_sdk_path}/lib/c++/${targetPlatform.getName()}/libgpg.a")
                 }
             }
         }
@@ -45,7 +41,7 @@ model {
         main {
             jni {
                 dependencies {
-                    library "gpg"
+                    library "gpg" linkage "static"
                 }
             }
         }
