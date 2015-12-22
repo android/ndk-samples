@@ -1,5 +1,8 @@
 language: android
 sudo: false
+os:
+  - linux
+  - osx
 android:
   components:
     - platform-tools
