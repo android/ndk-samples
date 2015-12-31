@@ -7,7 +7,7 @@ addons:
     paths:
       - $(git ls-files -o | grep app/build/outputs | tr "\n" ":")
 before_install:
-  - echo y | android update sdk --no-ui
+  - echo y | android update sdk --no-ui --all --filter tools
   - echo y | android update sdk --no-ui --all --filter platform-tools,build-tools-23.0.2,android-23,extra-google-m2repository,extra-android-m2repository
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
