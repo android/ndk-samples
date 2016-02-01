@@ -11,6 +11,8 @@ placed in /sdcard/NativeMedia.ts and encoded as:
 For demonstration purposes we have supplied such a .ts file, any
 actual stream must be created according to the MPEG-2 specification.
 
+This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+
 Pre-requisites
 --------------
 - Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.
