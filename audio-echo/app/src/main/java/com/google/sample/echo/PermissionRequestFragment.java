@@ -15,6 +15,7 @@
  */
 package com.google.sample.echo;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -60,6 +61,8 @@ public class PermissionRequestFragment extends Fragment {
      * before the callback is called.
      * <p>If there is already a pending permission check, the callback is invoked immediately  with
      * and error.</p>
+     * <p>This is marked with API 23 since the permissions are new. The ContextCompat and activity
+     * are aware of the API level and perform the correct behavior for SDKs < 23</p>
      *
      * @param permission  - the permission to check.
      * @param callbackPtr - the pointer to the callback function which has the signature (jint), the
@@ -67,6 +70,7 @@ public class PermissionRequestFragment extends Fragment {
      *                    Packagemanager.PERMISSION_DENIED (-1), or another negative number indicating
      *                    an error state.
      */
+    @TargetApi(23)
     public static void checkPermission(final String permission, String rationale, long callbackPtr) {
         Log.d(TAG,"Checking permission for: " + permission);
         if (theInstance == null) {
