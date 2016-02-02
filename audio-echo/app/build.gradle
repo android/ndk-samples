@@ -8,7 +8,7 @@ model {
        defaultConfig {
             applicationId = 'com.google.sample.echo'
             minSdkVersion.apiLevel = 17
-            targetSdkVersion.apiLevel = 22
+            targetSdkVersion.apiLevel = 23
             versionCode = 1
             versionName = '1.0'
         }
