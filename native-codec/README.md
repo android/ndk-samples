@@ -18,6 +18,7 @@ Getting Started
   - Click *Download* or *Select NDK location*.
 1. Click *Tools/Android/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
+1. Open a terminal prompt and run `adb push testfile.mp4 /sdcard/testfile.mp4` to copy the test video file.
 
 Screenshots
 -----------
@@ -28,7 +29,7 @@ Support
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
 Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
 - [Google+ Community](https://plus.google.com/communities/105153134372062985968)

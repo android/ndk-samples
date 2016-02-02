@@ -14,6 +14,8 @@ Getting Started
 1. Open *File/Project Structure...*
   - Click *Download* or *Select NDK location*.
 1. Click *Tools/Android/Sync Project with Gradle Files*.
+1. Right Click on build.gradle for module `gpg-sdk`
+  - Select 'Run build'
 1. Update the source with the details of your project:
   - Update the package name in `app/build.gradle` and  `app/src/main/AndroidManifest.xml`.
   - Set `APP_ID` in `app/res/values/ids.xml` to the ID your project in the *Game services* section of the Google Play console.
@@ -38,7 +40,7 @@ Support
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
 Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
 - [Google+ Community](https://plus.google.com/communities/105153134372062985968)

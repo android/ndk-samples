@@ -17,12 +17,13 @@
         android:layout_height="wrap_content"
         android:text="@string/StopEcho"
         android:onClick="stopEcho"
+        android:layout_toEndOf="@+id/button_start_capture"
         android:layout_alignBottom="@+id/button_start_capture"
         android:layout_alignParentEnd="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Param"
+        android:text="@string/GetParam"
         android:id="@+id/get_parameter_button"
         android:layout_above="@+id/statusView"
         android:layout_alignParentStart="true"

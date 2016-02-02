@@ -33,25 +33,25 @@
     >
 <Button
     android:id="@+id/hello"
-    android:text="Hello"
+    android:text="@string/hello_short"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/android"
-    android:text="Android"
+    android:text="@string/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/sawtooth"
-    android:text="Sawtooth"
+    android:text="@string/sawtooth"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/embedded_soundtrack"
-    android:text="Embedded\nsoundtrack"
+    android:text="@string/embedded_soundtrack"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
@@ -63,19 +63,19 @@
     >
 <Button
     android:id="@+id/reverb"
-    android:text="Reverb"
+    android:text="@string/reverb"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/mute_uri"
-    android:text="Mute"
+    android:text="@string/mute_uri"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/enable_stereo_position_uri"
-    android:text="Enable SP"
+    android:text="@string/enable_stereo_position_uri"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
@@ -87,9 +87,9 @@
     >
 <Spinner
     android:id="@+id/uri_spinner"
+    android:text="@string/uri_spinner"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="URI spinner"
     />
 </LinearLayout>
 <LinearLayout
@@ -99,25 +99,25 @@
     >
 <Button
     android:id="@+id/uri_soundtrack"
-    android:text="URI\nsoundtrack"
+    android:text="@string/uri_soundtrack"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/pause_uri"
-    android:text="Pause\nURI"
+    android:text="@string/pause_uri"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/play_uri"
-    android:text="Play\nURI"
+    android:text="@string/play_uri"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/loop_uri"
-    android:text="Loop\nURI"
+    android:text="@string/loop_uri"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
@@ -129,56 +129,56 @@
     >
     <Button
         android:id="@+id/mute_left_uri"
-        android:text="mute left"
+        android:text="@string/mute_left_uri"	
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         />
     <Button
         android:id="@+id/mute_right_uri"
-        android:text="mute right"
+        android:text="@string/mute_right_uri"	
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         />
     <Button
         android:id="@+id/solo_left_uri"
-        android:text="solo left"
+        android:text="@string/solo_left_uri"	
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         />
     <Button
         android:id="@+id/solo_right_uri"
-        android:text="solo right"
+        android:text="@string/solo_right_uri"	
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         />
 </LinearLayout>
 <Button
     android:id="@+id/channels_uri"
-    android:text="Get channels"
+    android:text="@string/channels_uri"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <SeekBar
     android:id="@+id/volume_uri"
-    android:text="Volume"
+    android:text="@string/volume_uri"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <SeekBar
     android:id="@+id/pan_uri"
-    android:text="Pan"
+    android:text="@string/pan_uri"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/record"
-    android:text="Record"
+    android:text="@string/record"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
 <Button
     android:id="@+id/playback"
-    android:text="Playback"
+    android:text="@string/playback"    
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     />
