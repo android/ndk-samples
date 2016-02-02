@@ -19,7 +19,9 @@ package com.google.sample.echo;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioRecord;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +34,7 @@ public class MainActivity extends Activity {
     TextView status_view;
     String  nativeSampleRate;
     String  nativeSampleBufSize;
-    String  nativeSampleFormat;
+    boolean supportRecording;
 
     PermissionRequestFragment recordAudioFragment;
 
@@ -47,7 +49,7 @@ public class MainActivity extends Activity {
         // initialize native audio system
         updateNativeAudioUI();
 
-        // add the record audio fragment
+        // add the permission checking fragment
         recordAudioFragment =
                 (PermissionRequestFragment) getFragmentManager().findFragmentByTag(PERMISSION_FRAGMENT_TAG);
         if (recordAudioFragment == null) {
@@ -56,14 +58,17 @@ public class MainActivity extends Activity {
             trans.add(recordAudioFragment, PERMISSION_FRAGMENT_TAG);
             trans.commit();
         }
-
-        createSLEngine(Integer.parseInt(nativeSampleRate), Integer.parseInt(nativeSampleBufSize));
+        if (supportRecording) {
+            createSLEngine(Integer.parseInt(nativeSampleRate), Integer.parseInt(nativeSampleBufSize));
+        }
     }
 
     @Override
     protected void onDestroy() {
-        startEchoProcessing();
-        deleteSLEngine();
+        if (supportRecording) {
+            stopEchoProcessing();
+            deleteSLEngine();
+        }
         super.onDestroy();
     }
 
@@ -107,12 +112,56 @@ public class MainActivity extends Activity {
         AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         nativeSampleRate  =  myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
         nativeSampleBufSize =myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
-        nativeSampleFormat ="";    //TODO: find a way to get the native audio format
+        int recBufSize = AudioRecord.getMinBufferSize(
+                Integer.parseInt(nativeSampleRate),
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+        supportRecording = true;
+        if (recBufSize == AudioRecord.ERROR ||
+                recBufSize == AudioRecord.ERROR_BAD_VALUE) {
+            supportRecording = false;
+        }
     }
+
+
+    /**
+     * Called whenever a key, touch, or trackball event is dispatched to the
+     * activity.  Implement this method if you wish to know that the user has
+     * interacted with the device in some way while your activity is running.
+     * This callback and {@link #onUserLeaveHint} are intended to help
+     * activities manage status bar notifications intelligently; specifically,
+     * for helping activities determine the proper time to cancel a notfication.
+     * <p/>
+     * <p>All calls to your activity's {@link #onUserLeaveHint} callback will
+     * be accompanied by calls to {@link #onUserInteraction}.  This
+     * ensures that your activity will be told of relevant user activity such
+     * as pulling down the notification pane and touching an item there.
+     * <p/>
+     * <p>Note that this callback will be invoked for the touch down action
+     * that begins a touch gesture, but may not be invoked for the touch-moved
+     * and touch-up actions that follow.
+     *
+     * @see #onUserLeaveHint()
+     */
+    @Override
+    public void onUserInteraction() {
+        updateNativeAudioUI();
+    }
+
     private void updateNativeAudioUI() {
-        status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
-                "nativeSampleBufSize = " + nativeSampleBufSize + "\n" +
-                "nativeSampleFormat  = " + nativeSampleFormat);
+        if (!supportRecording) {
+            status_view.setText("Error: Audio recording is not supported");
+            return;
+        }
+
+        String msg = getNativeStatusMessage();
+        if (msg != null && !msg.isEmpty()) {
+            status_view.setText(msg);
+        }
+        else {
+            status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
+                    "nativeSampleBufSize = " + nativeSampleBufSize);
+        }
 
     }
     /*
@@ -130,4 +179,6 @@ public class MainActivity extends Activity {
 
     public static native void startEchoProcessing();
     public static native void stopEchoProcessing();
+
+    public static native String getNativeStatusMessage();
 }

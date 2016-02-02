@@ -23,6 +23,7 @@
 #include "audio_common.h"
 #include "audio_recorder.h"
 #include "audio_player.h"
+#include "check_permission.h"
 
 struct EchoAudioEngine {
     SLmilliHertz fastPathSampleRate_;
@@ -41,34 +42,36 @@ struct EchoAudioEngine {
     sample_buf  *bufs_;
     uint32_t     bufCount_;
     uint32_t     frameCount_;
+
 };
 static EchoAudioEngine engine;
 
+static bool        isPlaying_;
+static const char* status_msg = "";
+
+void deleteSLBufferQueueAudioPlayer();
+void deleteAudioRecorder();
+void startPlay();
+void stopPlay();
+void completeStartingEchoProcessing(int result);
+
+
 bool EngineService(void* ctx, uint32_t msg, void* data );
+
+
+
 
 extern "C" {
 JNIEXPORT void JNICALL
         Java_com_google_sample_echo_MainActivity_createSLEngine(JNIEnv *env, jclass, jint, jint);
 JNIEXPORT void JNICALL
         Java_com_google_sample_echo_MainActivity_deleteSLEngine(JNIEnv *env, jclass type);
-JNIEXPORT jboolean JNICALL
-        Java_com_google_sample_echo_RecordAudioFragment_createSLBufferQueueAudioPlayer(JNIEnv *env, jclass);
-JNIEXPORT void JNICALL
-        Java_com_google_sample_echo_RecordAudioFragment_deleteSLBufferQueueAudioPlayer(JNIEnv *env, jclass type);
-JNIEXPORT jboolean JNICALL
-        Java_com_google_sample_echo_RecordAudioFragment_createAudioRecorder(JNIEnv *env, jclass type);
-JNIEXPORT void JNICALL
-        Java_com_google_sample_echo_RecordAudioFragment_deleteAudioRecorder(JNIEnv *env, jclass type);
-JNIEXPORT void JNICALL
-        Java_com_google_sample_echo_RecordAudioFragment_startPlay(JNIEnv *env, jclass type);
-JNIEXPORT void JNICALL
-        Java_com_google_sample_echo_RecordAudioFragment_stopPlay(JNIEnv *env, jclass type);
 JNIEXPORT void JNICALL
         Java_com_google_sample_echo_MainActivity_startEchoProcessing(JNIEnv *env, jclass type);
 JNIEXPORT void JNICALL
         Java_com_google_sample_echo_MainActivity_stopEchoProcessing(JNIEnv *env, jclass type);
-JNIEXPORT void JNICALL
-        Java_com_google_sample_echo_PermissionRequestFragment_handlePermissionResult(JNIEnv *env, jclass type, jint result, jlong callbackPtr);
+JNIEXPORT jstring JNICALL
+        Java_com_google_sample_echo_MainActivity_getNativeStatusMessage(JNIEnv *env, jclass type);
 }
 
 JNIEXPORT void JNICALL
@@ -112,106 +115,29 @@ Java_com_google_sample_echo_MainActivity_createSLEngine(
     }
 }
 
-JNIEXPORT jboolean JNICALL
-Java_com_google_sample_echo_RecordAudioFragment_createSLBufferQueueAudioPlayer(JNIEnv *env, jclass type) {
-    SampleFormat sampleFormat;
-    memset(&sampleFormat, 0, sizeof(sampleFormat));
-    sampleFormat.pcmFormat_ = (uint16_t)engine.bitsPerSample_;
-    sampleFormat.framesPerBuf_ = engine.fastPathFramesPerBuf_;
-
-    // SampleFormat.representation_ = SL_ANDROID_PCM_REPRESENTATION_SIGNED_INT;
-    sampleFormat.channels_ = (uint16_t)engine.sampleChannels_;
-    sampleFormat.sampleRate_ = engine.fastPathSampleRate_;
-
-    engine.player_ = new AudioPlayer(&sampleFormat, engine.slEngineItf_);
-    assert(engine.player_);
-    if(engine.player_ == nullptr)
-        return JNI_FALSE;
-
-    engine.player_->SetBufQueue(engine.recBufQueue_, engine.freeBufQueue_);
-    engine.player_->RegisterCallback(EngineService, (void*)&engine);
-
-    return JNI_TRUE;
-}
-
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_RecordAudioFragment_deleteSLBufferQueueAudioPlayer(JNIEnv *env, jclass type) {
-    if(engine.player_) {
-        delete engine.player_;
-        engine.player_= nullptr;
-    }
-}
-
-JNIEXPORT jboolean JNICALL
-Java_com_google_sample_echo_RecordAudioFragment_createAudioRecorder(JNIEnv *env, jclass type) {
-    SampleFormat sampleFormat;
-    memset(&sampleFormat, 0, sizeof(sampleFormat));
-    sampleFormat.pcmFormat_ = static_cast<uint16_t>(engine.bitsPerSample_);
-
-    // SampleFormat.representation_ = SL_ANDROID_PCM_REPRESENTATION_SIGNED_INT;
-    sampleFormat.channels_ = engine.sampleChannels_;
-    sampleFormat.sampleRate_ = engine.fastPathSampleRate_;
-    sampleFormat.framesPerBuf_ = engine.fastPathFramesPerBuf_;
-    engine.recorder_ = new AudioRecorder(&sampleFormat, engine.slEngineItf_);
-    if(!engine.recorder_) {
-        return JNI_FALSE;
-    }
-    engine.recorder_->SetBufQueues(engine.freeBufQueue_, engine.recBufQueue_);
-    engine.recorder_->RegisterCallback(EngineService, (void*)&engine);
-    return JNI_TRUE;
-}
-
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_RecordAudioFragment_deleteAudioRecorder(JNIEnv *env, jclass type) {
-    if(engine.recorder_)
-        delete engine.recorder_;
-
-    engine.recorder_ = nullptr;
-}
-
 JNIEXPORT void JNICALL
         Java_com_google_sample_echo_MainActivity_startEchoProcessing(JNIEnv *env, jclass type) {
 
-    if(!supportRecording || isPlaying) {
+    if (isPlaying_) {
         return;
     }
-    if(!createSLBufferQueueAudioPlayer()) {
-        status_view.setText("Failed to create Audio Player");
-        return;
-    }
-    if(!createAudioRecorder()) {
-        deleteSLBufferQueueAudioPlayer();
-        status_view.setText("Failed to create Audio Recorder");
-        return;
-    }
-    startPlay();   //this must include startRecording()
-    isPlaying = true;
-    status_view.setText("Engine Echoing ....");
+
+    // This is the value of Manifest.permission.RECORD_AUDIO
+    checkPermission(env, "android.permission.RECORD_AUDIO",
+                    "This sample requires access to record audio", completeStartingEchoProcessing);
+
 }
 
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_RecordAudioFragment_startPlay(JNIEnv *env, jclass type) {
-
-    engine.frameCount_  = 0;
-    /*
-     * start player: make it into waitForData state
-     */
-    if(SL_BOOLEAN_FALSE == engine.player_->Start()){
-        LOGE("====%s failed", __FUNCTION__);
+JNIEXPORT void JNICALL Java_com_google_sample_echo_MainActivity_stopEchoProcessing(
+        JNIEnv *env, jclass type) {
+    if(!isPlaying_) {
         return;
     }
-    engine.recorder_->Start();
-}
 
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_RecordAudioFragment_stopPlay(JNIEnv *env, jclass type) {
-    engine.recorder_->Stop();
-    engine.player_ ->Stop();
-
-    delete engine.recorder_;
-    delete engine.player_;
-    engine.recorder_ = NULL;
-    engine.player_ = NULL;
+    stopPlay();  //this must include stopRecording()
+    deleteSLBufferQueueAudioPlayer();
+    deleteAudioRecorder();
+    isPlaying_ = false;
 }
 
 JNIEXPORT void JNICALL
@@ -224,6 +150,12 @@ Java_com_google_sample_echo_MainActivity_deleteSLEngine(JNIEnv *env, jclass type
         engine.slEngineObj_ = NULL;
         engine.slEngineItf_ = NULL;
     }
+}
+
+JNIEXPORT jstring JNICALL
+        Java_com_google_sample_echo_MainActivity_getNativeStatusMessage(JNIEnv *env, jclass type)
+{
+    return env->NewStringUTF(status_msg);
 }
 
 uint32_t dbgEngineGetBufCount(void) {
@@ -245,6 +177,103 @@ uint32_t dbgEngineGetBufCount(void) {
     return count;
 }
 
+bool createSLBufferQueueAudioPlayer() {
+    SampleFormat sampleFormat;
+    memset(&sampleFormat, 0, sizeof(sampleFormat));
+    sampleFormat.pcmFormat_ = (uint16_t)engine.bitsPerSample_;
+    sampleFormat.framesPerBuf_ = engine.fastPathFramesPerBuf_;
+
+    // SampleFormat.representation_ = SL_ANDROID_PCM_REPRESENTATION_SIGNED_INT;
+    sampleFormat.channels_ = (uint16_t)engine.sampleChannels_;
+    sampleFormat.sampleRate_ = engine.fastPathSampleRate_;
+
+    engine.player_ = new AudioPlayer(&sampleFormat, engine.slEngineItf_);
+    assert(engine.player_);
+    if(engine.player_ == nullptr)
+        return false;
+
+    engine.player_->SetBufQueue(engine.recBufQueue_, engine.freeBufQueue_);
+    engine.player_->RegisterCallback(EngineService, (void*)&engine);
+
+    return true;
+}
+
+void deleteSLBufferQueueAudioPlayer() {
+    if(engine.player_) {
+        delete engine.player_;
+        engine.player_= nullptr;
+    }
+}
+
+bool createAudioRecorder() {
+    SampleFormat sampleFormat;
+    memset(&sampleFormat, 0, sizeof(sampleFormat));
+    sampleFormat.pcmFormat_ = static_cast<uint16_t>(engine.bitsPerSample_);
+
+    // SampleFormat.representation_ = SL_ANDROID_PCM_REPRESENTATION_SIGNED_INT;
+    sampleFormat.channels_ = engine.sampleChannels_;
+    sampleFormat.sampleRate_ = engine.fastPathSampleRate_;
+    sampleFormat.framesPerBuf_ = engine.fastPathFramesPerBuf_;
+    engine.recorder_ = new AudioRecorder(&sampleFormat, engine.slEngineItf_);
+    if(!engine.recorder_) {
+        return false;
+    }
+    engine.recorder_->SetBufQueues(engine.freeBufQueue_, engine.recBufQueue_);
+    engine.recorder_->RegisterCallback(EngineService, (void*)&engine);
+    return true;
+}
+
+void deleteAudioRecorder() {
+    if(engine.recorder_)
+        delete engine.recorder_;
+
+    engine.recorder_ = nullptr;
+}
+
+void startPlay() {
+
+    engine.frameCount_  = 0;
+    /*
+     * start player: make it into waitForData state
+     */
+    if(SL_BOOLEAN_FALSE == engine.player_->Start()){
+        LOGE("====%s failed", __FUNCTION__);
+        return;
+    }
+    engine.recorder_->Start();
+}
+
+void stopPlay() {
+    engine.recorder_->Stop();
+    engine.player_ ->Stop();
+
+    delete engine.recorder_;
+    delete engine.player_;
+    engine.recorder_ = NULL;
+    engine.player_ = NULL;
+}
+
+void completeStartingEchoProcessing(int result) {
+
+    if (result< 0) {
+        LOGE("Result returned from check permission is %d, not starting", result);
+        status_msg = "Permission denied to record audio";
+        return;
+    }
+
+    if(!createSLBufferQueueAudioPlayer()) {
+        status_msg = "Failed to create Audio Player";
+        return;
+    }
+    if(!createAudioRecorder()) {
+        deleteSLBufferQueueAudioPlayer();
+        status_msg = "Failed to create Audio Recorder";
+        return;
+    }
+    startPlay();   //this must include startRecording()
+    isPlaying_ = true;
+    status_msg = "Engine Echoing ....";
+}
 /*
  * simple message passing for player/recorder to communicate with engine
  */
