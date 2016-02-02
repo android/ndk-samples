@@ -6,7 +6,7 @@ model {
         buildToolsVersion = '23.0.2'
 
         defaultConfig {
-            applicationId='com.google.sample.echo'
+            applicationId = 'com.google.sample.echo'
             minSdkVersion.apiLevel = 17
             targetSdkVersion.apiLevel = 22
             versionCode = 1
@@ -16,16 +16,21 @@ model {
             // setting this to 21 because there is a printf using 64 bit formatting
             platformVersion = 21
             moduleName = 'echo'
-            toolchain  = "clang"
-            stl        = 'c++_static'   //std::mutex not in gnustl_static
+            toolchain = "clang"
+            stl = 'c++_static'   //std::mutex not in gnustl_static
             cppFlags.add('-std=c++11')
             ldLibs.addAll(['android', 'log', 'OpenSLES', 'atomic'])
         }
         buildTypes {
             release {
-                minifyEnabled=false
+                minifyEnabled = false
                 proguardFiles.add(file('proguard-android.txt'))
             }
         }
     }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:23.3.0'
+    compile 'com.android.support:design:23.3.0'
 }

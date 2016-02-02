@@ -17,6 +17,7 @@
 package com.google.sample.echo;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -29,11 +30,13 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     public static final String AUDIO_SAMPLE = "AUDIO_SAMPLE:";
+    private static final String PERMISSION_FRAGMENT_TAG = "sample.echo.permissionFragment";
     TextView status_view;
     String  nativeSampleRate;
     String  nativeSampleBufSize;
     boolean supportRecording;
-    Boolean isPlaying;
+
+    PermissionRequestFragment recordAudioFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,20 +48,25 @@ public class MainActivity extends Activity {
 
         // initialize native audio system
         updateNativeAudioUI();
+
+        // add the record audio fragment
+        recordAudioFragment =
+                (PermissionRequestFragment) getFragmentManager().findFragmentByTag(PERMISSION_FRAGMENT_TAG);
+        if (recordAudioFragment == null) {
+            recordAudioFragment = new PermissionRequestFragment();
+            FragmentTransaction trans = getFragmentManager().beginTransaction();
+            trans.add(recordAudioFragment, PERMISSION_FRAGMENT_TAG);
+            trans.commit();
+        }
         if (supportRecording) {
             createSLEngine(Integer.parseInt(nativeSampleRate), Integer.parseInt(nativeSampleBufSize));
         }
-        isPlaying = false;
     }
+
     @Override
     protected void onDestroy() {
-        if (supportRecording) {
-            if (isPlaying) {
-                stopPlay();
-            }
-            deleteSLEngine();
-            isPlaying = false;
-        }
+        startEchoProcessing();
+        deleteSLEngine();
         super.onDestroy();
     }
 
@@ -85,32 +93,13 @@ public class MainActivity extends Activity {
     }
 
     public void startEcho(View view) {
-        if(!supportRecording || isPlaying) {
-            return;
-        }
-        if(!createSLBufferQueueAudioPlayer()) {
-            status_view.setText("Failed to create Audio Player");
-            return;
-        }
-        if(!createAudioRecorder()) {
-            deleteSLBufferQueueAudioPlayer();
-            status_view.setText("Failed to create Audio Recorder");
-            return;
-        }
-        startPlay();   //this must include startRecording()
-        isPlaying = true;
-        status_view.setText("Engine Echoing ....");
+        status_view.setText("StartCapture Button Clicked\n");
+       startEchoProcessing();
     }
 
     public void stopEcho(View view) {
-        if(!supportRecording || !isPlaying) {
-            return;
-        }
-        stopPlay();  //this must include stopRecording()
+        stopEchoProcessing();
         updateNativeAudioUI();
-        deleteSLBufferQueueAudioPlayer();
-        deleteAudioRecorder();
-        isPlaying = false;
     }
     public void getLowLatencyParameters(View view) {
         updateNativeAudioUI();
@@ -154,11 +143,6 @@ public class MainActivity extends Activity {
     public static native void createSLEngine(int rate, int framesPerBuf);
     public static native void deleteSLEngine();
 
-    public static native boolean createSLBufferQueueAudioPlayer();
-    public static native void deleteSLBufferQueueAudioPlayer();
-
-    public static native boolean createAudioRecorder();
-    public static native void deleteAudioRecorder();
-    public static native void startPlay();
-    public static native void stopPlay();
+    public static native void startEchoProcessing();
+    public static native void stopEchoProcessing();
 }
