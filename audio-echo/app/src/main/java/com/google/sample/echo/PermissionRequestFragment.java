@@ -68,6 +68,7 @@ public class PermissionRequestFragment extends Fragment {
      *                    an error state.
      */
     public static void checkPermission(final String permission, String rationale, long callbackPtr) {
+        Log.d(TAG,"Checking permission for: " + permission);
         if (theInstance == null) {
             Log.e(TAG, "An instance of this fragment has not been attached to the activity.");
 
@@ -84,6 +85,7 @@ public class PermissionRequestFragment extends Fragment {
 
         int permissionCheck = ContextCompat.checkSelfPermission(theInstance.getActivity(), permission);
         if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            Log.d(TAG,"self permission is denied, requesting");
             // request runtime permission
             if (ActivityCompat.shouldShowRequestPermissionRationale(theInstance.getActivity(),
                     permission)) {
@@ -107,6 +109,7 @@ public class PermissionRequestFragment extends Fragment {
         } else {
             long ptr = theInstance.callbackPtr;
             theInstance.callbackPtr = 0L;
+            Log.d(TAG,permission + " granted!");
             handlePermissionResult(PackageManager.PERMISSION_GRANTED, ptr);
         }
     }
@@ -135,9 +138,11 @@ public class PermissionRequestFragment extends Fragment {
             long ptr = callbackPtr;
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // finish starting
+                Log.d(TAG,permissions[0] + " granted!");
                 callbackPtr = 0L;
                 handlePermissionResult(PackageManager.PERMISSION_GRANTED, ptr);
             } else {
+                Log.w(TAG,permissions[0] + " denied");
                 callbackPtr = 0L;
                 handlePermissionResult(PackageManager.PERMISSION_DENIED, ptr);
             }

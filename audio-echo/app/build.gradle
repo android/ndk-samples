@@ -5,7 +5,7 @@ model {
         compileSdkVersion = 23
         buildToolsVersion = '23.0.2'
 
-        defaultConfig {
+       defaultConfig {
             applicationId = 'com.google.sample.echo'
             minSdkVersion.apiLevel = 17
             targetSdkVersion.apiLevel = 22
