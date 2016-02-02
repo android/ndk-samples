@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
         // initialize native audio system
         updateNativeAudioUI();
 
-        // add the record audio fragment
+        // add the permission checking fragment
         recordAudioFragment =
                 (PermissionRequestFragment) getFragmentManager().findFragmentByTag(PERMISSION_FRAGMENT_TAG);
         if (recordAudioFragment == null) {
@@ -65,8 +65,10 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        startEchoProcessing();
-        deleteSLEngine();
+        if (supportRecording) {
+            stopEchoProcessing();
+            deleteSLEngine();
+        }
         super.onDestroy();
     }
 
@@ -116,19 +118,50 @@ public class MainActivity extends Activity {
                 AudioFormat.ENCODING_PCM_16BIT);
         supportRecording = true;
         if (recBufSize == AudioRecord.ERROR ||
-            recBufSize == AudioRecord.ERROR_BAD_VALUE) {
+           recBufSize == AudioRecord.ERROR_BAD_VALUE) {
             supportRecording = false;
         }
     }
+
+
+    /**
+     * Called whenever a key, touch, or trackball event is dispatched to the
+     * activity.  Implement this method if you wish to know that the user has
+     * interacted with the device in some way while your activity is running.
+     * This callback and {@link #onUserLeaveHint} are intended to help
+     * activities manage status bar notifications intelligently; specifically,
+     * for helping activities determine the proper time to cancel a notfication.
+     * <p/>
+     * <p>All calls to your activity's {@link #onUserLeaveHint} callback will
+     * be accompanied by calls to {@link #onUserInteraction}.  This
+     * ensures that your activity will be told of relevant user activity such
+     * as pulling down the notification pane and touching an item there.
+     * <p/>
+     * <p>Note that this callback will be invoked for the touch down action
+     * that begins a touch gesture, but may not be invoked for the touch-moved
+     * and touch-up actions that follow.
+     *
+     * @see #onUserLeaveHint()
+     */
+    @Override
+    public void onUserInteraction() {
+        updateNativeAudioUI();
+    }
+
     private void updateNativeAudioUI() {
         if (!supportRecording) {
             status_view.setText("Error: Audio recording is not supported");
             return;
         }
 
-        status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
-                "nativeSampleBufSize = " + nativeSampleBufSize + "\n");
-
+        String msg = getNativeStatusMessage();
+        if (msg != null && !msg.isEmpty()) {
+            status_view.setText(msg);
+        }
+        else {
+            status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
+                    "nativeSampleBufSize = " + nativeSampleBufSize);
+        }
     }
     /*
      * Loading our Libs
@@ -145,4 +178,6 @@ public class MainActivity extends Activity {
 
     public static native void startEchoProcessing();
     public static native void stopEchoProcessing();
+
+    public static native String getNativeStatusMessage();
 }

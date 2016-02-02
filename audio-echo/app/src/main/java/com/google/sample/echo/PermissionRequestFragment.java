@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.google.sample.echo;
 
 import android.app.Activity;
@@ -10,10 +25,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 /**
- * Created by wilkinsonclay on 2/1/16.
+ * Fragment that handles the runtime permission checking required for "M" and later.
  */
 public class PermissionRequestFragment extends Fragment {
     private static final String TAG = "PermReqFragment";
@@ -23,17 +37,12 @@ public class PermissionRequestFragment extends Fragment {
     public static final int Error_FragmentNotAttached = -2;
     public static final int Error_Busy = -3;
 
-    private TextView status_view;
-    private boolean playing;
-
     private static PermissionRequestFragment theInstance;
 
     private long callbackPtr;
 
-
     /**
      * Called when a fragment is first attached to its context.
-     *
      *
      * @param context - the context for this fragment.
      */
@@ -51,22 +60,22 @@ public class PermissionRequestFragment extends Fragment {
      * before the callback is called.
      * <p>If there is already a pending permission check, the callback is invoked immediately  with
      * and error.</p>
-     * @param permission - the permission to check.
+     *
+     * @param permission  - the permission to check.
      * @param callbackPtr - the pointer to the callback function which has the signature (jint), the
      *                    value is either Packagemanager.PERMISSION_GRANTED (0),
      *                    Packagemanager.PERMISSION_DENIED (-1), or another negative number indicating
      *                    an error state.
      */
-    public static void checkPermission(final String permission, String rationale, long callbackPtr)
-    {
+    public static void checkPermission(final String permission, String rationale, long callbackPtr) {
         if (theInstance == null) {
-            Log.e(TAG,"An instance of this fragment has not been attached to the activity.");
+            Log.e(TAG, "An instance of this fragment has not been attached to the activity.");
 
-           handlePermissionResult(Error_FragmentNotAttached, callbackPtr);
+            handlePermissionResult(Error_FragmentNotAttached, callbackPtr);
             return;
         }
         if (theInstance.callbackPtr != 0L) {
-            Log.e(TAG,"Permission check already in progress");
+            Log.e(TAG, "Permission check already in progress");
             handlePermissionResult(Error_Busy, callbackPtr);
             return;
         }
@@ -85,24 +94,21 @@ public class PermissionRequestFragment extends Fragment {
                     view = thisActivity.getWindow().getDecorView();
                 }
                 Snackbar.make(view,
-                        rationale, //"This sample requires permission to record audio",
+                        rationale,
                         Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view1) {
-                        theInstance.requestPermissions(new String[] {permission}, RC_REQUEST_PERMISSION);
+                        theInstance.requestPermissions(new String[]{permission}, RC_REQUEST_PERMISSION);
                     }
                 }).show();
             } else {
-                theInstance.requestPermissions(new String[] {permission}, RC_REQUEST_PERMISSION);
+                theInstance.requestPermissions(new String[]{permission}, RC_REQUEST_PERMISSION);
             }
-
-
         } else {
             long ptr = theInstance.callbackPtr;
             theInstance.callbackPtr = 0L;
-           handlePermissionResult(PackageManager.PERMISSION_GRANTED, ptr);
+            handlePermissionResult(PackageManager.PERMISSION_GRANTED, ptr);
         }
-
     }
 
     /**
@@ -140,79 +146,6 @@ public class PermissionRequestFragment extends Fragment {
         }
     }
 
-    public boolean isPlaying() {
-        return playing;
-    }
-
-    /*
-    public void startEcho(View view, TextView status_view) {
-
-        if(playing) {
-            return;
-        }
-
-        this.status_view = status_view;
-
-        if(!createSLBufferQueueAudioPlayer()) {
-            status_view.setText("Failed to create Audio Player");
-            return;
-        }
-        // Check for record_audio permission
-        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
-        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            // request runtime permission
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
-
-                final Activity thisActivity = getActivity();
-                Snackbar.make(view,
-                        "This sample requires permission to record audio",
-                        Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view1) {
-                        requestPermissions(new String[] {Manifest.permission.RECORD_AUDIO}, RC_REQUEST_PERMISSION);
-                    }
-                }).show();
-            } else {
-                requestPermissions(new String[] {Manifest.permission.RECORD_AUDIO}, RC_REQUEST_PERMISSION);
-            }
-
-
-        } else {
-            startEchoProcessing();
-        }
-    }
-
-    */
-
-    /**
-     * Break out the method that requires the user to consent to RECORD_AUDIO.  This way
-     * if the permission has been granted already, it can be started, or if the consent needs to be
-     * granted, we can pick up here after the consent flow.
-     */
-    /*
-    private void startEchoProcessing() {
-        if (!createAudioRecorder()) {
-            deleteSLBufferQueueAudioPlayer();
-            status_view.setText("Failed to create Audio Recorder");
-            return;
-        }
-        startPlay();   //this must include startRecording()
-        playing = true;
-        status_view.setText("Engine Echoing ....");
-    }
-
-
-    public void stopPlaying() {
-        if (!playing) {
-            return;
-        }
-        stopPlay();
-        deleteSLBufferQueueAudioPlayer();
-        deleteAudioRecorder();
-        playing = false;
-    }
-
-*/
     /*
      * Loading our Libs
      */
@@ -220,6 +153,6 @@ public class PermissionRequestFragment extends Fragment {
         System.loadLibrary("echo");
     }
 
-    public static native void  handlePermissionResult(int resultCode, long callbackPtr);
+    public static native void handlePermissionResult(int resultCode, long callbackPtr);
 
 }
