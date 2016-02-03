@@ -6,6 +6,8 @@ It demonstrate usage of the following Native C++ API:
 - [Sensors](http://developer.android.com/ndk/reference/group___sensor.html)
 - [Assets](http://developer.android.com/ndk/reference/group___asset.html)
 
+This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+
 Pre-requisites
 --------------
 - Android Studio 1.3 with [NDK](https://developer.android.com/ndk/) bundle.
