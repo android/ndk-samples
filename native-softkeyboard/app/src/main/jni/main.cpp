@@ -22,31 +22,13 @@
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
 
-void toggle_soft_keyboard(android_app* app) {
-    JNIEnv *jni;
-    app->activity->vm->AttachCurrentThread( &jni, NULL );
-
-    jclass cls = jni->GetObjectClass(app->activity->clazz);
-    jmethodID methodID = jni->GetMethodID(cls, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;" );
-    jstring service_name = jni->NewStringUTF("input_method");
-    jobject input_service = jni->CallObjectMethod(app->activity->clazz, methodID, service_name);
-
-    jclass input_service_cls = jni->GetObjectClass(input_service);
-    methodID = jni->GetMethodID(input_service_cls, "toggleSoftInput", "(II)V");
-    jni->CallVoidMethod(input_service, methodID, 0, 0);
-
-    jni->DeleteLocalRef(service_name);
-
-    app->activity->vm->DetachCurrentThread();
-}
-
 // process input
 int32_t handle_input(android_app* app, AInputEvent* event) {
     int32_t event_type = AInputEvent_getType(event);
     switch (event_type) {
         case AINPUT_EVENT_TYPE_MOTION:
             if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
-                toggle_soft_keyboard(app);
+                ANativeActivity_showSoftInput(app->activity, 0);
             }
             return 1;
         case AINPUT_EVENT_TYPE_KEY:
