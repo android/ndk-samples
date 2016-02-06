@@ -19,9 +19,43 @@
 #include <android/log.h>
 #include <android_native_app_glue.h>
 #include <cassert>
+#include <cstdio>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+
+void toggle_soft_keyboard(android_app* app) {
+    JNIEnv *jni;
+    app->activity->vm->AttachCurrentThread( &jni, NULL );
+
+    jclass cls = jni->GetObjectClass(app->activity->clazz);
+    jmethodID methodID = jni->GetMethodID(cls, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;" );
+    jstring service_name = jni->NewStringUTF("input_method");
+    jobject input_service = jni->CallObjectMethod(app->activity->clazz, methodID, service_name);
+
+    jclass input_service_cls = jni->GetObjectClass(input_service);
+    methodID = jni->GetMethodID(input_service_cls, "toggleSoftInput", "(II)V");
+    jni->CallVoidMethod(input_service, methodID, 0, 0);
+
+    jni->DeleteLocalRef(service_name);
+
+    app->activity->vm->DetachCurrentThread();
+}
+
+void set_binding(android_app* app, const char* method, const char* value) {
+    JNIEnv *jni;
+    app->activity->vm->AttachCurrentThread( &jni, NULL );
+
+    jclass cls = jni->GetObjectClass(app->activity->clazz);
+    jmethodID getBinding = jni->GetMethodID(cls, "getBinding", "()Lcom/example/native_softkeyboard/databinding/SoftkeyboardActivityBinding;" );
+    assert(getBinding);
+    jobject binding = jni->CallObjectMethod(app->activity->clazz, getBinding);
+    jclass bindingCls = jni->GetObjectClass(binding);
+    jmethodID setMessage = jni->GetMethodID(bindingCls, method, "(Ljava/lang/String;)V" );
+    assert(setMessage);
+    jstring message = jni->NewStringUTF(value);
+    jni->CallVoidMethod(binding, setMessage, message);
+}
 
 // process input
 int32_t handle_input(android_app* app, AInputEvent* event) {
@@ -29,38 +63,28 @@ int32_t handle_input(android_app* app, AInputEvent* event) {
     switch (event_type) {
         case AINPUT_EVENT_TYPE_MOTION:
             if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
-                ANativeActivity_showSoftInput(app->activity, 0);
+                toggle_soft_keyboard(app);
             }
             return 1;
         case AINPUT_EVENT_TYPE_KEY:
-            LOGI("key pressed: %d", AKeyEvent_getKeyCode(event));
+            int keycode = AKeyEvent_getKeyCode(event);
+            LOGI("key pressed: %d", keycode);
+            char buf[256];
+            sprintf(buf, "keycode: %d", keycode);
+            set_binding(app, "setMessage", buf);
+            set_binding(app, "setSmallMessage", "some other message");
             return 1;
     }
     return 0;
 }
 
-void set_content_view(ANativeActivity* activity, int layoutID) {
-    JNIEnv *jni;
-    activity->vm->AttachCurrentThread(&jni, NULL);
-
-    jclass activityHelper = jni->FindClass("com/example/native_softkeyboard/ActivityHelper");
-    assert(activityHelper);
-    jmethodID setContentView = jni->GetMethodID(activityHelper, "setContentView", "(Landroid/app/NativeActivity;I)V");
-    assert(setContentView);
-    jni->CallStaticVoidMethod(activityHelper, setContentView, layoutID);
-    activity->vm->DetachCurrentThread();
-}
-
-/**
- * Process command.
- */
+// process command
 void handle_cmd(android_app* app, int32_t cmd) {
     switch (cmd) {
         case APP_CMD_INIT_WINDOW:
             // The window is being shown, get it ready.
             if (app->window != NULL) {
                 // inflate layout
-                set_content_view(app->activity, 0x7f030000);
             }
             break;
         case APP_CMD_TERM_WINDOW:

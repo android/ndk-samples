@@ -12,6 +12,10 @@ model {
         }
     }
 
+    android.dataBinding {
+        enabled = true
+    }
+
     android.ndk {
         moduleName = "native-softkeyboard"
         cppFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
