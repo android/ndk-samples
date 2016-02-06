@@ -18,6 +18,7 @@
 #include <jni.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
+#include <cassert>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
@@ -38,15 +39,28 @@ int32_t handle_input(android_app* app, AInputEvent* event) {
     return 0;
 }
 
+void set_content_view(ANativeActivity* activity, int layoutID) {
+    JNIEnv *jni;
+    activity->vm->AttachCurrentThread(&jni, NULL);
+
+    jclass activityHelper = jni->FindClass("com/example/native_softkeyboard/ActivityHelper");
+    assert(activityHelper);
+    jmethodID setContentView = jni->GetMethodID(activityHelper, "setContentView", "(Landroid/app/NativeActivity;I)V");
+    assert(setContentView);
+    jni->CallStaticVoidMethod(activityHelper, setContentView, layoutID);
+    activity->vm->DetachCurrentThread();
+}
+
 /**
  * Process command.
  */
-void handle_cmd(struct android_app* app, int32_t cmd) {
+void handle_cmd(android_app* app, int32_t cmd) {
     switch (cmd) {
         case APP_CMD_INIT_WINDOW:
             // The window is being shown, get it ready.
             if (app->window != NULL) {
                 // inflate layout
+                set_content_view(app->activity, 0x7f030000);
             }
             break;
         case APP_CMD_TERM_WINDOW:

@@ -12,14 +12,15 @@ model {
         }
     }
 
-    compileOptions.with {
-        sourceCompatibility=JavaVersion.VERSION_1_7
-        targetCompatibility=JavaVersion.VERSION_1_7
-    }
-
     android.ndk {
         moduleName = "native-softkeyboard"
         cppFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
-        ldLibs.addAll(["log", "android", "EGL", "GLESv1_CM"])
+        ldLibs.addAll(["log", "android"])
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+        }
     }
 }
