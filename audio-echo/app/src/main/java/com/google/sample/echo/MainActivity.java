@@ -17,6 +17,7 @@
 package com.google.sample.echo;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -29,11 +30,13 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     public static final String AUDIO_SAMPLE = "AUDIO_SAMPLE:";
+    private static final String PERMISSION_FRAGMENT_TAG = "sample.echo.permissionFragment";
     TextView status_view;
     String  nativeSampleRate;
     String  nativeSampleBufSize;
     boolean supportRecording;
-    Boolean isPlaying;
+
+    PermissionRequestFragment recordAudioFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +48,26 @@ public class MainActivity extends Activity {
 
         // initialize native audio system
         updateNativeAudioUI();
+
+        // add the permission checking fragment
+        recordAudioFragment =
+                (PermissionRequestFragment) getFragmentManager().findFragmentByTag(PERMISSION_FRAGMENT_TAG);
+        if (recordAudioFragment == null) {
+            recordAudioFragment = new PermissionRequestFragment();
+            FragmentTransaction trans = getFragmentManager().beginTransaction();
+            trans.add(recordAudioFragment, PERMISSION_FRAGMENT_TAG);
+            trans.commit();
+        }
         if (supportRecording) {
             createSLEngine(Integer.parseInt(nativeSampleRate), Integer.parseInt(nativeSampleBufSize));
         }
-        isPlaying = false;
     }
+
     @Override
     protected void onDestroy() {
         if (supportRecording) {
-            if (isPlaying) {
-                stopPlay();
-            }
+            stopEchoProcessing();
             deleteSLEngine();
-            isPlaying = false;
         }
         super.onDestroy();
     }
@@ -85,32 +95,13 @@ public class MainActivity extends Activity {
     }
 
     public void startEcho(View view) {
-        if(!supportRecording || isPlaying) {
-            return;
-        }
-        if(!createSLBufferQueueAudioPlayer()) {
-            status_view.setText("Failed to create Audio Player");
-            return;
-        }
-        if(!createAudioRecorder()) {
-            deleteSLBufferQueueAudioPlayer();
-            status_view.setText("Failed to create Audio Recorder");
-            return;
-        }
-        startPlay();   //this must include startRecording()
-        isPlaying = true;
-        status_view.setText("Engine Echoing ....");
+        status_view.setText("StartCapture Button Clicked\n");
+       startEchoProcessing();
     }
 
     public void stopEcho(View view) {
-        if(!supportRecording || !isPlaying) {
-            return;
-        }
-        stopPlay();  //this must include stopRecording()
+        stopEchoProcessing();
         updateNativeAudioUI();
-        deleteSLBufferQueueAudioPlayer();
-        deleteAudioRecorder();
-        isPlaying = false;
     }
     public void getLowLatencyParameters(View view) {
         updateNativeAudioUI();
@@ -131,15 +122,45 @@ public class MainActivity extends Activity {
             supportRecording = false;
         }
     }
+
+    /**
+     * Called whenever a key, touch, or trackball event is dispatched to the
+     * activity.  Implement this method if you wish to know that the user has
+     * interacted with the device in some way while your activity is running.
+     * This callback and {@link #onUserLeaveHint} are intended to help
+     * activities manage status bar notifications intelligently; specifically,
+     * for helping activities determine the proper time to cancel a notfication.
+     * <p/>
+     * <p>All calls to your activity's {@link #onUserLeaveHint} callback will
+     * be accompanied by calls to {@link #onUserInteraction}.  This
+     * ensures that your activity will be told of relevant user activity such
+     * as pulling down the notification pane and touching an item there.
+     * <p/>
+     * <p>Note that this callback will be invoked for the touch down action
+     * that begins a touch gesture, but may not be invoked for the touch-moved
+     * and touch-up actions that follow.
+     *
+     * @see #onUserLeaveHint()
+     */
+    @Override
+    public void onUserInteraction() {
+        updateNativeAudioUI();
+    }
+
     private void updateNativeAudioUI() {
         if (!supportRecording) {
             status_view.setText("Error: Audio recording is not supported");
             return;
         }
 
-        status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
-                "nativeSampleBufSize = " + nativeSampleBufSize + "\n");
-
+        String msg = getNativeStatusMessage();
+        if (msg != null && !msg.isEmpty()) {
+            status_view.setText(msg);
+        }
+        else {
+            status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
+                    "nativeSampleBufSize = " + nativeSampleBufSize);
+        }
     }
     /*
      * Loading our Libs
@@ -154,11 +175,8 @@ public class MainActivity extends Activity {
     public static native void createSLEngine(int rate, int framesPerBuf);
     public static native void deleteSLEngine();
 
-    public static native boolean createSLBufferQueueAudioPlayer();
-    public static native void deleteSLBufferQueueAudioPlayer();
+    public static native void startEchoProcessing();
+    public static native void stopEchoProcessing();
 
-    public static native boolean createAudioRecorder();
-    public static native void deleteAudioRecorder();
-    public static native void startPlay();
-    public static native void stopPlay();
+    public static native String getNativeStatusMessage();
 }
