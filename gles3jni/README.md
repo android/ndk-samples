@@ -11,6 +11,8 @@ OpenGL ES 2.0 path:
 - Explicit assignment of attribute locations, eliminating the need to query
   assignments.
 
+This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+
 Pre-requisites
 --------------
 - Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.

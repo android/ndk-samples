@@ -4,6 +4,8 @@ The sample demos how to use OpenSL ES to create a player and recorder in Android
   *   Android L    AndroidOne
   *   Android M    Nexus 5, Nexus 9
 
+This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+
 Pre-requisites
 --------------
 - Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.

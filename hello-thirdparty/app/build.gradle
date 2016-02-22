@@ -1,12 +1,23 @@
 apply plugin: 'com.android.model.application'
 
-
 def gpg_sdk_path = file(project(':thirdparty:gpg-sdk').projectDir).absolutePath + "/gpg-cpp-sdk/android"
 
 model {
+
+    repositories {
+        libs(PrebuiltLibraries) {
+            gpg {
+                headers.srcDir "${gpg_sdk_path}/include"
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file("${gpg_sdk_path}/lib/c++/${targetPlatform.getName()}/libgpg.a")
+                }
+            }
+        }
+    }
+
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.0"
+        buildToolsVersion = "23.0.2"
 
         defaultConfig.with {
             //
@@ -18,42 +29,34 @@ model {
         }
     }
 
-    compileOptions.with {
-        sourceCompatibility=JavaVersion.VERSION_1_7
-        targetCompatibility=JavaVersion.VERSION_1_7
-    }
-
     android.ndk {
         moduleName = "native-activity"
-        cppFlags.addAll(["-I${file("src/main/jni")}".toString(),
-	                 "-I${gpg_sdk_path}/include".toString()])
+        platformVersion = 9 //same as minSdkVersion.apiLevel for better compatibility
         stl    = "c++_static"
-        ldLibs.addAll(["log", "android", "EGL", "GLESv1_CM", "z"])
-        //
-        //  NOTE: since libgpg is also linked to the stl:
-        //  libc++ explicitly follows it in the list of libraries
-        //  to prevent unresolved stl symbols.
-        //
-        ldLibs.addAll(["gpg", "c++_static"])
+        ldLibs.addAll(["atomic", "log", "android", "EGL", "GLESv1_CM", "z"]) //gpg depends on atomic, log and z
+        abiFilters.addAll(["armeabi", "armeabi-v7a", "x86", "arm64-v8a"]) //filtering ABIs on the ones Google Play Games library is compatible with.
     }
+
+    android.sources {
+        main {
+            jni {
+                dependencies {
+                    library "gpg" linkage "static"
+                }
+            }
+        }
+    }
+
     android.buildTypes {
         release {
             minifyEnabled = false
-            proguardFiles.add(file('proguard-rules.txt'))
-        }
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
-            ndk.ldFlags.add("-L${gpg_sdk_path}/lib/c++/armeabi-v7a".toString())
         }
     }
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-games:7.8.0'
-    compile 'com.google.android.gms:play-services-base:7.8.0'
-    compile 'com.google.android.gms:play-services-appstate:7.8.0'
-    compile 'com.google.android.gms:play-services-nearby:7.8.0'
+    compile 'com.google.android.gms:play-services-games:8.3.0'
+    compile 'com.google.android.gms:play-services-base:8.3.0'
+    compile 'com.google.android.gms:play-services-appstate:8.3.0'
+    compile 'com.google.android.gms:play-services-nearby:8.3.0'
 }
-

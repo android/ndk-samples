@@ -2,6 +2,8 @@ Native Activity
 ===============
 Native Activity is an Android sample that initializes a GLES 2.0 context and reads accelerometer data from C code using [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html).
 
+This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+
 Pre-requisites
 --------------
 - Android Studio 1.3++ with [NDK](https://developer.android.com/ndk/) bundle.
