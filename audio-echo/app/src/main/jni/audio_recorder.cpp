@@ -54,7 +54,7 @@ void AudioRecorder::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
     }
 
     // should leave the device to sleep to save power if no buffers
-    if (devShadowQueue_->size() == 0) {
+    if(devShadowQueue_->size() == 0) {
         (*recItf_)->SetRecordState(recItf_, SL_RECORDSTATE_STOPPED);
     }
 }
@@ -84,15 +84,30 @@ AudioRecorder::AudioRecorder(SampleFormat *sampleFormat, SLEngineItf slEngine) :
 
     // create audio recorder
     // (requires the RECORD_AUDIO permission)
-    const SLInterfaceID id[1] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE};
-    const SLboolean req[1] = {SL_BOOLEAN_TRUE};
+    const SLInterfaceID id[2] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
+                                 SL_IID_ANDROIDCONFIGURATION };
+    const SLboolean req[2] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
     result = (*slEngine)->CreateAudioRecorder(slEngine,
                                               &recObjectItf_,
                                               &audioSrc,
                                               &audioSnk,
-                                              1, id, req);
+                                              sizeof(id)/sizeof(id[0]),
+                                              id, req);
     SLASSERT(result);
 
+    // Configure the voice recognition preset which has no
+    // signal processing for lower latency.
+    SLAndroidConfigurationItf inputConfig;
+    result = (*recObjectItf_)->GetInterface(recObjectItf_,
+                                            SL_IID_ANDROIDCONFIGURATION,
+                                            &inputConfig);
+    if (SL_RESULT_SUCCESS == result) {
+        SLuint32 presetValue = SL_ANDROID_RECORDING_PRESET_VOICE_RECOGNITION;
+        (*inputConfig)->SetConfiguration(inputConfig,
+                                         SL_ANDROID_KEY_RECORDING_PRESET,
+                                         &presetValue,
+                                         sizeof(SLuint32));
+    }
     result = (*recObjectItf_)->Realize(recObjectItf_, SL_BOOLEAN_FALSE);
     SLASSERT(result);
     result = (*recObjectItf_)->GetInterface(recObjectItf_,
