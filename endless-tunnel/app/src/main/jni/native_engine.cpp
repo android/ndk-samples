@@ -285,7 +285,7 @@ bool NativeEngine::InitSurface() {
         
     LOGD("NativeEngine: initializing surface.");
     
-    EGLint numConfigs, format;
+    EGLint numConfigs;
 
     const EGLint attribs[] = {
             EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, // request OpenGL ES 2.0
@@ -300,10 +300,6 @@ bool NativeEngine::InitSurface() {
     // since this is a simple sample, we have a trivial selection process. We pick
     // the first EGLConfig that matches:
     eglChooseConfig(mEglDisplay, attribs, &mEglConfig, 1, &numConfigs);
-
-    // configure native window
-    eglGetConfigAttrib(mEglDisplay, mEglConfig, EGL_NATIVE_VISUAL_ID, &format);
-    ANativeWindow_setBuffersGeometry(mApp->window, 0, 0, format);
 
     // create EGL surface
     mEglSurface = eglCreateWindowSurface(mEglDisplay, mEglConfig, mApp->window, NULL);
