@@ -37,4 +37,4 @@ script:
   # print build failure summary
   - pandoc builder/build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
   # print lint results details
-  - for f in */app/build/outputs/lint-results.html; do pandoc $f -t plain; done
+  - for f in */app/build/outputs/lint-results*.html; do pandoc $f -t plain; done
