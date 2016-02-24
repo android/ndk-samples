@@ -94,7 +94,7 @@ static int engine_init_display(struct engine* engine) {
   const EGLint attribs[] = {EGL_SURFACE_TYPE, EGL_WINDOW_BIT, EGL_BLUE_SIZE,
                             8,                EGL_GREEN_SIZE, 8,
                             EGL_RED_SIZE,     8,              EGL_NONE};
-  EGLint w, h, dummy, format;
+  EGLint w, h, dummy;
   EGLint numConfigs;
   EGLConfig config;
   EGLSurface surface;
@@ -108,14 +108,6 @@ static int engine_init_display(struct engine* engine) {
    * sample, we have a very simplified selection process, where we pick
    * the first EGLConfig that matches our criteria */
   eglChooseConfig(display, attribs, &config, 1, &numConfigs);
-
-  /* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
-   * guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
-   * As soon as we picked a EGLConfig, we can safely reconfigure the
-   * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
-  eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
-
-  ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
 
   surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
   context = eglCreateContext(display, config, NULL, NULL);
