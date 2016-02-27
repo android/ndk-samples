@@ -13,7 +13,7 @@ model {
     }
     android.ndk {
         moduleName = "native-plasma"
-        CFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
+        cppFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
         ldLibs.addAll(["m", "log","android"])
     }
     android.buildTypes {
@@ -22,19 +22,5 @@ model {
             proguardFiles.add(file('proguard-rules.txt'))
         }
     }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
-        }
-        create ("arm8") {
-            ndk.abiFilters.add("arm64-v8a")
-        }
-        create ("x86-32") {
-            ndk.abiFilters.add("x86")
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        create("fat")
-    }
+
 }
