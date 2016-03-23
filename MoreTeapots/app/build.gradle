@@ -14,25 +14,30 @@ model {
 
     android.ndk {
         moduleName = "MoreTeapotsNativeActivity"
-        cppFlags.addAll(["-I${file("src/main/jni/cpufeatures")}".toString(),
-                         "-I${file("src/main/jni/native_app_glue")}".toString(),
-                         "-I${file("src/main/jni/ndk_helper")}".toString()])
-        // CFlags is configured in similiar way as cppFlags
-        // CFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
-        ldLibs.addAll(["android", "EGL", "GLESv2","log"])
-        stl         = "stlport_static"
+        cppFlags.addAll(["-I${file("../../Common/cpufeatures")}".toString(),
+                         "-I${file("../../Common/native_app_glue")}".toString(),
+                         "-I${file("../../Common/ndk_helper")}".toString()])
+        ldLibs.addAll(["android", "EGL", "GLESv2","log", "atomic"])
+        stl     = "c++_static"
     }
-
     android.sources {
         main {
             jni {
                 source {
                     srcDirs 'src/main/jni'
+                    srcDirs '../../Common'
                 }
             }
         }
     }
-
+    // Turn on hard float support in armeabi-v7a
+    android.abis {
+        create("armeabi-v7a") {
+            cppFlags.addAll(["-mhard-float", "-D_NDK_MATH_NO_SOFTFP=1", "-mfloat-abi=hard"])
+            ldLibs.add("m_hard")
+            ldFlags.add("-Wl,--no-warn-mismatch")
+        }
+    }
     android.productFlavors {
         create ("arm7") {
             ndk.abiFilters.add("armeabi-v7a")

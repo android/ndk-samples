@@ -125,10 +125,6 @@ public class TeapotNativeActivity extends NativeActivity {
     protected void onPause()
     {
         super.onPause();
-        if (_popupWindow != null) {
-            _popupWindow.dismiss();
-            _popupWindow = null;
-        }
     }
 
     public void updateFPS(final float fFPS)

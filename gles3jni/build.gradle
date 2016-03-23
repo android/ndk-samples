@@ -4,7 +4,7 @@ buildscript {
        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle-experimental:0.4.0'
+        classpath 'com.android.tools.build:gradle-experimental:0.7.0-alpha1'
     }
 }
 
