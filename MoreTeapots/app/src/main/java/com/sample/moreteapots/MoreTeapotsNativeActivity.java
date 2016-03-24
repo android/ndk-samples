@@ -76,11 +76,6 @@ public class MoreTeapotsNativeActivity extends NativeActivity {
     protected void onPause()
     {
         super.onPause();
-        if (_popupWindow != null) {
-
-            _popupWindow.dismiss();
-            _popupWindow = null;
-        }
     }
     // Our popup window, you will call it from your C/C++ code later
 

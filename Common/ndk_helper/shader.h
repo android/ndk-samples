@@ -30,11 +30,9 @@
 
 #include "JNIHelper.h"
 
-namespace ndk_helper
-{
+namespace ndk_helper {
 
-namespace shader
-{
+namespace shader {
 
 /******************************************************************
  * Shader compiler helper
@@ -52,7 +50,8 @@ namespace shader
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader( GLuint *shader, const GLenum type, std::vector<uint8_t>& data );
+bool CompileShader(GLuint *shader, const GLenum type,
+                   std::vector<uint8_t> &data);
 
 /******************************************************************
  * CompileShader() with buffer
@@ -65,10 +64,8 @@ bool CompileShader( GLuint *shader, const GLenum type, std::vector<uint8_t>& dat
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader( GLuint *shader,
-        const GLenum type,
-        const GLchar *source,
-        const int32_t iSize );
+bool CompileShader(GLuint *shader, const GLenum type, const GLchar *source,
+                   const int32_t iSize);
 
 /******************************************************************
  * CompileShader() with filename
@@ -80,7 +77,7 @@ bool CompileShader( GLuint *shader,
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader( GLuint *shader, const GLenum type, const char *strFileName );
+bool CompileShader(GLuint *shader, const GLenum type, const char *strFileName);
 
 /******************************************************************
  * CompileShader() with std::map helps patching on a shader on the fly.
@@ -90,14 +87,13 @@ bool CompileShader( GLuint *shader, const GLenum type, const char *strFileName )
  *  in: type, shader type (i.e. GL_VERTEX_SHADER/GL_FRAGMENT_SHADER)
  *  in: mapParameters
  *      For a example,
- *      map : %KEY% -> %VALUE% replaces all %KEY% entries in the given shader code to %VALUE"
+ *      map : %KEY% -> %VALUE% replaces all %KEY% entries in the given shader
+ *code to %VALUE"
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader( GLuint *shader,
-        const GLenum type,
-        const char *str_file_name,
-        const std::map<std::string, std::string>& map_parameters );
+bool CompileShader(GLuint *shader, const GLenum type, const char *str_file_name,
+                   const std::map<std::string, std::string> &map_parameters);
 
 /******************************************************************
  * LinkProgram()
@@ -107,7 +103,7 @@ bool CompileShader( GLuint *shader,
  * return: true if a shader linkage succeeded, false if it failed
  *
  */
-bool LinkProgram( const GLuint prog );
+bool LinkProgram(const GLuint prog);
 
 /******************************************************************
  * validateProgram()
@@ -117,8 +113,8 @@ bool LinkProgram( const GLuint prog );
  * return: true if a shader validation succeeded, false if it failed
  *
  */
-bool ValidateProgram( const GLuint prog );
-} //namespace shader
+bool ValidateProgram(const GLuint prog);
+}  // namespace shader
 
-} //namespace ndkHelper
+}  // namespace ndkHelper
 #endif /* SHADER_H_ */

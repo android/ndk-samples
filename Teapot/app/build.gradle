@@ -15,13 +15,11 @@ model {
 
     android.ndk {
         moduleName = "TeapotNativeActivity"
-        cppFlags.addAll(["-I${file("src/main/jni/native_app_glue")}".toString(),
-	                 "-I${file("src/main/jni/cpufeatures")}".toString(),
-                         "-I${file("src/main/jni/ndk_helper")}".toString()])
-        // CFlags is configured in similar way as cppFlags
-        // CFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
-        ldLibs.addAll(["android", "EGL", "GLESv2", "dl", "log"])
-        stl     = "stlport_static"
+        cppFlags.addAll(["-I${file("../../Common/native_app_glue")}".toString(),
+	                 "-I${file("../../Common/cpufeatures")}".toString(),
+                         "-I${file("../../Common/ndk_helper")}".toString()])
+        ldLibs.addAll(["android", "EGL", "GLESv2", "dl", "log", "atomic"])
+        stl     = "c++_static"
     }
     // jni is the default dir; config this if yours is in different directory
     android.sources {
@@ -29,6 +27,7 @@ model {
             jni {
                 source {
                     srcDirs 'src/main/jni'
+                    srcDirs '../../Common'
                 }
             }
         }
@@ -37,6 +36,14 @@ model {
         release {
             minifyEnabled = false
             proguardFiles.add(file('proguard-rules.txt'))
+        }
+    }
+    // Turn on hard float support in armeabi-v7a
+    android.abis {
+        create("armeabi-v7a") {
+            cppFlags.addAll(["-mhard-float", "-D_NDK_MATH_NO_SOFTFP=1", "-mfloat-abi=hard"])
+            ldLibs.add("m_hard")
+            ldFlags.add("-Wl,--no-warn-mismatch")
         }
     }
     android.productFlavors {
