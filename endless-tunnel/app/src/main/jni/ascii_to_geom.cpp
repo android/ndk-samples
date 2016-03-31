@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include "ascii_to_geom.hpp"
-#include "engine.hpp"
 
 //#define GEOM_DEBUG LOGD
 #define GEOM_DEBUG
@@ -55,7 +54,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
         } else {
             MY_ASSERT(r >= 0 && r < rows);
             MY_ASSERT(c >= 0 && c < cols);
-            v[r][c++] = *p;
+            v[r][c++] = (unsigned int) *p;
         }
     }
 
@@ -83,7 +82,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     int vertices = 0, indices = 0;
     for (r = 0; r < rows; r++) {
         for (c = 0; c < cols; c++) {
-            char t = v[r][c];
+            unsigned t = v[r][c];
             if (t == '+') {
                 vertices++;
             } else if (t == '-' || t == '|' || t == '`' || t == '/') {
@@ -112,7 +111,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     // process vertices
     for (r = 0; r < rows; r++) {
         for (c = 0; c < cols; c++) {
-            char t = v[r][c];
+            unsigned t = v[r][c];
             if (t == '+') {
                 GEOM_DEBUG("Found vertex at %d,%d, index %d", r, c, vertices);
                 verticesArray[vertices * 7] = left + c * scale;
@@ -123,7 +122,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
                 verticesArray[vertices * 7 + 5] = 1.0f; // blue
                 verticesArray[vertices * 7 + 6] = 1.0f; // alpha
                 // mark which vertex this is
-                v[r][c] = VERTEX_BIT | vertices;
+                v[r][c] = (unsigned int) (VERTEX_BIT | vertices);
                 vertices++;
             }
         }
@@ -187,8 +186,8 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
             GEOM_DEBUG("End vertex is at %d,%d, index %d", end_r, end_c,
                     v[end_r][end_c] & VERTEX_INDEX_MASK);
 
-            indicesArray[indices] = v[start_r][start_c] & VERTEX_INDEX_MASK;
-            indicesArray[indices + 1] = v[end_r][end_c] & VERTEX_INDEX_MASK;
+            indicesArray[indices] = (GLushort) (v[start_r][start_c] & VERTEX_INDEX_MASK);
+            indicesArray[indices + 1] = (GLushort) (v[end_r][end_c] & VERTEX_INDEX_MASK);
             indices += 2;
             GEOM_DEBUG("We now have %d indices.", indices);
         }

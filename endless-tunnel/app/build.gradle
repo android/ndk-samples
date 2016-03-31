@@ -31,11 +31,12 @@ model {
 
     android.ndk {
             moduleName = "game"
-            cppFlags.addAll(["-I${file("src/main/jni/native_app_glue")}".toString(),
+            cppFlags.addAll(["-std=c++11",
+                    "-I${file("src/main/jni/native_app_glue")}".toString(),
                              "-I${file("src/main/jni")}".toString(),
                              "-I${file("src/main/jni/data")}".toString()])
-            ldLibs.addAll(["android", "EGL", "GLESv2", "OpenSLES", "log"])
-            stl        = "stlport_static"
+            ldLibs.addAll(["android", "atomic", "EGL", "GLESv2", "OpenSLES", "log"])
+            stl        = "c++_static"
     }
     android.lintOptions {
         abortOnError  = false

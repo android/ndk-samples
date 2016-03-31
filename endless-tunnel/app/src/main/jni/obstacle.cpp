@@ -15,7 +15,6 @@
  */
 
 #include "obstacle.hpp"
-#include "util.hpp"
 
 #define BONUS_PROBABILITY 0.7f
 
@@ -54,11 +53,11 @@ void Obstacle::PutRandomBonus() {
     bonusRow = bonusCol = -1;
     for (rd = 0; rd < OBS_GRID_SIZE && bonusRow < 0; rd++) {
         for (cd = 0; cd < OBS_GRID_SIZE; cd++) {
-            int r = (r0 + rd) % OBS_GRID_SIZE;
-            int c = (c0 + cd) % OBS_GRID_SIZE;
-            if (!grid[c][r] && candidate[c][r]) {
-                bonusRow = r;
-                bonusCol = c;
+            int my_r = (r0 + rd) % OBS_GRID_SIZE;
+            int my_c = (c0 + cd) % OBS_GRID_SIZE;
+            if (!grid[my_c][my_r] && candidate[my_c][my_r]) {
+                bonusRow = my_r;
+                bonusCol = my_c;
                 break;
             }
         }

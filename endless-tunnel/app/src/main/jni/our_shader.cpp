@@ -18,9 +18,9 @@
 #include "data/our_shader.inl"
 
 OurShader::OurShader() : Shader() {
-    mColorLoc = -1;
+    mColorLoc = (GLuint) -1;
     mTintLoc = -1;
-    mTexCoordLoc = -1;
+    mTexCoordLoc = (GLuint) -1;
     mSamplerLoc = -1;
     mPointLightPosLoc = -1;
     mPointLightColorLoc = -1;
@@ -35,7 +35,7 @@ void OurShader::Compile() {
 
     // get location of the color attribute
     BindShader();
-    mColorLoc = glGetAttribLocation(mProgramH, "a_Color");
+    mColorLoc = (GLuint) glGetAttribLocation(mProgramH, "a_Color");
     if (mColorLoc < 0) {
         LOGE("*** Couldn't get color attrib location from shader (OurShader).");
         ABORT_GAME;
@@ -50,7 +50,7 @@ void OurShader::Compile() {
         LOGE("*** Couldn't get sampler location from shader (OurShader).");
         ABORT_GAME;
     }
-    mTexCoordLoc = glGetAttribLocation(mProgramH, "a_TexCoord");
+    mTexCoordLoc = (GLuint) glGetAttribLocation(mProgramH, "a_TexCoord");
     if (mTexCoordLoc < 0) {
         LOGE("*** Couldn't get tex coord attribute location from shader (OurShader).");
         ABORT_GAME;
@@ -103,12 +103,12 @@ void OurShader::BeginRender(VertexBuf *geom) {
 
     // push color data
     glVertexAttribPointer(mColorLoc, 3, GL_FLOAT, GL_FALSE, geom->GetStride(),
-            BUFFER_OFFSET(geom->GetColorsOffset()));
+                          BUFFER_OFFSET(geom->GetColorsOffset()));
     glEnableVertexAttribArray(mColorLoc);
 
     // push texture coordinates
     glVertexAttribPointer(mTexCoordLoc, 2, GL_FLOAT, GL_FALSE, geom->GetStride(),
-            BUFFER_OFFSET(geom->GetTexCoordsOffset()));
+                          BUFFER_OFFSET(geom->GetTexCoordsOffset()));
     glEnableVertexAttribArray(mTexCoordLoc);
 
     // set neutral tint color (white) as a default
