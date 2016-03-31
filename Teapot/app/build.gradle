@@ -15,9 +15,9 @@ model {
 
     android.ndk {
         moduleName = "TeapotNativeActivity"
-        cppFlags.addAll(["-I${file("../../Common/native_app_glue")}".toString(),
-	                 "-I${file("../../Common/cpufeatures")}".toString(),
-                         "-I${file("../../Common/ndk_helper")}".toString()])
+        cppFlags.addAll(["-I${file("src/main/jni/Common/native_app_glue")}".toString(),
+	                 "-I${file("src/main/jni/Common/cpufeatures")}".toString(),
+                         "-I${file("src/main/jni/Common/ndk_helper")}".toString()])
         ldLibs.addAll(["android", "EGL", "GLESv2", "dl", "log", "atomic"])
         stl     = "c++_static"
     }
@@ -27,7 +27,6 @@ model {
             jni {
                 source {
                     srcDirs 'src/main/jni'
-                    srcDirs '../../Common'
                 }
             }
         }
