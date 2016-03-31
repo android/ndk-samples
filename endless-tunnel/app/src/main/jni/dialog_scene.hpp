@@ -74,15 +74,6 @@ class DialogScene : public UiScene {
             return this;
         }
 
-        inline DialogScene* SetTwoButtons(const char *leftText, int leftAction,
-                const char *rightText, int rightAction) {
-            mLeftButtonText = leftText;
-            mLeftButtonAction = leftAction;
-            mRightButtonText = rightText;
-            mRightButtonAction = rightAction;
-            return this;
-        }
-
     private:
         void CreateWidgetsSetText();
         void CreateWidgetsSingleButton();

@@ -17,8 +17,7 @@
 #define _mygame_strings_inl
 
 #define S_HOWTO_WITHOUT_JOY "Drag to steer"
-#define S_HOWTO_WITH_JOY "Use joystick to steer"
-#define S_LEVEL "LEVEL XX"
+
 #define S_GOT_BONUS "+ 50"
 #define S_GAME_OVER "Game Over"
 #define S_OUCH "Ouch"
@@ -38,10 +37,6 @@
 #define S_ABOUT "About"
 
 #define S_OK "OK"
-#define S_SIGN_IN "    Sign in"
-
-#define S_YES "Yes"
-#define S_NO "No"
 
 #endif
 
