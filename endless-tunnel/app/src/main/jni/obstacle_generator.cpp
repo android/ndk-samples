@@ -16,7 +16,6 @@
 
 #include "game_consts.hpp"
 #include "obstacle_generator.hpp"
-#include "util.hpp"
 
 void ObstacleGenerator::Generate(Obstacle *result) {
     static const int PROB_TABLE[] = {
@@ -42,7 +41,6 @@ void ObstacleGenerator::Generate(Obstacle *result) {
     int easyProb = PROB_TABLE[d * 4];
     int medProb = PROB_TABLE[d * 4 + 1];
     int intermediateProb = PROB_TABLE[d * 4 + 2];
-    int hardProb = PROB_TABLE[d * 4 + 3];
     int roll = Random(100);
     if (roll <= easyProb) {
         GenEasy(result);
@@ -82,7 +80,6 @@ void ObstacleGenerator::GenEasy(Obstacle *result) {
             FillCol(result, i + (Random(2) ? 1 : -1)); // vertical bar next to i
             break;
         case 2:
-            i = Random(1, OBS_GRID_SIZE - 2); // i is the column of the bonus
             FillRow(result, 0);
             FillRow(result, OBS_GRID_SIZE - 1);
             FillCol(result, 0);

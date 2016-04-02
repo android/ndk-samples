@@ -32,7 +32,8 @@ class IndexBuf;
 class Shader {
     protected:
         // OpenGL handles
-        int mVertShaderH, mFragShaderH, mProgramH;
+        int mVertShaderH, mFragShaderH;
+        GLuint mProgramH;
         int mMVPMatrixLoc;
         int mPositionAttribLoc;
 

@@ -82,14 +82,9 @@
 #define SCORE_POS_Y 0.92f
 #define SCORE_FONT_SCALE 0.8f
 
-// by how much we translate the word "LEVEL" to the left of the center of the screen
-// to make room for the level number
-#define LEVEL_SIGN_XLATE -0.1f
-#define LEVEL_NUMBER_XLATE +0.1f
 
 // scale of the signs that appear onscreen
 #define SIGN_FONT_SCALE 0.9f
-#define SIGN_FONT_SCALE_GOT_BONUS (SIGN_FONT_SCALE * 0.5f)
 
 // scale of menu items
 #define MENUITEM_FONT_SCALE 0.8f

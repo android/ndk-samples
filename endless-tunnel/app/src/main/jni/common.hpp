@@ -44,19 +44,6 @@ extern "C" {
 
 #define BUFFER_OFFSET(i) ((char*)NULL + (i))
 
-class LogFunc {
- public:
-  LogFunc(const char *_name) {
-    name_ = _name;
-    LOGD("====>%s", name_);
-  }
-  ~LogFunc() {
-    LOGD("<====%s", name_);
-  }
- private:
-  const char* name_;
-};
-
 #include "our_key_codes.hpp"
 
 #endif
