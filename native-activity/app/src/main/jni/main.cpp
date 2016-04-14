@@ -235,7 +235,8 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
                                                engine->accelerometerSensor);
                 // We'd like to get 60 events per second (in us).
                 ASensorEventQueue_setEventRate(engine->sensorEventQueue,
-                                               engine->accelerometerSensor, (1000L/60)*1000);
+                                               engine->accelerometerSensor,
+                                               (1000L/60)*1000);
             }
             break;
         case APP_CMD_LOST_FOCUS:
@@ -271,10 +272,13 @@ void android_main(struct android_app* state) {
 
     // Prepare to monitor accelerometer
     engine.sensorManager = ASensorManager_getInstance();
-    engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,
-                                                                 ASENSOR_TYPE_ACCELEROMETER);
-    engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,
-                                                              state->looper, LOOPER_ID_USER, NULL, NULL);
+    engine.accelerometerSensor = ASensorManager_getDefaultSensor(
+                                        engine.sensorManager,
+                                        ASENSOR_TYPE_ACCELEROMETER);
+    engine.sensorEventQueue = ASensorManager_createEventQueue(
+                                    engine.sensorManager,
+                                    state->looper, LOOPER_ID_USER,
+                                    NULL, NULL);
 
     if (state->savedState != NULL) {
         // We are starting with a previous saved state; restore from it.
