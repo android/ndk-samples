@@ -16,8 +16,10 @@
  */
 
 //BEGIN_INCLUDE(all)
+#include <initializer_list>
 #include <jni.h>
 #include <errno.h>
+#include <cassert>
 
 #include <EGL/egl.h>
 #include <GLES/gl.h>
@@ -75,7 +77,7 @@ static int engine_init_display(struct engine* engine) {
             EGL_RED_SIZE, 8,
             EGL_NONE
     };
-    EGLint w, h, dummy;
+    EGLint w, h, dummy, format;
     EGLint numConfigs;
     EGLConfig config;
     EGLSurface surface;
@@ -85,11 +87,37 @@ static int engine_init_display(struct engine* engine) {
 
     eglInitialize(display, 0, 0);
 
-    /* Here, the application chooses the configuration it desires. In this
-     * sample, we have a very simplified selection process, where we pick
-     * the first EGLConfig that matches our criteria */
-    eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+    /* Here, the application chooses the configuration it desires.
+     * find the best match if possible, otherwise use the very first one
+     */
+    eglChooseConfig(display, attribs, nullptr,0, &numConfigs);
+    auto supportedConfigs = new EGLConfig[numConfigs];
+    assert(supportedConfigs);
+    eglChooseConfig(display, attribs, supportedConfigs, numConfigs, &numConfigs);
+    assert(numConfigs);
+    auto i = 0;
+    for (; i < numConfigs; i++) {
+        auto& cfg = supportedConfigs[i];
+        EGLint r, g, b, d;
+        if (eglGetConfigAttrib(display, cfg, EGL_RED_SIZE, &r)   &&
+            eglGetConfigAttrib(display, cfg, EGL_GREEN_SIZE, &g) &&
+            eglGetConfigAttrib(display, cfg, EGL_BLUE_SIZE, &b)  &&
+            eglGetConfigAttrib(display, cfg, EGL_DEPTH_SIZE, &d) &&
+            r == 8 && g == 8 && b == 8 && d == 0 ) {
 
+            config = supportedConfigs[i];
+            break;
+        }
+    }
+    if (i == numConfigs) {
+        config = supportedConfigs[0];
+    }
+
+    /* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
+     * guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
+     * As soon as we picked a EGLConfig, we can safely reconfigure the
+     * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
+    eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
     surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
     context = eglCreateContext(display, config, NULL, NULL);
 
@@ -108,6 +136,12 @@ static int engine_init_display(struct engine* engine) {
     engine->height = h;
     engine->state.angle = 0;
 
+    // Check openGL on the system
+    auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
+    for (auto name : opengl_info) {
+        auto info = glGetString(name);
+        LOGI("OpenGL Info: %s", info);
+    }
     // Initialize GL state.
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
@@ -128,7 +162,7 @@ static void engine_draw_frame(struct engine* engine) {
 
     // Just fill the screen with a color.
     glClearColor(((float)engine->state.x)/engine->width, engine->state.angle,
-            ((float)engine->state.y)/engine->height, 1);
+                 ((float)engine->state.y)/engine->height, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
     eglSwapBuffers(engine->display, engine->surface);
@@ -195,10 +229,11 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             // When our app gains focus, we start monitoring the accelerometer.
             if (engine->accelerometerSensor != NULL) {
                 ASensorEventQueue_enableSensor(engine->sensorEventQueue,
-                        engine->accelerometerSensor);
+                                               engine->accelerometerSensor);
                 // We'd like to get 60 events per second (in us).
                 ASensorEventQueue_setEventRate(engine->sensorEventQueue,
-                        engine->accelerometerSensor, (1000L/60)*1000);
+                                               engine->accelerometerSensor,
+                                               (1000L/60)*1000);
             }
             break;
         case APP_CMD_LOST_FOCUS:
@@ -206,7 +241,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             // This is to avoid consuming battery while not being used.
             if (engine->accelerometerSensor != NULL) {
                 ASensorEventQueue_disableSensor(engine->sensorEventQueue,
-                        engine->accelerometerSensor);
+                                                engine->accelerometerSensor);
             }
             // Also stop animating.
             engine->animating = 0;
@@ -234,10 +269,13 @@ void android_main(struct android_app* state) {
 
     // Prepare to monitor accelerometer
     engine.sensorManager = ASensorManager_getInstance();
-    engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,
-            ASENSOR_TYPE_ACCELEROMETER);
-    engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,
-            state->looper, LOOPER_ID_USER, NULL, NULL);
+    engine.accelerometerSensor = ASensorManager_getDefaultSensor(
+                                        engine.sensorManager,
+                                        ASENSOR_TYPE_ACCELEROMETER);
+    engine.sensorEventQueue = ASensorManager_createEventQueue(
+                                    engine.sensorManager,
+                                    state->looper, LOOPER_ID_USER,
+                                    NULL, NULL);
 
     if (state->savedState != NULL) {
         // We are starting with a previous saved state; restore from it.
@@ -256,7 +294,7 @@ void android_main(struct android_app* state) {
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
         while ((ident=ALooper_pollAll(engine.animating ? 0 : -1, NULL, &events,
-                (void**)&source)) >= 0) {
+                                      (void**)&source)) >= 0) {
 
             // Process this event.
             if (source != NULL) {
@@ -268,10 +306,10 @@ void android_main(struct android_app* state) {
                 if (engine.accelerometerSensor != NULL) {
                     ASensorEvent event;
                     while (ASensorEventQueue_getEvents(engine.sensorEventQueue,
-                            &event, 1) > 0) {
+                                                       &event, 1) > 0) {
                         LOGI("accelerometer: x=%f y=%f z=%f",
-                                event.acceleration.x, event.acceleration.y,
-                                event.acceleration.z);
+                             event.acceleration.x, event.acceleration.y,
+                             event.acceleration.z);
                     }
                 }
             }
