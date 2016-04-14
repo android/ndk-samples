@@ -118,9 +118,6 @@ static int engine_init_display(struct engine* engine) {
      * As soon as we picked a EGLConfig, we can safely reconfigure the
      * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
     eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
-
-    ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
-
     surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
     context = eglCreateContext(display, config, NULL, NULL);
 
