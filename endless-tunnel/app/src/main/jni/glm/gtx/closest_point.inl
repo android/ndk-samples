@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2005-12-30
 // Updated : 2008-10-05
@@ -12,22 +12,22 @@
 
 namespace glm
 {
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tvec3<valType> closestPointOnLine
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec3<T, P> closestPointOnLine
 	(
-		detail::tvec3<valType> const & point, 
-		detail::tvec3<valType> const & a, 
-		detail::tvec3<valType> const & b
+		detail::tvec3<T, P> const & point,
+		detail::tvec3<T, P> const & a,
+		detail::tvec3<T, P> const & b
 	)
 	{
-		valType LineLength = distance(a, b);
-		detail::tvec3<valType> Vector = point - a;
-		detail::tvec3<valType> LineDirection = (b - a) / LineLength;
+		T LineLength = distance(a, b);
+		detail::tvec3<T, P> Vector = point - a;
+		detail::tvec3<T, P> LineDirection = (b - a) / LineLength;
 
 		// Project Vector to LineDirection to get the distance of point from a
-		valType Distance = dot(Vector, LineDirection);
+		T Distance = dot(Vector, LineDirection);
 
-		if(Distance <= valType(0)) return a;
+		if(Distance <= T(0)) return a;
 		if(Distance >= LineLength) return b;
 		return a + LineDirection * Distance;
 	}

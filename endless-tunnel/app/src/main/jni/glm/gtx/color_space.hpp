@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,12 +36,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_color_space
-#define GLM_GTX_color_space GLM_VERSION
+#define GLM_GTX_color_space
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_color_space extension included")
 #endif
 
@@ -52,41 +52,41 @@ namespace glm
 
 	/// Converts a color from HSV color space to its color in RGB color space.
 	/// @see gtx_color_space
-    template <typename valType> 
-	detail::tvec3<valType> rgbColor(
-		detail::tvec3<valType> const & hsvValue);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec3<T, P> rgbColor(
+		detail::tvec3<T, P> const & hsvValue);
 
 	/// Converts a color from RGB color space to its color in HSV color space.
 	/// @see gtx_color_space
-    template <typename valType> 
-	detail::tvec3<valType> hsvColor(
-		detail::tvec3<valType> const & rgbValue);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec3<T, P> hsvColor(
+		detail::tvec3<T, P> const & rgbValue);
 		
 	/// Build a saturation matrix.
 	/// @see gtx_color_space
-    template <typename valType> 
-	detail::tmat4x4<valType> saturation(
-		valType const s);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tmat4x4<T, P> saturation(
+		T const s);
 
-    /// Modify the saturation of a color.
+	/// Modify the saturation of a color.
 	/// @see gtx_color_space
-	template <typename valType> 
-	detail::tvec3<valType> saturation(
-		valType const s, 
-		detail::tvec3<valType> const & color);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec3<T, P> saturation(
+		T const s,
+		detail::tvec3<T, P> const & color);
 		
 	/// Modify the saturation of a color.
 	/// @see gtx_color_space
-    template <typename valType> 
-	detail::tvec4<valType> saturation(
-		valType const s, 
-		detail::tvec4<valType> const & color);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec4<T, P> saturation(
+		T const s,
+		detail::tvec4<T, P> const & color);
 		
 	/// Compute color luminosity associating ratios (0.33, 0.59, 0.11) to RGB canals.
 	/// @see gtx_color_space
-	template <typename valType> 
-	valType luminosity(
-		detail::tvec3<valType> const & color);
+	template <typename T, precision P>
+	GLM_FUNC_DECL T luminosity(
+		detail::tvec3<T, P> const & color);
 
 	/// @}
 }//namespace glm

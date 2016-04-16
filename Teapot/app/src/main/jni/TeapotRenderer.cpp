@@ -193,7 +193,6 @@ bool TeapotRenderer::LoadShaders(SHADER_PARAMS* params, const char* strVsh,
                                  const char* strFsh) {
   GLuint program;
   GLuint vert_shader, frag_shader;
-  char* vert_shader_pathname, *frag_shader_pathname;
 
   // Create shader program
   program = glCreateProgram();

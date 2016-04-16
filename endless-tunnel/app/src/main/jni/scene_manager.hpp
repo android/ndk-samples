@@ -41,7 +41,6 @@ class SceneManager {
         bool mHasGraphics;
         Scene *mSceneToInstall;
         void InstallScene(Scene *newScene);
-        bool mIsPaused;
 
     public:
         SceneManager();
@@ -50,18 +49,18 @@ class SceneManager {
         void StartGraphics();
 
         // Returns screen width in pixels
-        inline int GetScreenWidth() { return mScreenWidth; }
+        int GetScreenWidth() { return mScreenWidth; }
 
         // Returns screen height in pixels
-        inline int GetScreenHeight() { return mScreenHeight; }
+        int GetScreenHeight() { return mScreenHeight; }
 
         // Returns screen's aspect ratio
-        inline float GetScreenAspect() {
+        float GetScreenAspect() {
             return (float)mScreenWidth/mScreenHeight;
         }
 
         // Returns whether or not we have graphics (i.e. OpenGL context etc)
-        inline bool HasGraphics() {
+        bool HasGraphics() {
             return mHasGraphics;
         }
 

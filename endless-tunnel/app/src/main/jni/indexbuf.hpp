@@ -26,7 +26,7 @@ class IndexBuf {
 
         void BindBuffer();
         void UnbindBuffer();
-        inline int GetCount() { return mCount; }
+        int GetCount() { return mCount; }
 
     private:
         GLuint mIbo;

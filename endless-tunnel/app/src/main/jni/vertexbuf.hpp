@@ -35,20 +35,20 @@ class VertexBuf {
         void BindBuffer();
         void UnbindBuffer();
 
-        inline int GetStride() { return mStride; }
-        inline int GetCount() { return mCount; }
-        inline int GetPositionsOffset() { return 0; }
+        int GetStride() { return mStride; }
+        int GetCount() { return mCount; }
+        int GetPositionsOffset() { return 0; }
 
-        inline bool HasColors() { return mColorsOffset > 0; }
-        inline int GetColorsOffset() { return mColorsOffset; }
-        inline void SetColorsOffset(int offset) { mColorsOffset = offset; }
+        bool HasColors() { return mColorsOffset > 0; }
+        int GetColorsOffset() { return mColorsOffset; }
+        void SetColorsOffset(int offset) { mColorsOffset = offset; }
 
-        inline bool HasTexCoords() { return mTexCoordsOffset > 0; }
-        inline void SetTexCoordsOffset(int offset) { mTexCoordsOffset = offset; }
-        inline int GetTexCoordsOffset() { return mTexCoordsOffset; }
+        bool HasTexCoords() { return mTexCoordsOffset > 0; }
+        void SetTexCoordsOffset(int offset) { mTexCoordsOffset = offset; }
+        int GetTexCoordsOffset() { return mTexCoordsOffset; }
 
-        inline GLenum GetPrimitive() { return mPrimitive; }
-        inline void SetPrimitive(GLenum primitive) { mPrimitive = primitive; }
+        GLenum GetPrimitive() { return mPrimitive; }
+        void SetPrimitive(GLenum primitive) { mPrimitive = primitive; }
 };
 
 #endif

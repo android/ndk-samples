@@ -92,13 +92,12 @@ class sensorgraph {
         accelerometerEventQueue = ASensorManager_createEventQueue(sensorManager, looper,
                                                                   LOOPER_ID_USER, NULL, NULL);
         assert(accelerometerEventQueue != NULL);
-        int setEventRateResult = ASensorEventQueue_setEventRate(accelerometerEventQueue,
-                                                                accelerometer,
-                                                                int32_t(1000000 /
-                                                                        SENSOR_REFRESH_RATE));
-        int enableSensorResult = ASensorEventQueue_enableSensor(accelerometerEventQueue,
-                                                                accelerometer);
-        assert(enableSensorResult >= 0);
+        ASensorEventQueue_setEventRate(accelerometerEventQueue,
+                                       accelerometer,
+                                       int32_t(1000000 / SENSOR_REFRESH_RATE));
+        auto status = ASensorEventQueue_enableSensor(accelerometerEventQueue,
+                                                     accelerometer);
+        assert(status >= 0);
 
         generateXPos();
     }

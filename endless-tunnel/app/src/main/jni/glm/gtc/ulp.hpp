@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -37,12 +37,14 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTC_ulp
-#define GLM_GTC_ulp GLM_VERSION
+#define GLM_GTC_ulp
 
-// Dependency:
-#include "../glm.hpp"
+// Dependencies
+#include "../detail/setup.hpp"
+#include "../detail/precision.hpp"
+#include "../detail/type_int.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTC_ulp extension included")
 #endif
 
@@ -53,34 +55,34 @@ namespace glm
 
 	/// Return the next ULP value(s) after the input value(s).
 	/// @see gtc_ulp
-    template <typename genType>
-    genType next_float(genType const & x);
-        
+	template <typename genType>
+	GLM_FUNC_DECL genType next_float(genType const & x);
+
 	/// Return the previous ULP value(s) before the input value(s).
 	/// @see gtc_ulp
-    template <typename genType>
-    genType prev_float(genType const & x);
+	template <typename genType>
+	GLM_FUNC_DECL genType prev_float(genType const & x);
 
 	/// Return the value(s) ULP distance after the input value(s).
 	/// @see gtc_ulp
-    template <typename genType>
-    genType next_float(genType const & x, uint const & Distance);
-        
-    /// Return the value(s) ULP distance before the input value(s).
+	template <typename genType>
+	GLM_FUNC_DECL genType next_float(genType const & x, uint const & Distance);
+
+	/// Return the value(s) ULP distance before the input value(s).
 	/// @see gtc_ulp
-    template <typename genType>
-    genType prev_float(genType const & x, uint const & Distance);
-        
-    /// Return the distance in the number of ULP between 2 scalars.
+	template <typename genType>
+	GLM_FUNC_DECL genType prev_float(genType const & x, uint const & Distance);
+	
+	/// Return the distance in the number of ULP between 2 scalars.
 	/// @see gtc_ulp
-    template <typename T>
-    uint float_distance(T const & x, T const & y);
-        
-    /// Return the distance in the number of ULP between 2 vectors.
+	template <typename T>
+	GLM_FUNC_DECL uint float_distance(T const & x, T const & y);
+
+	/// Return the distance in the number of ULP between 2 vectors.
 	/// @see gtc_ulp
-    template<typename T, template<typename> class vecType>
-    vecType<uint> float_distance(vecType<T> const & x, vecType<T> const & y);
-        
+	template<typename T, template<typename> class vecType>
+	GLM_FUNC_DECL vecType<uint> float_distance(vecType<T> const & x, vecType<T> const & y);
+	
 	/// @}
 }// namespace glm
 

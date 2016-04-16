@@ -1,55 +1,65 @@
 apply plugin: 'com.android.model.application'
 
+// Retrieve ndk path to config cpufeatures src code into this project
+// native_app_glue is configured as dependent module, so we avoid confusing
+// NOTICE/repo.prop files get displayed multiple times inside IDE
+def ndkDir = System.getenv("ANDROID_NDK_HOME")
+def propertiesFile = project.rootProject.file('local.properties')
+if (propertiesFile.exists()) {
+    Properties properties = new Properties()
+    properties.load(propertiesFile.newDataInputStream())
+    ndkDir = properties.getProperty('ndk.dir')
+}
+
 model {
     android {
         compileSdkVersion = 23
         buildToolsVersion = "23.0.2"
 
-        defaultConfig.with {
+        defaultConfig {
             applicationId    = "com.sample.moreteapots"
             minSdkVersion.apiLevel    = 17
             targetSdkVersion.apiLevel = 22
         }
-    }
-
-    android.ndk {
-        moduleName = "MoreTeapotsNativeActivity"
-        cppFlags.addAll(["-I${file("src/main/jni/Common/cpufeatures")}".toString(),
-                         "-I${file("src/main/jni/Common/native_app_glue")}".toString(),
-                         "-I${file("src/main/jni/Common/ndk_helper")}".toString()])
-        ldLibs.addAll(["android", "EGL", "GLESv2","log", "atomic"])
-        stl     = "c++_static"
-    }
-    android.sources {
-        main {
-            jni {
-                source {
-                    srcDirs 'src/main/jni'
+        ndk {
+            moduleName = "MoreTeapotsNativeActivity"
+            // temporarily use gcc since clang does not work on windows (*)
+            // also clang warning about inline, so could not use -Wall, -Werror
+            // toolchain = "clang"
+            stl       = "gnustl_static"
+            cppFlags.addAll(["-I" + "${ndkDir}/sources/android/cpufeatures",
+                             "-I" + file("src/main/jni/ndk_helper")])
+            cppFlags.addAll(["-std=c++11", "-Werror", "-Wall",
+                             "-fno-exceptions", "-fno-rtti"])
+            ldLibs.addAll(["android", "log", "EGL", "GLESv2","atomic"])
+        }
+        // Turn on hard float support in armeabi-v7a
+        abis {
+            create("armeabi-v7a") {
+                cppFlags.addAll(["-mhard-float", "-D_NDK_MATH_NO_SOFTFP=1",
+                                 "-mfloat-abi=hard"])
+                ldLibs.add("m_hard")
+                ldFlags.add("-Wl,--no-warn-mismatch")
+            }
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ":nativeactivity" linkage "static"
+                    }
+                    source {
+                        srcDirs 'src/main/jni'
+                        srcDirs "${ndkDir}/sources/android/cpufeatures"
+                    }
                 }
             }
         }
-    }
-    // Turn on hard float support in armeabi-v7a
-    android.abis {
-        create("armeabi-v7a") {
-            cppFlags.addAll(["-mhard-float", "-D_NDK_MATH_NO_SOFTFP=1", "-mfloat-abi=hard"])
-            ldLibs.add("m_hard")
-            ldFlags.add("-Wl,--no-warn-mismatch")
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
-        }
-        create ("arm8") {
-            ndk.abiFilters.add("arm64-v8a")
-        }
-        create ("x86-32") {
-            ndk.abiFilters.add("x86")
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        create("all")
     }
 }

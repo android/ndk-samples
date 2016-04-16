@@ -1,6 +1,17 @@
 apply plugin: 'com.android.model.application'
 
-def gpg_sdk_path = file(project(':thirdparty:gpg-sdk').projectDir).absolutePath + "/gpg-cpp-sdk/android"
+// Find ndk path, used to config native_app_glue srcDir
+def ndkDir = System.getenv("ANDROID_NDK_HOME")
+def propertiesFile = project.rootProject.file('local.properties')
+if (propertiesFile.exists()) {
+    Properties properties = new Properties()
+    properties.load(propertiesFile.newDataInputStream())
+    ndkDir = properties.getProperty('ndk.dir')
+}
+
+// Google play game static lib path
+def gpg_sdk_path = file(project(':thirdparty:gpg-sdk').projectDir).absolutePath +
+                   "/gpg-cpp-sdk/android"
 
 model {
 
@@ -9,7 +20,7 @@ model {
             gpg {
                 headers.srcDir "${gpg_sdk_path}/include"
                 binaries.withType(StaticLibraryBinary) {
-                    staticLibraryFile = file("${gpg_sdk_path}/lib/c++/${targetPlatform.getName()}/libgpg.a")
+                    staticLibraryFile = file("${gpg_sdk_path}/lib/gnustl/${targetPlatform.getName()}/libgpg.a")
                 }
             }
         }
@@ -19,7 +30,7 @@ model {
         compileSdkVersion = 23
         buildToolsVersion = "23.0.2"
 
-        defaultConfig.with {
+        defaultConfig {
             //
             //  NOTE: change the application ID to match the play console linked application.
             //
@@ -27,29 +38,36 @@ model {
             minSdkVersion.apiLevel    = 9
             targetSdkVersion.apiLevel = 23
         }
-    }
 
-    android.ndk {
-        moduleName = "native-activity"
-        platformVersion = 9 //same as minSdkVersion.apiLevel for better compatibility
-        stl    = "c++_static"
-        ldLibs.addAll(["atomic", "log", "android", "EGL", "GLESv1_CM", "z"]) //gpg depends on atomic, log and z
-        abiFilters.addAll(["armeabi", "armeabi-v7a", "x86", "arm64-v8a"]) //filtering ABIs on the ones Google Play Games library is compatible with.
-    }
-
-    android.sources {
-        main {
-            jni {
-                dependencies {
-                    library "gpg" linkage "static"
+        ndk {
+            moduleName = "native-activity"
+            platformVersion = defaultConfig.minSdkVersion.apiLevel
+            stl    = "gnustl_static"
+            toolchain = "clang"
+            cppFlags.addAll(["-std=c++11",
+                             // issues/165 -- Need update gpg::functions to enable "-Wall", "-Werror",
+                             "-I" + ndkDir + "/sources/android/native_app_glue"])
+            ldLibs.addAll(["log", "android", "EGL", "GLESv1_CM",
+                           "atomic", "z"]) // gpg depends on atomic & z libs
+            // Filtering ABIs on the ones Google Play Games library supports
+            abiFilters.addAll(["armeabi", "armeabi-v7a", "x86", "arm64-v8a"])
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        library "gpg" linkage "static"
+                    }
+                    source {
+                        srcDir "${ndkDir}/sources/android/native_app_glue"
+                    }
                 }
             }
         }
-    }
-
-    android.buildTypes {
-        release {
-            minifyEnabled = false
+        buildTypes {
+            release {
+                minifyEnabled = false
+            }
         }
     }
 }

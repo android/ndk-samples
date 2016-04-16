@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,12 +36,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_handed_coordinate_space
-#define GLM_GTX_handed_coordinate_space GLM_VERSION
+#define GLM_GTX_handed_coordinate_space
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_handed_coordinate_space extension included")
 #endif
 
@@ -52,19 +52,19 @@ namespace glm
 
 	//! Return if a trihedron right handed or not.
 	//! From GLM_GTX_handed_coordinate_space extension.
-	template <typename T> 
-	bool rightHanded(
-		detail::tvec3<T> const & tangent, 
-		detail::tvec3<T> const & binormal, 
-		detail::tvec3<T> const & normal);
+	template <typename T, precision P>
+	GLM_FUNC_DECL bool rightHanded(
+		detail::tvec3<T, P> const & tangent,
+		detail::tvec3<T, P> const & binormal,
+		detail::tvec3<T, P> const & normal);
 
 	//! Return if a trihedron left handed or not.
 	//! From GLM_GTX_handed_coordinate_space extension.
-	template <typename T> 
-	bool leftHanded(
-		detail::tvec3<T> const & tangent, 
-		detail::tvec3<T> const & binormal, 
-		detail::tvec3<T> const & normal);
+	template <typename T, precision P>
+	GLM_FUNC_DECL bool leftHanded(
+		detail::tvec3<T, P> const & tangent,
+		detail::tvec3<T, P> const & binormal,
+		detail::tvec3<T, P> const & normal);
 
 	/// @}
 }// namespace glm

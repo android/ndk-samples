@@ -135,11 +135,12 @@ Renderer::~Renderer() {
 }
 
 void Renderer::resize(int w, int h) {
-    float* offsets = mapOffsetBuf();
+    auto offsets = mapOffsetBuf();
     calcSceneParams(w, h, offsets);
     unmapOffsetBuf();
 
-    for (unsigned int i = 0; i < mNumInstances; i++) {
+    // Auto gives a signed int :-(
+    for (auto i = (unsigned)0; i < mNumInstances; i++) {
         mAngles[i] = drand48() * TWO_PI;
         mAngularVelocity[i] = MAX_ROT_SPEED * (2.0*drand48() - 1.0);
     }
@@ -162,14 +163,14 @@ void Renderer::calcSceneParams(unsigned int w, unsigned int h,
     const float aspect[2] = {dim[0] / dim[1], dim[1] / dim[0]};
     const float scene2clip[2] = {1.0f, aspect[0]};
     const int ncells[2] = {
-            NCELLS_MAJOR,
+            static_cast<int>(NCELLS_MAJOR),
             (int)floorf(NCELLS_MAJOR * aspect[1])
     };
 
     float centers[2][MAX_INSTANCES_PER_SIDE];
     for (int d = 0; d < 2; d++) {
-        float offset = -ncells[d] / NCELLS_MAJOR; // -1.0 for d=0
-        for (int i = 0; i < ncells[d]; i++) {
+        auto offset = -ncells[d] / NCELLS_MAJOR; // -1.0 for d=0
+        for (auto i = 0; i < ncells[d]; i++) {
             centers[d][i] = scene2clip[d] * (CELL_SIZE*(i + 0.5f) + offset);
         }
     }
@@ -193,7 +194,7 @@ void Renderer::calcSceneParams(unsigned int w, unsigned int h,
 void Renderer::step() {
     timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
-    uint64_t nowNs = now.tv_sec*1000000000ull + now.tv_nsec;
+    auto nowNs = now.tv_sec*1000000000ull + now.tv_nsec;
 
     if (mLastFrameNs > 0) {
         float dt = float(nowNs - mLastFrameNs) * 0.000000001f;

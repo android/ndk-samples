@@ -32,6 +32,7 @@
 //
 
 // BEGIN_INCLUDE(all)
+//#include <initializer_list>
 #include <jni.h>
 #include <errno.h>
 
@@ -40,7 +41,7 @@
 
 #include <android/sensor.h>
 #include <android/log.h>
-#include "native_app_glue/android_native_app_glue.h"
+#include "android_native_app_glue.h"
 
 #include "StateManager.h"
 
@@ -86,6 +87,8 @@ struct engine {
 static int engine_init_display(struct engine* engine) {
   // initialize OpenGL ES and EGL
 
+  EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  eglInitialize(display, 0, 0);
   /*
    * Here specify the attributes of the desired configuration.
    * Below, we select an EGLConfig with at least 8 bits per color
@@ -94,37 +97,27 @@ static int engine_init_display(struct engine* engine) {
   const EGLint attribs[] = {EGL_SURFACE_TYPE, EGL_WINDOW_BIT, EGL_BLUE_SIZE,
                             8,                EGL_GREEN_SIZE, 8,
                             EGL_RED_SIZE,     8,              EGL_NONE};
-  EGLint w, h, dummy;
-  EGLint numConfigs;
+  auto numConfigs = 0;
   EGLConfig config;
-  EGLSurface surface;
-  EGLContext context;
-
-  EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-  eglInitialize(display, 0, 0);
-
   /* Here, the application chooses the configuration it desires. In this
    * sample, we have a very simplified selection process, where we pick
    * the first EGLConfig that matches our criteria */
   eglChooseConfig(display, attribs, &config, 1, &numConfigs);
 
-  surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
-  context = eglCreateContext(display, config, NULL, NULL);
+  auto surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
+  auto context = eglCreateContext(display, config, NULL, NULL);
 
   if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
     LOGW("Unable to eglMakeCurrent");
     return -1;
   }
 
-  eglQuerySurface(display, surface, EGL_WIDTH, &w);
-  eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+  eglQuerySurface(display, surface, EGL_WIDTH, &engine->width);
+  eglQuerySurface(display, surface, EGL_HEIGHT, &engine->height);
 
   engine->display = display;
   engine->context = context;
   engine->surface = surface;
-  engine->width = w;
-  engine->height = h;
   engine->state.angle = 0;
 
   // Initialize GL state.
