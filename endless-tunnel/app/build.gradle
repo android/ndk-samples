@@ -19,49 +19,47 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
-        defaultConfig.with {
+        defaultConfig {
             minSdkVersion.apiLevel    = 9
             targetSdkVersion.apiLevel = 23
             versionCode     =  1
-            versionName     = "1.0"
+            versionName     = '1.0'
        }
-    }
-
-    android.ndk {
-            moduleName = "game"
-            cppFlags.addAll(["-std=c++11",
-                    "-I${file("src/main/jni/native_app_glue")}".toString(),
-                             "-I${file("src/main/jni")}".toString(),
-                             "-I${file("src/main/jni/data")}".toString()])
-            ldLibs.addAll(["android", "atomic", "EGL", "GLESv2", "OpenSLES", "log"])
-            stl        = "c++_static"
+        ndk {
+            moduleName = 'game'
+            stl        = 'gnustl_static' // recommending gnustl_static/gnustl_shared for android
+            cppFlags.addAll(['-std=c++11', // glm could not take -Wall -Werror
+                             '-D GLM_FORCE_SIZE_T_LENGTH', '-D GLM_FORCE_RADIANS',
+                             '-I' + file('src/main/jni'),
+                             '-I' + file('src/main/jni/data')])
+            ldLibs.addAll(['android', 'EGL', 'GLESv2', 'OpenSLES', 'log'])
+        }
+        // Turn on hard float support in armeabi-v7a
+        abis {
+            create('armeabi-v7a') {
+                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1', '-mfloat-abi=hard'])
+                ldLibs.add('m_hard')
+                ldFlags.add('-Wl,--no-warn-mismatch')
+            }
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+            }
+        }
     }
     android.lintOptions {
         abortOnError  = false
-    }
-
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-        }
-    }
-
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
-        }
-        create ("arm8") {
-            ndk.abiFilters.add("arm64-v8a")
-        }
-        create ("x86-32") {
-            ndk.abiFilters.add("x86")
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-
-        // build one including all cpu architectures
-        create("all")
     }
 }

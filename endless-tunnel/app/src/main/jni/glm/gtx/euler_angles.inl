@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2005-12-21
 // Updated : 2007-08-14
@@ -9,192 +9,212 @@
 
 namespace glm
 {
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleX
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleX
 	(
-		valType const & angleX
+		T const & angleX
 	)
 	{
-		valType cosX = glm::cos(angleX);
-		valType sinX = glm::sin(angleX);
+		T cosX = glm::cos(angleX);
+		T sinX = glm::sin(angleX);
 	
-		return detail::tmat4x4<valType>(
-			valType(1), valType(0), valType(0), valType(0),
-			valType(0), cosX,		sinX,		valType(0),
-			valType(0),-sinX,		cosX,		valType(0),
-			valType(0), valType(0), valType(0), valType(1));
+		return detail::tmat4x4<T, defaultp>(
+			T(1), T(0), T(0), T(0),
+			T(0), cosX, sinX, T(0),
+			T(0),-sinX, cosX, T(0),
+			T(0), T(0), T(0), T(1));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleY
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleY
 	(
-		valType const & angleY
+		T const & angleY
 	)
 	{
-		valType cosY = glm::cos(angleY);
-		valType sinY = glm::sin(angleY);
+		T cosY = glm::cos(angleY);
+		T sinY = glm::sin(angleY);
 
-		return detail::tmat4x4<valType>(
-			cosY,		valType(0),	sinY,		valType(0),
-			valType(0),	valType(1),	valType(0), valType(0),
-			-sinY,		valType(0),	cosY,		valType(0),
-			valType(0),	valType(0),	valType(0), valType(1));
+		return detail::tmat4x4<T, defaultp>(
+			cosY,	T(0),	-sinY,	T(0),
+			T(0),	T(1),	T(0),	T(0),
+			sinY,	T(0),	cosY,	T(0),
+			T(0),	T(0),	T(0),	T(1));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleZ
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleZ
 	(
-		valType const & angleZ
+		T const & angleZ
 	)
 	{
-		valType cosZ = glm::cos(angleZ); 
-		valType sinZ = glm::sin(angleZ);
+		T cosZ = glm::cos(angleZ);
+		T sinZ = glm::sin(angleZ);
 
-		return detail::tmat4x4<valType>(
-			cosZ,		sinZ,		valType(0), valType(0),
-			-sinZ,		cosZ,		valType(0), valType(0),
-			valType(0),	valType(0),	valType(1), valType(0),
-			valType(0),	valType(0),	valType(0), valType(1));
+		return detail::tmat4x4<T, defaultp>(
+			cosZ,	sinZ,	T(0), T(0),
+			-sinZ,	cosZ,	T(0), T(0),
+			T(0),	T(0),	T(1), T(0),
+			T(0),	T(0),	T(0), T(1));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleXY
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleXY
 	(
-		valType const & angleX, 
-		valType const & angleY
+		T const & angleX,
+		T const & angleY
 	)
 	{
-		valType cosX = glm::cos(angleX);
-		valType sinX = glm::sin(angleX);
-		valType cosY = glm::cos(angleY);
-		valType sinY = glm::sin(angleY);
+		T cosX = glm::cos(angleX);
+		T sinX = glm::sin(angleX);
+		T cosY = glm::cos(angleY);
+		T sinY = glm::sin(angleY);
 
-		return detail::tmat4x4<valType>(
-			cosY,		-sinX * sinY,	cosX * sinY,	valType(0),
-			valType(0), cosX,			sinX,			valType(0),
-			-sinY ,		-sinX * cosY,	cosX * cosY,	valType(0),
-			valType(0), valType(0),     valType(0),		valType(1));
+		return detail::tmat4x4<T, defaultp>(
+			cosY,   -sinX * -sinY,  cosX * -sinY,   T(0),
+			T(0),   cosX,           sinX,           T(0),
+			sinY,   -sinX * cosY,   cosX * cosY,    T(0),
+			T(0),   T(0),           T(0),           T(1));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleYX
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleYX
 	(
-		valType const & angleY, 
-		valType const & angleX
+		T const & angleY,
+		T const & angleX
 	)
 	{
-		valType cosX = glm::cos(angleX); 
-		valType sinX = glm::sin(angleX); 
-		valType cosY = glm::cos(angleY); 
-		valType sinY = glm::sin(angleY);
+		T cosX = glm::cos(angleX);
+		T sinX = glm::sin(angleX);
+		T cosY = glm::cos(angleY);
+		T sinY = glm::sin(angleY);
 
-		return detail::tmat4x4<valType>(
-			cosY,			valType(0),		sinY,			valType(0),
-			-sinX * sinY,	cosX,			sinX * cosY,	valType(0),
-			-cosX * sinY,	-sinX,			cosX * cosY,	valType(0),
-			valType(0),		valType(0),		valType(0),		valType(1));
+		return detail::tmat4x4<T, defaultp>(
+			cosY,          0,      -sinY,    T(0),
+			sinY * sinX,  cosX, cosY * sinX, T(0),
+			sinY * cosX, -sinX, cosY * cosX, T(0),
+			T(0),         T(0),     T(0),    T(1));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleXZ
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleXZ
 	(
-		valType const & angleX, 
-		valType const & angleZ
+		T const & angleX,
+		T const & angleZ
 	)
 	{
 		return eulerAngleX(angleX) * eulerAngleZ(angleZ);
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleZX
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleZX
 	(
-		valType const & angleZ, 
-		valType const & angleX
+		T const & angleZ,
+		T const & angleX
 	)
 	{
 		return eulerAngleZ(angleZ) * eulerAngleX(angleX);
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> eulerAngleYXZ
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleYZ
 	(
-		valType const & yaw, 
-		valType const & pitch, 
-		valType const & roll
+		T const & angleY,
+		T const & angleZ
 	)
 	{
-		valType tmp_ch = glm::cos(yaw);
-		valType tmp_sh = glm::sin(yaw);
-		valType tmp_cp = glm::cos(pitch);
-		valType tmp_sp = glm::sin(pitch);
-		valType tmp_cb = glm::cos(roll);
-		valType tmp_sb = glm::sin(roll);
+		return eulerAngleY(angleY) * eulerAngleZ(angleZ);
+	}
 
-		detail::tmat4x4<valType> Result;
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleZY
+	(
+		T const & angleZ,
+		T const & angleY
+	)
+	{
+		return eulerAngleZ(angleZ) * eulerAngleY(angleY);
+	}
+
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> eulerAngleYXZ
+	(
+		T const & yaw,
+		T const & pitch,
+		T const & roll
+	)
+	{
+		T tmp_ch = glm::cos(yaw);
+		T tmp_sh = glm::sin(yaw);
+		T tmp_cp = glm::cos(pitch);
+		T tmp_sp = glm::sin(pitch);
+		T tmp_cb = glm::cos(roll);
+		T tmp_sb = glm::sin(roll);
+
+		detail::tmat4x4<T, defaultp> Result;
 		Result[0][0] = tmp_ch * tmp_cb + tmp_sh * tmp_sp * tmp_sb;
 		Result[0][1] = tmp_sb * tmp_cp;
 		Result[0][2] = -tmp_sh * tmp_cb + tmp_ch * tmp_sp * tmp_sb;
-		Result[0][3] = valType(0);
+		Result[0][3] = static_cast<T>(0);
 		Result[1][0] = -tmp_ch * tmp_sb + tmp_sh * tmp_sp * tmp_cb;
 		Result[1][1] = tmp_cb * tmp_cp;
 		Result[1][2] = tmp_sb * tmp_sh + tmp_ch * tmp_sp * tmp_cb;
-		Result[1][3] = valType(0);
+		Result[1][3] = static_cast<T>(0);
 		Result[2][0] = tmp_sh * tmp_cp;
 		Result[2][1] = -tmp_sp;
 		Result[2][2] = tmp_ch * tmp_cp;
-		Result[2][3] = valType(0);
-		Result[3][0] = valType(0);
-		Result[3][1] = valType(0);
-		Result[3][2] = valType(0);
-		Result[3][3] = valType(1);
+		Result[2][3] = static_cast<T>(0);
+		Result[3][0] = static_cast<T>(0);
+		Result[3][1] = static_cast<T>(0);
+		Result[3][2] = static_cast<T>(0);
+		Result[3][3] = static_cast<T>(1);
 		return Result;
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> yawPitchRoll
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> yawPitchRoll
 	(
-		valType const & yaw, 
-		valType const & pitch, 
-		valType const & roll
+		T const & yaw,
+		T const & pitch,
+		T const & roll
 	)
 	{
-		valType tmp_ch = glm::cos(yaw);
-		valType tmp_sh = glm::sin(yaw);
-		valType tmp_cp = glm::cos(pitch);
-		valType tmp_sp = glm::sin(pitch);
-		valType tmp_cb = glm::cos(roll);
-		valType tmp_sb = glm::sin(roll);
+		T tmp_ch = glm::cos(yaw);
+		T tmp_sh = glm::sin(yaw);
+		T tmp_cp = glm::cos(pitch);
+		T tmp_sp = glm::sin(pitch);
+		T tmp_cb = glm::cos(roll);
+		T tmp_sb = glm::sin(roll);
 
-		detail::tmat4x4<valType> Result;
+		detail::tmat4x4<T, defaultp> Result;
 		Result[0][0] = tmp_ch * tmp_cb + tmp_sh * tmp_sp * tmp_sb;
 		Result[0][1] = tmp_sb * tmp_cp;
 		Result[0][2] = -tmp_sh * tmp_cb + tmp_ch * tmp_sp * tmp_sb;
-		Result[0][3] = valType(0);
+		Result[0][3] = static_cast<T>(0);
 		Result[1][0] = -tmp_ch * tmp_sb + tmp_sh * tmp_sp * tmp_cb;
 		Result[1][1] = tmp_cb * tmp_cp;
 		Result[1][2] = tmp_sb * tmp_sh + tmp_ch * tmp_sp * tmp_cb;
-		Result[1][3] = valType(0);
+		Result[1][3] = static_cast<T>(0);
 		Result[2][0] = tmp_sh * tmp_cp;
 		Result[2][1] = -tmp_sp;
 		Result[2][2] = tmp_ch * tmp_cp;
-		Result[2][3] = valType(0);
-		Result[3][0] = valType(0);
-		Result[3][1] = valType(0);
-		Result[3][2] = valType(0);
-		Result[3][3] = valType(1);
+		Result[2][3] = static_cast<T>(0);
+		Result[3][0] = static_cast<T>(0);
+		Result[3][1] = static_cast<T>(0);
+		Result[3][2] = static_cast<T>(0);
+		Result[3][3] = static_cast<T>(1);
 		return Result;
 	}
 
-	template <typename valType>
-	GLM_FUNC_QUALIFIER detail::tmat2x2<valType> orientate2
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat2x2<T, defaultp> orientate2
 	(
-		valType const & angle
+		T const & angle
 	)
 	{
-		valType c = glm::cos(angle);
-		valType s = glm::sin(angle);
+		T c = glm::cos(angle);
+		T s = glm::sin(angle);
 
-		detail::tmat2x2<valType> Result;
+		detail::tmat2x2<T, defaultp> Result;
 		Result[0][0] = c;
 		Result[0][1] = s;
 		Result[1][0] = -s;
@@ -202,16 +222,16 @@ namespace glm
 		return Result;
 	}
 
-	template <typename valType>
-	GLM_FUNC_QUALIFIER detail::tmat3x3<valType> orientate3
+	template <typename T>
+	GLM_FUNC_QUALIFIER detail::tmat3x3<T, defaultp> orientate3
 	(
-		valType const & angle
+		T const & angle
 	)
 	{
-		valType c = glm::cos(angle);
-		valType s = glm::sin(angle);
+		T c = glm::cos(angle);
+		T s = glm::sin(angle);
 
-		detail::tmat3x3<valType> Result;
+		detail::tmat3x3<T, defaultp> Result;
 		Result[0][0] = c;
 		Result[0][1] = s;
 		Result[0][2] = 0.0f;
@@ -224,19 +244,19 @@ namespace glm
 		return Result;
 	}
 
-	template <typename valType>
-	GLM_FUNC_QUALIFIER detail::tmat3x3<valType> orientate3
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tmat3x3<T, P> orientate3
 	(
-		detail::tvec3<valType> const & angles
+		detail::tvec3<T, P> const & angles
 	)
 	{
-		return detail::tmat3x3<valType>(yawPitchRoll(angles.x, angles.y, angles.z));
+		return detail::tmat3x3<T, P>(yawPitchRoll(angles.x, angles.y, angles.z));
 	}
 
-	template <typename valType>
-	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> orientate4
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, P> orientate4
 	(
-		detail::tvec3<valType> const & angles
+		detail::tvec3<T, P> const & angles
 	)
 	{
 		return yawPitchRoll(angles.z, angles.x, angles.y);

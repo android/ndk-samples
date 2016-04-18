@@ -22,8 +22,8 @@
 // We use to to render the tunnel and the obstacles.
 class OurShader : public Shader {
     protected:
-       GLuint mColorLoc;
-       GLuint mTexCoordLoc;
+       GLint mColorLoc;
+       GLint mTexCoordLoc;
        int mTintLoc;
        int mSamplerLoc;
        int mPointLightPosLoc;

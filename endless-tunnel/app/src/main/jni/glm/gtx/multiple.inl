@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2009-10-26
 // Updated : 2011-06-07
@@ -10,61 +10,89 @@
 // - GLM core
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace glm
+namespace glm{
+namespace detail
 {
+	template <bool Signed>
+	struct higherMultiple
+	{
+		template <typename genType>
+		GLM_FUNC_QUALIFIER genType operator()
+		(
+			genType const & Source,
+			genType const & Multiple
+		)
+		{
+			if (Source > genType(0))
+			{
+				genType Tmp = Source - genType(1);
+				return Tmp + (Multiple - (Tmp % Multiple));
+			}
+			else
+				return Source + (-Source % Multiple);
+		}
+	};
+
+	template <>
+	struct higherMultiple<false>
+	{
+		template <typename genType>
+		GLM_FUNC_QUALIFIER genType operator()
+		(
+			genType const & Source,
+			genType const & Multiple
+		)
+		{
+			genType Tmp = Source - genType(1);
+			return Tmp + (Multiple - (Tmp % Multiple));
+		}
+	};
+}//namespace detail
+
 	//////////////////////
 	// higherMultiple
 
-	template <typename genType> 
+	template <typename genType>
 	GLM_FUNC_QUALIFIER genType higherMultiple
 	(
-		genType const & Source, 
+		genType const & Source,
 		genType const & Multiple
 	)
 	{
-		if (Source > 0)
-		{
-			genType Tmp = Source - 1;
-			return Tmp + (Multiple - (Tmp % Multiple));
-		}
-		else
-			return Source + (-Source % Multiple);
+		detail::higherMultiple<std::numeric_limits<genType>::is_signed> Compute;
+		return Compute(Source, Multiple);
 	}
 
-	template <> 
-	GLM_FUNC_QUALIFIER detail::half higherMultiple
-	(
-		detail::half const & SourceH, 
-		detail::half const & MultipleH
-	)
-	{
-		float Source = SourceH.toFloat();
-		float Multiple = MultipleH.toFloat();
-
-		int Tmp = int(float(Source)) % int(Multiple);
-		return detail::half(Tmp ? Source + Multiple - float(Tmp) : Source);
-	}
-
-	template <> 
+	template <>
 	GLM_FUNC_QUALIFIER float higherMultiple
 	(	
-		float const & Source, 
+		float const & Source,
 		float const & Multiple
 	)
 	{
-		int Tmp = int(Source) % int(Multiple);
-		return Tmp ? Source + Multiple - float(Tmp) : Source;
+		if (Source > float(0))
+		{
+			float Tmp = Source - float(1);
+			return Tmp + (Multiple - std::fmod(Tmp, Multiple));
+		}
+		else
+			return Source + std::fmod(-Source, Multiple);
 	}
 
-	template <> 
+	template <>
 	GLM_FUNC_QUALIFIER double higherMultiple
 	(
-		double const & Source, 
+		double const & Source,
 		double const & Multiple
 	)
 	{
-		long Tmp = long(Source) % long(Multiple);
-		return Tmp ? Source + Multiple - double(Tmp) : Source;
+		if (Source > double(0))
+		{
+			double Tmp = Source - double(1);
+			return Tmp + (Multiple - std::fmod(Tmp, Multiple));
+		}
+		else
+			return Source + std::fmod(-Source, Multiple);
 	}
 
 	VECTORIZE_VEC_VEC(higherMultiple)
@@ -72,56 +100,52 @@ namespace glm
 	//////////////////////
 	// lowerMultiple
 
-	template <typename genType> 
+	template <typename genType>
 	GLM_FUNC_QUALIFIER genType lowerMultiple
 	(
-		genType const & Source, 
+		genType const & Source,
 		genType const & Multiple
 	)
 	{
-		if (Source >= 0)
+		if (Source >= genType(0))
 			return Source - Source % Multiple;
 		else
 		{
-			genType Tmp = Source + 1;
+			genType Tmp = Source + genType(1);
 			return Tmp - Tmp % Multiple - Multiple;
 		}
 	}
 
-	template <> 
-	GLM_FUNC_QUALIFIER detail::half lowerMultiple
-	(
-		detail::half const & SourceH, 
-		detail::half const & MultipleH
-	)
-	{
-		float Source = SourceH.toFloat();
-		float Multiple = MultipleH.toFloat();
-
-		int Tmp = int(float(Source)) % int(float(Multiple));
-		return detail::half(Tmp ? Source - float(Tmp) : Source);
-	}
-
-	template <> 
+	template <>
 	GLM_FUNC_QUALIFIER float lowerMultiple
 	(
-		float const & Source, 
+		float const & Source,
 		float const & Multiple
 	)
 	{
-		int Tmp = int(Source) % int(Multiple);
-		return Tmp ? Source - float(Tmp) : Source;
+		if (Source >= float(0))
+			return Source - std::fmod(Source, Multiple);
+		else
+		{
+			float Tmp = Source + float(1);
+			return Tmp - std::fmod(Tmp, Multiple) - Multiple;
+		}
 	}
 
-	template <> 
+	template <>
 	GLM_FUNC_QUALIFIER double lowerMultiple
 	(
-		double const & Source, 
+		double const & Source,
 		double const & Multiple
 	)
 	{
-		long Tmp = long(Source) % long(Multiple);
-		return Tmp ? Source - double(Tmp) : Source;
+		if (Source >= double(0))
+			return Source - std::fmod(Source, Multiple);
+		else
+		{
+			double Tmp = Source + double(1);
+			return Tmp - std::fmod(Tmp, Multiple) - Multiple;
+		}
 	}
 
 	VECTORIZE_VEC_VEC(lowerMultiple)

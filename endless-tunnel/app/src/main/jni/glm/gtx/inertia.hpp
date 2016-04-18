@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -37,76 +37,77 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_inertia
-#define GLM_GTX_inertia GLM_VERSION
+#define GLM_GTX_inertia
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_inertia extension included")
 #endif
 
 namespace glm
 {
+	/*
 	/// @addtogroup gtx_inertia
 	/// @{
 
 	//! Build an inertia matrix for a box.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat3x3<T> boxInertia3(
+	template <typename T, precision P>
+	detail::tmat3x3<T, P> boxInertia3(
 		T const & Mass, 
-		detail::tvec3<T> const & Scale);
+		detail::tvec3<T, P> const & Scale);
 		
 	//! Build an inertia matrix for a box.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat4x4<T> boxInertia4(
+	template <typename T, precision P>
+	detail::tmat4x4<T, P> boxInertia4(
 		T const & Mass, 
-		detail::tvec3<T> const & Scale);
+		detail::tvec3<T, P> const & Scale);
 		
 	//! Build an inertia matrix for a disk.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat3x3<T> diskInertia3(
+	template <typename T, precision P>
+	detail::tmat3x3<T, P> diskInertia3(
 		T const & Mass, 
 		T const & Radius);
 
 	//! Build an inertia matrix for a disk.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat4x4<T> diskInertia4(
+	template <typename T, precision P>
+	detail::tmat4x4<T, P> diskInertia4(
 		T const & Mass, 
 		T const & Radius);
 
 	//! Build an inertia matrix for a ball.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat3x3<T> ballInertia3(
+	template <typename T, precision P>
+	detail::tmat3x3<T, P> ballInertia3(
 		T const & Mass, 
 		T const & Radius);
 		
 	//! Build an inertia matrix for a ball.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat4x4<T> ballInertia4(
+	template <typename T, precision P>
+	detail::tmat4x4<T, P> ballInertia4(
 		T const & Mass, 
 		T const & Radius);
 
 	//! Build an inertia matrix for a sphere.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat3x3<T> sphereInertia3(
+	template <typename T, precision P>
+	detail::tmat3x3<T, P> sphereInertia3(
 		T const & Mass, 
 		T const & Radius);
 
 	//! Build an inertia matrix for a sphere.
 	//! From GLM_GTX_inertia extension.
-	template <typename T> 
-	detail::tmat4x4<T> sphereInertia4(
+	template <typename T, precision P> 
+	detail::tmat4x4<T, P> sphereInertia4(
 		T const & Mass, 
 		T const & Radius);
-
+	*/
 	/// @}
 }// namespace glm
 

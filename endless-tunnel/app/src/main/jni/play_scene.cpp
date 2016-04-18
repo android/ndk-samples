@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <cstdio>
 #include "anim.hpp"
 #include "ascii_to_geom.hpp"
 #include "game_consts.hpp"
@@ -161,7 +161,6 @@ void PlayScene::LoadProgress() {
     }
 
     // check cloud save.
-    int cloudData = -1;
     LOGD("Checking cloud save data.");
     if (true) {
         LOGD("No cloud save available because we are not signed in.");
@@ -235,8 +234,6 @@ static unsigned char* _gen_wall_texture() {
 }
 
 void PlayScene::OnStartGraphics() {
-    SceneManager *mgr = SceneManager::GetInstance();
-
     // build shaders
     mOurShader = new OurShader();
     mOurShader->Compile();
@@ -286,7 +283,6 @@ void PlayScene::OnKillGraphics() {
 }
 
 void PlayScene::DoFrame() {
-    SceneManager *mgr = SceneManager::GetInstance();
     float deltaT = mFrameClock.ReadDelta();
     float previousY = mPlayerPos.y;
 
@@ -410,27 +406,15 @@ void PlayScene::DoFrame() {
     }
 }
 
-static inline int GetSectionForY(float y) {
-    float f = y / TUNNEL_SECTION_LENGTH;
-    // If f is between -0.5f and 0.5f, it's section 0,
-    // if f is between 0.5f and 1.5f, it's section 1,
-    // and so forth. So, it just plain vanilla rounding:
-    return (int)f;
-}
-
-static inline float GetSectionCenterY(int i) {
+static float GetSectionCenterY(int i) {
     return (float)i * TUNNEL_SECTION_LENGTH;
 }
 
-static inline float GetSectionStartY(int i) {
-    return GetSectionCenterY(i) - 0.5f * TUNNEL_SECTION_LENGTH;
-}
-
-static inline float GetSectionEndY(int i) {
+static float GetSectionEndY(int i) {
     return GetSectionCenterY(i) + 0.5f * TUNNEL_SECTION_LENGTH;
 }
 
-static inline void _get_obs_color(int style, float *r, float *g, float *b) {
+static void _get_obs_color(int style, float *r, float *g, float *b) {
     style = Clamp(style, 1, 6);
     *r = OBS_COLORS[style * 3];
     *g = OBS_COLORS[style * 3 + 1];
@@ -625,7 +609,6 @@ void PlayScene::RenderHUD() {
     mTextRenderer->RenderText(score_str, SCORE_POS_X, SCORE_POS_Y);
 
     // render current sign
-    int level = mDifficulty + 1;
     if (mSignText) {
         modelMat = glm::mat4(1.0f);
         float t = Clock() - mSignStartTime;
@@ -660,7 +643,6 @@ void PlayScene::RenderHUD() {
 
 void PlayScene::RenderMenu() {
     float aspect = SceneManager::GetInstance()->GetScreenAspect();
-    glm::mat4 orthoMat = glm::ortho(0.0f, aspect, 0.0f, 1.0f);
     glm::mat4 modelMat;
     glm::mat4 mat;
 
@@ -688,7 +670,6 @@ void PlayScene::DetectCollisions(float previousY) {
     Obstacle *o = GetObstacleAt(0);
     float obsCenter = GetSectionCenterY(mFirstSection);
     float obsMin = obsCenter - OBS_BOX_SIZE;
-    float obsMax = obsCenter + OBS_BOX_SIZE;
     float curY = mPlayerPos.y;
 
     if (!o || !(previousY < obsMin && curY >= obsMin)) {
@@ -741,8 +722,9 @@ void PlayScene::DetectCollisions(float previousY) {
             SaveProgress();
         } else {
             int tone = (score % SCORE_PER_LEVEL) / BONUS_POINTS - 1;
-            tone = tone < 0 ? 0 : tone >= sizeof(TONE_BONUS)/sizeof(char*) ?
-                    sizeof(TONE_BONUS)/sizeof(char*) - 1 : tone;
+            tone = tone < 0 ? 0 :
+                   tone >= static_cast<int>(sizeof(TONE_BONUS)/sizeof(char*)) ?
+                   static_cast<int>(sizeof(TONE_BONUS)/sizeof(char*) - 1) : tone;
             SfxMan::GetInstance()->PlayTone(TONE_BONUS[tone]);
         }
 

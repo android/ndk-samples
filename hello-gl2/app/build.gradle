@@ -3,43 +3,32 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
-
-        defaultConfig.with {
-            applicationId    = "com.android.gl2jni"
+        buildToolsVersion = '23.0.2'
+        defaultConfig {
+            applicationId    = 'com.android.gl2jni'
             minSdkVersion.apiLevel    = 5
             targetSdkVersion.apiLevel = 23
         }
-    }
-
-    android.ndk {
-        moduleName = "gl2jni"
-        cppFlags.add("-Werror")
-        ldLibs.addAll(["log", "GLESv2"])
-    }
-
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles.add(file('proguard-rules.txt'))
+        ndk {
+            moduleName = 'gl2jni'
+            stl        = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11','-Wall', '-Werror'])
+            ldLibs.addAll(['log', 'GLESv2'])
         }
-    }
-
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
+        // Turn on hard float support in armeabi-v7a
+        abis {
+            create('armeabi-v7a') {
+                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1', '-mfloat-abi=hard'])
+                ldLibs.add('m_hard')
+                ldFlags.add('-Wl,--no-warn-mismatch')
+            }
         }
-        create ("arm8") {
-            ndk.abiFilters.add("arm64-v8a")
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-        create ("x86-32") {
-            ndk.abiFilters.add("x86")
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-
-        // build one including all cpu architectures
-        create("all")
     }
 }
 

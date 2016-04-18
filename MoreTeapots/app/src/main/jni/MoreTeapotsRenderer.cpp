@@ -371,7 +371,6 @@ bool MoreTeapotsRenderer::LoadShaders(SHADER_PARAMS* params, const char* strVsh,
   //
   GLuint program;
   GLuint vertShader, fragShader;
-  char* vertShaderPathname, *fragShaderPathname;
 
   // Create shader program
   program = glCreateProgram();
@@ -450,7 +449,6 @@ bool MoreTeapotsRenderer::LoadShadersES3(
   //
   GLuint program;
   GLuint vertShader, fragShader;
-  char* vertShaderPathname, *fragShaderPathname;
 
   // Create shader program
   program = glCreateProgram();

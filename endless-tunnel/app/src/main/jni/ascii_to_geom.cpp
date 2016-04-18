@@ -15,8 +15,8 @@
  */
 #include "ascii_to_geom.hpp"
 
-//#define GEOM_DEBUG LOGD
-#define GEOM_DEBUG
+#define GEOM_DEBUG LOGD
+//#define GEOM_DEBUG
 
 SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     // figure out width and height
@@ -129,7 +129,6 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     }
 
     // process lines
-    int start, end;
     int col_dir, row_dir;
     int start_c, start_r, end_c, end_r;
 
@@ -198,7 +197,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     for (r = 0; r < rows; r++) {
         delete v[r];
     }
-    delete v;
+    delete [] v;
 
     for (int i = 0; i < indices; i++) {
         GEOM_DEBUG("indices[%d] = %d\n", i, indicesArray[i]);
@@ -219,9 +218,9 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     out->vbuf->SetColorsOffset(VERTICES_COLOR_OFFSET);
 
     // clean up our work buffers
-    delete verticesArray;
+    delete [] verticesArray;
     verticesArray = NULL;
-    delete indicesArray;
+    delete [] indicesArray;
     indicesArray = NULL;
 
     LOGD("Created geometry from ascii art: %d vertices, %d indices", vertices, indices);

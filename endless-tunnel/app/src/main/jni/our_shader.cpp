@@ -18,9 +18,9 @@
 #include "data/our_shader.inl"
 
 OurShader::OurShader() : Shader() {
-    mColorLoc = (GLuint) -1;
+    mColorLoc = (GLint) -1;
     mTintLoc = -1;
-    mTexCoordLoc = (GLuint) -1;
+    mTexCoordLoc = (GLint) -1;
     mSamplerLoc = -1;
     mPointLightPosLoc = -1;
     mPointLightColorLoc = -1;
@@ -35,7 +35,7 @@ void OurShader::Compile() {
 
     // get location of the color attribute
     BindShader();
-    mColorLoc = (GLuint) glGetAttribLocation(mProgramH, "a_Color");
+    mColorLoc = glGetAttribLocation(mProgramH, "a_Color");
     if (mColorLoc < 0) {
         LOGE("*** Couldn't get color attrib location from shader (OurShader).");
         ABORT_GAME;

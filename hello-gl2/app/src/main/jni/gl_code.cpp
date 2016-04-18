@@ -42,13 +42,13 @@ static void checkGlError(const char* op) {
     }
 }
 
-static const char gVertexShader[] = 
+auto gVertexShader =
     "attribute vec4 vPosition;\n"
     "void main() {\n"
     "  gl_Position = vPosition;\n"
     "}\n";
 
-static const char gFragmentShader[] = 
+auto gFragmentShader =
     "precision mediump float;\n"
     "void main() {\n"
     "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"

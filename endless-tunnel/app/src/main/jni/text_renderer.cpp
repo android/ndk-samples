@@ -75,6 +75,7 @@ static void _count_rows_cols(const char *p, int *outCols, int *outRows) {
 
 TextRenderer* TextRenderer::SetMatrix(glm::mat4 m) {
     mMatrix = m;
+    return this;
 }
 
 void TextRenderer::MeasureText(const char *str, float fontScale, float *outWidth,

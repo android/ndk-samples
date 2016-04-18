@@ -20,35 +20,24 @@
 #include <cmath>
 
 // Clean up a resource (delete and set to null).
-template<class T> inline void CleanUp(T** pptr) {
+template<typename T> void CleanUp(T** pptr) {
     if (*pptr) {
         delete *pptr;
         *pptr = NULL;
     }
 }
 
-int Random(int uboundExclusive);
-inline int Random(int lbound, int uboundExclusive) {
-    return lbound + Random(uboundExclusive - lbound);
-}
+int Random(int uboundExclusive, int lbound = 0);
 
-inline int Max(int a, int b) { return a > b ? a : b; }
-inline int Min(int a, int b) { return a < b ? a : b; }
-inline int Clamp(int v, int min, int max) {
+template<typename T> T Max(T a, T b) { return a > b ? a : b; }
+template<typename T> T Min(T a, T b) { return a < b ? a : b; }
+template<typename T> T Clamp(T v, T min, T max) {
     return (v < min) ? min : (v > max) ? max : v;
 }
-inline float Max(float a, float b) { return a > b ? a : b; }
-inline float Min(float a, float b) { return a < b ? a : b; }
-inline float Clamp(float v, float min, float max) {
-    return (v < min) ? min : (v > max) ? max : v;
-}
-
-// Returns current wall clock time (seconds elapsed since an arbitrary fixed point in the past).
-float Clock();
 
 // Linear interpolation. If x < x1, returns y1. If x > x2, returns y2. If x1 <= x <= x2,
 // then let f() be a linear function such that f(x1) = y1 and f(x2) = y2. Returns f(x).
-inline float Interpolate(float x1, float y1, float x2, float y2, float x) {
+template<typename T> T Interpolate(T x1, T y1, T x2, T y2, T x) {
     if (x2 < x1) return Interpolate(x2, y2, x1, y1, x);
     return (x < x1) ? y1 : (x > x2) ? y2 : y1 + ((x - x1) / (x2 - x1)) * (y2 - y1);
 }
@@ -61,9 +50,9 @@ inline float Interpolate(float x1, float y1, float x2, float y2, float x) {
 // 40. Now, if the target is within reach of the delta, the target is returned.
 // So if we're at 50, the target is 60 and the delta amount is 20, this returns
 // 60.
-inline float Approach(float orig, float target, float amount) {
+template<typename T> T Approach(T orig, T target, T amount) {
     float absDiff = orig - target;
-    if (absDiff < 0.0f) absDiff = -absDiff;
+    if (absDiff < static_cast<T>(0)) absDiff = -absDiff;
     if (absDiff < amount) {
         return target;
     } else if (target > orig) {
@@ -73,19 +62,14 @@ inline float Approach(float orig, float target, float amount) {
     }
 }
 
-inline float Abs(float f) {
-    return f > 0.0f ? f : -f;
+template<typename T> T Abs(T f) {
+    return f > static_cast<T>(0) ? f : -f;
 }
 
-inline float SineWave(float min, float max, float period, float phase) {
-    float ampl = max - min;
-    return min + ampl * sin(((Clock() / period) + phase) * 2 * M_PI);
-}
-
-inline bool BlinkFunc(float period) {
-    return (int)(Clock() / period) & 1;
-}
-
+// Returns current wall clock time (seconds elapsed since an arbitrary fixed point in the past).
+float Clock();
+float SineWave(float min, float max, float period, float phase);
+bool BlinkFunc(float period);
 
 /* A simple chronometer that computes elapsed time. */
 class DeltaClock {
@@ -94,24 +78,24 @@ class DeltaClock {
         float mMaxDelta;
         bool mHasMax;
     public:
-        inline DeltaClock() {
+        DeltaClock() {
             mLastTick = Clock();
             mHasMax = false;
         }
-        inline DeltaClock(float maxDelta) {
+        DeltaClock(float maxDelta) {
             mLastTick = Clock();
             mMaxDelta = maxDelta;
             mHasMax = true;
         }
-        inline float ReadDelta() {
+        float ReadDelta() {
             float d = Clamp(Clock() - mLastTick, 0.0f, mMaxDelta);
             mLastTick = Clock();
             return d;
         }
-        inline void SetMaxDelta(float m) {
+        void SetMaxDelta(float m) {
             mMaxDelta = m;
         }
-        inline void Reset() {
+        void Reset() {
             mLastTick = Clock();
         }
 };

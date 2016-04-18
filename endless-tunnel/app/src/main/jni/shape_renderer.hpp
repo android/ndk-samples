@@ -31,10 +31,10 @@ class ShapeRenderer {
         ShapeRenderer(TrivialShader *trivialShader);
         ~ShapeRenderer();
 
-        inline void SetColor(float r, float g, float b) {
+        void SetColor(float r, float g, float b) {
             mColor[0] = r, mColor[1] = g, mColor[2] = b;
         }
-        inline void SetColor(const float *v) {
+        void SetColor(const float *v) {
             mColor[0] = v[0], mColor[1] = v[1], mColor[2] = v[2];
         }
 

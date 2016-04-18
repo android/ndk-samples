@@ -101,7 +101,6 @@ void NativeEngine::GameLoop() {
     while (1) {
         int ident, events;
         struct android_poll_source* source;
-        bool wasAnimating = IsAnimating();
 
         // If not animating, block until we get an event; if animating, don't block.
         while ((ident = ALooper_pollAll(IsAnimating() ? 0 : -1, NULL, &events, 
@@ -471,7 +470,7 @@ bool NativeEngine::HandleEglError(EGLint error) {
     }
 }
 
-static const char *_log_opengl_error(GLenum err) {
+static void _log_opengl_error(GLenum err) {
     switch (err) {
         case GL_NO_ERROR:
             LOGE("*** OpenGL error: GL_NO_ERROR");
