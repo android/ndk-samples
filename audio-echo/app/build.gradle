@@ -3,20 +3,20 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
         defaultConfig {
-            applicationId="com.google.sample.echo"
+            applicationId='com.google.sample.echo'
             minSdkVersion.apiLevel = 17
             targetSdkVersion.apiLevel = 22
             versionCode = 1
-            versionName = "1.0"
+            versionName = '1.0'
         }
         ndk {
-            moduleName = "echo"
+            moduleName = 'echo'
             //toolchain  = "clang"
-            stl        = "c++_static"
-            cppFlags.add("-std=c++11")
+            stl        = 'c++_static'   //std::mutex not in gnustl_static
+            cppFlags.add('-std=c++11')
             ldLibs.addAll(['android', 'log', 'OpenSLES', 'atomic'])
         }
         buildTypes {

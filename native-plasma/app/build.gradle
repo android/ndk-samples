@@ -3,23 +3,22 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
         defaultConfig {
-            applicationId="com.example.native_plasma"
+            applicationId='com.example.native_plasma'
             minSdkVersion.apiLevel   = 9
             targetSdkVersion.apiLevel = 23
         }
         ndk {
-            moduleName = "native-plasma"
-            CFlags.add("-I" + file("src/main/jni/native_app_glue"))
-            ldLibs.addAll(["m", "log","android"])
+            moduleName = 'native-plasma'
+            ldLibs.addAll(['m', 'log','android'])
         }
         sources {
             main {
                 jni {
                     dependencies {
-                        project ":nativeactivity" linkage "static"
+                        project ':nativeactivity' linkage 'static'
                     }
                 }
             }

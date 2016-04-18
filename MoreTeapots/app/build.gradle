@@ -14,39 +14,39 @@ if (propertiesFile.exists()) {
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
         defaultConfig {
-            applicationId    = "com.sample.moreteapots"
+            applicationId    = 'com.sample.moreteapots'
             minSdkVersion.apiLevel    = 17
             targetSdkVersion.apiLevel = 22
         }
         ndk {
-            moduleName = "MoreTeapotsNativeActivity"
+            moduleName = 'MoreTeapotsNativeActivity'
             // temporarily use gcc since clang does not work on windows (*)
             // also clang warning about inline, so could not use -Wall, -Werror
             // toolchain = "clang"
-            stl       = "gnustl_static"
-            cppFlags.addAll(["-I" + "${ndkDir}/sources/android/cpufeatures",
-                             "-I" + file("src/main/jni/ndk_helper")])
-            cppFlags.addAll(["-std=c++11", "-Werror", "-Wall",
-                             "-fno-exceptions", "-fno-rtti"])
-            ldLibs.addAll(["android", "log", "EGL", "GLESv2","atomic"])
+            stl       = 'gnustl_static'
+            cppFlags.addAll(['-I' + "${ndkDir}/sources/android/cpufeatures",
+                             '-I' + file('src/main/jni/ndk_helper')])
+            cppFlags.addAll(['-std=c++11', '-Werror', '-Wall',
+                             '-fno-exceptions', '-fno-rtti'])
+            ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
         }
         // Turn on hard float support in armeabi-v7a
         abis {
-            create("armeabi-v7a") {
-                cppFlags.addAll(["-mhard-float", "-D_NDK_MATH_NO_SOFTFP=1",
-                                 "-mfloat-abi=hard"])
-                ldLibs.add("m_hard")
-                ldFlags.add("-Wl,--no-warn-mismatch")
+            create('armeabi-v7a') {
+                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1',
+                                 '-mfloat-abi=hard'])
+                ldLibs.add('m_hard')
+                ldFlags.add('-Wl,--no-warn-mismatch')
             }
         }
         sources {
             main {
                 jni {
                     dependencies {
-                        project ":nativeactivity" linkage "static"
+                        project ':nativeactivity' linkage 'static'
                     }
                     source {
                         srcDirs 'src/main/jni'

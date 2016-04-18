@@ -19,36 +19,36 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
         defaultConfig {
             minSdkVersion.apiLevel    = 9
             targetSdkVersion.apiLevel = 23
             versionCode     =  1
-            versionName     = "1.0"
+            versionName     = '1.0'
        }
         ndk {
-            moduleName = "game"
-            stl        = "gnustl_static" // recommending gnustl_static/gnustl_shared for android
-            cppFlags.addAll(["-std=c++11", // glm could not take -Wall -Werror
-                             "-D GLM_FORCE_SIZE_T_LENGTH", "-D GLM_FORCE_RADIANS",
-                             "-I" + file("src/main/jni"),
-                             "-I" + file("src/main/jni/data")])
-            ldLibs.addAll(["android", "EGL", "GLESv2", "OpenSLES", "log"])
+            moduleName = 'game'
+            stl        = 'gnustl_static' // recommending gnustl_static/gnustl_shared for android
+            cppFlags.addAll(['-std=c++11', // glm could not take -Wall -Werror
+                             '-D GLM_FORCE_SIZE_T_LENGTH', '-D GLM_FORCE_RADIANS',
+                             '-I' + file('src/main/jni'),
+                             '-I' + file('src/main/jni/data')])
+            ldLibs.addAll(['android', 'EGL', 'GLESv2', 'OpenSLES', 'log'])
         }
         // Turn on hard float support in armeabi-v7a
         abis {
-            create("armeabi-v7a") {
-                cppFlags.addAll(["-mhard-float", "-D_NDK_MATH_NO_SOFTFP=1", "-mfloat-abi=hard"])
-                ldLibs.add("m_hard")
-                ldFlags.add("-Wl,--no-warn-mismatch")
+            create('armeabi-v7a') {
+                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1', '-mfloat-abi=hard'])
+                ldLibs.add('m_hard')
+                ldFlags.add('-Wl,--no-warn-mismatch')
             }
         }
         sources {
             main {
                 jni {
                     dependencies {
-                        project ":nativeactivity" linkage "static"
+                        project ':nativeactivity' linkage 'static'
                     }
                 }
             }
