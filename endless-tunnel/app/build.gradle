@@ -30,7 +30,7 @@ model {
         ndk {
             moduleName = "game"
             stl        = "gnustl_static" // recommending gnustl_static/gnustl_shared for android
-            cppFlags.addAll(["-std=c++11", "-Werror", "-Wall",
+            cppFlags.addAll(["-std=c++11", // glm could not take -Wall -Werror
                              "-D GLM_FORCE_SIZE_T_LENGTH", "-D GLM_FORCE_RADIANS",
                              "-I" + file("src/main/jni"),
                              "-I" + file("src/main/jni/data")])

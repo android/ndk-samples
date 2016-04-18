@@ -42,8 +42,7 @@ model {
         ndk {
             moduleName = "native-activity"
             platformVersion = defaultConfig.minSdkVersion.apiLevel
-            stl    = "gnustl_static"
-            toolchain = "clang"
+            stl    = "c++_static"  // gnustl_static does not work
             cppFlags.addAll(["-std=c++11",
                              // issues/165 -- Need update gpg::functions to enable "-Wall", "-Werror",
                              "-I" + ndkDir + "/sources/android/native_app_glue"])

@@ -98,6 +98,7 @@ class sensorgraph {
         auto status = ASensorEventQueue_enableSensor(accelerometerEventQueue,
                                                      accelerometer);
         assert(status >= 0);
+        (void)status;   //to silent unused compiler warning
 
         generateXPos();
     }
