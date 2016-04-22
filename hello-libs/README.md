@@ -13,7 +13,7 @@ Details are inside projects' build.gradle files
 
 Sample content:
 *    Create 2 shared libs
-*    Copy builts libs into distribution directory
+*    Copy built libs into distribution directory
 *    Create one application to use libs from the given distribution directory
 
 Pre-requisites
