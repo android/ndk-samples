@@ -3,7 +3,7 @@ Hello-libs
 Hello-Libs is an Android sample that demos native lib management in Android Studio.
 
 This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with external lib support:  
-*    Build JUST an native shared library[for distribution]
+*    Build JUST a native shared library[for distribution]
 *    Use 3rd party shared library / Static library   
 
 The key points are:
