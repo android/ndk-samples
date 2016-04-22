@@ -37,7 +37,8 @@ Java_com_example_hellolibs_MainActivity_stringFromJNI(JNIEnv *env, jobject thiz)
     auto ticks = GetTicks();
 
     for (auto exp = 0; exp < 32; ++exp) {
-        __volatile unsigned val = gpower(exp);
+        volatile unsigned val = gpower(exp);
+        (void) val;  // to silence compiler warning
     }
     ticks = GetTicks() - ticks;
 
