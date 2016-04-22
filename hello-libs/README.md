@@ -8,10 +8,10 @@ This sample uses the new [Gradle Experimental Android plugin](http://tools.andro
 
 The key points are:
 *    Inform Android Studio where lib/header is
-*    Add lib dependency to application
+*    Add lib dependency to application	
 Details are inside projects' build.gradle files
 
-Sample contents:
+Sample content:
 *    Create 2 shared libs
 *    Copy builts libs into distribution directory
 *    Create one application to use libs from the given distribution directory
