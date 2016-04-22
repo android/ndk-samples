@@ -41,6 +41,9 @@ model {
         }
         ndk {
             moduleName = 'hello-libs'
+            // toolchain = 'clang'
+            stl = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11'])
             ldLibs.addAll(['android', 'log'])
             // build a default combined apk including all ABIs.
             // abiFilters.addAll(['x86'])

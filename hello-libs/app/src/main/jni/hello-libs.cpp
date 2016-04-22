@@ -34,10 +34,11 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_hellolibs_MainActivity_stringFromJNI(JNIEnv *env, jobject thiz) {
     // Just for simplicity, we do this right away; correct way would do it in
     // another thread...
-    uint64_t ticks = GetTicks();
+    auto ticks = GetTicks();
 
-    for (unsigned exp = 0; exp < 32; ++exp) {
+    for (auto exp = 0; exp < 32; ++exp) {
         volatile unsigned val = gpower(exp);
+        (void) val;  // to silence compiler warning
     }
     ticks = GetTicks() - ticks;
 

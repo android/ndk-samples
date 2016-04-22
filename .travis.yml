@@ -32,7 +32,6 @@ script:
   # check that there is no trailing spaces in AndroidManifest    
   - |-
     (! grep -E '\s+$' */app/src/main/AndroidManifest.xml) | cat -e; test ${PIPESTATUS[0]} -eq 0
-  - (cd hello-thirdparty && ./gradlew download_and_stage_gpg_sdk)
   - (cd builder && ./gradlew test)
   # print build failure summary
   - pandoc builder/build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
