@@ -3,22 +3,22 @@ Hello-libs
 Hello-Libs is an Android sample that demos native lib management in Android Studio.
 
 This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with external lib support:  
-*    How to build JUST an native shared library[for distribution]
-*    How to use 3rd party shared library / Static library   
+*    Build JUST an native shared library[for distribution]
+*    Use 3rd party shared library / Static library   
 
 The key points are:
 *    Inform Android Studio where lib/header is
-*    Add lib dependencies to application
-Details are inside build.gradle file for each project
+*    Add lib dependency to application
+Details are inside projects' build.gradle files
 
-Sample Contents:
+Sample contents:
 *    Create 2 shared libs
 *    Copy builts libs into distribution directory
-*    Create one application to use libs from distribution directory
+*    Create one application to use libs from the given distribution directory
 
 Pre-requisites
 --------------
-- Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 2.0+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
