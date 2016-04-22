@@ -1,6 +1,10 @@
 NDK Samples [![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg?branch=master)](https://travis-ci.org/googlesamples/android-ndk) [![Build status](https://ci.appveyor.com/api/projects/status/48tbtqwg4heytmnq?svg=true)](https://ci.appveyor.com/project/proppy/android-ndk)
 ===========
 
+**NOTE**    
+**This branch is forzen on 04/22/2016 from master branch; new update should be checked in to master branch**    
+
+
 This repository contains [Android NDK][0] samples with Android Studio [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
 
 These samples uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
@@ -15,9 +19,8 @@ For samples using `Android.mk` build system with `ndk-build` see the [android-mk
 
 Support
 -------
+-  This branch is not supported, please use "master" branch
 
-- [Google+ Community](https://plus.google.com/communities/105153134372062985968)
-- [Stack Overflow](http://stackoverflow.com/questions/tagged/android)
 
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
