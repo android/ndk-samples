@@ -12,6 +12,7 @@ model {
         }
         ndk {
             moduleName = 'sanangeles'
+            toolchain = 'clang'
             CFlags.addAll(['-DANDROID_NDK', '-DDISABLE_IMPORTGL'])
             CFlags.addAll(['-Wall', '-Werror'])
 

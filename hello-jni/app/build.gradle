@@ -15,7 +15,8 @@ model {
          */
         ndk {
             moduleName = 'hello-jni'
-            CFlags.addAll(['-Wall', '-Werror'])
+            toolchain = 'clang'
+            CFlags.addAll(['-Wall'])
         }
         buildTypes {
             release {

@@ -19,8 +19,8 @@ model {
             versionName = "0.0.1"
         }
         ndk {
-            moduleName = "native-activity"
-            ldLibs.addAll(["log", "android"])
+            moduleName = 'native-activity'
+            ldLibs.addAll(['log', 'android'])
             ldFlags.add("-c")
         }
         sources {

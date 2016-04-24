@@ -14,7 +14,7 @@ model {
         }
         ndk {
             moduleName = 'echo'
-            //toolchain  = "clang"
+            toolchain  = "clang"
             stl        = 'c++_static'   //std::mutex not in gnustl_static
             cppFlags.add('-std=c++11')
             ldLibs.addAll(['android', 'log', 'OpenSLES', 'atomic'])

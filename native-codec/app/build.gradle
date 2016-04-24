@@ -12,9 +12,9 @@ model {
         }
         ndk {
             moduleName = 'native-codec-jni'
-            // toolchain = 'clang'
+            toolchain = 'clang'
             stl        = 'gnustl_static'
-            cppFlags.addAll(['-std=c++11','-Wall', '-Werror','-UNDEBUG'])
+            cppFlags.addAll(['-std=c++11','-Wall', '-UNDEBUG'])
             ldLibs.addAll(['android', 'log',        // For android and log_print
                           'OpenMAXAL', 'mediandk']) //for native media
         }

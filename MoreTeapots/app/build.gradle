@@ -23,13 +23,11 @@ model {
         }
         ndk {
             moduleName = 'MoreTeapotsNativeActivity'
-            // temporarily use gcc since clang does not work on windows (*)
-            // also clang warning about inline, so could not use -Wall, -Werror
-            // toolchain = "clang"
+            toolchain = "clang"
             stl       = 'gnustl_static'
             cppFlags.addAll(['-I' + "${ndkDir}/sources/android/cpufeatures",
                              '-I' + file('src/main/jni/ndk_helper')])
-            cppFlags.addAll(['-std=c++11', '-Werror', '-Wall',
+            cppFlags.addAll(['-std=c++11', '-Wall',
                              '-fno-exceptions', '-fno-rtti'])
             ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
         }
