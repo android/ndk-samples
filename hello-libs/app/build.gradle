@@ -41,7 +41,7 @@ model {
         }
         ndk {
             moduleName = 'hello-libs'
-            // toolchain = 'clang'
+            toolchain = 'clang'
             stl = 'gnustl_static'
             cppFlags.addAll(['-std=c++11'])
             ldLibs.addAll(['android', 'log'])
@@ -52,9 +52,9 @@ model {
             main {
                 jni {
                     dependencies {
-                        library "gmath" linkage "shared"
+                        library 'gmath' linkage 'shared'
                         // if gperf were *.a, change shared --> static
-                        library "gperf" linkage "shared"
+                        library 'gperf' linkage 'shared'
                     }
                 }
                 jniLibs {

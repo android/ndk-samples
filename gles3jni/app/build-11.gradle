@@ -3,27 +3,28 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
         defaultConfig {
-            applicationId = "com.android.gles3jni"
+            applicationId = 'com.android.gles3jni'
             minSdkVersion.apiLevel    = 11
             targetSdkVersion.apiLevel = 23
         }
         ndk {
-            moduleName  = "gles3jni"
-            stl         = "gnustl_static"
-            cppFlags.addAll(["-std=c++11", "-Werror", "-Wall", "-fno-rtti", "-fno-exceptions",
-                             "-DDYNAMIC_ES3" ])
-            CFlags.addAll(["-Werror", "-Wall", "-DDYNAMIC_ES3"])
-            ldLibs.addAll(["log","GLESv2", "EGL"])
+            moduleName  = 'gles3jni'
+            toolchain = 'clang'
+            stl         = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11', '-Wall', '-fno-rtti', '-fno-exceptions',
+                             '-DDYNAMIC_ES3' ])
+            CFlags.addAll(['-Wall', '-DDYNAMIC_ES3'])
+            ldLibs.addAll(['log','GLESv2', 'EGL'])
         }
         // Turn on hard float support in armeabi-v7a
         abis {
-            create("armeabi-v7a") {
-                cppFlags.addAll(["-mhard-float", "-D_NDK_MATH_NO_SOFTFP=1", "-mfloat-abi=hard"])
-                ldLibs.add("m_hard")
-                ldFlags.add("-Wl,--no-warn-mismatch")
+            create('armeabi-v7a') {
+                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1', '-mfloat-abi=hard'])
+                ldLibs.add('m_hard')
+                ldFlags.add('-Wl,--no-warn-mismatch')
             }
         }
         buildTypes {

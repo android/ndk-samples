@@ -12,6 +12,7 @@ model {
         }
         ndk {
             moduleName = 'native-plasma'
+            toolchain = 'clang'
             ldLibs.addAll(['m', 'log','android'])
         }
         sources {

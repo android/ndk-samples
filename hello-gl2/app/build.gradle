@@ -11,8 +11,9 @@ model {
         }
         ndk {
             moduleName = 'gl2jni'
+            toolchain = 'clang'
             stl        = 'gnustl_static'
-            cppFlags.addAll(['-std=c++11','-Wall', '-Werror'])
+            cppFlags.addAll(['-std=c++11','-Wall'])
             ldLibs.addAll(['log', 'GLESv2'])
         }
         // Turn on hard float support in armeabi-v7a

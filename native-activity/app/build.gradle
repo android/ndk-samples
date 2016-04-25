@@ -11,8 +11,9 @@ model {
             targetSdkVersion.apiLevel = 23
         }
         ndk {
-            stl = 'gnustl_static'
             moduleName ='native-activity'
+            toolchain = 'clang'
+            stl = 'gnustl_static'
             cppFlags.add('-std=c++11')
             ldLibs.addAll(['log', 'android', 'EGL', 'GLESv1_CM'])
         }

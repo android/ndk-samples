@@ -12,8 +12,8 @@ model {
         }
         ndk {
             moduleName = 'plasma'
-            //toolchain = 'clang'  // clang does not like inline, throw warnings
-            CFlags.addAll(['-Wall', '-Werror'])
+            toolchain = 'clang'
+            CFlags.addAll(['-Wall'])
             ldLibs.addAll(['m', 'log', 'jnigraphics'])
         }
         buildTypes {

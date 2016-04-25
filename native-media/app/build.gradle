@@ -12,6 +12,7 @@ model {
         }
         ndk {
             moduleName = 'native-media-jni'
+            toolchain = 'clang'
             CFlags.add('-UNDEBUG')
             ldLibs.addAll(['android','OpenMAXAL','log'])
             // skipping mips / mips64

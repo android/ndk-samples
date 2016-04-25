@@ -12,6 +12,7 @@ model {
         }
         ndk {
             moduleName = 'native-audio-jni'
+            toolchain = 'clang'
             CFlags.add('-std=c99')
             ldLibs.addAll(['android','OpenSLES', 'log'])
             abiFilters.addAll(['armeabi', 'armeabi-v7a', 'arm64-v8a',

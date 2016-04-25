@@ -12,11 +12,10 @@ model {
         }
         ndk {
             moduleName = 'sensorgraph'
-            // for clang to build, need to remove mips or remove -Werror
-            // toolchain = 'clang'
-            // abiFilters.addAll(['armeabi','armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
+            toolchain = 'clang'
             stl        = 'gnustl_static'
-            cppFlags.addAll(['-std=c++11','-Wall', '-Werror'])
+            // abiFilters.addAll(['armeabi','armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
+            cppFlags.addAll(['-std=c++11','-Wall'])
             ldLibs.addAll([ 'android', 'log', 'GLESv2'])
         }
         buildTypes {
