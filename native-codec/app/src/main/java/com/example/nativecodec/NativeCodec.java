@@ -17,6 +17,7 @@
 package com.example.nativecodec;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +33,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 public class NativeCodec extends Activity {
     static final String TAG = "NativeCodec";
@@ -199,6 +204,7 @@ public class NativeCodec extends Activity {
 
         });
 
+        copyClips();
     }
 
     void switchSurface() {
@@ -316,4 +322,30 @@ public class NativeCodec extends Activity {
 
     }
 
+    // The follow code copies out clips from app/src/main/assets/*
+    // into disk location at /sdcard/*, which is configured inside strings.xml
+    // this way, application could be run out of the box. I could not play
+    // directly from assets/ because jni AMediaExtractor_setDataSourceFd()
+    // could not asset, and I could not find a way to change asset to fd
+    // for play mechanism purpose, you would IGNORE the code here...
+    private void copyClips() {
+        Spinner clips =(Spinner) findViewById(R.id.source_spinner);
+        for (int i = 0; i < clips.getCount(); i++) {
+            copyClipToDisk(clips.getItemAtPosition(i).toString());
+        }
+    }
+    private void copyClipToDisk(String clip) {
+        try {
+            String srcName = clip.substring(clip.lastIndexOf('/')+ 1);
+            AssetFileDescriptor assetDescriptor = getAssets().openFd("clips/" + srcName);
+            FileChannel srcChannel =
+                    new FileInputStream(assetDescriptor.getFileDescriptor()).getChannel();
+            FileChannel dstChannel = new FileOutputStream(new File(clip)).getChannel();
+            srcChannel.transferTo(assetDescriptor.getStartOffset(),
+                                  assetDescriptor.getLength(),
+                                  dstChannel);
+        } catch (IOException e) {
+            Log.e("NativeCodec", "IOException " + e);
+        }
+    }
 }

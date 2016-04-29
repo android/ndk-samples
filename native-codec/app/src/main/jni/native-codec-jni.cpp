@@ -321,7 +321,9 @@ void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv *env, jclass cla
 void Java_com_example_nativecodec_NativeCodec_rewindStreamingMediaPlayer(JNIEnv *env, jclass clazz)
 {
     LOGV("@@@ rewind");
-    mlooper->post(kMsgSeek, &data);
+    if (mlooper) {
+        mlooper->post(kMsgSeek, &data);
+    }
 }
 
 }

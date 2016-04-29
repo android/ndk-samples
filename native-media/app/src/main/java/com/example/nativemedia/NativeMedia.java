@@ -17,6 +17,7 @@
 package com.example.nativemedia;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -29,7 +30,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 public class NativeMedia extends Activity {
     static final String TAG = "NativeMedia";
@@ -295,6 +301,11 @@ public class NativeMedia extends Activity {
 
         });
 
+        // copy clips from app/src/main/assets/clips/* to /sdcard/*
+        // this is to let sample to work out-of-box
+        // downside: yes, somewhere on android device, there are TWO
+        //           copies of each clip
+        copyClips();
     }
 
     /** Called when the activity is about to be paused. */
@@ -403,5 +414,32 @@ public class NativeMedia extends Activity {
         }
 
     }
+    // The follow code copies out clips from app/src/main/assets/*
+    // into disk location at /sdcard/*, which is configured inside strings.xml
+    // this way, application could be run out of the box. I could not play
+    // directly from assets/ because jni AMediaExtractor_setDataSourceFd()
+    // could not asset, and I could not find a way to change asset to fd
+    // for play mechanism purpose, you would IGNORE the code here...
+    private void copyClips() {
+        Spinner clips =(Spinner) findViewById(R.id.source_spinner);
+        for (int i = 0; i < clips.getCount(); i++) {
+            copyClipToDisk(clips.getItemAtPosition(i).toString());
+        }
+    }
+    private void copyClipToDisk(String clip) {
+        try {
+            String srcName = clip.substring(clip.lastIndexOf('/')+ 1);
+            AssetFileDescriptor assetDescriptor = getAssets().openFd("clips/" + srcName);
+            FileChannel srcChannel =
+                    new FileInputStream(assetDescriptor.getFileDescriptor()).getChannel();
+            FileChannel dstChannel = new FileOutputStream(new File(clip)).getChannel();
+            srcChannel.transferTo(assetDescriptor.getStartOffset(),
+                    assetDescriptor.getLength(),
+                    dstChannel);
+        } catch (IOException e) {
+            Log.e("NativeCodec", "IOException " + e);
+        }
+    }
+
 
 }
