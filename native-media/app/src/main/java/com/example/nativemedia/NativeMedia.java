@@ -17,6 +17,8 @@
 package com.example.nativemedia;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -29,6 +31,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import java.io.FileDescriptor;
 import java.io.IOException;
 
 public class NativeMedia extends Activity {
@@ -55,11 +59,15 @@ public class NativeMedia extends Activity {
     SurfaceHolderVideoSink mSurfaceHolder1VideoSink, mSurfaceHolder2VideoSink;
     GLViewVideoSink mGLView1VideoSink, mGLView2VideoSink;
 
+    AssetManager  assetMgr;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
+
+        assetMgr = getResources().getAssets();
 
         mGLView1 = (MyGLSurfaceView) findViewById(R.id.glsurfaceview1);
         mGLView2 = (MyGLSurfaceView) findViewById(R.id.glsurfaceview2);
@@ -220,7 +228,11 @@ public class NativeMedia extends Activity {
                 if (!mMediaPlayerIsPrepared) {
                     if (mSourceString != null) {
                         try {
-                            mMediaPlayer.setDataSource(mSourceString);
+                            AssetFileDescriptor clipFd = assetMgr.openFd(mSourceString);
+                            mMediaPlayer.setDataSource(clipFd.getFileDescriptor(),
+                                                       clipFd.getStartOffset(),
+                                                       clipFd.getLength());
+                            clipFd.close();
                         } catch (IOException e) {
                             Log.e(TAG, "IOException " + e);
                         }
@@ -250,7 +262,7 @@ public class NativeMedia extends Activity {
                         mNativeMediaPlayerVideoSink = mSelectedVideoSink;
                     }
                     if (mSourceString != null) {
-                        created = createStreamingMediaPlayer(mSourceString);
+                        created = createStreamingMediaPlayer(assetMgr, mSourceString);
                     }
                 }
                 if (created) {
@@ -327,7 +339,8 @@ public class NativeMedia extends Activity {
 
     /** Native methods, implemented in jni folder */
     public static native void createEngine();
-    public static native boolean createStreamingMediaPlayer(String filename);
+    public static native boolean createStreamingMediaPlayer(AssetManager assetManager,
+                                                            String filename);
     public static native void setPlayingStreamingMediaPlayer(boolean isPlaying);
     public static native void shutdown();
     public static native void setSurface(Surface surface);
