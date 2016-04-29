@@ -2,8 +2,13 @@ Native Codec
 ============
 Native Codec is an Android C++ sample that uses the Native Media Codec API to play a video.
 
-Note: It requires a video file to be placed in /sdcard/testfile.mp4
-For demonstration purposes we have supplied such a file.
+Note: video clips could be put in
+  1) app/src/main/assets/clips  OR
+  2) directly use "adb shell push" to /sdcard/*
+Option 1) above is recommended; and they will be copied over to /sdcard/* at run time
+
+
+For demonstration purposes we have supplied such a file testfile.mp4.
 
 This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
 
