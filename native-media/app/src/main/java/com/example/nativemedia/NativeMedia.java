@@ -262,7 +262,8 @@ public class NativeMedia extends Activity {
                         mNativeMediaPlayerVideoSink = mSelectedVideoSink;
                     }
                     if (mSourceString != null) {
-                        created = createStreamingMediaPlayer(assetMgr, mSourceString);
+                        // Temporarily disabling native player, re-enable after debugging
+                        // created = createStreamingMediaPlayer(assetMgr, mSourceString);
                     }
                 }
                 if (created) {
