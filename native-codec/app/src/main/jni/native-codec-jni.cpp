@@ -43,9 +43,12 @@
 #include <android/log.h>
 #define TAG "NativeCodec"
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
 // for native window JNI
 #include <android/native_window_jni.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
 
 typedef struct {
     int fd;
@@ -209,17 +212,21 @@ void mylooper::handle(int what, void* obj) {
 extern "C" {
 
 jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(JNIEnv* env,
-        jclass clazz, jstring filename)
+        jclass clazz, jobject assetMgr, jstring filename)
 {
     LOGV("@@@ create");
 
     // convert Java string to UTF-8
     const char *utf8 = env->GetStringUTFChars(filename, NULL);
     LOGV("opening %s", utf8);
-    int fd = open(utf8, O_RDONLY);
+
+    off_t outStart, outLen;
+    int fd = AAsset_openFileDescriptor(AAssetManager_open(AAssetManager_fromJava(env, assetMgr), utf8, 0),
+                                       &outStart, &outLen);
+
     env->ReleaseStringUTFChars(filename, utf8);
     if (fd < 0) {
-        LOGV("failed: %d (%s)", fd, strerror(errno));
+        LOGE("failed to open file: %s %d (%s)", utf8, fd, strerror(errno));
         return JNI_FALSE;
     }
 
@@ -228,7 +235,9 @@ jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(JNI
     workerdata *d = &data;
 
     AMediaExtractor *ex = AMediaExtractor_new();
-    media_status_t err = AMediaExtractor_setDataSourceFd(ex, d->fd, 0 , LONG_MAX);
+    media_status_t err = AMediaExtractor_setDataSourceFd(ex, d->fd,
+                                                         static_cast<off64_t>(outStart),
+                                                         static_cast<off64_t>(outLen));
     close(d->fd);
     if (err != AMEDIA_OK) {
         LOGV("setDataSource error: %d", err);
@@ -321,7 +330,9 @@ void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv *env, jclass cla
 void Java_com_example_nativecodec_NativeCodec_rewindStreamingMediaPlayer(JNIEnv *env, jclass clazz)
 {
     LOGV("@@@ rewind");
-    mlooper->post(kMsgSeek, &data);
+    if (mlooper) {
+        mlooper->post(kMsgSeek, &data);
+    }
 }
 
 }
