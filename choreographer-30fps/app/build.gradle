@@ -22,9 +22,11 @@ model {
             targetSdkVersion.apiLevel = 22
         }
         ndk {
+            platformVersion = 21
             moduleName = 'ChoreographerNativeActivity'
             toolchain = "clang"
-            stl       = 'gnustl_static'
+            // this sample uses std::mutex, which will not compile with ndk-r12 with gnustl_static
+            stl       = 'c++_static'
             cppFlags.addAll(['-I' + file('src/main/jni/ndk_helper')])
             cppFlags.addAll(['-std=c++11', '-Wall',
                              '-fno-exceptions', '-fno-rtti'])

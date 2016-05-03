@@ -11,6 +11,7 @@ model {
             targetSdkVersion.apiLevel = 22
         }
         ndk {
+            platformVersion = 21
             moduleName = 'native-codec-jni'
             toolchain = 'clang'
             stl        = 'gnustl_static'

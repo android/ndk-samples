@@ -11,6 +11,7 @@ model {
             targetSdkVersion.apiLevel = 23
         }
         ndk {
+            platformVersion = 9
             moduleName = 'native-plasma'
             toolchain = 'clang'
             ldLibs.addAll(['m', 'log','android'])
