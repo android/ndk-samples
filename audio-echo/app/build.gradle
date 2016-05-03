@@ -13,6 +13,8 @@ model {
             versionName = '1.0'
         }
         ndk {
+            // setting this to 21 because there is a printf using 64 bit formatting
+            platformVersion = 21
             moduleName = 'echo'
             toolchain  = "clang"
             stl        = 'c++_static'   //std::mutex not in gnustl_static

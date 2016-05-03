@@ -22,12 +22,14 @@ model {
         buildToolsVersion = '23.0.2'
 
         defaultConfig {
+            applicationId = 'com.google.sample.tunnel'
             minSdkVersion.apiLevel    = 9
             targetSdkVersion.apiLevel = 23
             versionCode     =  1
             versionName     = '1.0'
        }
         ndk {
+            platformVersion = 9
             moduleName = 'game'
             toolchain = 'clang'
             stl        = 'gnustl_static' // recommending gnustl_static/gnustl_shared for android

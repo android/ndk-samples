@@ -14,6 +14,7 @@ model {
          * native build settings: taking default for almost everything
          */
         ndk {
+            platformVersion = 9
             moduleName = 'hello-jni'
             toolchain = 'clang'
             CFlags.addAll(['-Wall'])

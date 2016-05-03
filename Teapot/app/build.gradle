@@ -22,6 +22,7 @@ model {
             targetSdkVersion.apiLevel = 22
         }
         ndk {
+            platformVersion = 17
             moduleName = 'TeapotNativeActivity'
             toolchain = "clang"
             stl       = 'gnustl_static'
