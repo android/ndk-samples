@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <jni.h>
 #include <string.h>
+#include <pthread.h>
 
 
 // for __android_log_print(ANDROID_LOG_INFO, "YourApp", "formatted message");
@@ -65,7 +66,13 @@ static SLVolumeItf bqPlayerVolume;
 static SLmilliHertz bqPlayerSampleRate = 0;
 static jint   bqPlayerBufSize = 0;
 static short *resampleBuf = NULL;
-static volatile int  bqPlayerRecorderBusy = 0;
+// a mutext to guard against re-entrance to record & playback
+// as well as make recording and playing back to be mutually exclusive
+// this is to avoid crash at situations like:
+//    recording is in session [not finished]
+//    user presses record button and another recording coming in
+// The action: when recording/playing back is not finished, ignore the new request
+static pthread_mutex_t  audioEngineLock = PTHREAD_MUTEX_INITIALIZER;
 
 // aux effect on the output mix, used by the buffer queue player
 static const SLEnvironmentalReverbSettings reverbSettings =
@@ -197,11 +204,13 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
         result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
         // the most likely other result is SL_RESULT_BUFFER_INSUFFICIENT,
         // which for this code example would indicate a programming error
-        assert(SL_RESULT_SUCCESS == result);
+        if (SL_RESULT_SUCCESS != result) {
+            pthread_mutex_unlock(&audioEngineLock);
+        }
         (void)result;
     } else {
         releaseResampleBuf();
-        bqPlayerRecorderBusy = 0;
+        pthread_mutex_unlock(&audioEngineLock);
     }
 }
 
@@ -218,7 +227,7 @@ void bqRecorderCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
     if (SL_RESULT_SUCCESS == result) {
         recorderSize = RECORDER_FRAMES * sizeof(short);
     }
-    bqPlayerRecorderBusy = 0;
+    pthread_mutex_unlock(&audioEngineLock);
 }
 
 
@@ -617,6 +626,10 @@ jboolean Java_com_example_nativeaudio_NativeAudio_enableReverb(JNIEnv* env, jcla
 jboolean Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv* env, jclass clazz, jint which,
         jint count)
 {
+    if (pthread_mutex_trylock(&audioEngineLock)) {
+        // If we could not acquire audio engine lock, reject this request and client should re-try
+        return JNI_FALSE;
+    }
     switch (which) {
     case 0:     // CLIP_NONE
         nextBuffer = (short *) NULL;
@@ -668,7 +681,7 @@ jboolean Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv* env, jclass
         SLresult result;
         result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
         if (SL_RESULT_SUCCESS != result) {
-            bqPlayerRecorderBusy = 1;
+            pthread_mutex_unlock(&audioEngineLock);
             return JNI_FALSE;
         }
     }
@@ -774,7 +787,8 @@ void Java_com_example_nativeaudio_NativeAudio_setPlayingAssetAudioPlayer(JNIEnv*
 
 }
 
-// create audio recorder
+// create audio recorder: recorder is not in fast path
+//    like to avoid excessive re-sampling while playing back from Hello & Android clip
 jboolean Java_com_example_nativeaudio_NativeAudio_createAudioRecorder(JNIEnv* env, jclass clazz)
 {
     SLresult result;
@@ -833,7 +847,7 @@ void Java_com_example_nativeaudio_NativeAudio_startRecording(JNIEnv* env, jclass
 {
     SLresult result;
 
-    if( bqPlayerRecorderBusy) {
+    if (pthread_mutex_trylock(&audioEngineLock)) {
         return;
     }
     // in case already recording, stop recording and clear buffer queue
@@ -860,7 +874,6 @@ void Java_com_example_nativeaudio_NativeAudio_startRecording(JNIEnv* env, jclass
     result = (*recorderRecord)->SetRecordState(recorderRecord, SL_RECORDSTATE_RECORDING);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
-    bqPlayerRecorderBusy = 1;
 }
 
 
@@ -921,4 +934,5 @@ void Java_com_example_nativeaudio_NativeAudio_shutdown(JNIEnv* env, jclass clazz
         engineEngine = NULL;
     }
 
+    pthread_mutex_destroy(&audioEngineLock);
 }
