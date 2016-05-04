@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2007-04-03
 // Updated : 2008-09-17
@@ -9,12 +9,12 @@
 
 namespace glm
 {
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER valType mixedProduct
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T mixedProduct
 	(
-		detail::tvec3<valType> const & v1, 
-		detail::tvec3<valType> const & v2, 
-		detail::tvec3<valType> const & v3
+		detail::tvec3<T, P> const & v1,
+		detail::tvec3<T, P> const & v2,
+		detail::tvec3<T, P> const & v3
 	)
 	{
 		return dot(cross(v1, v2), v3);

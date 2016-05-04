@@ -62,12 +62,12 @@ class DialogScene : public UiScene {
 
         DialogScene();
         ~DialogScene();
-        inline DialogScene* SetText(const char *text) {
+        DialogScene* SetText(const char *text) {
             mText = text;
             return this;
         }
 
-        inline DialogScene* SetSingleButton(const char *text, int action) {
+        DialogScene* SetSingleButton(const char *text, int action) {
             mLeftButtonText = text;
             mLeftButtonAction = action;
             mRightButtonText = NULL;

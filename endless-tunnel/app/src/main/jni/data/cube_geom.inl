@@ -91,8 +91,8 @@ static const int CUBE_GEOM_COLOR_OFFSET = 3 * sizeof(GLfloat);
 static const int CUBE_GEOM_TEXCOORD_OFFSET = 7 * sizeof(GLfloat);
 static const int CUBE_GEOM_STRIDE = 9 * sizeof(GLfloat);
 
-// this is something of a trivial index buffer (and could just as well be
-// replaced by an array), but we have it here for demonstration purposes:
+/* this is something of a trivial index buffer (and could just as well be
+   replaced by an array), but we have it here for demonstration purposes:
 static unsigned short CUBE_GEOM_INDICES[] = {
     0, 1, 2, 3, 4, 5,
     6, 7, 8, 9, 10, 11,
@@ -101,5 +101,5 @@ static unsigned short CUBE_GEOM_INDICES[] = {
     24, 25, 26, 27, 28, 29,
     30, 31, 32, 33, 34, 35
 };
-
+*/
 #endif

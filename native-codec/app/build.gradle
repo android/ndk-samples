@@ -3,47 +3,27 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
-        defaultConfig.with {
-            applicationId = "com.example.nativecodec"
+        defaultConfig {
+            applicationId = 'com.example.nativecodec'
             minSdkVersion.apiLevel    = 21
             targetSdkVersion.apiLevel = 22
         }
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles.add(file('proguard-rules.txt'))
+        ndk {
+            platformVersion = 21
+            moduleName = 'native-codec-jni'
+            toolchain = 'clang'
+            stl        = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11','-Wall', '-UNDEBUG'])
+            ldLibs.addAll(['android', 'log',        // For android and log_print
+                          'OpenMAXAL', 'mediandk']) //for native media
         }
-    }
-    android.ndk {
-        moduleName = "native-codec-jni"
-        cppFlags.add("-UNDEBUG")
-
-        // for native multimedia
-        ldLibs.addAll(["OpenMAXAL", "mediandk"])
-        // for logging
-        ldLibs.add("log")
-        // for native windows
-        ldLibs.add("android")
-
-        stl     = "stlport_static"
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-        create ("arm8") {
-            ndk.abiFilters.add("arm64-v8a")
-        }
-        create ("x86-32") {
-            ndk.abiFilters.add("x86")
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        // build one including all productFlavors
-        create("fat")
     }
 }

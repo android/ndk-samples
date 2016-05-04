@@ -52,31 +52,6 @@ static void _init() {
     }
 }
 
-static void _log_event(AInputEvent *event) {
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-        LOGD("DEBUG: Key event: action=%d, keycode=%d, meta=0x%x, source=%d",
-            AKeyEvent_getAction(event),
-            AKeyEvent_getKeyCode(event),
-            AKeyEvent_getMetaState(event),
-            (int)(AInputEvent_getSource(event)));
-    } else if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-        LOGD("DEBUG: Motion event: deviceid=%d, pointerid=%d, sourceid=%d, action=%d, keycode=%d"
-         "x,y=%f,%f, raw x,y=%f,%f, source=%d",
-        (int)AInputEvent_getDeviceId(event),
-        (int)AMotionEvent_getPointerId(event, 0),
-        (int)AInputEvent_getSource(event),
-        (int)AKeyEvent_getAction(event),
-        (int)AKeyEvent_getKeyCode(event),
-        (float)AMotionEvent_getX(event,0),
-        (float)AMotionEvent_getY(event,0),
-        (float)AMotionEvent_getRawX(event,0),
-        (float)AMotionEvent_getRawY(event,0),
-        (int)(AInputEvent_getSource(event)));
-    } else {
-        LOGD("DEBUG: other type of event, %d", AInputEvent_getType(event));
-    }
-}
-
 static int _translate_keycode(int code) {
     switch (code) {
         case AKEYCODE_DPAD_LEFT:
@@ -153,6 +128,7 @@ static bool _process_keys(bool isJoy, AInputEvent *event, CookedEventCallback ca
         _report_key_states_from_axes(x, y, callback);
         return true;
     }
+    return false;
 }
 
 static void _look_up_motion_range(int deviceId, int source,

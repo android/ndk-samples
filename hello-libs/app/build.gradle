@@ -1,0 +1,100 @@
+apply plugin: 'com.android.model.application'
+
+// Root of 3rd party lib(s): location could be anywhere on the host system
+def lib_distribution_root = '../distribution'
+model {
+    repositories {
+        libs(PrebuiltLibraries) {
+            // Configure one pre-built lib: shared
+            gmath {
+                // Inform Android Studio where header file dir for this lib
+                headers.srcDir "${lib_distribution_root}/gmath/include"
+                // Inform Android Studio where lib is -- each ABI should have a lib file
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("${lib_distribution_root}/gmath/lib/${targetPlatform.getName()}/libgmath.so")
+                }
+            }
+            // Configure another pre-built lib: shared;[change to static after Studio supports]
+            // static lib generation. USING static lib is supported NOW, for that case,
+            // simple change:
+            //  SharedLibaryBinary --> StaticLibraryBinary
+            //  sharedLibraryFile  --> staticLibraryFile
+            //  *.so --> *.a
+            gperf {
+                headers.srcDir "${lib_distribution_root}/gperf/include"
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("${lib_distribution_root}/gperf/lib/${targetPlatform.getName()}/libgperf.so")
+                }
+            }
+        }
+    }
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            applicationId = 'com.example.hellolibs'
+            minSdkVersion.apiLevel = 13
+            targetSdkVersion.apiLevel = 23
+            versionCode = 1
+            versionName = '1.0'
+        }
+        ndk {
+            platformVersion = 21
+            moduleName = 'hello-libs'
+            toolchain = 'clang'
+            stl = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11'])
+            ldLibs.addAll(['android', 'log'])
+            // build a default combined apk including all ABIs.
+            // abiFilters.addAll(['x86'])
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        library 'gmath' linkage 'shared'
+                        // if gperf were *.a, change shared --> static
+                        library 'gperf' linkage 'shared'
+                    }
+                }
+                jniLibs {
+                    // for shared lib, lib need to be pushed to the target too
+                    // Once libs are copied into app/src/main/jniLibs directory,
+                    // Android Studio will pack them into APK's lib/ directory
+                    // Here we like to avoid another duplication by pointing
+                    // to the files that containing our libs' distribution location
+                    // so the same file is used by compiler at host, also packed
+                    // into APk to be used at Target (phone/tablet)
+                    source {
+                        srcDir "${lib_distribution_root}/gmath/lib"
+                        srcDir "${lib_distribution_root}/gperf/lib"
+                    }
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles.add(file('proguard-android.txt'))
+            }
+        }
+    }
+}
+
+dependencies {
+    println rootProject.getName()
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.3.0'
+}
+
+//  Unnecessary dependency management:
+//  Make sure the libs are available when begin compiling application project
+//  This could be ignored because in real scenario, the pre-built libs are
+//  already given to us before creating application.
+tasks.whenTaskAdded { task ->
+    if (task.name.contains('compile')) {
+        task.dependsOn ':gmath:distributeLib'
+        task.dependsOn ':gperf:distributeLib'
+    }
+}

@@ -3,30 +3,29 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = '23.0.2'
 
-        defaultConfig.with {
-            applicationId="com.google.sample.echo"
+        defaultConfig {
+            applicationId='com.google.sample.echo'
             minSdkVersion.apiLevel = 17
             targetSdkVersion.apiLevel = 22
             versionCode = 1
-            versionName = "1.0"
+            versionName = '1.0'
         }
-    }
-
-    android.ndk {
-        moduleName = "echo"
-        cppFlags.add("-std=c++11")
-        ldLibs.addAll(['android', 'log', 'OpenSLES'])
-        stl     = "gnustl_static"
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled=false
-            proguardFiles.add(file('proguard-android.txt'))
+        ndk {
+            // setting this to 21 because there is a printf using 64 bit formatting
+            platformVersion = 21
+            moduleName = 'echo'
+            toolchain  = "clang"
+            stl        = 'c++_static'   //std::mutex not in gnustl_static
+            cppFlags.add('-std=c++11')
+            ldLibs.addAll(['android', 'log', 'OpenSLES', 'atomic'])
         }
-    }
-    android.productFlavors {
-        create('all')
+        buildTypes {
+            release {
+                minifyEnabled=false
+                proguardFiles.add(file('proguard-android.txt'))
+            }
+        }
     }
 }

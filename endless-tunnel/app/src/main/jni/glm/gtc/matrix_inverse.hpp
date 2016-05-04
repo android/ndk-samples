@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -35,12 +35,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTC_matrix_inverse
-#define GLM_GTC_matrix_inverse GLM_VERSION
+#define GLM_GTC_matrix_inverse
 
-// Dependency:
-#include "../glm.hpp"
+// Dependencies
+#include "../detail/setup.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTC_matrix_inverse extension included")
 #endif
 
@@ -55,7 +55,7 @@ namespace glm
 	/// @tparam genType Squared floating-point matrix: half, float or double. Inverse of matrix based of half-precision floating point value is highly innacurate.
 	/// @see gtc_matrix_inverse
 	template <typename genType> 
-	genType affineInverse(genType const & m);
+	GLM_FUNC_DECL genType affineInverse(genType const & m);
 
 	/// Compute the inverse transpose of a matrix.
 	/// 
@@ -63,7 +63,7 @@ namespace glm
 	/// @tparam genType Squared floating-point matrix: half, float or double. Inverse of matrix based of half-precision floating point value is highly innacurate.
 	/// @see gtc_matrix_inverse
 	template <typename genType> 
-	GLM_FUNC_QUALIFIER typename genType::value_type inverseTranspose(
+	GLM_FUNC_DECL typename genType::value_type inverseTranspose(
 		genType const & m);
 
 	/// @}

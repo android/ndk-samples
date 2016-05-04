@@ -26,22 +26,22 @@ class SimpleGeom {
         VertexBuf *vbuf;
         IndexBuf *ibuf;
 
-        inline SimpleGeom() {
+        SimpleGeom() {
             vbuf = NULL;
             ibuf = NULL;
         }
 
-        inline SimpleGeom(VertexBuf *vb, IndexBuf *ib) {
+        SimpleGeom(VertexBuf *vb, IndexBuf *ib) {
             vbuf = vb;
             ibuf = ib;
         }
 
-        inline SimpleGeom(VertexBuf *vb) {
+        SimpleGeom(VertexBuf *vb) {
             vbuf = vb;
             ibuf = NULL;
         }
 
-        inline ~SimpleGeom() {
+        ~SimpleGeom() {
             if (vbuf) {
                 delete vbuf;
             }

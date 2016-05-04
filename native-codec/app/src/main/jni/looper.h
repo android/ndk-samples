@@ -22,7 +22,9 @@ struct loopermessage;
 class looper {
     public:
         looper();
-        ~looper();
+        looper& operator=(const looper& ) = delete;
+        looper(looper&) = delete;
+        virtual ~looper();
 
         void post(int what, void *data, bool flush = false);
         void quit();

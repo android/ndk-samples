@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -37,12 +37,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_normal
-#define GLM_GTX_normal GLM_VERSION
+#define GLM_GTX_normal
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_normal extension included")
 #endif
 
@@ -53,11 +53,11 @@ namespace glm
 
 	//! Computes triangle normal from triangle points. 
 	//! From GLM_GTX_normal extension.
-    template <typename T> 
-	detail::tvec3<T> triangleNormal(
-		detail::tvec3<T> const & p1, 
-		detail::tvec3<T> const & p2, 
-		detail::tvec3<T> const & p3);
+	template <typename T, precision P> 
+	GLM_FUNC_DECL detail::tvec3<T, P> triangleNormal(
+		detail::tvec3<T, P> const & p1, 
+		detail::tvec3<T, P> const & p2, 
+		detail::tvec3<T, P> const & p3);
 
 	/// @}
 }//namespace glm

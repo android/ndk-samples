@@ -5,7 +5,14 @@ This repository contains [Android NDK][0] samples with Android Studio [C++ integ
 
 These samples uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
 
+Additional Android Studio samples:    
+- [Google Play Game Samples with Android Studio](https://github.com/playgameservices/cpp-android-basic-samples)
+- [Google Android Vulkan Tutorials](https://github.com/googlesamples/android-vulkan-tutorials)
+- [Android Vulkan API Basic Samples](https://github.com/googlesamples/vulkan-basic-samples)
+- [Android High Performance Audio](https://github.com/googlesamples/android-audio-high-performance)	
+
 For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
+
 
 Support
 -------

@@ -18,6 +18,5 @@ install:
   - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter extra-google-m2repository
   - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter extra-android-m2repository
 build_script:
-  - cd c:\projects\android-ndk\hello-thirdparty && gradlew download_and_stage_gpg_sdk
   - cd c:\projects\android-ndk\builder && gradlew test
 test: off

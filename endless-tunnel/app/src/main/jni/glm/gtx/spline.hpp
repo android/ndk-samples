@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,13 +36,13 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_spline
-#define GLM_GTX_spline GLM_VERSION
+#define GLM_GTX_spline
 
 // Dependency:
 #include "../glm.hpp"
 #include "../gtx/optimum_pow.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_spline extension included")
 #endif
 
@@ -52,9 +52,9 @@ namespace glm
 	/// @{
 
 	//! Return a point from a catmull rom curve.
-	//! From GLM_GTX_spline extension.
+	/// @see gtx_spline extension.
 	template <typename genType> 
-	genType catmullRom(
+	GLM_FUNC_DECL genType catmullRom(
 		genType const & v1, 
 		genType const & v2, 
 		genType const & v3, 
@@ -62,19 +62,19 @@ namespace glm
 		typename genType::value_type const & s);
 		
 	//! Return a point from a hermite curve.
-	//! From GLM_GTX_spline extension.
-    template <typename genType> 
-	genType hermite(
+	/// @see gtx_spline extension.
+	template <typename genType> 
+	GLM_FUNC_DECL genType hermite(
 		genType const & v1, 
 		genType const & t1, 
 		genType const & v2, 
 		genType const & t2, 
 		typename genType::value_type const & s);
 		
-    //! Return a point from a cubic curve. 
-	//! From GLM_GTX_spline extension.
+	//! Return a point from a cubic curve. 
+	/// @see gtx_spline extension.
 	template <typename genType> 
-	genType cubic(
+	GLM_FUNC_DECL genType cubic(
 		genType const & v1, 
 		genType const & v2, 
 		genType const & v3, 

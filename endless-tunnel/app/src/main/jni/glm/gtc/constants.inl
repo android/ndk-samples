@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -26,18 +26,14 @@
 /// @author Christophe Riccio
 ///////////////////////////////////////////////////////////////////////////////////
 
+#include <limits>
+
 namespace glm
 {
 	template <typename genType>
 	GLM_FUNC_QUALIFIER genType epsilon()
 	{
 		return std::numeric_limits<genType>::epsilon();
-	}
-
-	template <>
-	GLM_FUNC_QUALIFIER half epsilon()
-	{
-		return half(1.19209290e-007);
 	}
 
 	template <typename genType>

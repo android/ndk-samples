@@ -30,7 +30,7 @@ class TexQuad {
         float mCenterX, mCenterY;
         float mAspect;
         void CreateGeom(float umin, float vmin, float umax, float vmax);
-        inline void Init(Texture *t, OurShader *shader, float aspect,
+        void Init(Texture *t, OurShader *shader, float aspect,
                 float umin, float vmin, float umax, float vmax) {
             mTexture = t;
             mOurShader = shader;
@@ -42,23 +42,23 @@ class TexQuad {
             CreateGeom(umin, vmin, umax, vmax);
         }
     public:
-        inline TexQuad(Texture *t, OurShader *shader, float aspect, float umin, float vmin,
+        TexQuad(Texture *t, OurShader *shader, float aspect, float umin, float vmin,
                 float umax, float vmax) {
             Init(t, shader, aspect, umin, vmin, umax, vmax);
         }
-        inline TexQuad(Texture *t, OurShader *shader, float umin, float vmin, float umax,
+        TexQuad(Texture *t, OurShader *shader, float umin, float vmin, float umax,
                float vmax) {
             Init(t, shader, (umax - umin) / (vmax - vmin), umin, vmin, umax, vmax);
         }
-        inline float GetCenterX() { return mCenterX; }
-        inline float GetCenterY() { return mCenterY; }
-        inline float GetWidth() { return mWidth; }
-        inline float GetHeight() { return mHeight; }
-        inline float GetLeft() { return mCenterX - mWidth * 0.5f; }
-        inline float GetRight() { return mCenterX + mWidth * 0.5f; }
-        inline float GetBottom() { return mCenterY - mHeight * 0.5f; }
-        inline float GetTop() { return mCenterY + mHeight * 0.5f; }
-        inline bool Contains(float x, float y) {
+        float GetCenterX() { return mCenterX; }
+        float GetCenterY() { return mCenterY; }
+        float GetWidth() { return mWidth; }
+        float GetHeight() { return mHeight; }
+        float GetLeft() { return mCenterX - mWidth * 0.5f; }
+        float GetRight() { return mCenterX + mWidth * 0.5f; }
+        float GetBottom() { return mCenterY - mHeight * 0.5f; }
+        float GetTop() { return mCenterY + mHeight * 0.5f; }
+        bool Contains(float x, float y) {
             return x >= GetLeft() && x <= GetRight() && y >= GetBottom() && y <= GetTop();
         }
 
@@ -74,15 +74,15 @@ class TexQuad {
             mHeight = h;
             mWidth = h * mAspect;
         }
-        inline ~TexQuad() {
+        ~TexQuad() {
             if (mGeom) {
                 delete mGeom;
             }
         }
-        inline void SetScale(float scale) {
+        void SetScale(float scale) {
             mScale = scale;
         }
-        inline void Render() {
+        void Render() {
             Render(NULL);
         }
         void Render(glm::mat4 *transform);

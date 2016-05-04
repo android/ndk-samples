@@ -43,9 +43,12 @@
 #include <android/log.h>
 #define TAG "NativeCodec"
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
 // for native window JNI
 #include <android/native_window_jni.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
 
 typedef struct {
     int fd;
@@ -92,14 +95,14 @@ void doCodecWork(workerdata *d) {
         LOGV("input buffer %zd", bufidx);
         if (bufidx >= 0) {
             size_t bufsize;
-            uint8_t *buf = AMediaCodec_getInputBuffer(d->codec, bufidx, &bufsize);
-            ssize_t sampleSize = AMediaExtractor_readSampleData(d->ex, buf, bufsize);
+            auto buf = AMediaCodec_getInputBuffer(d->codec, bufidx, &bufsize);
+            auto sampleSize = AMediaExtractor_readSampleData(d->ex, buf, bufsize);
             if (sampleSize < 0) {
                 sampleSize = 0;
                 d->sawInputEOS = true;
                 LOGV("EOS");
             }
-            int64_t presentationTimeUs = AMediaExtractor_getSampleTime(d->ex);
+            auto presentationTimeUs = AMediaExtractor_getSampleTime(d->ex);
 
             AMediaCodec_queueInputBuffer(d->codec, bufidx, 0, sampleSize, presentationTimeUs,
                     d->sawInputEOS ? AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM : 0);
@@ -109,7 +112,7 @@ void doCodecWork(workerdata *d) {
 
     if (!d->sawOutputEOS) {
         AMediaCodecBufferInfo info;
-        ssize_t status = AMediaCodec_dequeueOutputBuffer(d->codec, &info, 0);
+        auto status = AMediaCodec_dequeueOutputBuffer(d->codec, &info, 0);
         if (status >= 0) {
             if (info.flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM) {
                 LOGV("output EOS");
@@ -131,8 +134,7 @@ void doCodecWork(workerdata *d) {
         } else if (status == AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED) {
             LOGV("output buffers changed");
         } else if (status == AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED) {
-            AMediaFormat *format = NULL;
-            format = AMediaCodec_getOutputFormat(d->codec);
+            auto format = AMediaCodec_getOutputFormat(d->codec);
             LOGV("format changed to: %s", AMediaFormat_toString(format));
             AMediaFormat_delete(format);
         } else if (status == AMEDIACODEC_INFO_TRY_AGAIN_LATER) {
@@ -210,17 +212,21 @@ void mylooper::handle(int what, void* obj) {
 extern "C" {
 
 jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(JNIEnv* env,
-        jclass clazz, jstring filename)
+        jclass clazz, jobject assetMgr, jstring filename)
 {
     LOGV("@@@ create");
 
     // convert Java string to UTF-8
     const char *utf8 = env->GetStringUTFChars(filename, NULL);
     LOGV("opening %s", utf8);
-    int fd = open(utf8, O_RDONLY);
+
+    off_t outStart, outLen;
+    int fd = AAsset_openFileDescriptor(AAssetManager_open(AAssetManager_fromJava(env, assetMgr), utf8, 0),
+                                       &outStart, &outLen);
+
     env->ReleaseStringUTFChars(filename, utf8);
     if (fd < 0) {
-        LOGV("failed: %d (%s)", fd, strerror(errno));
+        LOGE("failed to open file: %s %d (%s)", utf8, fd, strerror(errno));
         return JNI_FALSE;
     }
 
@@ -229,7 +235,9 @@ jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(JNI
     workerdata *d = &data;
 
     AMediaExtractor *ex = AMediaExtractor_new();
-    media_status_t err = AMediaExtractor_setDataSourceFd(ex, d->fd, 0 , LONG_MAX);
+    media_status_t err = AMediaExtractor_setDataSourceFd(ex, d->fd,
+                                                         static_cast<off64_t>(outStart),
+                                                         static_cast<off64_t>(outLen));
     close(d->fd);
     if (err != AMEDIA_OK) {
         LOGV("setDataSource error: %d", err);
@@ -322,7 +330,9 @@ void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv *env, jclass cla
 void Java_com_example_nativecodec_NativeCodec_rewindStreamingMediaPlayer(JNIEnv *env, jclass clazz)
 {
     LOGV("@@@ rewind");
-    mlooper->post(kMsgSeek, &data);
+    if (mlooper) {
+        mlooper->post(kMsgSeek, &data);
+    }
 }
 
 }
