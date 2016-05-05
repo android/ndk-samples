@@ -11,6 +11,10 @@ Additional Android Studio samples:
 - [Android Vulkan API Basic Samples](https://github.com/googlesamples/vulkan-basic-samples)
 - [Android High Performance Audio](https://github.com/googlesamples/android-audio-high-performance)	
 
+Known Issues	
+- Some are documented at [Android Studio](http://tools.android.com/knownissues) page
+- For native application, editing some gradle properties [like sdk version] from Android Studio UI is not supported
+
 For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
 
 
