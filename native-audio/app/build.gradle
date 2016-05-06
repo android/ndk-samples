@@ -8,10 +8,10 @@ model {
         defaultConfig {
             applicationId    = 'com.example.nativeaudio'
             minSdkVersion.apiLevel    = 9
-            targetSdkVersion.apiLevel = 22
+            targetSdkVersion.apiLevel = 23
         }
         ndk {
-            platformVersion = 9
+            platformVersion = 23
             moduleName = 'native-audio-jni'
             toolchain = 'clang'
             CFlags.add('-std=c99')
@@ -29,3 +29,6 @@ model {
     }
 }
 
+dependencies {
+    compile 'com.android.support:support-v4:23.0.0'
+}

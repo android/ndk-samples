@@ -44,4 +44,5 @@
     <item>http://upload.wikimedia.org/wikipedia/commons/6/6d/Banana.ogg</item>
     <item>http://www.freesound.org/data/previews/18/18765_18799-lq.mp3</item>
   </string-array>
+  <string name="NeedRecordAudioPermission">"This sample needs RECORD_AUDIO permission"</string>
 </resources>
