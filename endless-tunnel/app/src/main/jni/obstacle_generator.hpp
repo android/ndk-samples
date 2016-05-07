@@ -24,11 +24,11 @@ class ObstacleGenerator {
     private:
         int mDifficulty;
     public:
-        inline ObstacleGenerator() {
+        ObstacleGenerator() {
             mDifficulty = 0;
         }
 
-        inline void SetDifficulty(int dif) {
+        void SetDifficulty(int dif) {
             mDifficulty = dif;
         }
 

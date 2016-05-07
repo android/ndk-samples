@@ -17,6 +17,7 @@
 package com.example.nativecodec;
 
 import android.app.Activity;
+import android.content.res.AssetManager;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.util.Log;
@@ -175,7 +176,8 @@ public class NativeCodec extends Activity {
                         mNativeCodecPlayerVideoSink = mSelectedVideoSink;
                     }
                     if (mSourceString != null) {
-                        mCreated = createStreamingMediaPlayer(mSourceString);
+                        mCreated = createStreamingMediaPlayer(getResources().getAssets(),
+                                mSourceString);
                     }
                 }
                 if (mCreated) {
@@ -198,7 +200,6 @@ public class NativeCodec extends Activity {
             }
 
         });
-
     }
 
     void switchSurface() {
@@ -211,7 +212,7 @@ public class NativeCodec extends Activity {
             mNativeCodecPlayerVideoSink = mSelectedVideoSink;
             if (mSourceString != null) {
                 Log.i("@@@", "recreating player");
-                mCreated = createStreamingMediaPlayer(mSourceString);
+                mCreated = createStreamingMediaPlayer(getResources().getAssets(),mSourceString);
                 mIsPlaying = false;
             }
         }
@@ -252,7 +253,7 @@ public class NativeCodec extends Activity {
 
     /** Native methods, implemented in jni folder */
     public static native void createEngine();
-    public static native boolean createStreamingMediaPlayer(String filename);
+    public static native boolean createStreamingMediaPlayer(AssetManager assetMgr, String filename);
     public static native void setPlayingStreamingMediaPlayer(boolean isPlaying);
     public static native void shutdown();
     public static native void setSurface(Surface surface);

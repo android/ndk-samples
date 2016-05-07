@@ -32,7 +32,8 @@ class IndexBuf;
 class Shader {
     protected:
         // OpenGL handles
-        int mVertShaderH, mFragShaderH, mProgramH;
+        int mVertShaderH, mFragShaderH;
+        GLuint mProgramH;
         int mMVPMatrixLoc;
         int mPositionAttribLoc;
 
@@ -53,7 +54,7 @@ class Shader {
         virtual void BeginRender(VertexBuf *vbuf);
 
         // Renders one copy of the prepared geometry, given a model-view-projection matrix.
-        inline void Render(glm::mat4 *mvpMat) {
+        void Render(glm::mat4 *mvpMat) {
             Render(NULL, mvpMat);
         }
 
@@ -65,7 +66,7 @@ class Shader {
         virtual void EndRender();
 
         // Convenience method to render a single copy of a geometry.
-        inline void RenderSimpleGeom(glm::mat4* mvpMat, SimpleGeom *sg) {
+        void RenderSimpleGeom(glm::mat4* mvpMat, SimpleGeom *sg) {
             BeginRender(sg->vbuf);
             Render(sg->ibuf, mvpMat);
             EndRender();

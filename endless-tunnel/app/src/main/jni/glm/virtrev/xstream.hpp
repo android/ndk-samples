@@ -51,7 +51,7 @@ namespace glm{
 namespace detail
 {
 	template<typename T>
-	std::ostream & operator << (std::ostream & stream, glm::detail::tvec2<T> const & vec)
+	std::ostream & operator << (std::ostream & stream, glm::detail::tvec2<T, P> const & vec)
 	{
 		stream << "<glm_vec2 ";
 		stream << "x=\"" << vec.x << "\" ";
@@ -62,7 +62,7 @@ namespace detail
 	}
 
 	template<typename T>
-	std::ostream & operator << (std::ostream & stream, glm::detail::tvec3<T> const & vec)
+	std::ostream & operator << (std::ostream & stream, glm::detail::tvec3<T, P> const & vec)
 	{
 		stream << "<glm_vec3 ";
 		stream << "x=\"" << vec.x << "\" ";
@@ -74,7 +74,7 @@ namespace detail
 	}
 
 	template<typename T>
-	std::ostream & operator << (std::ostream & stream, glm::detail::tvec4<T> const & vec)
+	std::ostream & operator << (std::ostream & stream, glm::detail::tvec4<T, P> const & vec)
 	{
 		stream << "<glm_vec4 ";
 		stream << "x=\"" << vec.x << "\" ";
@@ -87,7 +87,7 @@ namespace detail
 	}
 
 	template<typename T>
-	std::ostream & operator << (std::ostream & stream, glm::detail::tmat2x2<T> const & mat)
+	std::ostream & operator << (std::ostream & stream, glm::detail::tmat2x2<T, P> const & mat)
 	{
 		stream << "<glm_mat2>" << std::endl;
 		stream << "<row ";
@@ -104,7 +104,7 @@ namespace detail
 	}
 
 	template<typename T>
-	std::ostream & operator << (std::ostream & stream, glm::detail::tmat3x3<T> const & mat)
+	std::ostream & operator << (std::ostream & stream, glm::detail::tmat3x3<T, P> const & mat)
 	{
 		stream << "<glm_mat3>" << std::endl;
 		stream << "<row ";
@@ -128,7 +128,7 @@ namespace detail
 	}
 
 	template<typename T>
-	std::ostream & operator << (std::ostream & stream, glm::detail::tmat4x4<T> const & mat)
+	std::ostream & operator << (std::ostream & stream, glm::detail::tmat4x4<T, P> const & mat)
 	{
 		stream << "<glm_mat4>" << std::endl;
 		stream << "<row ";

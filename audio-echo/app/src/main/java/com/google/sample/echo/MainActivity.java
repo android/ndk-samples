@@ -18,7 +18,9 @@ package com.google.sample.echo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioRecord;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +32,7 @@ public class MainActivity extends Activity {
     TextView status_view;
     String  nativeSampleRate;
     String  nativeSampleBufSize;
-    String  nativeSampleFormat;
+    boolean supportRecording;
     Boolean isPlaying;
 
     @Override
@@ -43,17 +45,20 @@ public class MainActivity extends Activity {
 
         // initialize native audio system
         updateNativeAudioUI();
-        createSLEngine(Integer.parseInt(nativeSampleRate), Integer.parseInt(nativeSampleBufSize));
+        if (supportRecording) {
+            createSLEngine(Integer.parseInt(nativeSampleRate), Integer.parseInt(nativeSampleBufSize));
+        }
         isPlaying = false;
     }
     @Override
     protected void onDestroy() {
-        if( isPlaying ) {
-            stopPlay();
+        if (supportRecording) {
+            if (isPlaying) {
+                stopPlay();
+            }
+            deleteSLEngine();
+            isPlaying = false;
         }
-        //shutdown();
-        deleteSLEngine();
-        isPlaying = false;
         super.onDestroy();
     }
 
@@ -80,8 +85,7 @@ public class MainActivity extends Activity {
     }
 
     public void startEcho(View view) {
-        status_view.setText("StartCapture Button Clicked\n");
-        if(isPlaying) {
+        if(!supportRecording || isPlaying) {
             return;
         }
         if(!createSLBufferQueueAudioPlayer()) {
@@ -99,7 +103,7 @@ public class MainActivity extends Activity {
     }
 
     public void stopEcho(View view) {
-        if(!isPlaying) {
+        if(!supportRecording || !isPlaying) {
             return;
         }
         stopPlay();  //this must include stopRecording()
@@ -117,12 +121,24 @@ public class MainActivity extends Activity {
         AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         nativeSampleRate  =  myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
         nativeSampleBufSize =myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
-        nativeSampleFormat ="";    //TODO: find a way to get the native audio format
+        int recBufSize = AudioRecord.getMinBufferSize(
+                Integer.parseInt(nativeSampleRate),
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+        supportRecording = true;
+        if (recBufSize == AudioRecord.ERROR ||
+            recBufSize == AudioRecord.ERROR_BAD_VALUE) {
+            supportRecording = false;
+        }
     }
     private void updateNativeAudioUI() {
+        if (!supportRecording) {
+            status_view.setText("Error: Audio recording is not supported");
+            return;
+        }
+
         status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
-                "nativeSampleBufSize = " + nativeSampleBufSize + "\n" +
-                "nativeSampleFormat  = " + nativeSampleFormat);
+                "nativeSampleBufSize = " + nativeSampleBufSize + "\n");
 
     }
     /*

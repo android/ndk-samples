@@ -15,9 +15,7 @@
  */
 #define BLURB_ABOUT \
     "ABOUT THIS GAME\n\n" \
-    "This is a sample game showing how\n" \
-    "to integrate the Google Play Games API\n" \
-    "in native code. This game is written in C++\n" \
+    "This game is written in C++\n" \
     "to showcase Android Studio NDK support, \n" \
     "Find out more about the Android Studio at:\n" \
     "http://tools.android.com"

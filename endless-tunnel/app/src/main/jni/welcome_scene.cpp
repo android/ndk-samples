@@ -15,13 +15,10 @@
  */
 #include "anim.hpp"
 #include "dialog_scene.hpp"
-#include "our_shader.hpp"
 #include "play_scene.hpp"
-#include "tex_quad.hpp"
 #include "welcome_scene.hpp"
 
 #include "blurb.inl"
-#include "gplus_texture.inl"
 #include "strings.inl"
 
 #define TITLE_POS center, 0.85f
@@ -44,25 +41,12 @@
 #define BUTTON_SIDEBUTTON_SIZE BUTTON_SIDEBUTTON_WIDTH, BUTTON_SIDEBUTTON_HEIGHT
 
 // position of each side button (the buttons on the sides of the PLAY button)
-#define BUTTON_STORY_POS 0.1 + 0.5f * BUTTON_SIDEBUTTON_WIDTH, 0.5f
+#define BUTTON_STORY_POS 0.1f + 0.5f * BUTTON_SIDEBUTTON_WIDTH, 0.5f
 #define BUTTON_ABOUT_POS center + 0.3f + 0.5f * BUTTON_SIDEBUTTON_WIDTH, 0.5f
 
 
-#define BUTTON_WHY_POS 0.8f, 0.1f
-#define BUTTON_WHY_SIZE 0.3f, 0.2f
-
-// position of the Google+ icon
-#define GPLUS_ICON_POS 0.23f, 0.1f
-#define GPLUS_ICON_SIZE 0.065f
-
 
 WelcomeScene::WelcomeScene() {
-    UiWidget *w;
-
-    mOurShader = NULL;
-    mGooglePlusTexture = NULL;
-    mGooglePlusTexQuad = NULL;
-
 }
 
 WelcomeScene::~WelcomeScene() {
@@ -95,41 +79,21 @@ void WelcomeScene::DoFrame() {
 
     // draw the UI
     UiScene::DoFrame();
-
-    // draw the Google+ icon, if needed
-    if (!mWaitScreen) {
-        mGooglePlusTexQuad->Render();
-    }
 }
 
 void WelcomeScene::UpdateWidgetStates() {
-    bool signedIn = true;
     // Build navigation
-    AddNav(mPlayButtonId, UI_DIR_RIGHT, mStoryButtonId);
-    AddNav(mPlayButtonId, UI_DIR_LEFT, -1);
+    AddNav(mPlayButtonId, UI_DIR_LEFT, mStoryButtonId);
+    AddNav(mPlayButtonId, UI_DIR_RIGHT, mAboutButtonId);
 
-    AddNav(mStoryButtonId, UI_DIR_LEFT, mPlayButtonId);
-    AddNav(mStoryButtonId, UI_DIR_DOWN, mAboutButtonId);
+    AddNav(mStoryButtonId, UI_DIR_RIGHT, mPlayButtonId);
 
     AddNav(mAboutButtonId, UI_DIR_LEFT, mPlayButtonId);
-    AddNav(mAboutButtonId, UI_DIR_UP, mStoryButtonId);
 
 }
 
 void WelcomeScene::OnStartGraphics() {
     UiScene::OnStartGraphics();
-
-    mOurShader = new OurShader();
-    mOurShader->Compile();
-
-    mGooglePlusTexture = new Texture();
-    mGooglePlusTexture->InitFromRawRGB(GPLUS_TEXTURE.width, GPLUS_TEXTURE.height, false,
-            GPLUS_TEXTURE.pixel_data);
-
-    mGooglePlusTexQuad = new TexQuad(mGooglePlusTexture, mOurShader, 0.0f, 0.0f, 1.0f, 1.0f);
-    mGooglePlusTexQuad->SetCenter(GPLUS_ICON_POS);
-    mGooglePlusTexQuad->SetWidth(GPLUS_ICON_SIZE);
-    mGooglePlusTexQuad->SetHeight(GPLUS_ICON_SIZE);
 }
 
 void WelcomeScene::OnCreateWidgets() {
@@ -169,8 +133,5 @@ void WelcomeScene::OnCreateWidgets() {
 
 void WelcomeScene::OnKillGraphics() {
     UiScene::OnKillGraphics();
-    CleanUp(&mGooglePlusTexQuad);
-    CleanUp(&mGooglePlusTexture);
-    CleanUp(&mOurShader);
 }
 

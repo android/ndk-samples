@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,12 +36,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef glm_gtx_color_space_YCoCg
-#define glm_gtx_color_space_YCoCg GLM_VERSION
+#define glm_gtx_color_space_YCoCg
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_color_space_YCoCg extension included")
 #endif
 
@@ -50,31 +50,31 @@ namespace glm
 	/// @addtogroup gtx_color_space_YCoCg
 	/// @{
 
-    /// Convert a color from RGB color space to YCoCg color space.
+	/// Convert a color from RGB color space to YCoCg color space.
 	/// @see gtx_color_space_YCoCg
-	template <typename valType> 
-	detail::tvec3<valType> rgb2YCoCg(
-		detail::tvec3<valType> const & rgbColor);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec3<T, P> rgb2YCoCg(
+		detail::tvec3<T, P> const & rgbColor);
 
-    /// Convert a color from YCoCg color space to RGB color space.
+	/// Convert a color from YCoCg color space to RGB color space.
 	/// @see gtx_color_space_YCoCg
-    template <typename valType> 
-	detail::tvec3<valType> YCoCg2rgb(
-		detail::tvec3<valType> const & YCoCgColor);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec3<T, P> YCoCg2rgb(
+		detail::tvec3<T, P> const & YCoCgColor);
 
-    /// Convert a color from RGB color space to YCoCgR color space.
+	/// Convert a color from RGB color space to YCoCgR color space.
 	/// @see "YCoCg-R: A Color Space with RGB Reversibility and Low Dynamic Range"
 	/// @see gtx_color_space_YCoCg
-	template <typename valType> 
-	detail::tvec3<valType> rgb2YCoCgR(
-		detail::tvec3<valType> const & rgbColor);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec3<T, P> rgb2YCoCgR(
+		detail::tvec3<T, P> const & rgbColor);
 
-    /// Convert a color from YCoCgR color space to RGB color space.
+	/// Convert a color from YCoCgR color space to RGB color space.
 	/// @see "YCoCg-R: A Color Space with RGB Reversibility and Low Dynamic Range"
 	/// @see gtx_color_space_YCoCg
-    template <typename valType> 
-	detail::tvec3<valType> YCoCgR2rgb(
-		detail::tvec3<valType> const & YCoCgColor);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tvec3<T, P> YCoCgR2rgb(
+		detail::tvec3<T, P> const & YCoCgColor);
 
 	/// @}
 }//namespace glm

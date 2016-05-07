@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,12 +36,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_integer
-#define GLM_GTX_integer GLM_VERSION
+#define GLM_GTX_integer
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_integer extension included")
 #endif
 
@@ -52,29 +52,29 @@ namespace glm
 
 	//! Returns x raised to the y power. 
 	//! From GLM_GTX_integer extension.
-	int pow(int x, int y);
+	GLM_FUNC_DECL int pow(int x, int y);
 
 	//! Returns the positive square root of x.
 	//! From GLM_GTX_integer extension.
-	int sqrt(int x);
+	GLM_FUNC_DECL int sqrt(int x);
 
 	//! Returns the log2 of x. Can be reliably using to compute mipmap count from the texture size.
 	//! From GLM_GTX_integer extension.
 	template <typename genIUType>
-	genIUType log2(genIUType const & x);
+	GLM_FUNC_DECL genIUType log2(genIUType x);
 
 	//! Returns the floor log2 of x.
 	//! From GLM_GTX_integer extension.
-	unsigned int floor_log2(unsigned int x);
+	GLM_FUNC_DECL unsigned int floor_log2(unsigned int x);
 
 	//! Modulus. Returns x - y * floor(x / y) for each component in x using the floating point value y.
 	//! From GLM_GTX_integer extension.
-	int mod(int x, int y);
+	GLM_FUNC_DECL int mod(int x, int y);
 
 	//! Return the factorial value of a number (!12 max, integer only)
 	//! From GLM_GTX_integer extension.
 	template <typename genType> 
-	genType factorial(genType const & x);
+	GLM_FUNC_DECL genType factorial(genType const & x);
 
 	//! 32bit signed integer. 
 	//! From GLM_GTX_integer extension.
@@ -82,19 +82,19 @@ namespace glm
 
 	//! Returns x raised to the y power.
 	//! From GLM_GTX_integer extension.
-	uint pow(uint x, uint y);
+	GLM_FUNC_DECL uint pow(uint x, uint y);
 
 	//! Returns the positive square root of x. 
 	//! From GLM_GTX_integer extension.
-	uint sqrt(uint x);
+	GLM_FUNC_DECL uint sqrt(uint x);
 
 	//! Modulus. Returns x - y * floor(x / y) for each component in x using the floating point value y.
 	//! From GLM_GTX_integer extension.
-	uint mod(uint x, uint y);
+	GLM_FUNC_DECL uint mod(uint x, uint y);
 
 	//! Returns the number of leading zeros.
 	//! From GLM_GTX_integer extension.
-	uint nlz(uint x);
+	GLM_FUNC_DECL uint nlz(uint x);
 
 	/// @}
 }//namespace glm

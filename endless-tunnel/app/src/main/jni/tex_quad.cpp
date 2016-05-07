@@ -72,9 +72,9 @@ void TexQuad::CreateGeom(float umin, float vmin, float umax, float vmax) {
     mGeom = new SimpleGeom(vbuf, ibuf);
 
     // clean up our temporary buffers
-    delete geom;
+    delete [] geom;
     geom = NULL;
-    delete indices;
+    delete [] indices;
     indices = NULL;
 }
 

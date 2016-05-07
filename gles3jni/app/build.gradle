@@ -1,1 +1,7 @@
-build-18.gradle
+// Compile for GL2, enable the following file
+// apply from: 'build-11.gradle'
+
+//Compile for GL3, enable this file
+apply from: 'build-18.gradle'
+
+

@@ -32,44 +32,44 @@ class Obstacle {
         int bonusRow, bonusCol;
         const static int STYLE_NULL = 0;  // a null obstacle (not displayed)
 
-        inline glm::vec3 GetBoxCenter(int gridCol, int gridRow, float posY) {
+        glm::vec3 GetBoxCenter(int gridCol, int gridRow, float posY) {
             return glm::vec3(-TUNNEL_HALF_W + (gridCol + 0.5f) * OBS_CELL_SIZE, posY,
                     -TUNNEL_HALF_H + (gridRow + 0.5f) * OBS_CELL_SIZE);
         }
 
-        inline glm::vec3 GetBoxSize(int gridCol, int gridRow) {
+        glm::vec3 GetBoxSize(int gridCol, int gridRow) {
             return glm::vec3(OBS_BOX_SIZE, OBS_BOX_SIZE, OBS_BOX_SIZE);
         }
 
-        inline int GetRowAt(float z) {
+        int GetRowAt(float z) {
             return Clamp((int)floor((z + TUNNEL_HALF_H) / OBS_CELL_SIZE), 0, OBS_GRID_SIZE - 1);
         }
 
-        inline int GetColAt(float x) {
+        int GetColAt(float x) {
             return Clamp((int)floor((x + TUNNEL_HALF_W) / OBS_CELL_SIZE), 0, OBS_GRID_SIZE - 1);
         }
 
-        inline float GetMinY(float posY) { return posY - OBS_BOX_SIZE * 0.5f; }
-        inline float GetMaxY(float posY) { return posY + OBS_BOX_SIZE * 0.5f; }
+        float GetMinY(float posY) { return posY - OBS_BOX_SIZE * 0.5f; }
+        float GetMaxY(float posY) { return posY + OBS_BOX_SIZE * 0.5f; }
 
-        inline void Reset() {
+        void Reset() {
             style = STYLE_NULL;
             bonusRow = bonusCol = -1;
             memset(grid, 0, sizeof(grid));
         }
 
-        inline void SetBonus(int col, int row) {
+        void SetBonus(int col, int row) {
             bonusCol = col;
             bonusRow = row;
         }
 
         void PutRandomBonus();
 
-        inline void DeleteBonus() {
+        void DeleteBonus() {
             bonusCol = bonusRow = -1;
         }
 
-        inline bool HasBonus() {
+        bool HasBonus() {
             return bonusRow >= 0 && bonusRow < OBS_GRID_SIZE &&
                     bonusCol >= 0 && bonusCol < OBS_GRID_SIZE &&
                     !grid[bonusCol][bonusRow];

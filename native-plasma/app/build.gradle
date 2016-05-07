@@ -3,44 +3,33 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.0"
+        buildToolsVersion = '23.0.2'
 
-        defaultConfig.with {
-            applicationId="com.example.native_plasma"
+        defaultConfig {
+            applicationId='com.example.native_plasma'
             minSdkVersion.apiLevel   = 9
             targetSdkVersion.apiLevel = 23
         }
-    }
-
-    compileOptions.with {
-        sourceCompatibility=JavaVersion.VERSION_1_7
-        targetCompatibility=JavaVersion.VERSION_1_7
-    }
-
-    android.ndk {
-        moduleName = "native-plasma"
-        CFlags += "-I${file("src/main/jni/native_app_glue")}".toString()
-        ldLibs += ["m", "log","android"]
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles  += file('proguard-rules.txt')
+        ndk {
+            platformVersion = 9
+            moduleName = 'native-plasma'
+            toolchain = 'clang'
+            ldLibs.addAll(['m', 'log','android'])
         }
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                }
+            }
         }
-        create ("arm8") {
-            ndk.abiFilters += "arm64-v8a"
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-        create ("x86-32") {
-            ndk.abiFilters += "x86"
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        create("fat")
     }
 }

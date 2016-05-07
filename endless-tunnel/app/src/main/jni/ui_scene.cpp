@@ -57,6 +57,13 @@ UiScene::~UiScene() {
     mWidgetCount = 0;
 }
 
+UiWidget* UiScene::NewWidget() {
+    MY_ASSERT(mWidgetCount + 1 < MAX_WIDGETS);
+    UiWidget *widget = new UiWidget(mWidgetCount);
+    mWidgets[mWidgetCount++] = widget;
+    return widget;
+}
+
 void UiScene::OnStartGraphics() {
     mTrivialShader = new TrivialShader();
     mTrivialShader->Compile();

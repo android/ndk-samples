@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -38,12 +38,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_fast_square_root
-#define GLM_GTX_fast_square_root GLM_VERSION
+#define GLM_GTX_fast_square_root
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_fast_square_root extension included")
 #endif
 
@@ -55,27 +55,32 @@ namespace glm
 	//! Faster than the common sqrt function but less accurate.
 	//! From GLM_GTX_fast_square_root extension.
 	template <typename genType> 
-	genType fastSqrt(genType const & x);
+	GLM_FUNC_DECL genType fastSqrt(genType const & x);
 
 	//! Faster than the common inversesqrt function but less accurate.
 	//! From GLM_GTX_fast_square_root extension.
 	template <typename genType> 
-	genType fastInverseSqrt(genType const & x);
-		
+	GLM_FUNC_DECL genType fastInverseSqrt(genType const & x);
+
+	//! Faster than the common inversesqrt function but less accurate.
+	//! From GLM_GTX_fast_square_root extension.
+	template <typename T, precision P, template <typename, precision> class vecType>
+	GLM_FUNC_DECL vecType<T, P> fastInverseSqrt(vecType<T, P> const & x);
+
 	//! Faster than the common length function but less accurate.
 	//! From GLM_GTX_fast_square_root extension.
 	template <typename genType> 
-	typename genType::value_type fastLength(genType const & x);
+	GLM_FUNC_DECL typename genType::value_type fastLength(genType const & x);
 
 	//! Faster than the common distance function but less accurate.
 	//! From GLM_GTX_fast_square_root extension.
 	template <typename genType> 
-	typename genType::value_type fastDistance(genType const & x, genType const & y);
+	GLM_FUNC_DECL typename genType::value_type fastDistance(genType const & x, genType const & y);
 
 	//! Faster than the common normalize function but less accurate.
 	//! From GLM_GTX_fast_square_root extension.
 	template <typename genType> 
-	genType fastNormalize(genType const & x);
+	GLM_FUNC_DECL genType fastNormalize(genType const & x);
 
 	/// @}
 }// namespace glm

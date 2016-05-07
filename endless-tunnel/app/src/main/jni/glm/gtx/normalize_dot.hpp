@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -37,13 +37,13 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_normalize_dot
-#define GLM_GTX_normalize_dot GLM_VERSION
+#define GLM_GTX_normalize_dot
 
 // Dependency:
 #include "../glm.hpp"
 #include "../gtx/fast_square_root.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_normalize_dot extension included")
 #endif
 
@@ -56,7 +56,7 @@ namespace glm
 	//! It's faster that dot(normalize(x), normalize(y)).
 	//! From GLM_GTX_normalize_dot extension.
 	template <typename genType> 
-	typename genType::value_type normalizeDot(
+	GLM_FUNC_DECL typename genType::value_type normalizeDot(
 		genType const & x, 
 		genType const & y);
 
@@ -64,7 +64,7 @@ namespace glm
 	//! Faster that dot(fastNormalize(x), fastNormalize(y)).
 	//! From GLM_GTX_normalize_dot extension.
 	template <typename genType> 
-	typename genType::value_type fastNormalizeDot(
+	GLM_FUNC_DECL typename genType::value_type fastNormalizeDot(
 		genType const & x, 
 		genType const & y);
 

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,12 +36,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_log_base
-#define GLM_GTX_log_base GLM_VERSION
+#define GLM_GTX_log_base
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_log_base extension included")
 #endif
 
@@ -53,7 +53,7 @@ namespace glm
 	//! Logarithm for any base.
 	//! From GLM_GTX_log_base.
 	template <typename genType> 
-	genType log(
+	GLM_FUNC_DECL genType log(
 		genType const & x, 
 		genType const & base);
 

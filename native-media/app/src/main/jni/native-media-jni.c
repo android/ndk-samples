@@ -40,6 +40,8 @@
 
 // for native window JNI
 #include <android/native_window_jni.h>
+#include <android/asset_manager_jni.h>
+#include "android_fopen.h"
 
 // engine interfaces
 static XAObjectItf engineObject = NULL;
@@ -327,16 +329,17 @@ static jboolean enqueueInitialBuffers(jboolean discontinuity)
 
 // create streaming media player
 jboolean Java_com_example_nativemedia_NativeMedia_createStreamingMediaPlayer(JNIEnv* env,
-        jclass clazz, jstring filename)
+        jclass clazz, jobject assetMgr, jstring filename)
 {
     XAresult res;
 
+    android_fopen_set_asset_manager(AAssetManager_fromJava(env, assetMgr));
     // convert Java string to UTF-8
     const char *utf8 = (*env)->GetStringUTFChars(env, filename, NULL);
     assert(NULL != utf8);
 
     // open the file to play
-    file = fopen(utf8, "rb");
+    file = android_fopen(utf8, "rb");
     if (file == NULL) {
         return JNI_FALSE;
     }

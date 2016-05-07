@@ -379,6 +379,7 @@ struct engine {
     int animating;
 };
 
+static int64_t start_ms;
 static void engine_draw_frame(struct engine* engine) {
     if (engine->app->window == NULL) {
         // No window.
@@ -393,10 +394,10 @@ static void engine_draw_frame(struct engine* engine) {
 
     stats_startFrame(&engine->stats);
 
-    struct timespec t;
-    t.tv_sec = t.tv_nsec = 0;
-    clock_gettime(CLOCK_MONOTONIC, &t);
-    int64_t time_ms = (((int64_t)t.tv_sec)*1000000000LL + t.tv_nsec)/1000000;
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    int64_t time_ms = (((int64_t)now.tv_sec)*1000000000LL + now.tv_nsec)/1000000;
+    time_ms -= start_ms;
 
     /* Now fill the values with a nice little plasma */
     fill_plasma(&buffer, time_ms);
@@ -426,15 +427,26 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
 }
 
 static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
+    static int32_t format = WINDOW_FORMAT_RGB_565;
     struct engine* engine = (struct engine*)app->userData;
     switch (cmd) {
         case APP_CMD_INIT_WINDOW:
             if (engine->app->window != NULL) {
+                // fill_plasma() assumes 565 format, get it here
+                format = ANativeWindow_getFormat(app->window);
+                ANativeWindow_setBuffersGeometry(app->window,
+                              ANativeWindow_getWidth(app->window),
+                              ANativeWindow_getHeight(app->window),
+                              WINDOW_FORMAT_RGB_565);
                 engine_draw_frame(engine);
             }
             break;
         case APP_CMD_TERM_WINDOW:
             engine_term_display(engine);
+            ANativeWindow_setBuffersGeometry(app->window,
+                          ANativeWindow_getWidth(app->window),
+                          ANativeWindow_getHeight(app->window),
+                          format);
             break;
         case APP_CMD_LOST_FOCUS:
             engine->animating = 0;
@@ -461,6 +473,10 @@ void android_main(struct android_app* state) {
         init_tables();
         init = 1;
     }
+
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    start_ms = (((int64_t)now.tv_sec)*1000000000LL + now.tv_nsec)/1000000;
 
     stats_init(&engine.stats);
 

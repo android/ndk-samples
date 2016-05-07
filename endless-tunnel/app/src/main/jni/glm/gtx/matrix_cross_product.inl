@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2005-12-21
 // Updated : 2005-12-21
@@ -9,13 +9,13 @@
 
 namespace glm
 {
-	template <typename T> 
-	GLM_FUNC_QUALIFIER detail::tmat3x3<T> matrixCross3
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tmat3x3<T, P> matrixCross3
 	(
-		detail::tvec3<T> const & x
+		detail::tvec3<T, P> const & x
 	)
 	{
-		detail::tmat3x3<T> Result(T(0));
+		detail::tmat3x3<T, P> Result(T(0));
 		Result[0][1] = x.z;
 		Result[1][0] = -x.z;
 		Result[0][2] = -x.y;
@@ -25,13 +25,13 @@ namespace glm
 		return Result;
 	}
 
-	template <typename T> 
-	GLM_FUNC_QUALIFIER detail::tmat4x4<T> matrixCross4
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tmat4x4<T, P> matrixCross4
 	(
-		detail::tvec3<T> const & x
+		detail::tvec3<T, P> const & x
 	)
 	{
-		detail::tmat4x4<T> Result(T(0));
+		detail::tmat4x4<T, P> Result(T(0));
 		Result[0][1] = x.z;
 		Result[1][0] = -x.z;
 		Result[0][2] = -x.y;

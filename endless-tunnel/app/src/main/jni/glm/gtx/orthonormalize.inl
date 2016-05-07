@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2005-12-21
 // Updated : 2005-12-21
@@ -9,13 +9,13 @@
 
 namespace glm
 {
-	template <typename T>
-	GLM_FUNC_QUALIFIER detail::tmat3x3<T> orthonormalize
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tmat3x3<T, P> orthonormalize
 	(
-		const detail::tmat3x3<T>& m
+		const detail::tmat3x3<T, P>& m
 	)
 	{
-		detail::tmat3x3<T> r = m;
+		detail::tmat3x3<T, P> r = m;
 
 		r[0] = normalize(r[0]);
 
@@ -31,11 +31,11 @@ namespace glm
 		return r;
 	}
 
-	template <typename T> 
-	GLM_FUNC_QUALIFIER detail::tvec3<T> orthonormalize
+	template <typename T, precision P> 
+	GLM_FUNC_QUALIFIER detail::tvec3<T, P> orthonormalize
 	(
-		const detail::tvec3<T>& x, 
-		const detail::tvec3<T>& y
+		const detail::tvec3<T, P>& x, 
+		const detail::tvec3<T, P>& y
 	)
 	{
 		return normalize(x - y * dot(y, x));
