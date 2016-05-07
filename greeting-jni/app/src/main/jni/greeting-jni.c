@@ -63,7 +63,7 @@ Java_com_example_greetingjni_Greeter_stringFromJNI( JNIEnv* env,
     jstring helloWorld = ". Greetings from JNI !  Compiled with ABI " ABI ".";
     char *concat = malloc(strlen(helloWorld) + strlen(cName) + 1);
 
-    stpcpy(concat, cName);
+    strcpy(concat, cName);
     strcat(concat, helloWorld);
 
     jstring greeting = (*env) -> NewStringUTF(env, concat);
