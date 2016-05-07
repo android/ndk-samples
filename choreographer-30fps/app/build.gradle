@@ -1,0 +1,63 @@
+apply plugin: 'com.android.model.application'
+
+// Retrieve ndk path to config cpufeatures src code into this project
+// native_app_glue is configured as dependent module, so we avoid confusing
+// NOTICE/repo.prop files get displayed multiple times inside IDE
+def ndkDir = System.getenv("ANDROID_NDK_HOME")
+def propertiesFile = project.rootProject.file('local.properties')
+if (propertiesFile.exists()) {
+    Properties properties = new Properties()
+    properties.load(propertiesFile.newDataInputStream())
+    ndkDir = properties.getProperty('ndk.dir')
+}
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            applicationId = 'com.sample.choreographer'
+            minSdkVersion.apiLevel = 16
+            targetSdkVersion.apiLevel = 22
+        }
+        ndk {
+            platformVersion = 21
+            moduleName = 'ChoreographerNativeActivity'
+            toolchain = "clang"
+            // this sample uses std::mutex, which will not compile with ndk-r12 with gnustl_static
+            stl       = 'c++_static'
+            cppFlags.addAll(['-I' + file('src/main/jni/ndk_helper')])
+            cppFlags.addAll(['-std=c++11', '-Wall',
+                             '-fno-exceptions', '-fno-rtti'])
+            ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
+        }
+        // Turn on hard float support in armeabi-v7a
+        abis {
+            create('armeabi-v7a') {
+                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1',
+                                 '-mfloat-abi=hard'])
+                ldLibs.add('m_hard')
+                ldFlags.add('-Wl,--no-warn-mismatch')
+            }
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                    source {
+                        srcDirs 'src/main/jni'
+                    }
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
+        }
+    }
+}

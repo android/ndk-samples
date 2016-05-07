@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 //////////////////////////////////////////////////////////////////////////////////
 // Created : 2007-09-28
 // Updated : 2008-10-07
@@ -22,11 +22,11 @@ namespace glm
 			glm::dot(y, y));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER valType normalizeDot
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T normalizeDot
 	(
-		detail::tvec2<valType> const & x, 
-		detail::tvec2<valType> const & y
+		detail::tvec2<T, P> const & x, 
+		detail::tvec2<T, P> const & y
 	)
 	{
 		return 
@@ -35,11 +35,11 @@ namespace glm
 			glm::dot(y, y));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER valType normalizeDot
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T normalizeDot
 	(
-		detail::tvec3<valType> const & x, 
-		detail::tvec3<valType> const & y
+		detail::tvec3<T, P> const & x, 
+		detail::tvec3<T, P> const & y
 	)
 	{
 		return 
@@ -48,11 +48,11 @@ namespace glm
 			glm::dot(y, y));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER valType normalizeDot
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T normalizeDot
 	(
-		detail::tvec4<valType> const & x, 
-		detail::tvec4<valType> const & y
+		detail::tvec4<T, P> const & x, 
+		detail::tvec4<T, P> const & y
 	)
 	{
 		return 
@@ -74,11 +74,11 @@ namespace glm
 			glm::dot(y, y));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER valType fastNormalizeDot
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T fastNormalizeDot
 	(
-		detail::tvec2<valType> const & x, 
-		detail::tvec2<valType> const & y
+		detail::tvec2<T, P> const & x, 
+		detail::tvec2<T, P> const & y
 	)
 	{
 		return 
@@ -87,11 +87,11 @@ namespace glm
 			glm::dot(y, y));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER valType fastNormalizeDot
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T fastNormalizeDot
 	(
-		detail::tvec3<valType> const & x, 
-		detail::tvec3<valType> const & y
+		detail::tvec3<T, P> const & x, 
+		detail::tvec3<T, P> const & y
 	)
 	{
 		return 
@@ -100,11 +100,11 @@ namespace glm
 			glm::dot(y, y));
 	}
 
-	template <typename valType> 
-	GLM_FUNC_QUALIFIER valType fastNormalizeDot
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T fastNormalizeDot
 	(
-		detail::tvec4<valType> const & x, 
-		detail::tvec4<valType> const & y
+		detail::tvec4<T, P> const & x, 
+		detail::tvec4<T, P> const & y
 	)
 	{
 		return 

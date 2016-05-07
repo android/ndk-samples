@@ -3,45 +3,28 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.0"
+        buildToolsVersion = '23.0.2'
 
         defaultConfig.with {
-            applicationId = "com.example.SanAngeles"
+            applicationId = 'com.example.SanAngeles'
             minSdkVersion.apiLevel    = 4
             targetSdkVersion.apiLevel = 23
         }
-    }
+        ndk {
+            platformVersion = 9
+            moduleName = 'sanangeles'
+            toolchain = 'clang'
+            CFlags.addAll(['-DANDROID_NDK', '-DDISABLE_IMPORTGL'])
+            CFlags.addAll(['-Wall', '-Werror'])
 
-    compileOptions.with {
-        sourceCompatibility=JavaVersion.VERSION_1_7
-        targetCompatibility=JavaVersion.VERSION_1_7
-    }
-
-    android.ndk {
-        moduleName = "sanangeles"
-        CFlags += "-DANDROID_NDK"
-        CFlags += "-DDISABLE_IMPORTGL"
-        ldLibs += ["GLESv1_CM", "dl", "log"]
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled=false
-            proguardFiles += file('proguard-rules.txt')
+            ldLibs.addAll(['android', 'log', 'dl', 'GLESv1_CM'])
+            abiFilters.addAll(['armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'])
         }
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
+        buildTypes {
+            release {
+                minifyEnabled=false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-        create ("arm8") {
-            ndk.abiFilters += "arm64-v8a"
-        }
-        create ("x86-32") {
-            ndk.abiFilters += "x86"
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        create("fat")
     }
 }

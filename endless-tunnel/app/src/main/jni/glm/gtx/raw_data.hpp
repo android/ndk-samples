@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,13 +36,13 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_raw_data
-#define GLM_GTX_raw_data GLM_VERSION
+#define GLM_GTX_raw_data
 
-// Dependency:
-#include "../glm.hpp"
-#include "../gtc/type_precision.hpp"
+// Dependencies
+#include "../detail/setup.hpp"
+#include "../detail/type_int.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_raw_data extension included")
 #endif
 
@@ -53,19 +53,19 @@ namespace glm
 
 	//! Type for byte numbers. 
 	//! From GLM_GTX_raw_data extension.
-	typedef uint8		byte;
+	typedef detail::uint8		byte;
 
 	//! Type for word numbers. 
 	//! From GLM_GTX_raw_data extension.
-	typedef uint16		word;
+	typedef detail::uint16		word;
 
 	//! Type for dword numbers. 
 	//! From GLM_GTX_raw_data extension.
-	typedef uint32		dword;
+	typedef detail::uint32		dword;
 
 	//! Type for qword numbers. 
 	//! From GLM_GTX_raw_data extension.
-	typedef uint64		qword;
+	typedef detail::uint64		qword;
 
 	/// @}
 }// namespace glm

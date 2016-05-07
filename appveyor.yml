@@ -11,8 +11,12 @@ environment:
   ANDROID_NDK_HOME: C:\android-ndk-r10e
   ANDROID_HOME: C:\android-sdk-windows
 install:
-  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter android-23,platform-tools,tools,build-tools-23.0.0,extra-google-m2repository,extra-android-m2repository
+  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter android-23
+  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter platform-tools
+  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter tools
+  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter build-tools-23.0.2
+  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter extra-google-m2repository
+  - echo y | C:\android-sdk-windows\tools\android.bat update sdk --no-ui --all --filter extra-android-m2repository
 build_script:
-  - cd builder
-  - gradlew test
+  - cd c:\projects\android-ndk\builder && gradlew test
 test: off

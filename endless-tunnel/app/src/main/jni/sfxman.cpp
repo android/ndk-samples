@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <random>
 #include "sfxman.hpp"
 
 #define SAMPLES_PER_SEC 8000
@@ -51,7 +52,6 @@ SfxMan::SfxMan() {
     SLObjectItf bqPlayerObject = NULL;
     SLPlayItf bqPlayerPlay;
     SLEffectSendItf bqPlayerEffectSend;
-    SLMuteSoloItf bqPlayerMuteSolo;
     SLVolumeItf bqPlayerVolume;
     const SLEnvironmentalReverbSettings reverbSettings =
             SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;

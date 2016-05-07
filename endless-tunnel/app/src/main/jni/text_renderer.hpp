@@ -37,30 +37,30 @@ class TextRenderer {
         TextRenderer* SetMatrix(glm::mat4 mat);
         TextRenderer* SetFontScale(float size);
         TextRenderer* RenderText(const char *str, float centerX, float centerY);
-        inline TextRenderer* SetColor(float r, float g, float b) {
+        void SetColor(float r, float g, float b) {
             mColor[0] = r, mColor[1] = g, mColor[2] = b;
         }
-        inline TextRenderer* SetColor(const float *c) {
+        void SetColor(const float *c) {
             mColor[0] = c[0], mColor[1] = c[1], mColor[2] = c[2];
         }
-        inline TextRenderer* ResetColor() {
+        void ResetColor() {
             SetColor(1.0f, 1.0f, 1.0f);
         }
 
-        inline TextRenderer* ResetMatrix() {
+        TextRenderer* ResetMatrix() {
             return SetMatrix(glm::mat4(1.0f));
         }
 
         static void MeasureText(const char *str, float fontScale,
             float *outWidth, float *outHeight);
 
-        static inline float MeasureTextWidth(const char *str, float fontScale) {
+        static float MeasureTextWidth(const char *str, float fontScale) {
             float w;
             TextRenderer::MeasureText(str, fontScale, &w, NULL);
             return w;
         }
 
-        static inline float MeasureTextHeight(const char *str, float fontScale) {
+        static float MeasureTextHeight(const char *str, float fontScale) {
             float h;
             TextRenderer::MeasureText(str, fontScale, NULL, &h);
             return h;

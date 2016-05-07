@@ -120,7 +120,7 @@ bool DialogScene::OnBackKeyPressed() {
 void DialogScene::OnButtonClicked(int id) {
     SceneManager *mgr = SceneManager::GetInstance();
 
-    int action = -1;
+    int action;
     if (id == mLeftButtonId) {
         action = mLeftButtonAction;
     } else if (id == mRightButtonId) {
@@ -144,6 +144,9 @@ void DialogScene::OnButtonClicked(int id) {
             break;
         case ACTION_SIGN_OUT:
             mgr->RequestNewScene(new WelcomeScene());
+            break;
+        default:
+            // do nothing.
             break;
     }
 }

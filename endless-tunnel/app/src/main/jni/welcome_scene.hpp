@@ -27,7 +27,6 @@ class WelcomeScene : public UiScene {
     protected:
         // IDs for our buttons:
         int mPlayButtonId;
-//        int mWhyButtonId;
         int mStoryButtonId;
         int mAboutButtonId;
 
@@ -35,10 +34,6 @@ class WelcomeScene : public UiScene {
         virtual void OnButtonClicked(int id);
 
         void UpdateWidgetStates();
-
-        OurShader *mOurShader;
-        Texture *mGooglePlusTexture;
-        TexQuad *mGooglePlusTexQuad;
 
     public:
         WelcomeScene();

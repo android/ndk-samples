@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 #include "ascii_to_geom.hpp"
-#include "engine.hpp"
 
-//#define GEOM_DEBUG LOGD
-#define GEOM_DEBUG
+#define GEOM_DEBUG LOGD
+//#define GEOM_DEBUG
 
 SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     // figure out width and height
@@ -55,7 +54,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
         } else {
             MY_ASSERT(r >= 0 && r < rows);
             MY_ASSERT(c >= 0 && c < cols);
-            v[r][c++] = *p;
+            v[r][c++] = static_cast<unsigned int>(*p);
         }
     }
 
@@ -83,7 +82,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     int vertices = 0, indices = 0;
     for (r = 0; r < rows; r++) {
         for (c = 0; c < cols; c++) {
-            char t = v[r][c];
+            char t = static_cast<char>(v[r][c]);
             if (t == '+') {
                 vertices++;
             } else if (t == '-' || t == '|' || t == '`' || t == '/') {
@@ -112,7 +111,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     // process vertices
     for (r = 0; r < rows; r++) {
         for (c = 0; c < cols; c++) {
-            char t = v[r][c];
+            unsigned t = v[r][c];
             if (t == '+') {
                 GEOM_DEBUG("Found vertex at %d,%d, index %d", r, c, vertices);
                 verticesArray[vertices * 7] = left + c * scale;
@@ -123,14 +122,13 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
                 verticesArray[vertices * 7 + 5] = 1.0f; // blue
                 verticesArray[vertices * 7 + 6] = 1.0f; // alpha
                 // mark which vertex this is
-                v[r][c] = VERTEX_BIT | vertices;
+                v[r][c] = static_cast<unsigned int>(VERTEX_BIT | vertices);
                 vertices++;
             }
         }
     }
 
     // process lines
-    int start, end;
     int col_dir, row_dir;
     int start_c, start_r, end_c, end_r;
 
@@ -187,8 +185,8 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
             GEOM_DEBUG("End vertex is at %d,%d, index %d", end_r, end_c,
                     v[end_r][end_c] & VERTEX_INDEX_MASK);
 
-            indicesArray[indices] = v[start_r][start_c] & VERTEX_INDEX_MASK;
-            indicesArray[indices + 1] = v[end_r][end_c] & VERTEX_INDEX_MASK;
+            indicesArray[indices] = static_cast<GLushort>(v[start_r][start_c] & VERTEX_INDEX_MASK);
+            indicesArray[indices + 1] = static_cast<GLushort>(v[end_r][end_c] & VERTEX_INDEX_MASK);
             indices += 2;
             GEOM_DEBUG("We now have %d indices.", indices);
         }
@@ -199,7 +197,7 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     for (r = 0; r < rows; r++) {
         delete v[r];
     }
-    delete v;
+    delete [] v;
 
     for (int i = 0; i < indices; i++) {
         GEOM_DEBUG("indices[%d] = %d\n", i, indicesArray[i]);
@@ -220,9 +218,9 @@ SimpleGeom* AsciiArtToGeom(const char *art, float scale) {
     out->vbuf->SetColorsOffset(VERTICES_COLOR_OFFSET);
 
     // clean up our work buffers
-    delete verticesArray;
+    delete [] verticesArray;
     verticesArray = NULL;
-    delete indicesArray;
+    delete [] indicesArray;
     indicesArray = NULL;
 
     LOGD("Created geometry from ascii art: %d vertices, %d indices", vertices, indices);

@@ -3,53 +3,27 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.0"
+        buildToolsVersion = '23.0.2'
 
-        defaultConfig.with {
-            applicationId = "com.example.nativecodec"
+        defaultConfig {
+            applicationId = 'com.example.nativecodec'
             minSdkVersion.apiLevel    = 21
             targetSdkVersion.apiLevel = 22
         }
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles  += file('proguard-rules.txt')
+        ndk {
+            platformVersion = 21
+            moduleName = 'native-codec-jni'
+            toolchain = 'clang'
+            stl        = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11','-Wall', '-UNDEBUG'])
+            ldLibs.addAll(['android', 'log',        // For android and log_print
+                          'OpenMAXAL', 'mediandk']) //for native media
         }
-    }
-
-    compileOptions.with {
-        sourceCompatibility=JavaVersion.VERSION_1_7
-        targetCompatibility=JavaVersion.VERSION_1_7
-    }
-
-    android.ndk {
-        moduleName = "native-codec-jni"
-        cppFlags += "-UNDEBUG"
-
-        // for native multimedia
-        ldLibs   += ["OpenMAXAL", "mediandk"]
-        // for logging
-        ldLibs  += "log"
-        // for native windows
-        ldLibs  += "android"
-
-        stl     = "stlport_static"
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-        create ("arm8") {
-            ndk.abiFilters += "arm64-v8a"
-        }
-        create ("x86-32") {
-            ndk.abiFilters += "x86"
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        // build one including all productFlavors
-        create("fat")
     }
 }

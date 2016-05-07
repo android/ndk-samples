@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 #include "anim.hpp"
-#include "engine.hpp"
-#include "shape_renderer.hpp"
 #include "util.hpp"
 
 void RenderBackgroundAnimation(ShapeRenderer *r) {

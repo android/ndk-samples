@@ -190,18 +190,18 @@ class PlayScene : public Scene {
         bool mCheckpointSignPending;
 
         // get current score
-        inline int GetScore() {
+        int GetScore() {
             return (int)(mEncryptedScore ^ 0x600673);
         }
 
         // set current score
-        inline void SetScore(int s) {
+        void SetScore(int s) {
             mFakeScore = (unsigned)s;
             mEncryptedScore = mFakeScore ^ 0x600673;
         }
 
         // add to current score
-        inline void AddScore(int s) {
+        void AddScore(int s) {
             SetScore(GetScore() + s);
         }
 
@@ -229,18 +229,18 @@ class PlayScene : public Scene {
         void DetectCollisions(float previousY);
 
         // shows a text sign on the middle of the screen
-        inline void ShowSign(const char* sign, float timeout) {
+        void ShowSign(const char* sign, float timeout) {
             mSignTimeLeft = timeout;
             mSignText = sign;
             mSignExpires = true;
             mSignStartTime = Clock();
         }
-        inline void ShowSign(const char* sign) {
+        void ShowSign(const char* sign) {
             mSignText = sign;
             mSignExpires = false;
             mSignStartTime = Clock();
         }
-        inline Obstacle* GetObstacleAt(int i) {
+        Obstacle* GetObstacleAt(int i) {
             return &mObstacleCircBuf[(mFirstObstacle + i) % MAX_OBS];
         }
 
@@ -264,7 +264,7 @@ class PlayScene : public Scene {
 
         // returns whether or not this level is a "checkpoint level" (that is,
         // where progress should be saved)
-        inline bool IsCheckpointLevel() {
+        bool IsCheckpointLevel() {
             return 0 == mDifficulty % LEVELS_PER_CHECKPOINT;
         }
 

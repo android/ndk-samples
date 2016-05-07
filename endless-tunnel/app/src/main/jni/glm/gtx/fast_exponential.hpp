@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -37,13 +37,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_fast_exponential
-#define GLM_GTX_fast_exponential GLM_VERSION
+#define GLM_GTX_fast_exponential
 
 // Dependency:
 #include "../glm.hpp"
-#include "../gtc/half_float.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_fast_exponential extension included")
 #endif
 
@@ -55,41 +54,41 @@ namespace glm
 	/// Faster than the common pow function but less accurate.
 	/// @see gtx_fast_exponential
 	template <typename genType> 
-	genType fastPow(
+	GLM_FUNC_DECL genType fastPow(
 		genType const & x, 
 		genType const & y);
 
 	/// Faster than the common pow function but less accurate.
 	/// @see gtx_fast_exponential
 	template <typename genTypeT, typename genTypeU> 
-	genTypeT fastPow(
+	GLM_FUNC_DECL genTypeT fastPow(
 		genTypeT const & x, 
 		genTypeU const & y);
 		
 	/// Faster than the common exp function but less accurate.
 	/// @see gtx_fast_exponential
 	template <typename T> 
-	T fastExp(const T& x);
+	GLM_FUNC_DECL T fastExp(const T& x);
 		
 	/// Faster than the common log function but less accurate.
 	/// @see gtx_fast_exponential
 	template <typename T> 
-	T fastLog(const T& x);
+	GLM_FUNC_DECL T fastLog(const T& x);
 
 	/// Faster than the common exp2 function but less accurate.
 	/// @see gtx_fast_exponential
 	template <typename T> 
-	T fastExp2(const T& x);
+	GLM_FUNC_DECL T fastExp2(const T& x);
 		
 	/// Faster than the common log2 function but less accurate.
 	/// @see gtx_fast_exponential
 	template <typename T> 
-	T fastLog2(const T& x);
+	GLM_FUNC_DECL T fastLog2(const T& x);
 
 	/// Faster than the common ln function but less accurate.
 	/// @see gtx_fast_exponential
 	template <typename T> 
-	T fastLn(const T& x);
+	GLM_FUNC_DECL T fastLn(const T& x);
 
 	/// @}
 }//namespace glm

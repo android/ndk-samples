@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -36,12 +36,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_optimum_pow
-#define GLM_GTX_optimum_pow GLM_VERSION
+#define GLM_GTX_optimum_pow
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_optimum_pow extension included")
 #endif
 
@@ -53,34 +53,37 @@ namespace gtx
 
 	//! Returns x raised to the power of 2.
 	//! From GLM_GTX_optimum_pow extension.
-    template <typename genType> 
-	genType pow2(const genType& x);
+	template <typename genType>
+	GLM_FUNC_DECL genType pow2(const genType& x);
 
 	//! Returns x raised to the power of 3.
 	//! From GLM_GTX_optimum_pow extension.
-    template <typename genType> 
-	genType pow3(const genType& x);
+	template <typename genType>
+	GLM_FUNC_DECL genType pow3(const genType& x);
 
 	//! Returns x raised to the power of 4.
 	//! From GLM_GTX_optimum_pow extension.
-	template <typename genType> 
-	genType pow4(const genType& x);
-        
-	//! Checks if the parameter is a power of 2 number. 
+	template <typename genType>
+	GLM_FUNC_DECL genType pow4(const genType& x);
+
+	//! Checks if the parameter is a power of 2 number.
 	//! From GLM_GTX_optimum_pow extension.
-    bool powOfTwo(int num);
+	GLM_FUNC_DECL bool powOfTwo(int num);
 
 	//! Checks to determine if the parameter component are power of 2 numbers.
 	//! From GLM_GTX_optimum_pow extension.
-    detail::tvec2<bool> powOfTwo(const detail::tvec2<int>& x);
+	template <precision P>
+	GLM_FUNC_DECL detail::tvec2<bool, P> powOfTwo(detail::tvec2<int, P> const & x);
 
-	//! Checks to determine if the parameter component are power of 2 numbers. 
+	//! Checks to determine if the parameter component are power of 2 numbers.
 	//! From GLM_GTX_optimum_pow extension.
-    detail::tvec3<bool> powOfTwo(const detail::tvec3<int>& x);
+	template <precision P>
+	GLM_FUNC_DECL detail::tvec3<bool, P> powOfTwo(detail::tvec3<int, P> const & x);
 
-	//! Checks to determine if the parameter component are power of 2 numbers. 
+	//! Checks to determine if the parameter component are power of 2 numbers.
 	//! From GLM_GTX_optimum_pow extension.
-    detail::tvec4<bool> powOfTwo(const detail::tvec4<int>& x);
+	template <precision P>
+	GLM_FUNC_DECL detail::tvec4<bool, P> powOfTwo(detail::tvec4<int, P> const & x);
 
 	/// @}
 }//namespace gtx

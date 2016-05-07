@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -37,12 +37,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GLM_GTX_matrix_cross_product
-#define GLM_GTX_matrix_cross_product GLM_VERSION
+#define GLM_GTX_matrix_cross_product
 
 // Dependency:
 #include "../glm.hpp"
 
-#if(defined(GLM_MESSAGES) && !defined(glm_ext))
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
 #	pragma message("GLM: GLM_GTX_matrix_cross_product extension included")
 #endif
 
@@ -53,15 +53,15 @@ namespace glm
 
 	//! Build a cross product matrix.
 	//! From GLM_GTX_matrix_cross_product extension.
-	template <typename T> 
-	detail::tmat3x3<T> matrixCross3(
-		detail::tvec3<T> const & x);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tmat3x3<T, P> matrixCross3(
+		detail::tvec3<T, P> const & x);
 		
 	//! Build a cross product matrix.
 	//! From GLM_GTX_matrix_cross_product extension.
-	template <typename T> 
-	detail::tmat4x4<T> matrixCross4(
-		detail::tvec3<T> const & x);
+	template <typename T, precision P>
+	GLM_FUNC_DECL detail::tmat4x4<T, P> matrixCross4(
+		detail::tvec3<T, P> const & x);
 
 	/// @}
 }//namespace glm

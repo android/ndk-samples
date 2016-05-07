@@ -63,16 +63,16 @@ class UiScene : public Scene {
         float mTransitionStart;
 
         // add a new widget
-        inline UiWidget* NewWidget();
+        UiWidget* NewWidget();
 
         // set default button -- the button that is assumed to be clicked when the user
         // presses the the "confirm" button (usually DPAD_CENTER or the ENTER key on a
         // keyboard).
-        inline void SetDefaultButton(int id) {
+        void SetDefaultButton(int id) {
             mDefaultButton = id;
         }
 
-        inline void SetWaitScreen(bool b) {
+        void SetWaitScreen(bool b) {
             mWaitScreen = b;
             if (mWaitScreen) {
                 mTransitionStart = Clock();
@@ -106,7 +106,7 @@ class UiScene : public Scene {
         void DispatchButtonClick(int id);
         int FindDefaultButton();
 
-        inline void DeleteWidgets() {
+        void DeleteWidgets() {
             mWidgetCount = 0;
         }
 };
@@ -145,7 +145,7 @@ class UiWidget {
         static const int TRANS_FROM_TOP = 4;
         static const int TRANS_FROM_BOTTOM = 5;
 
-        inline UiWidget(int id) {
+        UiWidget(int id) {
             mId = id;
             mTransition = TRANS_NONE;
             mCenterX = mCenterY = mWidth = mHeight = 0.0f;
@@ -166,90 +166,90 @@ class UiWidget {
             mIconArt = NULL;
         }
 
-        inline ~UiWidget() {
+        ~UiWidget() {
             CleanUp(&mIconGeom);
         }
 
-        inline int GetId() { return mId; }
-        inline float GetCenterX() { return mCenterX; }
-        inline float GetCenterY() { return mCenterY; }
-        inline float GetWidth() { return mWidth; }
-        inline float GetHeight() { return mHeight; }
-        inline bool IsButton() { return mIsButton; }
-        inline int GetNav(int dir) { return dir >= 0 && dir < 4 ? mNav[dir] : -1; }
-        inline bool IsEnabled() { return mEnabled; }
-        inline bool IsVisible() { return mVisible; }
+        int GetId() { return mId; }
+        float GetCenterX() { return mCenterX; }
+        float GetCenterY() { return mCenterY; }
+        float GetWidth() { return mWidth; }
+        float GetHeight() { return mHeight; }
+        bool IsButton() { return mIsButton; }
+        int GetNav(int dir) { return dir >= 0 && dir < 4 ? mNav[dir] : -1; }
+        bool IsEnabled() { return mEnabled; }
+        bool IsVisible() { return mVisible; }
 
-        inline UiWidget* SetNav(int dir, int id) {
+        UiWidget* SetNav(int dir, int id) {
             if (dir >= 0 && dir < 4) {
                 mNav[dir] = id;
             }
             return this;
         }
-        inline UiWidget* SetTransition(int trans) {
+        UiWidget* SetTransition(int trans) {
             mTransition = trans;
             return this;
         }
-        inline UiWidget* SetEnabled(bool enabled) {
+        UiWidget* SetEnabled(bool enabled) {
             mEnabled = enabled;
             return this;
         }
-        inline UiWidget* SetVisible(bool visible) {
+        UiWidget* SetVisible(bool visible) {
             mVisible = visible;
             return this;
         }
-        inline UiWidget* SetCenter(float x, float y) {
+        UiWidget* SetCenter(float x, float y) {
             mCenterX = x;
             mCenterY = y;
             return this;
         }
-        inline UiWidget* SetSize(float w, float h) {
+        UiWidget* SetSize(float w, float h) {
             mWidth = w;
             mHeight = h;
             return this;
         }
-        inline UiWidget* SetText(const char* text) {
+        UiWidget* SetText(const char* text) {
             mText = text;
             return this;
         }
-        inline UiWidget* SetTextColor(float r, float g, float b) {
+        UiWidget* SetTextColor(float r, float g, float b) {
             mTextColor[0] = r;
             mTextColor[1] = g;
             mTextColor[2] = b;
             return this;
         }
-        inline UiWidget* SetTextColor(const float *color) {
+        UiWidget* SetTextColor(const float *color) {
             mTextColor[0] = color[0];
             mTextColor[1] = color[1];
             mTextColor[2] = color[2];
             return this;
         }
 
-        inline UiWidget* SetFontScale(float scale) {
+        UiWidget* SetFontScale(float scale) {
             mFontScale = scale;
             return this;
         }
 
-        inline UiWidget* SetBackColor(float r, float g, float b) {
+        UiWidget* SetBackColor(float r, float g, float b) {
             mBackColor[0] = r;
             mBackColor[1] = g;
             mBackColor[2] = b;
             return this;
         }
-        inline UiWidget* SetTransparent(bool transp) {
+        UiWidget* SetTransparent(bool transp) {
             mTransparent = true;
             return this;
         }
-        inline UiWidget* SetIsButton(bool isButton) {
+        UiWidget* SetIsButton(bool isButton) {
             mIsButton = isButton;
             mHasBorder = true;
             return this;
         }
-        inline UiWidget* SetHasBorder(bool border) {
+        UiWidget* SetHasBorder(bool border) {
             mHasBorder = border;
             return this;
         }
-        inline UiWidget* SetIconFromAsciiArt(const char *asciiArt, float scale) {
+        UiWidget* SetIconFromAsciiArt(const char *asciiArt, float scale) {
             mIconArt = asciiArt;
             mIconScale = scale;
             if (mHasGraphics) {
@@ -258,23 +258,23 @@ class UiWidget {
             }
             return this;
         }
-        inline void StartGraphics() {
+        void StartGraphics() {
             if (mIconArt) {
                 mIconGeom = AsciiArtToGeom(mIconArt, mIconScale);
             }
             mHasGraphics = true;
         }
-        inline void KillGraphics() {
+        void KillGraphics() {
             CleanUp(&mIconGeom);
             mHasGraphics = false;
         }
-        inline bool PointBelongs(float x, float y) {
+        bool PointBelongs(float x, float y) {
             float dx = fabsf(x - mCenterX);
             float dy = fabsf(y - mCenterY);
             return dx < 0.5f * mWidth && dy < 0.5f * mHeight;
         }
 
-        inline bool IsClickableButton() {
+        bool IsClickableButton() {
             return mIsButton && mVisible && mEnabled;
         }
 
@@ -284,13 +284,6 @@ class UiWidget {
         void Render(TrivialShader *trivialShader, TextRenderer *textRenderer,
                 ShapeRenderer *shapeRenderer, int focus, float transitionFactor);
 };
-
-UiWidget* UiScene::NewWidget() {
-    MY_ASSERT(mWidgetCount + 1 < MAX_WIDGETS);
-    UiWidget *newWidget = new UiWidget(mWidgetCount);
-    mWidgets[mWidgetCount++] = newWidget;
-    return newWidget;
-}
 
 #endif
 

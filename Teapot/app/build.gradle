@@ -1,63 +1,64 @@
 apply plugin: 'com.android.model.application'
 
+// Retrieve ndk path to config cpufeatures src code into this project
+// native_app_glue is configured as dependent module, so we avoid confusing
+// NOTICE/repo.prop files get displayed multiple times inside IDE
+def ndkDir = System.getenv("ANDROID_NDK_HOME")
+def propertiesFile = project.rootProject.file('local.properties')
+if (propertiesFile.exists()) {
+    Properties properties = new Properties()
+    properties.load(propertiesFile.newDataInputStream())
+    ndkDir = properties.getProperty('ndk.dir')
+}
+
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.0"
+        buildToolsVersion = '23.0.2'
 
-        defaultConfig.with {
-            applicationId = "com.sample.teapot"
+        defaultConfig {
+            applicationId = 'com.sample.teapot'
             minSdkVersion.apiLevel = 17
             targetSdkVersion.apiLevel = 22
         }
-
-    }
-
-    compileOptions.with {
-        sourceCompatibility=JavaVersion.VERSION_1_7
-        targetCompatibility=JavaVersion.VERSION_1_7
-    }
-
-    android.ndk {
-        moduleName = "TeapotNativeActivity"
-        cppFlags += "-I${file("src/main/jni/native_app_glue")}".toString()
-        cppFlags += "-I${file("src/main/jni/cpufeatures")}".toString()
-        cppFlags += "-I${file("src/main/jni/ndk_helper")}".toString()
-
-        // CFlags is configured in similar way as cppFlags
-        // CFlags += "-I${file("src/main/jni/native_app_glue")}".toString()
-        ldLibs += ["android", "EGL", "GLESv2", "dl", "log"]
-        stl     = "stlport_static"
-    }
-    // jni is the default dir; config this if yours is in different directory
-    android.sources {
-        main {
-            jni {
-                source {
-                    srcDirs 'src/main/jni'
+        ndk {
+            platformVersion = 17
+            moduleName = 'TeapotNativeActivity'
+            toolchain = "clang"
+            stl       = 'gnustl_static'
+            cppFlags.addAll(['-I' + "${ndkDir}/sources/android/cpufeatures",
+                             '-I' + file('src/main/jni/ndk_helper')])
+            cppFlags.addAll(['-std=c++11', '-Wall',
+                             '-fno-exceptions', '-fno-rtti'])
+            ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
+        }
+        // Turn on hard float support in armeabi-v7a
+        abis {
+            create('armeabi-v7a') {
+                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1',
+                                 '-mfloat-abi=hard'])
+                ldLibs.add('m_hard')
+                ldFlags.add('-Wl,--no-warn-mismatch')
+            }
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                    source {
+                        srcDirs 'src/main/jni'
+                        srcDirs "${ndkDir}/sources/android/cpufeatures"
+                    }
                 }
             }
         }
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles += file('proguard-rules.txt')
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
-        }
-        create ("arm8") {
-            ndk.abiFilters += "arm64-v8a"
-        }
-        create ("x86-32") {
-            ndk.abiFilters += "x86"
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        create("fat")
     }
 }

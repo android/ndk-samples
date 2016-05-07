@@ -2,12 +2,6 @@ gles3jni
 =========
 gles3jni is an Android C++ sample that demonstrates how to use OpenGL ES 3.0 from JNI/native code.
 
-The sample can be built two different ways:
-- Compatible with API level 11 and later [*1]
-- Require API level 18 or later.
-Both versions include an OpenGL ES 2.0 fallback path for devices that don't
-support OpenGL ES 3.0.
-
 The OpenGL ES 3.0 rendering path uses a few new features compared to the
 OpenGL ES 2.0 path:
 - Instanced rendering and vertex attribute divisor to reduce the number of
@@ -17,10 +11,7 @@ OpenGL ES 2.0 path:
 - Explicit assignment of attribute locations, eliminating the need to query
   assignments.
 
-[*1] The only dependency on API level 11 is the call to
-     setEGLContextClientVersion in GLES3JNIView. With a custom
-     EGLConfigChooser and EGLContextFactory the sample would be compatible
-     with older API levels.
+This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
 
 Pre-requisites
 --------------
@@ -36,13 +27,6 @@ Getting Started
 1. Click *Tools/Android/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
 
-Optionally you can switch API level version with:
-```
-$ cp app/src/main/AndroidManifest-$N.xml app/src/main/AndroidManifest.xml
-$ cp app/build-$N.gradle app/build.gradle
-```
-where `$N` is the desired minSdkVersion: '11' or '18'.
-
 Screenshots
 -----------
 ![screenshot](screenshot.png)
@@ -52,7 +36,7 @@ Support
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
 Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
 - [Google+ Community](https://plus.google.com/communities/105153134372062985968)

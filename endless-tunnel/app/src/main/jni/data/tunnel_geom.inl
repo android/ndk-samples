@@ -66,7 +66,6 @@ static GLushort TUNNEL_GEOM_INDICES[] = {
 };
 
 #define TUNNEL_GEOM_STRIDE (9 * sizeof(GLfloat))
-#define TUNNEL_GEOM_POS_OFFSET 0
 #define TUNNEL_GEOM_TEXCOORD_OFFSET (3 * sizeof(GLfloat))
 #define TUNNEL_GEOM_COLOR_OFFSET (5 * sizeof(GLfloat))
 

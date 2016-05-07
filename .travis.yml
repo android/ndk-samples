@@ -1,14 +1,19 @@
 language: android
-sudo: false
+sudo: true
 android:
   components:
-    - build-tools-23.0.0
+    - tools
+    - platform-tools
+    - build-tools-23.0.2
     - android-23
     - extra-google-m2repository
     - extra-android-m2repository
 addons:
   apt_packages:
     - pandoc
+  artifacts:
+    paths:
+      - $(git ls-files -o | grep app/build/outputs | tr "\n" ":")
 before_install:
   - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
   - export ANDROID_NDK_HOME=$HOME/android-ndk-root
@@ -16,19 +21,19 @@ script:
   # check that all Support section of the README are the same.
   - for f in */README.md; do sed -n '/Support/,/License/p' $f > /tmp/$(dirname $f).readme; done && diff -u --from-file=/tmp/hello-jni.readme /tmp/*.readme
   # check that all compileSdkVersion are 23.
-  - test "$(grep -H compileSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
+  - test "$(grep -H compileSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | xargs -n1 echo | sort | uniq | wc -l)" = "1"
   # check that all targetSdkVersion are 22 or 23
-  - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "2"
+  - test "$(grep -H targetSdkVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | xargs -n1 echo | sort | uniq | wc -l)" = "2"
   # check that all build-tools-23 are 23.
-  - test "$(grep -H buildToolsVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | sort | uniq | wc -l)" = "1"
+  - test "$(grep -H buildToolsVersion */app/build.gradle | tee /dev/stderr | cut -d= -f 2 | xargs -n1 echo | sort | uniq | wc -l)" = "1"
   # check that there is no tabs in AndroidManifest
   - |-
     (! grep -n $'\t' */app/src/main/AndroidManifest.xml) | cat -t; test ${PIPESTATUS[0]} -eq 0
   # check that there is no trailing spaces in AndroidManifest    
   - |-
-    (! grep -E '\s+$' */app/src/main/AndroidManifest.xml) | cat -e; test ${PIPESTATUS[0]} -eq 0  
+    (! grep -E '\s+$' */app/src/main/AndroidManifest.xml) | cat -e; test ${PIPESTATUS[0]} -eq 0
   - (cd builder && ./gradlew test)
   # print build failure summary
   - pandoc builder/build/reports/tests/index.html -t plain | sed -n '/^Failed tests/,/default-package/p'
   # print lint results details
-  - for f in */app/build/outputs/lint-results.html; do pandoc $f -t plain; done
+  # - for f in */app/build/outputs/lint-results.html; do pandoc $f -t plain; done

@@ -6,6 +6,8 @@ It uses JNI to do the rendering in C++ over a
 [GLSurfaceView](http://developer.android.com/reference/android/opengl/GLSurfaceView.html)
 created from a regular Android Java Activity.
 
+This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+
 Pre-requisites
 --------------
 - Android Studio 1.3+ with [NDK](https://developer.android.com/ndk/) bundle.
@@ -29,7 +31,7 @@ Support
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
 
 Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
 - [Google+ Community](https://plus.google.com/communities/105153134372062985968)

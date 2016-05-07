@@ -18,7 +18,7 @@
 <!-- TODO: when building this sample, replace the package name below
      (com.google.example.games.tunnel) by your own package name -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.google.example.games.tunnel">
+      package="com.google.sample.tunnel">
 
   <application
       android:allowBackup="false"

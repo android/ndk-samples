@@ -1,0 +1,35 @@
+apply plugin: 'com.android.model.native'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            minSdkVersion.apiLevel = 13
+            targetSdkVersion.apiLevel = 23
+            versionCode = 1
+            versionName = '1.0'
+        }
+        ndk {
+            moduleName = 'gperf'
+            abiFilters.addAll(['armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64']) //this is default
+            ldLibs.addAll(['android', 'log'])
+        }
+    }
+}
+
+// This is just copy out the header file and built lib into distribution
+// directory, for clint application to use, it is the overhead of this sample:
+//    both lib and app are put inside one project space
+task(distributeLib, type : Copy) {
+    // trigger build library
+    dependsOn assemble
+    into '../distribution/gperf/'
+    from('src/main/jni/gperf.h') {
+        into 'include/'
+    }
+    from('build/outputs/native/release/lib') {
+        into 'lib/'
+    }
+}

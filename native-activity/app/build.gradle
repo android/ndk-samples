@@ -3,45 +3,35 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.0"
+        buildToolsVersion = '23.0.2'
 
-        defaultConfig.with {
-            applicationId = "com.example.native_activity"
+        defaultConfig {
+            applicationId = 'com.example.native_activity'
             minSdkVersion.apiLevel    = 9
             targetSdkVersion.apiLevel = 23
         }
-    }
-
-    compileOptions.with {
-        sourceCompatibility=JavaVersion.VERSION_1_7
-        targetCompatibility=JavaVersion.VERSION_1_7
-    }
-
-    android.ndk {
-        moduleName ="native-activity"
-        CFlags += "-I${file("src/main/jni/native_app_glue")}".toString()
-        ldLibs += ["log", "android", "EGL", "GLESv1_CM"]
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles  += file('proguard-rules.txt')
+        ndk {
+            platformVersion = 9
+            moduleName ='native-activity'
+            toolchain = 'clang'
+            stl = 'gnustl_static'
+            cppFlags.add('-std=c++11')
+            ldLibs.addAll(['log', 'android', 'EGL', 'GLESv1_CM'])
         }
-    }
-    android.productFlavors {
-        create ("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                }
+            }
         }
-        create ("arm8") {
-            ndk.abiFilters += "arm64-v8a"
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
         }
-        create ("x86-32") {
-            ndk.abiFilters += "x86"
-        }
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        // build one including all productFlavors
-        // build one including all productFlavors
-        create("fat")
     }
 }

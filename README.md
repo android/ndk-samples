@@ -1,9 +1,22 @@
 NDK Samples [![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg?branch=master)](https://travis-ci.org/googlesamples/android-ndk) [![Build status](https://ci.appveyor.com/api/projects/status/48tbtqwg4heytmnq?svg=true)](https://ci.appveyor.com/project/proppy/android-ndk)
 ===========
 
-This repository contains [Android NDK][0] samples using the new Android Studio 1.3 preview [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
+This repository contains [Android NDK][0] samples with Android Studio [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
+
+These samples uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+
+Additional Android Studio samples:    
+- [Google Play Game Samples with Android Studio](https://github.com/playgameservices/cpp-android-basic-samples)
+- [Google Android Vulkan Tutorials](https://github.com/googlesamples/android-vulkan-tutorials)
+- [Android Vulkan API Basic Samples](https://github.com/googlesamples/vulkan-basic-samples)
+- [Android High Performance Audio](https://github.com/googlesamples/android-audio-high-performance)	
+
+Known Issues	
+- Some are documented at [Android Studio](http://tools.android.com/knownissues) page
+- For native application, editing some gradle properties [like sdk version] from Android Studio UI is not supported
 
 For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
+
 
 Support
 -------
@@ -38,4 +51,4 @@ the License.
 
 [LICENSE](LICENSE)
 
-[0]: https://developer.android.com/tools/sdk/ndk/
+[0]: https://developer.android.com/ndk
