@@ -80,14 +80,14 @@ public class GreetingTest {
                 .perform(typeText(STRING_TO_BE_TYPED), closeSoftKeyboard());
         onView(withId(R.id.sendNameToJniButton)).perform(click());
 
-        // Check that the text was changed.
+        // Check if the text contains the String we typed.
         onView(withId(R.id.greetingTextView)).check(matches(withText(containsString(STRING_TO_BE_TYPED))));
     }
 
     @Test
     public void shouldContainSomeNameWhenGreeterSendsName() {
         givenName("someName");
-        whenGreeterSendNameToC();
+        whenGreeterSendNameToNativeCode();
         thenGreetingShouldContainName();
     }
 
@@ -104,7 +104,7 @@ public class GreetingTest {
         mName = someName;
     }
 
-    private void whenGreeterSendNameToC() {
+    private void whenGreeterSendNameToNativeCode() {
         mGreeting = mGreeter.sendName(mName);
     }
 
