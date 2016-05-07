@@ -28,6 +28,7 @@ Greeting JNI contains a sample tests that run the JNI code using the AndroidJUni
 Use the following steps to run/debug the Instrumentations Tests:
 
 1. Using Android Studio in the *Build Variants/Test Artifacts* be sure to have *Android Instrumentations Tests* selected.
+    - If you're working on a recent version of Android Studio the IDE will run both unit test artifacts by default.
 1. Create an Android Tests Run/Debug configuration.
 1. Please set the *AndroidJUnitRunner* in the *Specific instrumentation runner*.
   - It says *optional* but I found that it doesn't run if its not selected.
