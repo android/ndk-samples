@@ -31,6 +31,11 @@ Screenshots
 -----------
 ![screenshot](screenshot.png)
 
+
+Known Issues
+------------
+- Android-N preoview: native player path is not working, under debug now
+
 Support
 -------
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
