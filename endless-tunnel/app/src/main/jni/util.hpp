@@ -27,7 +27,8 @@ template<typename T> void CleanUp(T** pptr) {
     }
 }
 
-int Random(int uboundExclusive, int lbound = 0);
+int Random(int uboundExclusive);
+int Random(int lbound, int uboundExclusive);
 
 template<typename T> T Max(T a, T b) { return a > b ? a : b; }
 template<typename T> T Min(T a, T b) { return a < b ? a : b; }
