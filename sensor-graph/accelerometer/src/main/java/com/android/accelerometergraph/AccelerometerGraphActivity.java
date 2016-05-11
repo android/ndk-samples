@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.sensorgraph;
+package com.android.accelerometergraph;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
@@ -24,7 +24,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 
-public class SensorGraphActivity extends Activity {
+public class AccelerometerGraphActivity extends Activity {
 
     GLSurfaceView mView;
 
@@ -35,23 +35,23 @@ public class SensorGraphActivity extends Activity {
         mView.setRenderer(new GLSurfaceView.Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-                SensorGraphJNI.surfaceCreated();
+                AccelerometerGraphJNI.surfaceCreated();
             }
 
             @Override
             public void onSurfaceChanged(GL10 gl, int width, int height) {
-                SensorGraphJNI.surfaceChanged(width, height);
+                AccelerometerGraphJNI.surfaceChanged(width, height);
             }
 
             @Override
             public void onDrawFrame(GL10 gl) {
-                SensorGraphJNI.drawFrame();
+                AccelerometerGraphJNI.drawFrame();
             }
         });
         mView.queueEvent(new Runnable() {
             @Override
             public void run() {
-                SensorGraphJNI.init(getAssets());
+                AccelerometerGraphJNI.init(getAssets());
             }
         });
 	    setContentView(mView);
@@ -63,7 +63,7 @@ public class SensorGraphActivity extends Activity {
         mView.queueEvent(new Runnable() {
             @Override
             public void run() {
-                SensorGraphJNI.pause();
+                AccelerometerGraphJNI.pause();
             }
         });
     }
@@ -74,7 +74,7 @@ public class SensorGraphActivity extends Activity {
         mView.queueEvent(new Runnable() {
             @Override
             public void run() {
-                SensorGraphJNI.resume();
+                AccelerometerGraphJNI.resume();
             }
         });
     }

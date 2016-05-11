@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.android.sensorgraph;
+package com.android.accelerometergraph;
 
 // Wrapper for native library
 
 import android.content.res.AssetManager;
 
-public class SensorGraphJNI {
+public class AccelerometerGraphJNI {
 
      static {
-         System.loadLibrary("sensorgraph");
+         System.loadLibrary("accelerometergraph");
      }
 
      public static native void init(AssetManager assetManager);

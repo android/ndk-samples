@@ -27,7 +27,7 @@
 #include <cassert>
 #include <string>
 
-#define  LOG_TAG    "sensorgraph"
+#define  LOG_TAG    "accelerometergraph"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
 const int LOOPER_ID_USER = 3;
@@ -211,26 +211,28 @@ class sensorgraph {
     }
 };
 
+
 sensorgraph gSensorGraph;
 
 extern "C" {
 JNIEXPORT void JNICALL
-    Java_com_android_sensorgraph_SensorGraphJNI_init(JNIEnv *env, jclass type, jobject assetManager) {
+    Java_com_android_accelerometergraph_AccelerometerGraphJNI_init(
+                     JNIEnv *env, jclass type, jobject assetManager) {
         (void)type;
         AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
         gSensorGraph.init(nativeAssetManager);
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_sensorgraph_SensorGraphJNI_surfaceCreated(JNIEnv *env, jclass type) {
+    Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceCreated(JNIEnv *env, jclass type) {
         (void)env;
         (void)type;
         gSensorGraph.surfaceCreated();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_sensorgraph_SensorGraphJNI_surfaceChanged(JNIEnv *env, jclass type, jint width,
-                                                     jint height) {
+    Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceChanged(
+            JNIEnv *env, jclass type, jint width, jint height) {
         (void)env;
         (void)type;
         gSensorGraph.surfaceChanged(width, height);
@@ -238,7 +240,8 @@ JNIEXPORT void JNICALL
 
 
     JNIEXPORT void JNICALL
-    Java_com_android_sensorgraph_SensorGraphJNI_drawFrame(JNIEnv *env, jclass type) {
+    Java_com_android_accelerometergraph_AccelerometerGraphJNI_drawFrame(
+            JNIEnv *env, jclass type) {
         (void)env;
         (void)type;
         gSensorGraph.update();
@@ -246,14 +249,16 @@ JNIEXPORT void JNICALL
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_sensorgraph_SensorGraphJNI_pause(JNIEnv *env, jclass type) {
+    Java_com_android_accelerometergraph_AccelerometerGraphJNI_pause(
+            JNIEnv *env, jclass type) {
         (void)env;
         (void)type;
         gSensorGraph.pause();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_android_sensorgraph_SensorGraphJNI_resume(JNIEnv *env, jclass type) {
+    Java_com_android_accelerometergraph_AccelerometerGraphJNI_resume(
+            JNIEnv *env, jclass type) {
         (void)env;
         (void)type;
         gSensorGraph.resume();

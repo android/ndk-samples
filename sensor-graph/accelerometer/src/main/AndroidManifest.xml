@@ -19,14 +19,14 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.sensorgraph">
+    package="com.android.accelerometergraph">
   <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
     <application
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/sensorgraph_activity">
-      <activity android:name="com.android.sensorgraph.SensorGraphActivity"
+        android:label="@string/accelerometergraph_activity">
+      <activity android:name=".AccelerometerGraphActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                 android:launchMode="singleTask"
                 android:configChanges="orientation|keyboardHidden">
