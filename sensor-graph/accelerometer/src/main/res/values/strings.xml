@@ -23,7 +23,7 @@
 
 <resources>
     <!-- Simple strings. -->
-    <string name="sensorgraph_activity">Sensor Graph</string>
+    <string name="accelerometergraph_activity">Accelerometer Graph</string>
 
 </resources>
 
