@@ -87,6 +87,7 @@ AudioRecorder::AudioRecorder(SampleFormat *sampleFormat, SLEngineItf slEngine) :
     const SLInterfaceID id[2] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
                                  SL_IID_ANDROIDCONFIGURATION };
     const SLboolean req[2] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
+
     result = (*slEngine)->CreateAudioRecorder(slEngine,
                                               &recObjectItf_,
                                               &audioSrc,
