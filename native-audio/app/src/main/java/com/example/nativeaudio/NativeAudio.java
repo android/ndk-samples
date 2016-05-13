@@ -16,13 +16,17 @@
 
 package com.example.nativeaudio;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -33,9 +37,12 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class NativeAudio extends Activity {
+public class NativeAudio extends Activity
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
+
 
     //static final String TAG = "NativeAudio";
+    private static final int AUDIO_ECHO_REQUEST = 0;
 
     static final int CLIP_NONE = 0;
     static final int CLIP_HELLO = 1;
@@ -268,14 +275,17 @@ public class NativeAudio extends Activity {
         });
 
         ((Button) findViewById(R.id.record)).setOnClickListener(new OnClickListener() {
-            boolean created = false;
             public void onClick(View view) {
-                if (!created) {
-                    created = createAudioRecorder();
+                int status = ActivityCompat.checkSelfPermission(NativeAudio.this,
+                        Manifest.permission.RECORD_AUDIO);
+                if (status != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            NativeAudio.this,
+                            new String[]{Manifest.permission.RECORD_AUDIO},
+                            AUDIO_ECHO_REQUEST);
+                    return;
                 }
-                if (created) {
-                    startRecording();
-                }
+                recordAudio();
             }
         });
 
@@ -288,7 +298,18 @@ public class NativeAudio extends Activity {
 
     }
 
-    /** Called when the activity is about to be destroyed. */
+    // Single out recording for run-permission needs
+    static boolean created = false;
+    private void recordAudio() {
+        if (!created) {
+            created = createAudioRecorder();
+        }
+        if (created) {
+            startRecording();
+        }
+    }
+
+   /** Called when the activity is about to be destroyed. */
     @Override
     protected void onPause()
     {
@@ -307,6 +328,37 @@ public class NativeAudio extends Activity {
     {
         shutdown();
         super.onDestroy();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        /*
+         * if any permission failed, the sample could not play
+         */
+        if (AUDIO_ECHO_REQUEST != requestCode) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+
+        if (grantResults.length != 1  ||
+                grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            /*
+             * When user denied the permission, throw a Toast to prompt that RECORD_AUDIO
+             * is necessary; on UI, we display the current status as permission was denied so
+             * user know what is going on.
+             * This application go back to the original state: it behaves as if the button
+             * was not clicked. The assumption is that user will re-click the "start" button
+             * (to retry), or shutdown the app in normal way.
+             */
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.NeedRecordAudioPermission),
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+        // The callback runs on app's thread, so we are safe to resume the action
+        recordAudio();
     }
 
     /** Native methods, implemented in jni folder */
