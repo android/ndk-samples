@@ -4,7 +4,6 @@
           android:versionName="1.0" >
 
   <uses-feature android:glEsVersion="0x00020000"></uses-feature>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
   <application
       android:allowBackup="false"
       android:fullBackupContent="false"
