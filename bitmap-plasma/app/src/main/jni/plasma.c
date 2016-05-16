@@ -140,7 +140,7 @@ static uint16_t  palette[PALETTE_SIZE];
 static uint16_t  make565(int red, int green, int blue)
 {
     return (uint16_t)( ((red   << 8) & 0xf800) |
-                       ((green << 2) & 0x03e0) |
+                       ((green << 3) & 0x07e0) |
                        ((blue  >> 3) & 0x001f) );
 }
 
