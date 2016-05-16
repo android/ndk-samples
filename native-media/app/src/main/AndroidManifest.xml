@@ -4,7 +4,6 @@
   <uses-feature android:glEsVersion="0x00020000" />
   <!-- INTERNET is needed to use a URI-based media player, depending on the URI -->
   <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
   <application android:allowBackup="false"
                android:fullBackupContent="false"
                android:icon="@mipmap/ic_launcher"
