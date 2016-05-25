@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion = 23
+    buildToolsVersion = '23.0.3'
+
     defaultConfig {
-        applicationId 'com.example.hellojni'
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        applicationId = 'com.example.native_activity'
+        minSdkVersion   9
+        targetSdkVersion  23
         cmake {
             abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
         }
@@ -21,7 +20,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path "src/main/cpp/CMakeLists.txt"
+            path 'src/main/cpp/CMakeLists.txt'
         }
     }
     // Documentation purpose: app/src/main/jni is reserved for deprecated native build system;
