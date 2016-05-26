@@ -25,9 +25,7 @@ android {
     }
     // Documentation purpose: app/src/main/jni is reserved for deprecated native build system;
     // Steer away from this directory by DELETING it for ndk-build/cmake + android studio usage.
-    // Otherwise you need to
-    //    add android.useDeprecatedNdk=true to gradle.properties
-    //    enable the following line to silence android studio complaint
+    // Otherwise you need to enable the following line to silence android studio complaint
     // sourceSets.main.jni.srcDirs = []
 }
 
