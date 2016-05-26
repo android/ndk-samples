@@ -116,6 +116,8 @@ void queryRuntimeInfo(JNIEnv *env, jobject instance) {
     }
     LOGI("Android Version - %s", version);
     (*env)->ReleaseStringUTFChars(env, buildVersion, version);
+
+    // we are called from JNI_OnLoad, so got to release LocalRef to avoid leaking
     (*env)->DeleteLocalRef(env, buildVersion);
 
     // Query available memory size from a non-static public function
@@ -138,11 +140,14 @@ void queryRuntimeInfo(JNIEnv *env, jobject instance) {
  *     Find class ID for JniHelper
  *     Create an instance of JniHelper
  *     Make global reference since we are using them from a native thread
+ * Note:
+ *     All resources allocated here are never released by application
+ *     we rely on system to free all global refs when it goes away;
+ *     the pairing function JNI_OnUnload() never gets called at all.
  */
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     JNIEnv* env;
     memset(&g_ctx, 0, sizeof(g_ctx));
-    pthread_mutex_init(&g_ctx.lock, NULL);
 
     g_ctx.javaVM = vm;
     if ((*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_6) != JNI_OK) {
@@ -163,26 +168,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     g_ctx.done = 0;
     g_ctx.mainActivityObj = NULL;
     return  JNI_VERSION_1_6;
-}
-
-/*
- * One-time clean up function: undo all we did inside JNI_OnLoad() function
- */
-JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved){
-    JNIEnv *env;
-    if ((*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_6) != JNI_OK) {
-        return;
-    }
-    (*env)->DeleteGlobalRef(env, g_ctx.jniHelperClz);
-    (*env)->DeleteGlobalRef(env, g_ctx.jniHelperObj);
-
-    if (g_ctx.mainActivityObj)
-        (*env)->DeleteGlobalRef(env, g_ctx.mainActivityObj);
-    if (g_ctx.mainActivityClz)
-        (*env)->DeleteGlobalRef(env, g_ctx.mainActivityClz);
-
-    pthread_mutex_destroy(&g_ctx.lock);
-    memset(&g_ctx, 0, sizeof(g_ctx));
 }
 
 /*
@@ -278,6 +263,8 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env, jobject i
     pthread_attr_init(&threadAttr_);
     pthread_attr_setdetachstate(&threadAttr_, PTHREAD_CREATE_DETACHED);
 
+    pthread_mutex_init(&g_ctx.lock, NULL);
+
     jclass clz = (*env)->GetObjectClass(env, instance);
     g_ctx.mainActivityClz = (*env)->NewGlobalRef(env, clz);
     g_ctx.mainActivityObj = (*env)->NewGlobalRef(env, instance);
@@ -311,4 +298,6 @@ Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv *env, jobject in
     (*env)->DeleteGlobalRef(env, g_ctx.mainActivityObj);
     g_ctx.mainActivityObj = NULL;
     g_ctx.mainActivityClz = NULL;
+
+    pthread_mutex_destroy(&g_ctx.lock);
 }
