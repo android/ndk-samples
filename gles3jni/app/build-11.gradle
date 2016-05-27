@@ -20,14 +20,6 @@ model {
             CFlags.addAll(['-Wall', '-DDYNAMIC_ES3'])
             ldLibs.addAll(['log','GLESv2', 'EGL'])
         }
-        // Turn on hard float support in armeabi-v7a
-        abis {
-            create('armeabi-v7a') {
-                cppFlags.addAll(['-mhard-float', '-D_NDK_MATH_NO_SOFTFP=1', '-mfloat-abi=hard'])
-                ldLibs.add('m_hard')
-                ldFlags.add('-Wl,--no-warn-mismatch')
-            }
-        }
         buildTypes {
             release {
                 minifyEnabled = false
