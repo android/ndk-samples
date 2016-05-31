@@ -6,7 +6,7 @@ This sample uses the new [Gradle Experimental Android plugin](http://tools.andro
 
 Pre-requisites
 --------------
-- Android Studio 1.3++ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
