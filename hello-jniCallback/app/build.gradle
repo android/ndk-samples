@@ -29,9 +29,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
-    testCompile 'junit:junit:4.12'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support:support-annotations:23.4.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha2'
 }
