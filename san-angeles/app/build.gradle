@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+
+    defaultConfig.with {
+        applicationId 'com.example.SanAngeles'
+        minSdkVersion 4
+        targetSdkVersion 23
+        cmake {
+            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            // platformVersion 9
+            // toolchain 'clang'
+            path 'src/main/cpp'
+        }
+    }
+}

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">audio-echo</string>
+    <string name="init_status">Status:</string>
+    <string name="action_settings">Settings</string>
+    <string name="StartEcho">Start</string>
+    <string name="StopEcho">Stop</string>
+    <string name="GetParam">Get Param</string>
+    <string name="NeedRecordAudioPermission">"This sample needs RECORD_AUDIO permission"</string>
+</resources>

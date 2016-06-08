@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_start_capture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/StartEcho"
+        android:onClick="startEcho" />
+    <Button
+        android:id="@+id/button_stop_capture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/StopEcho"
+        android:onClick="stopEcho"
+        android:layout_toEndOf="@+id/button_start_capture"
+        android:layout_alignBottom="@+id/button_start_capture"
+        android:layout_alignParentEnd="true" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/GetParam"
+        android:id="@+id/get_parameter_button"
+        android:layout_above="@+id/statusView"
+        android:layout_alignParentStart="true"
+        android:onClick="getLowLatencyParameters" />
+    <TextView android:text="@string/init_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="3"
+        android:id="@+id/statusView"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
+
