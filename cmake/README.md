@@ -1,5 +1,5 @@
-NDK Samples [![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg?branch=master)](https://travis-ci.org/googlesamples/android-ndk) [![Build status](https://ci.appveyor.com/api/projects/status/48tbtqwg4heytmnq?svg=true)](https://ci.appveyor.com/project/proppy/android-ndk)
-===========
+Android-CMake
+=============
 
 CMake sample includes 5 independent apps:    
 - hello-jni
@@ -9,6 +9,13 @@ CMake sample includes 5 independent apps:
 - endless-tunnel
 to demostrate android studio cmake plugin to build native (C/C++) project. Once the project is opened inside android studio 2.2 or better, select anyone you are interested, then build and run on target.
 
+Pre-requisites
+--------------
+- Android Studio 2.2+ on [canary](http://tools.android.com/download/studio/canary) with [NDK](https://github.com/android-ndk/ndk/wiki) bundle.
+
+Screenshots
+-----------
+![screenshot](screenshot.png)
 
 Support
 -------
