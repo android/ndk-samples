@@ -23,12 +23,6 @@ set(lib_src_DIR ${CMAKE_SOURCE_DIR}/../../../../libsrc)
 set(lib_build_DIR $ENV{HOME}/tmp)
 file(MAKE_DIRECTORY ${lib_build_DIR})
 
-
-add_subdirectory(${lib_src_DIR}/gmath
-                 ${lib_build_DIR}/gmath)
-add_subdirectory(${lib_src_DIR}/gperf
-                 ${lib_build_DIR}/gperf)
-
 # configure import libs
 set(distribution_DIR ${CMAKE_SOURCE_DIR}/../../../../distribution)
 #LINK_DIRECTORIES(${distribution_DIR}/gmath/lib/${ANDROID_ABI})
@@ -38,7 +32,8 @@ set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
     ${distribution_DIR}/gmath/lib/${ANDROID_ABI}/libgmath.a)
 
 # shared lib will also be tucked into APK and sent to target
-# refer to app/build.gradle, jniLibs section for that purpose.
+# from android plugin version 2.2.0-alpha3, once declared as SHARED IMPORT
+# lib will be automatically packed into apk -- you just need to tell once!
 # ${ANDROID_ABI} is handy for our purpose here. Probably this ${ANDROID_ABI} is
 # the most valuable thing of this sample, the rest are pretty much normal cmake
 add_library(lib_gperf SHARED IMPORTED )
