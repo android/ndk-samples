@@ -2,23 +2,23 @@ Hello-libs
 =========
 Hello-Libs is an Android sample that demos native lib management in Android Studio.
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with external lib support:  
-*    Build JUST a native shared library[for distribution]
-*    Use 3rd party shared library / Static library   
+This sample uses the new [Gradle stable plugin](http://tools.android.com/tech-docs/external-c-builds) with external lib support.
+it includes 2 modules:
+*    app -- uses one shared lib and one static lib from $project/distribution/
+*    gen-libs -- generates one shared and one static lib, and copy them into $project/distribution
+Inside android studio, when building app module, gen-libs is forced to do a rebuild, it does not
+have to be this way; feel free to unchain it: build gen-libs once, then only build app from then on
 
-The key points are:
-*    Inform Android Studio where lib/header is
-*    Add lib dependency to application	
-Details are inside projects' build.gradle files
-
-Sample content:
-*    Create 2 shared libs
-*    Copy built libs into distribution directory
-*    Create one application to use libs from the given distribution directory
+The key point is to inform app's CMakeLists.txt
+*    where lib/header are
+*    where lib binaries are and import them as static or shared
+Note: for shared lib, with android plugin 2.2.0-alpha3+, once declared as SHARED IMPORTED, Android
+Studio will automatically pack them into apk too! So lib just need tell Android Studio once, it
+will be used both on Host and on Target
 
 Pre-requisites
 --------------
-- Android Studio 2.0+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
