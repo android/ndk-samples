@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 def platformVersion = 18    //openGLES 3 min Version
-// def platformVersion = 11 //openGLES 2 min version
+//def platformVersion = 11 //openGLES 2 min version
 
 android {
     compileSdkVersion 23
@@ -12,6 +12,10 @@ android {
         minSdkVersion 18
         targetSdkVersion 23
         cmake {
+            // pass command line arguments to cmake: our CMakeLists.txt needs it
+            // to load the right openGL lib (gles2 vs. gles3 )
+            // other ndk flags could also be configured here [cppFlags, cFlags...]
+            arguments "-DTARGET_PLATFORM_VERSION=${platformVersion}"
             abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
         }
     }
@@ -22,9 +26,7 @@ android {
         }
     }
     externalNativeBuild {
-        // platformVersion ${platformVersion}
         cmake {
-            //   arguments "-DMIN_PLATFORM=${platformVersion}"
             path 'src/main/cpp/CMakeLists.txt'
         }
     }

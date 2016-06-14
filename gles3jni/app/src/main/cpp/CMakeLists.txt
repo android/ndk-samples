@@ -7,7 +7,6 @@ cmake_minimum_required(VERSION 3.4.1)
 #   [18, infinite)    ES2  & ES3
 #   [24 ...)          ES2/ES3/Vulkan
 
-set(TARGET_PLATFORM_VERSION 11)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
@@ -25,7 +24,6 @@ elseif (${TARGET_PLATFORM_VERSION} LESS 18)
   set(gles3jni_SRCS ${gles3jni_SRCS} gl3stub_wrapper.c)
   set(OPENGL_LIB  GLESv2)
 endif (${TARGET_PLATFORM_VERSION} LESS 11)
-
 
 add_library(gles3jni SHARED ${gles3jni_SRCS})
 
