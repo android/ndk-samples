@@ -32,8 +32,7 @@ set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
     ${distribution_DIR}/gmath/lib/${ANDROID_ABI}/libgmath.a)
 
 # shared lib will also be tucked into APK and sent to target
-# from android plugin version 2.2.0-alpha3, once declared as SHARED IMPORT
-# lib will be automatically packed into apk -- you just need to tell once!
+# refer to app/build.gradle, jniLibs section for that purpose.
 # ${ANDROID_ABI} is handy for our purpose here. Probably this ${ANDROID_ABI} is
 # the most valuable thing of this sample, the rest are pretty much normal cmake
 add_library(lib_gperf SHARED IMPORTED )
