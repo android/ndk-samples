@@ -3,7 +3,9 @@ NDK Samples [![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg
 
 This repository contains [Android NDK][0] samples with Android Studio [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
 
-These samples uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+There are 2 branches:
+- master-cmake: uses the new [Gradle CMake support](http://tools.android.com/tech-docs/external-c-builds)
+- master: uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental)
 
 Additional Android Studio samples:    
 - [Google Play Game Samples with Android Studio](https://github.com/playgameservices/cpp-android-basic-samples)

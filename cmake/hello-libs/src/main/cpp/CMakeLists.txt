@@ -1,4 +1,3 @@
-
 #
 # Copyright (C) The Android Open Source Project
 #
@@ -19,17 +18,8 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-set(lib_src_DIR ${CMAKE_SOURCE_DIR}/../../../libsrc)
-set(lib_build_DIR $ENV{HOME}/tmp)
-file(MAKE_DIRECTORY ${lib_build_DIR})
-
-
-add_subdirectory(${lib_src_DIR}/gmath
-                 ${lib_build_DIR}/gmath)
-add_subdirectory(${lib_src_DIR}/gperf
-                 ${lib_build_DIR}/gperf)
-
 # configure import libs
+# source code are under gen-libs module(it is buildable)
 set(distribution_DIR ${CMAKE_SOURCE_DIR}/../../../distribution)
 #LINK_DIRECTORIES(${distribution_DIR}/gmath/lib/${ANDROID_ABI})
 

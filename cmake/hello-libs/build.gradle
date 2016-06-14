@@ -14,6 +14,14 @@ apply plugin: 'com.android.application'
                 abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
             }
         }
+        sourceSets {
+            main {
+                // let gradle pack the shared library into apk
+                jniLibs.srcDirs = ['./distribution/gperf/lib']
+                // jni.srcDirs = []  // disable automatic ndk-build, if you do not have
+                                     // src/main/jni directory at all, no need for it
+            }
+        }
         externalNativeBuild {
             cmake {
                 path 'src/main/cpp/CMakeLists.txt'
