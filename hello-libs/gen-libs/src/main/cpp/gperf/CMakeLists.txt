@@ -33,6 +33,6 @@ set_target_properties(gperf
 add_custom_command(TARGET gperf POST_BUILD
                    COMMAND "${CMAKE_COMMAND}" -E
                    copy "${CMAKE_CURRENT_SOURCE_DIR}/src/gperf.h"
-                   "${distribution_DIR}/gperf/include/gperf.h")
+                   "${distribution_DIR}/gperf/include/gperf.h"
                    COMMENT "Copying gperf to output directory")
 
