@@ -1,3 +1,7 @@
+NOTE
+====
+This sample is not ported: it is not an application.
+
 This sample is used to demonstrate the usage of module exports
 (i.e. LOCAL_EXPORT_CFLAGS and similar other variables).
 

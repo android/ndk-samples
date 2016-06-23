@@ -1,7 +1,11 @@
 NDK Samples
 ===========
 
-This repository contains samples for [Android NDK][0].
+This branch in this repository contains samples for Android Studio with [Android NDK C/C++ support][0].
+Other related branchs
+- master: gradle-experimental samples
+- master-cmake: cmake support
+- master-ndkbuild: ndk-build support for legacy project
 
 Pre-requisites
 --------------
