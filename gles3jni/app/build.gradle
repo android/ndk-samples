@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+
+// for ES2 system: change this one to 11
+// Copy AndroidManifest-11.xml over to AndroidManifiest.xml
+// Copy Android-11.mk to Android.mk
+// (I will merge two android.mk into one, and sending a variable to ndk-build)
+def TARGET_SDK_VERSION = 18
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "com.android.gles3jni"
+        minSdkVersion    "${TARGET_SDK_VERSION}"
+        targetSdkVersion "${TARGET_SDK_VERSION}"
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/cpp/Android.mk'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}

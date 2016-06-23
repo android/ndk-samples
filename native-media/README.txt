@@ -1,3 +1,5 @@
+Note:it is not quite working, need some debug
+
 This sample app requires an MPEG-2 Transport Stream file to be
 placed in /sdcard/NativeMedia.ts and encoded as:
 

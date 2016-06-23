@@ -7,14 +7,11 @@ Both versions include an OpenGL ES 2.0 fallback path for devices that don't
 support OpenGL ES 3.0.
 
 To build and install the sample:
-$ ln -s AndroidManifest-$N.xml AndroidManifest.xml
-$ ln -s Android-$N.mk jni/Android.mk
-$ $ANDROID_SDK/tools/android update project --path . --target android-$N
-$ ../../ndk-build
-$ ant debug
-$ adb install bin/GLES3JNIActivity-debug.apk
+$ cp -f app/src/main/AndroidManifest-$N.xml app/src/main/AndroidManifest.xml
+$ cp -f app/src/main/cpp/Android-$N.mk app/src/main/cpp/Android.mk
+Use Android Studio to import the project, build and run
+
 where $N is '11' or '18' and
-ANDROID_SDK is the root of your SDK installation.
 
 The OpenGL ES 3.0 rendering path uses a few new features compared to the
 OpenGL ES 2.0 path:
