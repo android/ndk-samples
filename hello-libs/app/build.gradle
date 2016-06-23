@@ -39,5 +39,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha2'
-    compile project(':gen-libs')
+    // uncomment out this one to generate lib binaries,
+    // and also uncommend out the one in settings.gradle
+    // after lib is generated, just comment them out again
+//        compile project(':gen-libs')
 }

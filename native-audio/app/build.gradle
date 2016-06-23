@@ -22,7 +22,7 @@ android {
         cmake {
             // platformVersion = 23
             // todo: need to disable REVERT for fast audio recording
-            path 'src/main/cpp'
+            path 'src/main/cpp/CMakeLists.txt'
         }
     }
 }

@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
      externalNativeBuild {
          cmake {
              // platformVersion 14
-             path 'src/main/cpp'
+             path 'src/main/cpp/CMakeLists.txt'
          }
      }
 }

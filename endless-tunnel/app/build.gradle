@@ -33,23 +33,8 @@ android {
 /*
     ndk {
             platformVersion = 9
-            moduleName = 'game'
             toolchain = 'clang'
             stl        = 'gnustl_static' // recommending gnustl_static/gnustl_shared for android
-            cppFlags.addAll(['-std=c++11','-Wall', // glm could not take -Wall -Werror
-                             '-D GLM_FORCE_SIZE_T_LENGTH', '-D GLM_FORCE_RADIANS',
-                             '-I' + file('src/main/jni'),
-                             '-I' + file('src/main/jni/data')])
-            ldLibs.addAll(['android', 'EGL', 'GLESv2', 'OpenSLES', 'log'])
-    }
-    sources {
-            main {
-                jni {
-                    dependencies {
-                        project ':nativeactivity' linkage 'static'
-                    }
-                }
-            }
     }
 */
     buildTypes {
