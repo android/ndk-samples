@@ -14,13 +14,10 @@ android {
 /*
     ndk {
         platformVersion = 9
-        moduleName = 'gl2jni'
         toolchain = 'clang'
         stl        = 'gnustl_static'
-        cppFlags.addAll(['-std=c++11','-Wall'])
-        ldLibs.addAll(['log', 'GLESv2'])
     }
-     */
+*/
     buildTypes {
         release {
             minifyEnabled = false
@@ -29,7 +26,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path 'src/main/cpp'
+            path 'src/main/cpp/CMakeLists.txt'
         }
     }
 }

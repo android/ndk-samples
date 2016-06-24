@@ -6,8 +6,9 @@ This sample uses the new [Gradle Experimental Android plugin](http://tools.andro
 it includes 2 modules:
 *    app -- uses one shared lib and one static lib from $project/distribution/
 *    gen-libs -- generates one shared and one static lib, and copy them into $project/distribution
-Inside android studio, when building app module, gen-libs is forced to do a rebuild, it does not
-have to be this way; feel free to unchain it: build gen-libs once, then only build app from then on
+The debug library binaries are saved inside distribution folder. you could build your own with
+gen-libs source, just follow comment in setting.gradle and app/build.gradle  -- do it once, then
+comment them out again so you are not affected by lib building
 
 The key point is to inform app's CMakeLists.txt
 *    where lib/header are
