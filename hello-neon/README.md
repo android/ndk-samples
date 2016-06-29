@@ -1,12 +1,16 @@
 Hello Neon
 ==========
 Hello Neon is an Android sample that uses ARM NEON for fir filter implementation:
-- name NEON files to specific type in source tree. In this sample, it is *.neon
-- add new type to be C source file
-- append -mfpu=neon to CMake compile flag for neon file type.
+- identify NEON files in source tree, they would be just normal c/c++ source files
+- append -mfpu=neon to CMake compile flag for neon source files.
 This is different from android.mk, in that:
-- *.c.neon is fake file name; cmake the exact file on disk has to existing
-- the other 2 steps are not needed; but necessary for cmake to know they are special
+- *.c.neon is fake file name; cmake does not need that mechnism
+- cmake scripts does not need the fake *.neon name since cmake scripts could handle it directly
+
+If there are lot of NEON files in the project, make a NEON lib:
+- turn NEON compile flags for the lib
+- let the rest of the project use the NEON libs
+(this approach is not shown)
 
 
 This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
