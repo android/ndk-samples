@@ -60,7 +60,7 @@ void AudioPlayer::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
 }
 
 AudioPlayer::AudioPlayer(SampleFormat *sampleFormat, SLEngineItf slEngine) :
-    playQueue_(nullptr),freeQueue_(nullptr), devShadowQueue_(nullptr),
+    freeQueue_(nullptr), playQueue_(nullptr), devShadowQueue_(nullptr),
     callback_(nullptr)
 {
     SLresult result;
