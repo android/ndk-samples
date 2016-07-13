@@ -11,12 +11,14 @@ android {
         applicationId 'com.android.gles3jni'
         minSdkVersion 18
         targetSdkVersion 23
-        cmake {
-                // pass command line arguments to cmake: our CMakeLists.txt needs it
-                // to load the right openGL lib (gles2 vs. gles3 )
-                // other ndk flags could also be configured here [cppFlags, cFlags...]
-                arguments "-DTARGET_PLATFORM_VERSION=${platformVersion}"
-                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+        externalNativeBuild {
+            cmake {
+                    // pass command line arguments to cmake: our CMakeLists.txt needs it
+                    // to load the right openGL lib (gles2 vs. gles3 )
+                    // other ndk flags could also be configured here [cppFlags, cFlags...]
+                    arguments "-DTARGET_PLATFORM_VERSION=${platformVersion}"
+                    abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            }
         }
     }
     buildTypes {

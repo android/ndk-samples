@@ -4,7 +4,7 @@ Hello Neon is an Android sample that uses ARM NEON for fir filter implementation
 - identify NEON files in source tree, they would be just normal c/c++ source files
 - append -mfpu=neon to CMake compile flag for neon source files.
 This is different from android.mk, in that:
-- *.c.neon is fake file name; cmake does not need that mechnism
+- *.c.neon is fake file name; cmake does not need that mechanism
 - cmake scripts does not need the fake *.neon name since cmake scripts could handle it directly
 
 If there are lot of NEON files in the project, make a NEON lib:

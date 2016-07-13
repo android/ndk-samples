@@ -8,8 +8,10 @@ apply plugin: 'com.android.application'
          applicationId 'com.example.native_plasma'
          minSdkVersion  9
          targetSdkVersion 23
-         cmake {
-             abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+         externalNativeBuild {
+            cmake {
+                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            }
          }
      }
      buildTypes {

@@ -102,7 +102,7 @@ Java_com_google_sample_echo_MainActivity_createSLEngine(
     engine.freeBufQueue_ = new AudioQueue (engine.bufCount_);
     engine.recBufQueue_  = new AudioQueue (engine.bufCount_);
     assert(engine.freeBufQueue_ && engine.recBufQueue_);
-    for(int i=0; i<engine.bufCount_; i++) {
+    for(uint32_t i=0; i<engine.bufCount_; i++) {
         engine.freeBufQueue_->push(&engine.bufs_[i]);
     }
 }

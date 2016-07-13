@@ -60,7 +60,7 @@ void AudioRecorder::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
 }
 
 AudioRecorder::AudioRecorder(SampleFormat *sampleFormat, SLEngineItf slEngine) :
-        freeQueue_(nullptr), devShadowQueue_(nullptr), recQueue_(nullptr),
+        freeQueue_(nullptr), recQueue_(nullptr), devShadowQueue_(nullptr),
         callback_(nullptr)
 {
     SLresult result;

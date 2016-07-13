@@ -163,7 +163,7 @@ __inline__ void releaseSampleBufs(sample_buf* bufs, uint32_t& count) {
     if(!bufs || !count) {
         return;
     }
-    for(int i=0; i<count; i++) {
+    for(uint32_t i=0; i<count; i++) {
         if(bufs[i].buf_) delete [] bufs[i].buf_;
     }
     delete [] bufs;
@@ -181,7 +181,7 @@ __inline__ sample_buf *allocateSampleBufs(uint32_t count, uint32_t sizeInByte){
     for(i =0; i < count; i++) {
         bufs[i].buf_ = new uint8_t [allocSize];
         if(bufs[i].buf_ == nullptr) {
-            LOGW("====Requesting %d buffers, allocated %d in %s", __FUNCTION__);
+            LOGW("====Requesting %d buffers, allocated %d in %s",count, i,  __FUNCTION__);
             break;
         }
         bufs[i].cap_ = sizeInByte;
