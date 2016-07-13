@@ -7,7 +7,7 @@ CMake sample includes 5 independent apps:
 - hello-libs
 - Teapot
 - endless-tunnel
-to demostrate android studio cmake plugin to build native (C/C++) project. Once the project is opened inside android studio 2.2 or better, select anyone you are interested, then build and run on target.
+to demostrate android studio cmake plugin to build native (C/C++) project. Once the project is opened inside android studio 2.2 alpha5 or better(NOTE: 2.2 alpha4 will NOT work anymore), select anyone you are interested, then build and run on target.
 
 Pre-requisites
 --------------
