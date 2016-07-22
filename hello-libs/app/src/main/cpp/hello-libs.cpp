@@ -14,9 +14,9 @@
  * limitations under the License.
  *
  */
-#include <string.h>
+#include <cstring>
 #include <jni.h>
-#include <inttypes.h>
+#include <cinttypes>
 #include <android/log.h>
 #include <gmath.h>
 #include <gperf.h>
