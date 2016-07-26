@@ -12,7 +12,7 @@ The key points are:
 Details are inside projects' build.gradle files
 
 Sample content:
-*    Create 2 shared libs
+*    Create 2 shared libs[on terminal, execute "gradlew :gmath:distributeLib :gperf:distributeLib"]
 *    Copy built libs into distribution directory
 *    Create one application to use libs from the given distribution directory
 
