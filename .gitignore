@@ -6,4 +6,5 @@ build
 *~
 .DS_Store
 externalNativeBuild
+.externalNativeBuild
 
