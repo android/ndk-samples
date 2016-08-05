@@ -2,9 +2,11 @@ San Angeles
 ===========
 San Angeles is an Android port of a demo that uses GLES C/API to render a procedural scene.
 
-See the original [README](app/src/main/jni/README.txt) for more details about the original GLES port.
+See the original [README](app/src/main/cpp/README.txt) for more details about the original GLES port.
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+The sample demos:
+- [Android Studio with CMake support](http://tools.android.com/tech-docs/external-c-builds)
+- [ABI APK split](http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits#TOC-ABIs-Splits)
 
 Pre-requisites
 --------------
