@@ -5,5 +5,5 @@ local.properties
 build
 *.iml
 .DS_Store
+.externalNativeBuild
 externalNativeBuild
-
