@@ -10,8 +10,10 @@ android {
         versionCode 1
         versionName "1.0"
 
-        cmake {
-            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'mips', 'mips64'
+        externalNativeBuild {
+            cmake {
+                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'mips', 'mips64'
+            }
         }
     }
     buildTypes {
