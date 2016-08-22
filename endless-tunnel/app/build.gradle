@@ -28,26 +28,27 @@ android {
         versionName    '1.0'
         externalNativeBuild {
             cmake {
-                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+                arguments '-DANDROID_PLATFORM=android-9',
+                        '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
             }
         }
     }
-/*
-    ndk {
-            platformVersion = 9
-            toolchain = 'clang'
-            stl        = 'gnustl_static' // recommending gnustl_static/gnustl_shared for android
-    }
-*/
     buildTypes {
         release {
             minifyEnabled = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
         }
     }
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+    productFlavors {
+        combined {
+            ndkConfig.abiFilters 'x86', 'x86_64', 'armeabi',
+                                 'armeabi-v7a', 'arm64-v8a'
         }
     }
 }
@@ -57,5 +58,5 @@ android.lintOptions {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
 }

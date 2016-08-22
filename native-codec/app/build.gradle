@@ -10,19 +10,27 @@ android {
         targetSdkVersion 22
         externalNativeBuild {
             cmake {
-                abiFilters  'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+                arguments '-DANDROID_PLATFORM=android-21',
+                        '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
             }
         }
     }
     buildTypes {
         release {
             minifyEnabled = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
         }
     }
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+    productFlavors {
+        combined {
+            ndkConfig.abiFilters 'x86', 'x86_64', 'armeabi',
+                    'armeabi-v7a', 'arm64-v8a'
         }
     }
 }

@@ -10,11 +10,6 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName '1.0'
-        externalNativeBuild {
-            cmake {
-                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-            }
-        }
     }
     buildTypes {
         release {
@@ -25,6 +20,12 @@ android {
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+    productFlavors {
+        combined {
+            ndkConfog.abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86',
+                                 'x86_64','mips','mips64'
         }
     }
 }

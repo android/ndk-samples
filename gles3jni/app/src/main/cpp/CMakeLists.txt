@@ -15,15 +15,16 @@ set(gles3jni_SRCS gles3jni.cpp
                   RendererES3.cpp
                   gl3stub.c.inc
                   RendererES2.cpp)
-if (${TARGET_PLATFORM_VERSION} LESS 11)
+
+if (${ANDROID_PLATFORM_LEVEL} LESS 11)
   MESSAGE(ERROR " OpenGL 2 is not supported")
   return()
-elseif (${TARGET_PLATFORM_VERSION} LESS 18)
+elseif (${ANDROID_PLATFORM_LEVEL} LESS 18)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDYNAMIC_ES3")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDYNAMIC_ES3")
   set(gles3jni_SRCS ${gles3jni_SRCS} gl3stub_wrapper.c)
   set(OPENGL_LIB  GLESv2)
-endif (${TARGET_PLATFORM_VERSION} LESS 11)
+endif (${ANDROID_PLATFORM_LEVEL} LESS 11)
 
 add_library(gles3jni SHARED ${gles3jni_SRCS})
 

@@ -12,14 +12,16 @@ android {
 
         externalNativeBuild {
             cmake {
-                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'mips', 'mips64'
+                arguments '-DANDROID_PLATFORM=android-9',
+                          '-DANDROID_TOOLCHAIN=clang'
             }
         }
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
         }
     }
     externalNativeBuild {

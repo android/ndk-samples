@@ -8,6 +8,11 @@ android {
         applicationId 'com.example.plasma'
         minSdkVersion 8
         targetSdkVersion 23
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_PLATFORM=android-9', '-DANDROID_TOOLCHAIN=clang'
+            }
+        }
     }
     buildTypes {
         release {
@@ -17,9 +22,13 @@ android {
     }
     externalNativeBuild {
         cmake {
-            // platformVersion = 9
-            // toolchain = clang
             path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+    productFlavors {
+        combined {
+            ndkConfog.abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86',
+                    'x86_64','mips','mips64'
         }
     }
 }
