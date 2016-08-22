@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+
+ android {
+     compileSdkVersion 23
+     buildToolsVersion '23.0.2'
+
+     defaultConfig {
+         applicationId 'com.example.webp_view'
+         minSdkVersion  9
+         targetSdkVersion 23
+         externalNativeBuild {
+             cmake {
+                 // when using arguments, the latest (cmake version 3.6+, android studio
+                 // beta2+) must be used to compile
+
+                 // I have to use gcc to compile, clang compiled code generate error
+                 // at run time for any std::queue etc.
+                 arguments '-DANDROID_STL=gnustl_static', '-DANDROID_TOOLCHAIN=gcc'
+                 arguments '-DABDRIOID_PLATFORM=9'
+             }
+         }
+     }
+     buildTypes {
+         release {
+             minifyEnabled false
+             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+         }
+     }
+     externalNativeBuild {
+         cmake {
+             path 'CMakeLists.txt'
+         }
+     }
+     productFlavors {
+         // Create product flavors
+         arm7 {
+             ndkConfig.abiFilter 'armeabi-v7a'
+         }
+         arm8 {
+             ndkConfig.abiFilter 'arm64-v8a'
+         }
+         arm {
+            ndk {
+                abiFilter 'armeabi'
+            }
+         }
+         x86 {
+             ndkConfig.abiFilter 'x86'
+         }
+         x86_64 {
+             ndkConfig.abiFilter 'x86_64'
+         }
+     }
+}
+
+// ******** Get Webp source code if not downloaded yet *******
+if(!file("../libwebp").exists()) {
+    exec {
+        workingDir("..")
+        executable 'git'
+        args = ["clone", "https://chromium.googlesource.com/webm/libwebp", "libwebp"]
+    }
+}

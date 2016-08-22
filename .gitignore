@@ -7,4 +7,5 @@ build
 .DS_Store
 externalNativeBuild
 .externalNativeBuild
+libwebp
 
