@@ -8,21 +8,23 @@ apply plugin: 'com.android.application'
         applicationId 'com.example.nativemedia'
         minSdkVersion 14
         targetSdkVersion 22
+        ndkConfig.abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
         externalNativeBuild {
             cmake {
-                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+                arguments '-DANDROID_PLATFORM=android-14',
+                    '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
             }
         }
      }
      buildTypes {
          release {
              minifyEnabled false
-             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+             proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                           'proguard-rules.pro'
          }
      }
      externalNativeBuild {
          cmake {
-             // platformVersion 14
              path 'src/main/cpp/CMakeLists.txt'
          }
      }

@@ -15,17 +15,22 @@ android {
         targetSdkVersion 23
         versionCode  1
         versionName  "1.0"
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_PLATFORM=android-9',
+                          '-DANDROID_TOOLCHAIN=gcc'
+            }
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
         }
     }
     externalNativeBuild {
         cmake {
-            // platformVersion 9
-            // toolchain 'clang'
             path 'src/main/cpp/CMakeLists.txt'
         }
     }

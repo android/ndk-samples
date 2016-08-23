@@ -16,14 +16,15 @@ apply plugin: 'com.android.application'
                  // I have to use gcc to compile, clang compiled code generate error
                  // at run time for any std::queue etc.
                  arguments '-DANDROID_STL=gnustl_static', '-DANDROID_TOOLCHAIN=gcc'
-                 arguments '-DABDRIOID_PLATFORM=9'
+                 arguments '-DANDROID_PLATFORM=android-9'
              }
          }
      }
      buildTypes {
          release {
              minifyEnabled false
-             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+             proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
          }
      }
      externalNativeBuild {
@@ -40,9 +41,7 @@ apply plugin: 'com.android.application'
              ndkConfig.abiFilter 'arm64-v8a'
          }
          arm {
-            ndk {
-                abiFilter 'armeabi'
-            }
+            ndkConfig.abiFilter 'armeabi'
          }
          x86 {
              ndkConfig.abiFilter 'x86'

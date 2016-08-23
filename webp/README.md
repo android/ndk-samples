@@ -1,6 +1,6 @@
 WEBP Samples
 =============
-Webp is an Android sample including a small app  to demo usage of webp in  [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html)    
+Webp is an Android sample including a small app to demo usage of webp in [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html)    
 view:
 - rotate decoding 3 webp images and load them into on-screen buffer. Decoding is in its own thread
 
@@ -10,7 +10,7 @@ This sample uses the new [Android CMake](http://tools.android.com/tech-docs/exte
 Pre-requisites
 --------------
 - Android Studio 2.2.0-beta2+ with [NDK-r12+](https://developer.android.com/ndk/) bundle. Note that 2.2.0-beta does not work with NDK-r13-beta
-- cmake version inside ${ANDRIOD_SDK}/cmake/ must be 3.6 or better, see comment in webp/build.gradle for details
+- cmake version inside ${ANDRIOD_SDK}/cmake/ must be 3.6 or later, see comment in webp/build.gradle for details
 
 Getting Started
 ---------------
