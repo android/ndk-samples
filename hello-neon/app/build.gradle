@@ -9,17 +9,31 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_PLATFORM=android-9',
+                    '-DANDROID_TOOLCHAIN=clang'
+            }
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
         }
     }
-
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+    productFlavors {
+        arm7 {
+            ndkConfig.abiFilters 'armeabi-v7a'
+        }
+        x86 {
+            ndkConfig.abiFilters 'x86', 'x86_64'
         }
     }
 }
@@ -27,5 +41,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
 }

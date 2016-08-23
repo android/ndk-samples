@@ -8,22 +8,24 @@ apply plugin: 'com.android.application'
          applicationId 'com.example.native_plasma'
          minSdkVersion  9
          targetSdkVersion 23
+         ndkConfig.abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
          externalNativeBuild {
             cmake {
-                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+                arguments '-DANDROID_PLATFORM=android-9',
+                          '-DANDROID_TOOLCHAIN=clang'
             }
          }
      }
      buildTypes {
          release {
              minifyEnabled false
-             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+             proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                           'proguard-rules.pro'
          }
-    }
+     }
      externalNativeBuild {
          cmake {
-             // platformVersion 9
              path 'src/main/cpp/CMakeLists.txt'
          }
      }
-}
+ }

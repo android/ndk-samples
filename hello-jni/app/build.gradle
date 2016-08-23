@@ -11,7 +11,7 @@ android {
         versionName "1.0"
         externalNativeBuild {
             cmake {
-                abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+                arguments '-DANDROID_TOOLCHAIN=clang'
             }
         }
     }
@@ -26,16 +26,38 @@ android {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
-    // Documentation purpose: app/src/main/jni is reserved for deprecated native build system;
-    // Steer away from this directory by DELETING it for ndk-build/cmake + android studio usage.
-    // Otherwise you need to
-    //    add android.useDeprecatedNdk=true to gradle.properties
-    //    enable the following line to silence android studio complaint
-    // sourceSets.main.jni.srcDirs = []
+    productFlavors {
+        // Create product flavors with different formats
+        // all other samples will use just ONE simple format
+        arm7 {
+            // in the future, ndk.abiFilter might also work
+            ndkConfig.abiFilter 'armeabi-v7a'
+        }
+        arm8 {
+            ndkConfig.abiFilters 'arm64-v8a'
+        }
+        arm {
+            ndk {
+                abiFilter 'armeabi'
+            }
+        }
+        x86 {
+            ndkConfig.abiFilter 'x86'
+        }
+        x86_64 {
+            ndkConfig.abiFilter 'x86_64'
+        }
+        mips {
+            ndkConfig.abiFilters 'mips', 'mips64'
+        }
+        all {
+            ndkConfig.abiFilters 'mips', 'mips64', 'x86', 'x86_64'
+        }
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
 }
