@@ -6,5 +6,5 @@ set(sanangeles_SRCS app-android.c
                     importgl.c)
 add_library(sanangeles SHARED ${sanangeles_SRCS})
 
-# Include libraries needed for hello-jni lib
+# Include libraries needed for sanangeles lib
 target_link_libraries(sanangeles android log m dl GLESv1_CM)

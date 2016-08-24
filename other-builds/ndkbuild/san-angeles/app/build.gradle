@@ -1,0 +1,60 @@
+// To demo apk split feature as documented at
+// http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits#TOC-ABIs-Splits
+apply plugin: 'com.android.application'
+
+// pointing to cmake's source code for the same project
+def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+
+import com.android.build.OutputFile
+ext.versionCodes = ['armeabi-v7a':1, 'arm64-v8a':2, 'mips':3, 'x86':4]
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+
+    defaultConfig {
+        applicationId 'com.example.SanAngeles'
+        minSdkVersion 4
+        targetSdkVersion 23
+        versionCode  1
+        versionName  "1.0"
+    }
+    sourceSets {
+        main {
+            manifest.srcFile "${REMOTE_SRC_ROOT}/AndroidManifest.xml"
+            java.srcDirs = ["${REMOTE_SRC_ROOT}/java"]
+            res.srcDirs = ["${REMOTE_SRC_ROOT}/res"]
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'Android.mk'
+        }
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a','mips', 'x86'
+            universalApk false
+        }
+    }
+
+    applicationVariants.all { variant ->
+        // assign different version code for each output
+        variant.outputs.each { output ->
+            output.versionCodeOverride =
+                    project.ext.versionCodes.get(output.getFilter(OutputFile.ABI)) * 1000000 +
+                            defaultConfig.versionCode
+        }
+    }
+}
+

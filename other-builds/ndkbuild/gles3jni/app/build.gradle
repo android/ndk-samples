@@ -1,0 +1,47 @@
+/*  This build is set for platform support ES3.
+ *  to build for ES2:
+ *      change android:glEsVersion="0x00030000 in AndroidManifest.txt to 0x00020000
+ *      minSDVersion to  sth less than 11
+ *      command line argument APP_PLATFORM=android-11 (or lower)
+ */
+
+apply plugin: 'com.android.application'
+
+// pointing to cmake's source code for the same project
+def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
+                       project.getName() + '/src/main'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+
+    defaultConfig {
+        applicationId 'com.android.gles3jni'
+        minSdkVersion 18
+        targetSdkVersion 11
+        ndk {
+            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
+    sourceSets {
+        main {
+            manifest.srcFile "${REMOTE_SRC_ROOT}/AndroidManifest.xml"
+            java.srcDirs = ["${REMOTE_SRC_ROOT}/java"]
+            res.srcDirs = ["${REMOTE_SRC_ROOT}/res"]
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'Android.mk'
+        }
+    }
+}
+
+

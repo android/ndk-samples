@@ -35,19 +35,29 @@ apply plugin: 'com.android.application'
      productFlavors {
          // Create product flavors
          arm7 {
-             ndkConfig.abiFilter 'armeabi-v7a'
+            ndk {
+                abiFilter 'armeabi-v7a'
+            }
          }
          arm8 {
-             ndkConfig.abiFilter 'arm64-v8a'
+            ndk {
+                abiFilter 'arm64-v8a'
+            }
          }
          arm {
-            ndkConfig.abiFilter 'armeabi'
+            ndk {
+                abiFilter 'armeabi'
+            }
          }
          x86 {
-             ndkConfig.abiFilter 'x86'
+            ndk {
+                abiFilter 'x86'
+            }
          }
          x86_64 {
-             ndkConfig.abiFilter 'x86_64'
+            ndk {
+                abiFilter 'x86_64'
+            }
          }
      }
 }

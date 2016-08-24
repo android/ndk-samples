@@ -9,7 +9,9 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        ndkConfig.abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+        ndk {
+            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+        }
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_PLATFORM=android-21',
