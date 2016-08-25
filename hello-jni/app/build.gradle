@@ -27,14 +27,16 @@ android {
         }
     }
     productFlavors {
-        // Create product flavors with different formats
-        // all other samples will use just ONE simple format
         arm7 {
             // in the future, ndk.abiFilter might also work
-            ndkConfig.abiFilter 'armeabi-v7a'
+            ndk {
+                abiFilter 'armeabi-v7a'
+            }
         }
         arm8 {
-            ndkConfig.abiFilters 'arm64-v8a'
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
         }
         arm {
             ndk {
@@ -42,16 +44,24 @@ android {
             }
         }
         x86 {
-            ndkConfig.abiFilter 'x86'
+            ndk {
+                abiFilter 'x86'
+            }
         }
         x86_64 {
-            ndkConfig.abiFilter 'x86_64'
+            ndk {
+                abiFilter 'x86_64'
+            }
         }
         mips {
-            ndkConfig.abiFilters 'mips', 'mips64'
+            ndk {
+                abiFilters 'mips', 'mips64'
+            }
         }
         all {
-            ndkConfig.abiFilters 'mips', 'mips64', 'x86', 'x86_64'
+            ndk {
+                abiFilters 'mips', 'mips64', 'x86', 'x86_64'
+            }
         }
     }
 }

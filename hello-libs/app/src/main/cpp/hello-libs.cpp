@@ -45,5 +45,5 @@ Java_com_example_hellolibs_MainActivity_stringFromJNI(JNIEnv *env, jobject thiz)
 
     LOGI("calculation time: %" PRIu64, ticks);
 
-    return env->NewStringUTF("Hello from JNI!");
+    return env->NewStringUTF("Hello from JNI LIBS!");
 }
