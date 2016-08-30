@@ -1,0 +1,47 @@
+apply plugin: 'com.android.model.application'
+// pointing to cmake's source code for the same project
+def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+        defaultConfig {
+            applicationId    = 'com.android.gl2jni'
+            minSdkVersion.apiLevel    = 5
+            targetSdkVersion.apiLevel = 23
+        }
+        ndk {
+            platformVersion = 21
+            moduleName = 'gl2jni'
+            toolchain = 'clang'
+            stl        = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11','-Wall'])
+            ldLibs.addAll(['log', 'GLESv2'])
+        }
+        sources {
+            main {
+                manifest {
+                    source.srcDir "${REMOTE_PROJ_ROOT}"
+                }
+                java {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/java"
+                }
+                res {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/res"
+                }
+                jni {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
+        }
+    }
+}
+

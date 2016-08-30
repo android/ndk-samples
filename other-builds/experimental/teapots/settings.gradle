@@ -1,0 +1,4 @@
+include ':classic-teapot'
+include ':more-teapots'
+include ':choreographer-30fps'
+include ':nativeactivity'

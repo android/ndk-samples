@@ -1,0 +1,45 @@
+apply plugin: 'com.android.model.application'
+// pointing to cmake's source code for the same project
+def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            applicationId='com.example.native_plasma'
+            minSdkVersion.apiLevel   = 9
+            targetSdkVersion.apiLevel = 23
+        }
+        ndk {
+            platformVersion = 21
+            moduleName = 'native-plasma'
+            toolchain = 'clang'
+            ldLibs.addAll(['m', 'log','android'])
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                    source.srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                }
+                manifest {
+                    source.srcDir "${REMOTE_PROJ_ROOT}"
+                }
+                res {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/res"
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
+        }
+    }
+}

@@ -1,0 +1,72 @@
+apply plugin: 'com.android.model.application'
+
+// Retrieve ndk path to config cpufeatures src code into this project
+// native_app_glue is configured as dependent module, so we avoid confusing
+// NOTICE/repo.prop files get displayed multiple times inside IDE
+def ndkDir = System.getenv("ANDROID_NDK_HOME")
+def propertiesFile = project.rootProject.file('local.properties')
+if (propertiesFile.exists()) {
+    Properties properties = new Properties()
+    properties.load(propertiesFile.newDataInputStream())
+    ndkDir = properties.getProperty('ndk.dir')
+}
+// pointing to cmake's source code for the same project
+def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+def REMOTE_COMMON_ROOT = '../../../../' + rootProject.getName() +
+        '/common'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            applicationId = 'com.sample.teapot'
+            minSdkVersion.apiLevel = 17
+            targetSdkVersion.apiLevel = 22
+        }
+        ndk {
+            platformVersion = 21
+            moduleName = 'TeapotNativeActivity'
+            toolchain = "clang"
+            stl       = 'gnustl_static'
+            cppFlags.addAll(['-I' + "${ndkDir}/sources/android/cpufeatures",
+                             '-I' + file("${REMOTE_COMMON_ROOT}/ndk_helper")])
+            cppFlags.addAll(['-std=c++11', '-Wall',
+                             '-fno-exceptions', '-fno-rtti'])
+            ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
+        }
+        sources {
+            main {
+                manifest {
+                    source.srcDir "${REMOTE_PROJ_ROOT}"
+                }
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                    source {
+                        srcDirs "${REMOTE_PROJ_ROOT}/cpp", "${REMOTE_COMMON_ROOT}/ndk_helper"
+                        srcDir "${ndkDir}/sources/android/cpufeatures"
+                    }
+                }
+                java {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/java"
+                }
+                res {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/res"
+                }
+                assets {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/assets"
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
+        }
+    }
+}

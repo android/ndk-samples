@@ -1,0 +1,73 @@
+/*
+ * Copyright (C) 2015 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'com.android.model.application'
+// pointing to cmake's source code for the same project
+def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            applicationId = 'com.google.sample.tunnel'
+            minSdkVersion.apiLevel    = 9
+            targetSdkVersion.apiLevel = 23
+            versionCode     =  1
+            versionName     = '1.0'
+       }
+        ndk {
+            platformVersion = 21
+            moduleName = 'game'
+            toolchain = 'clang'
+            stl        = 'gnustl_static' // recommending gnustl_static/gnustl_shared for android
+            cppFlags.addAll(['-std=c++11','-Wall', // glm could not take -Wall -Werror
+                             '-D GLM_FORCE_SIZE_T_LENGTH', '-D GLM_FORCE_RADIANS',
+                             '-I' + file("${REMOTE_PROJ_ROOT}/cpp"),
+                             '-I' + file("${REMOTE_PROJ_ROOT}/cpp/data")])
+            ldLibs.addAll(['android', 'EGL', 'GLESv2', 'OpenSLES', 'log'])
+        }
+        sources {
+            main {
+                manifest {
+                    source.srcDir "${REMOTE_PROJ_ROOT}"
+                }
+                java {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/java"
+                }
+                res {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/res"
+                }
+                jni {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+            }
+        }
+    }
+    android.lintOptions {
+        abortOnError  = false
+    }
+}

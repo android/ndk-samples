@@ -1,0 +1,45 @@
+apply plugin: 'com.android.model.native'
+// pointing to cmake's source code for the same project
+def REMOTE_SRC_PATH = '../../../../' + rootProject.getName() +
+                      '/gen-libs/src/main/cpp/gmath/src'
+
+model {
+    android {
+        compileSdkVersion = 24
+        buildToolsVersion = '24.0.0'
+
+        defaultConfig {
+            minSdkVersion.apiLevel = 13
+            targetSdkVersion.apiLevel = 24
+            versionCode = 1
+            versionName = '1.0'
+        }
+        ndk {
+            moduleName = 'gmath'
+            abiFilters.addAll(['armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64']) //this is default
+            ldLibs.addAll(['android', 'log'])
+        }
+        sources {
+            main {
+                jni {
+                    source.srcDir "${REMOTE_SRC_PATH}"
+                }
+            }
+        }
+    }
+}
+
+// This is just copy out the header file and built lib into distribution
+// directory for clint application to use; it is a small overhead of this sample:
+//    both lib and app are put inside one project space [save maintenance time]
+task(distributeLib, type : Copy) {
+    // trigger build library
+    dependsOn assemble
+    into '../distribution/gmath/'
+    from("${REMOTE_SRC_PATH}/gmath.h") {
+        into 'include/'
+    }
+    from('build/outputs/native/release/lib') {
+        into 'lib/'
+    }
+}
