@@ -1,0 +1,107 @@
+// Prerequirement: build the 2 libs off-line before running this sample
+// 1) set up your ndk.dir/sdk.dir in local.properties
+// 2) on terminal, execute "gradlew :gmath:distributeLib :gperf:distributeLib
+// libs will be created into hello-libs/distribution directory
+apply plugin: 'com.android.model.application'
+
+// pointing to cmake's source code for the same project
+def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+
+// Root of 3rd party lib(s): location could be anywhere on the host system
+def lib_distribution_root = '../distribution'
+model {
+    repositories {
+        libs(PrebuiltLibraries) {
+            // Configure one pre-built lib: shared
+            gmath {
+                // Inform Android Studio where header file dir for this lib
+                headers.srcDir "${lib_distribution_root}/gmath/include"
+                // Inform Android Studio where lib is -- each ABI should have a lib file
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("${lib_distribution_root}/gmath/lib/${targetPlatform.getName()}/libgmath.so")
+                }
+            }
+            // Configure another pre-built lib: shared;[change to static after Studio supports]
+            // static lib generation. USING static lib is supported NOW, for that case,
+            // simple change:
+            //  SharedLibaryBinary --> StaticLibraryBinary
+            //  sharedLibraryFile  --> staticLibraryFile
+            //  *.so --> *.a
+            gperf {
+                headers.srcDir "${lib_distribution_root}/gperf/include"
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("${lib_distribution_root}/gperf/lib/${targetPlatform.getName()}/libgperf.so")
+                }
+            }
+        }
+    }
+    android {
+        compileSdkVersion = 24
+        buildToolsVersion = '24.0.0'
+
+        defaultConfig {
+            applicationId = 'com.example.hellolibs'
+            minSdkVersion.apiLevel = 13
+            targetSdkVersion.apiLevel = 24
+            versionCode = 1
+            versionName = '1.0'
+        }
+        ndk {
+            platformVersion = 21
+            moduleName = 'hello-libs'
+            toolchain = 'clang'
+            stl = 'gnustl_static'
+            cppFlags.addAll(['-std=c++11'])
+            ldLibs.addAll(['android', 'log'])
+            // build a default combined apk including all ABIs.
+            // abiFilters.addAll(['x86'])
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        library 'gmath' linkage 'shared'
+                        // if gperf were *.a, change shared --> static
+                        library 'gperf' linkage 'shared'
+                    }
+                    source.srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                }
+                jniLibs {
+                    // for shared lib, lib need to be pushed to the target too
+                    // Once libs are copied into app/src/main/jniLibs directory,
+                    // Android Studio will pack them into APK's lib/ directory
+                    // Here we like to avoid another duplication by pointing
+                    // to the files that containing our libs' distribution location
+                    // so the same file is used by compiler at host, also packed
+                    // into APk to be used at Target (phone/tablet)
+                    source {
+                        srcDir "${lib_distribution_root}/gmath/lib"
+                        // if gperf is static lib, no need to add it into jniLibs
+                        srcDir "${lib_distribution_root}/gperf/lib"
+                    }
+                }
+                manifest {
+                    source.srcDir "${REMOTE_PROJ_ROOT}"
+                }
+                java {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/java"
+                }
+                res {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/res"
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles.add(file('proguard-android.txt'))
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:24.0.0'
+}

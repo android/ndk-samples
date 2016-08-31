@@ -1,0 +1,39 @@
+apply plugin: 'com.android.model.library'
+
+def ndkDir = System.getenv("ANDROID_NDK_HOME")
+def propertiesFile = project.rootProject.file('local.properties')
+if (propertiesFile.exists()) {
+    Properties properties = new Properties()
+    properties.load(propertiesFile.newDataInputStream())
+    ndkDir = properties.getProperty('ndk.dir')
+}
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.2"
+        defaultConfig.with {
+            minSdkVersion.apiLevel = 9
+            targetSdkVersion.apiLevel = 23
+            versionCode = 1
+            versionName = "0.0.1"
+        }
+        ndk {
+            moduleName = 'native-activity'
+            ldLibs.addAll(['log', 'android'])
+            ldFlags.add("-c")
+        }
+        sources {
+            main {
+                jni {
+                    source {
+                        srcDir "${ndkDir}/sources/android/native_app_glue"
+                    }
+                    exportedHeaders {
+                        srcDir "${ndkDir}/sources/android/native_app_glue"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,52 @@
+apply plugin: 'com.android.model.application'
+// pointing to cmake's source code for the same project
+def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            applicationId = 'com.example.native_activity'
+            minSdkVersion.apiLevel    = 9
+            targetSdkVersion.apiLevel = 23
+        }
+        ndk {
+            platformVersion = 21
+            moduleName ='native-activity'
+            toolchain = 'clang'
+            stl = 'gnustl_static'
+            cppFlags.add('-std=c++11')
+            ldLibs.addAll(['log', 'android', 'EGL', 'GLESv1_CM'])
+        }
+        sources {
+            main {
+                jni {
+                    dependencies {
+                        project ':nativeactivity' linkage 'static'
+                    }
+                    source.srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                }
+                manifest {
+                    source.srcDir "${REMOTE_PROJ_ROOT}"
+                }
+                res {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/res"
+                }
+            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
+        }
+    }
+}
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
+}

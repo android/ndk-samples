@@ -1,0 +1,50 @@
+apply plugin: 'com.android.model.application'
+// pointing to cmake's source code for the same project
+def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
+        project.getName() + '/src/main'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = '23.0.2'
+
+        defaultConfig {
+            applicationId = 'com.example.nativemedia'
+            minSdkVersion.apiLevel = 14
+            targetSdkVersion.apiLevel = 22
+        }
+        ndk {
+            platformVersion = 21
+            moduleName = 'native-media-jni'
+            toolchain = 'clang'
+            CFlags.add('-UNDEBUG')
+            ldLibs.addAll(['android','OpenMAXAL','log'])
+            // skipping mips / mips64
+            abiFilters.addAll(['armeabi','armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'])
+        }
+        sources {
+            main {
+                manifest {
+                    source.srcDir "${REMOTE_PROJ_ROOT}"
+                }
+                java {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/java"
+                }
+                res {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/res"
+                }
+                jni {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                }
+                assets {
+                    source.srcDir "${REMOTE_PROJ_ROOT}/assets"
+                }            }
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
+        }
+    }
+}
