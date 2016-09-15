@@ -32,7 +32,8 @@
 
 const int LOOPER_ID_USER = 3;
 const int SENSOR_HISTORY_LENGTH = 100;
-const int SENSOR_REFRESH_RATE = 100;
+const int SENSOR_REFRESH_RATE_HZ = 100;
+constexpr int32_t SENSOR_REFRESH_PERIOD_US = int32_t(1000000 / SENSOR_REFRESH_RATE_HZ);
 const float SENSOR_FILTER_ALPHA = 0.1f;
 
 
@@ -92,11 +93,12 @@ class sensorgraph {
         accelerometerEventQueue = ASensorManager_createEventQueue(sensorManager, looper,
                                                                   LOOPER_ID_USER, NULL, NULL);
         assert(accelerometerEventQueue != NULL);
-        ASensorEventQueue_setEventRate(accelerometerEventQueue,
-                                       accelerometer,
-                                       int32_t(1000000 / SENSOR_REFRESH_RATE));
         auto status = ASensorEventQueue_enableSensor(accelerometerEventQueue,
                                                      accelerometer);
+        assert(status >= 0);
+        status = ASensorEventQueue_setEventRate(accelerometerEventQueue,
+                                                accelerometer,
+                                                SENSOR_REFRESH_PERIOD_US);
         assert(status >= 0);
         (void)status;   //to silent unused compiler warning
 
@@ -208,6 +210,10 @@ class sensorgraph {
 
     void resume() {
         ASensorEventQueue_enableSensor(accelerometerEventQueue, accelerometer);
+        auto status = ASensorEventQueue_setEventRate(accelerometerEventQueue,
+                                                     accelerometer,
+                                                     SENSOR_REFRESH_PERIOD_US);
+        assert(status >= 0);
     }
 };
 
