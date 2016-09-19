@@ -1,9 +1,2 @@
 include ':app'
 
-// If you want to generate libs, just uncomment out the following
-// and dependency in app/build.gradle
-
-// include ':gen-libs'
-
-
-

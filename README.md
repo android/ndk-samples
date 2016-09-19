@@ -17,10 +17,6 @@ Known Issues
 
 For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
 
-Debugging
----------
-- [hello-jni-codelab](https://codelabs.developers.google.com/codelabs/android-studio-jni/index.html?index=..%2F..%2Findex#0)
-- [REFERENCE.md](REFERENCE.md) 
 
 Support
 -------
