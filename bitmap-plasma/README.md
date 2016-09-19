@@ -2,7 +2,7 @@ Bitmap Plasma
 =============
 Bitmap Plasma is an Android sample that uses JNI to render a plasma effect in an Android [Bitmap](http://developer.android.com/reference/android/graphics/Bitmap.html) from C code.
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------

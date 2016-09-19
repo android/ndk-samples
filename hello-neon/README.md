@@ -13,7 +13,7 @@ If there are lot of NEON files in the project, make a NEON lib:
 (this approach is not shown)
 
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 
 Pre-requisites

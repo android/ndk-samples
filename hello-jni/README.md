@@ -2,7 +2,7 @@ Hello JNI
 =========
 Hello JNI is an Android sample that uses JNI to call C code from a Android Java Activity.
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------

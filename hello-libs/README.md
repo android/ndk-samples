@@ -2,7 +2,7 @@ Hello-libs
 =========
 Hello-Libs is an Android sample that demos native lib management in Android Studio.
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with external lib support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external lib support.
 it includes 2 modules:
 *    app -- uses one shared lib and one static lib from $project/distribution/
 *    gen-libs -- generates one shared and one static lib, and copy them into $project/distribution

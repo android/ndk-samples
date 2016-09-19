@@ -5,7 +5,7 @@ view:
 - rotate decoding 3 webp images and load them into on-screen buffer. Decoding is in its own thread
 
 
-This sample uses the new [Android CMake](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds).
 
 Pre-requisites
 --------------

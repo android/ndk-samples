@@ -12,7 +12,7 @@ To add your own files:
 - from android device, select your stream
 
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------

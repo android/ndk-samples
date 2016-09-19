@@ -4,7 +4,7 @@ This sample is an Aadd-on to Hello JNI sample to demonstrate calling back to Jav
 - create a java class instance from C code
 - call java class static and non-static member functions
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------

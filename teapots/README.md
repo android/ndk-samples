@@ -1,8 +1,11 @@
-Teapot
+Teapots
 ======
-Teapot is an Android C++ sample that draws a Teapot mesh using GLES 2.0 API and [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
+Teapots is an collection of Android C++ samples that uses a Teapot rendering to demostrate Android NDK platform features:
+- classic-teapot: Rendering classic teapot mesh using GLES 2.0 API and [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
+- more-teapots: Rendering multiple instances of Classic Teapot with GLES 3.0 Instance Rendering
+- Choreographer-30fps: demonstrates multiple frame rate throttoling techniques based on API level using Chreographer API and EGL Android presentation time extension.
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------

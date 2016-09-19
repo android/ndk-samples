@@ -12,7 +12,7 @@ integration. For example, this game contains textures and geometry
 hard-coded in code, which works for small demo games like this one,
 but doesn't scale well to real games.
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------

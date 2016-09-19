@@ -2,7 +2,7 @@ Native Plasma
 =============
 Native Plasma is an Android sample that renders a plasma effect in a Bitmap from C code using [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html).
 
-This sample uses the new [Gradle Experimental Android plugin](http://tools.android.com/tech-docs/new-build-system/gradle-experimental) with C++ support.
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------
