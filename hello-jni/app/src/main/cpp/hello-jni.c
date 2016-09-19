@@ -21,9 +21,9 @@
  * to return a new VM String. See the corresponding Java source
  * file located at:
  *
- *   apps/samples/hello-jni/project/src/com/example/hellojni/HelloJni.java
+ *   hello-jni/app/src/main/java/com/example/hellojni/HelloJni.java
  */
-jstring
+JNIEXPORT jstring JNICALL
 Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env,
                                                   jobject thiz )
 {

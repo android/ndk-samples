@@ -14,7 +14,10 @@ android {
             cmake {
                 arguments '-DANDROID_PLATFORM=android-9',
                           '-DANDROID_TOOLCHAIN=clang'
+                // explicitly build libs
+                targets 'gmath', 'gperf'
             }
+           
         }
     }
     buildTypes {

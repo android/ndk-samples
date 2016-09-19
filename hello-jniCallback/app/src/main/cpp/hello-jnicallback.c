@@ -46,9 +46,9 @@ TickContext g_ctx;
  * to return a new VM String. See the corresponding Java source
  * file located at:
  *
- *   apps/samples/hello-jni/project/src/com/example/hellojni/HelloJni.java
+ *   hello-jniCallback/app/src/main/java/com/example/hellojnicallback/MainActivity.java
  */
-jstring
+JNIEXPORT jstring JNICALL
 Java_com_example_hellojnicallback_MainActivity_stringFromJNI( JNIEnv* env, jobject thiz )
 {
 #if defined(__arm__)
