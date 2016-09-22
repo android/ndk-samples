@@ -17,7 +17,7 @@ set(gles3jni_SRCS gles3jni.cpp
                   RendererES2.cpp)
 
 if (${ANDROID_PLATFORM_LEVEL} LESS 11)
-  MESSAGE(ERROR " OpenGL 2 is not supported")
+  message(FATAL_ERROR "OpenGL 2 is not supported before API level 11 (currently using ${ANDROID_PLATFORM_LEVEL}).")
   return()
 elseif (${ANDROID_PLATFORM_LEVEL} LESS 18)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDYNAMIC_ES3")
