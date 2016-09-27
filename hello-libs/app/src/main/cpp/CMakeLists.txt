@@ -17,17 +17,10 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-set(CMAKE_VERBOSE_MAKEFILE on)
-
-set(lib_src_DIR ${CMAKE_SOURCE_DIR}/../../../../libsrc)
-set(lib_build_DIR $ENV{HOME}/tmp)
-file(MAKE_DIRECTORY ${lib_build_DIR})
-
 # configure import libs
 set(distribution_DIR ${CMAKE_SOURCE_DIR}/../../../../distribution)
-#LINK_DIRECTORIES(${distribution_DIR}/gmath/lib/${ANDROID_ABI})
 
-add_library(lib_gmath STATIC IMPORTED )
+add_library(lib_gmath STATIC IMPORTED)
 set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
     ${distribution_DIR}/gmath/lib/${ANDROID_ABI}/libgmath.a)
 
@@ -35,13 +28,22 @@ set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
 # refer to app/build.gradle, jniLibs section for that purpose.
 # ${ANDROID_ABI} is handy for our purpose here. Probably this ${ANDROID_ABI} is
 # the most valuable thing of this sample, the rest are pretty much normal cmake
-add_library(lib_gperf SHARED IMPORTED )
+add_library(lib_gperf SHARED IMPORTED)
 set_target_properties(lib_gperf PROPERTIES IMPORTED_LOCATION
     ${distribution_DIR}/gperf/lib/${ANDROID_ABI}/libgperf.so)
 
 # build application's shared lib
-include_directories(${distribution_DIR}/gmath/include
-                    ${distribution_DIR}/gperf/include)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-add_library(hello-libs SHARED hello-libs.cpp)
-target_link_libraries(hello-libs log android lib_gperf lib_gmath)
+
+add_library(hello-libs SHARED
+            hello-libs.cpp)
+
+target_include_directories(hello-libs PRIVATE
+                           ${distribution_DIR}/gmath/include
+                           ${distribution_DIR}/gperf/include)
+
+target_link_libraries(hello-libs
+                      android
+                      lib_gmath
+                      lib_gperf
+                      log)

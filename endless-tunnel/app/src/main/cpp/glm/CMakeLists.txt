@@ -1,4 +1,3 @@
-
 #
 # Copyright (C) The Android Open Source Project
 #
@@ -15,18 +14,8 @@
 # limitations under the License.
 #
 
-# Generate one static lib and one shared lib, copy them into
-# ${project_dir}/distribution for other indepdendent applications
-# to use.
-cmake_minimum_required(VERSION 3.4.1)
+add_library(glm STATIC
+            detail/glm.cpp)
 
-set(CMAKE_VERBOSE_MAKEFILE on)
-
-set(lib_src_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-set(lib_build_DIR $ENV{HOME}/tmp)
-file(MAKE_DIRECTORY ${lib_build_DIR})
-
-add_subdirectory(${lib_src_DIR}/gmath ${lib_build_DIR}/gmath)
-add_subdirectory(${lib_src_DIR}/gperf ${lib_build_DIR}/gperf)
-
+target_include_directories(glm PRIVATE
+                           ${CMAKE_CURRENT_SOURCE_DIR}/..)
