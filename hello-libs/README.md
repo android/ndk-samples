@@ -1,12 +1,15 @@
 Hello-libs
 =========
-Hello-Libs is an Android sample that demos native lib management in Android Studio.
+Hello-Libs is an Android sample that demos native lib management in Android Studio:
+* how external pre-build static lib (gmath) could be used in app
+* how external pre-built shared lib (gperf) could be used in app
 
 This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external lib support.
-it includes 2 modules:
+it includes 2 modules but only uses app module:
 *    app -- uses one shared lib and one static lib from $project/distribution/
 *    gen-libs -- generates one shared and one static lib, and copy them into $project/distribution
-The debug library binaries are saved inside distribution folder. you could build your own with
+For this demo purpose, you do not need to build libs: binaries are included in the project -- the 
+debug library binaries are saved inside distribution folder. If you want, you could build your own with
 gen-libs source, just follow comment in setting.gradle and app/build.gradle  -- do it once, then
 comment them out again so you are not affected by lib building
 
