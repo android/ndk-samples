@@ -16,23 +16,56 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-set(CMAKE_VERBOSE_MAKEFILE on)
-
 # build native_app_glue as a static lib
-include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 add_library(app-glue STATIC
             ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
+# Set common compiler options
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall")
+add_definitions("-DGLM_FORCE_SIZE_T_LENGTH -DGLM_FORCE_RADIANS")
+
+# Import the CMakeLists.txt for the glm library
+add_subdirectory(glm)
+
 # now build app's shared lib
-include_directories(.)
-include_directories(./data)
+add_library(game SHARED
+            android_main.cpp
+            anim.cpp
+            ascii_to_geom.cpp
+            dialog_scene.cpp
+            indexbuf.cpp
+            input_util.cpp
+            jni_util.cpp
+            native_engine.cpp
+            obstacle.cpp
+            obstacle_generator.cpp
+            our_shader.cpp
+            play_scene.cpp
+            scene.cpp
+            scene_manager.cpp
+            sfxman.cpp
+            shader.cpp
+            shape_renderer.cpp
+            tex_quad.cpp
+            text_renderer.cpp
+            texture.cpp
+            ui_scene.cpp
+            util.cpp
+            vertexbuf.cpp
+            welcome_scene.cpp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -DGLM_FORCE_SIZE_T_LENGTH")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGLM_FORCE_RADIANS")
-
-file(GLOB_RECURSE tunnel_SRCS ./*.c*)
-add_library(game SHARED ${tunnel_SRCS})
+target_include_directories(game PRIVATE
+                           ${CMAKE_CURRENT_SOURCE_DIR}
+                           ${CMAKE_CURRENT_SOURCE_DIR}/data
+                           ${ANDROID_NDK}/sources/android/native_app_glue)
 
 # add lib dependencies
-target_link_libraries(game android log EGL GLESv2 OpenSLES atomic app-glue)
-
+target_link_libraries(game
+                      android
+                      app-glue
+                      atomic
+                      EGL
+                      GLESv2
+                      glm
+                      log
+                      OpenSLES)

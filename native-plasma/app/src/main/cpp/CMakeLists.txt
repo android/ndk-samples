@@ -16,15 +16,20 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-set(CMAKE_VERBOSE_MAKEFILE on)
-
 # build native_app_glue as a static lib
-include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 add_library(app-glue STATIC
             ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 # now build app's shared lib
-add_library(native-plasma SHARED plasma.c)
+add_library(native-plasma SHARED
+            plasma.c)
+
+target_include_directories(native-plasma PRIVATE
+                           ${ANDROID_NDK}/sources/android/native_app_glue)
 
 # add lib dependencies
-target_link_libraries(native-plasma android log m app-glue)
+target_link_libraries(native-plasma
+                      android
+                      app-glue
+                      log
+                      m)

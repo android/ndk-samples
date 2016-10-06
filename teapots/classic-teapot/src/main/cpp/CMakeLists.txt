@@ -15,34 +15,33 @@
 #
 
 cmake_minimum_required(VERSION 3.4.1)
-set(CMAKE_VERBOSE_MAKEFILE on)
 
 # build native_app_glue as a static lib
-include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 add_library(app-glue STATIC
             ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
-# now build app's shared lib
-set(ndk_helper_dir ../../../../common/ndk_helper)
-set(ndk_helper_SRCS ${ndk_helper_dir}/gl3stub.c
-                    ${ndk_helper_dir}/GLContext.cpp
-                    ${ndk_helper_dir}/shader.cpp
-                    ${ndk_helper_dir}/vecmath.cpp
-                    ${ndk_helper_dir}/gestureDetector.cpp
-                    ${ndk_helper_dir}/interpolator.cpp
-                    ${ndk_helper_dir}/tapCamera.cpp
-                    ${ndk_helper_dir}/JNIHelper.cpp
-                    ${ndk_helper_dir}/perfMonitor.cpp)
-
-include_directories(${ndk_helper_dir}
-                    ${ANDROID_NDK}/sources/android/cpufeatures)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -fno-exceptions -fno-rtti")
-set(teapot_SRCS TeapotNativeActivity.cpp
-                TeapotRenderer.cpp
-                ${ndk_helper_SRCS})
 
-add_library(TeapotNativeActivity SHARED ${teapot_SRCS})
+# build the ndk-helper library
+set(ndk_helper_dir ../../../../common/ndk_helper)
+add_subdirectory(${ndk_helper_dir} ndk_helper)
+
+# now build app's shared lib
+add_library(TeapotNativeActivity SHARED
+            TeapotNativeActivity.cpp
+            TeapotRenderer.cpp)
+
+target_include_directories(TeapotNativeActivity PRIVATE
+                           ${ANDROID_NDK}/sources/android/cpufeatures
+                           ${ANDROID_NDK}/sources/android/native_app_glue
+                           ${ndk_helper_dir})
 
 # add lib dependencies
-target_link_libraries(TeapotNativeActivity android log EGL GLESv2 atomic app-glue)
-
+target_link_libraries(TeapotNativeActivity
+                      android
+                      app-glue
+                      atomic
+                      EGL
+                      GLESv2
+                      log
+                      ndk-helper)
