@@ -8,7 +8,7 @@
 * In app/build.gradle, add compile dependency for debug and release builds with:   
 debugCompile project(path: ':layerlib', configuration: 'debug')   
 releaseCompile project(path: ':layerlib', configuration: 'release')
-* in lib(s)/build.gradle, disable the default publishNonDefault:    
+* in lib(s)/build.gradle, enable the default publishNonDefault:    
 ```java
 android {
     publishNonDefault  true
