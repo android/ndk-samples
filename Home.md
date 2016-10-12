@@ -6,8 +6,8 @@
 # Q and A
 ## How to trace code in native lib?   
 * In app/build.gradle, add compile dependency for debug and release builds with:   
-debugCompile project(path: ':layerlib', configuration: 'debug')   
-releaseCompile project(path: ':layerlib', configuration: 'release')
+debugCompile project(path: ':your-lib', configuration: 'debug')   
+releaseCompile project(path: ':your-lib', configuration: 'release')
 * in lib(s)/build.gradle, enable publishNonDefault:    
 ```java
 android {
