@@ -17,7 +17,11 @@ Known Issues
 
 For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
 
-
+Build Steps
+----------
+- With Android Studio: use "Import Project(Eclipse ADT, Gradle, etc)" or "File" > "Import Projec"t option
+- On Command Line/Terminal:  make sure set up ANDROID_HOME and ANDROID_NDK_HOME to local installation of SDK and NDK, then go to individual sample dir, and use "gradlew assembleDebug"
+ 
 Support
 -------
 
