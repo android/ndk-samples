@@ -58,7 +58,7 @@ android {
                 abiFilters 'mips', 'mips64'
             }
         }
-        all {
+        universal {
             ndk {
                 abiFilters 'mips', 'mips64', 'x86', 'x86_64'
             }
