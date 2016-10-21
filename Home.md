@@ -18,3 +18,5 @@ android {
     publishNonDefault  true
 }
 ```
+## How to Pack standard stl shared libs:
+ Please check the [workaround](http://stackoverflow.com/questions/39620739)
