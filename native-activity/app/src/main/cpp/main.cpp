@@ -17,6 +17,7 @@
 
 //BEGIN_INCLUDE(all)
 #include <initializer_list>
+#include <memory>
 #include <jni.h>
 #include <errno.h>
 #include <cassert>
@@ -91,9 +92,9 @@ static int engine_init_display(struct engine* engine) {
      * find the best match if possible, otherwise use the very first one
      */
     eglChooseConfig(display, attribs, nullptr,0, &numConfigs);
-    auto supportedConfigs = new EGLConfig[numConfigs];
+    std::unique_ptr<EGLConfig[]> supportedConfigs(new EGLConfig[numConfigs]);
     assert(supportedConfigs);
-    eglChooseConfig(display, attribs, supportedConfigs, numConfigs, &numConfigs);
+    eglChooseConfig(display, attribs, supportedConfigs.get(), numConfigs, &numConfigs);
     assert(numConfigs);
     auto i = 0;
     for (; i < numConfigs; i++) {
