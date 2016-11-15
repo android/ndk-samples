@@ -179,13 +179,8 @@ class MyRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvaila
 
         muSTMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uSTMatrix");
         checkGlError("glGetUniformLocation uSTMatrix");
-        if (muMVPMatrixHandle == -1) {
+        if (muSTMatrixHandle == -1) {
             throw new RuntimeException("Could not get attrib location for uSTMatrix");
-        }
-
-        checkGlError("glGetUniformLocation uCRatio");
-        if (muMVPMatrixHandle == -1) {
-            throw new RuntimeException("Could not get attrib location for uCRatio");
         }
 
         /*
