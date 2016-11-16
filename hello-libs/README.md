@@ -1,11 +1,16 @@
 Hello-libs
 =========
-Hello-Libs is an Android sample that demos native lib management in Android Studio:
+Hello-Libs is an Android sample that demos 3rd party native lib management with Android Studio
+
+Introduction
+------------
+This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external lib support.
 * how external pre-build static lib (gmath) could be used in app
 * how external pre-built shared lib (gperf) could be used in app
 
-This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external lib support.
-it includes 2 modules but only uses app module:
+Description
+-----------
+The sample includes 2 modules but only uses app module:
 *    app -- uses one shared lib and one static lib from $project/distribution/
 *    gen-libs -- generates one shared and one static lib, and copy them into $project/distribution
 For this demo purpose, you do not need to build libs: binaries are included in the project -- the 
@@ -16,6 +21,7 @@ comment them out again so you are not affected by lib building
 The key point is to inform app's CMakeLists.txt
 *    where lib/header are
 *    where lib binaries are and import them as static or shared
+
 Note: for shared lib, with android plugin 2.2.0-alpha3+, once declared as SHARED IMPORTED, Android
 Studio will automatically pack them into apk too! So lib just need tell Android Studio once, it
 will be used both on Host and on Target
