@@ -15,6 +15,7 @@ LOCAL_STATIC_LIBRARIES := cpufeatures android_native_app_glue ndk_helper
 
 include $(BUILD_SHARED_LIBRARY)
 
-$(call import-module,android/ndk_helper)
+$(call import-add-path, $(LOCAL_PATH))
+$(call import-module,ndk_helper)
 $(call import-module,android/native_app_glue)
 $(call import-module,android/cpufeatures)
