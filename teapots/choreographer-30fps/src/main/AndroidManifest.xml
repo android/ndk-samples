@@ -20,7 +20,7 @@
     <activity android:name="com.sample.choreographer.ChoreographerNativeActivity"
               android:label="@string/app_name"
               android:configChanges="orientation|keyboardHidden">
-      <!-- Tell NativeActivity the name of or .so -->
+      <!-- Tell NativeActivity the name of our .so -->
       <meta-data android:name="android.app.lib_name"
                  android:value="ChoreographerNativeActivity" />
       <intent-filter>
