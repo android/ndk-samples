@@ -30,4 +30,7 @@ apply plugin: 'com.android.application'
              path 'src/main/cpp/CMakeLists.txt'
          }
      }
+     aaptOptions {
+         noCompress 'ts'
+     }
 }

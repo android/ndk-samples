@@ -35,4 +35,7 @@ android {
              path 'Android.mk'
          }
      }
+     aaptOptions {
+         noCompress 'ts'
+     }
 }
