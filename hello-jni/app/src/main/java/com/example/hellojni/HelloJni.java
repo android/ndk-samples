@@ -24,13 +24,13 @@ public class HelloJni extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /* Create a TextView and set its content.
+        /* Retrieve our TextView and set its content.
          * the text is retrieved by calling a native
          * function.
          */
-        TextView tv = new TextView(this);
+        setContentView(R.layout.activity_hello_jni);
+        TextView tv = (TextView)findViewById(R.id.hello_textview);
         tv.setText( stringFromJNI() );
-        setContentView(tv);
     }
     /* A native method that is implemented by the
      * 'hello-jni' native library, which is packaged
