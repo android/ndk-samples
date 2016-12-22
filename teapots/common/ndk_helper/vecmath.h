@@ -768,6 +768,7 @@ class Mat4 {
   //--------------------------------------------------------------------------------
   static Mat4 Perspective(float width, float height, float nearPlane,
                           float farPlane);
+  static Mat4 Ortho2D(float left, float top, float right, float bottom);
 
   static Mat4 LookAt(const Vec3& vEye, const Vec3& vAt, const Vec3& vUp);
 
@@ -779,6 +780,8 @@ class Mat4 {
   static Mat4 RotationY(const float angle);
 
   static Mat4 RotationZ(const float angle);
+
+  static Mat4 Scale(const float scaleX, const float scaleY, const float scaleZ);
 
   static Mat4 Identity() {
     Mat4 ret;

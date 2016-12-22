@@ -38,7 +38,6 @@ public class MoreTeapotsApplication extends Application {
         super.onCreate();
 
         context=getApplicationContext();
-        NDKHelper.setContext(context);
         Log.w("native-activity", "onCreate");
 
         final PackageManager pm = getApplicationContext().getPackageManager();

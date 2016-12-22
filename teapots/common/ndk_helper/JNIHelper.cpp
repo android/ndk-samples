@@ -22,7 +22,7 @@
 
 namespace ndk_helper {
 
-#define CLASS_NAME "android/app/NativeActivity"
+#define NATIVEACTIVITY_CLASS_NAME "android/app/NativeActivity"
 
 //---------------------------------------------------------------------------
 // JNI Helper functions
@@ -39,23 +39,20 @@ JNIHelper* JNIHelper::GetInstance() {
 //---------------------------------------------------------------------------
 // Ctor
 //---------------------------------------------------------------------------
-JNIHelper::JNIHelper() { pthread_mutex_init(&mutex_, NULL); }
+JNIHelper::JNIHelper() : activity_(NULL) {}
 
 //---------------------------------------------------------------------------
 // Dtor
 //---------------------------------------------------------------------------
 JNIHelper::~JNIHelper() {
-  pthread_mutex_lock(&mutex_);
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
 
-  JNIEnv* env;
-  activity_->vm->AttachCurrentThread(&env, NULL);
-
+  JNIEnv *env = AttachCurrentThread();
   env->DeleteGlobalRef(jni_helper_java_ref_);
   env->DeleteGlobalRef(jni_helper_java_class_);
 
-  activity_->vm->DetachCurrentThread();
-
-  pthread_mutex_destroy(&mutex_);
+  DetachCurrentThread();
 }
 
 //---------------------------------------------------------------------------
@@ -63,14 +60,15 @@ JNIHelper::~JNIHelper() {
 //---------------------------------------------------------------------------
 void JNIHelper::Init(ANativeActivity* activity, const char* helper_class_name) {
   JNIHelper& helper = *GetInstance();
-  pthread_mutex_lock(&helper.mutex_);
 
   helper.activity_ = activity;
 
-  JNIEnv* env;
-  helper.activity_->vm->AttachCurrentThread(&env, NULL);
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(helper.mutex_);
 
-  // Retrieve app name
+  JNIEnv *env = helper.AttachCurrentThread();
+
+  //Retrieve app bundle id
   jclass android_content_Context = env->GetObjectClass(helper.activity_->clazz);
   jmethodID midGetPackageName = env->GetMethodID(
       android_content_Context, "getPackageName", "()Ljava/lang/String;");
@@ -84,15 +82,45 @@ void JNIHelper::Init(ANativeActivity* activity, const char* helper_class_name) {
   helper.jni_helper_java_class_ = (jclass)env->NewGlobalRef(cls);
 
   jmethodID constructor =
-      env->GetMethodID(helper.jni_helper_java_class_, "<init>", "()V");
-  helper.jni_helper_java_ref_ =
-      env->NewObject(helper.jni_helper_java_class_, constructor);
+      env->GetMethodID(helper.jni_helper_java_class_, "<init>",
+                       "(Landroid/app/NativeActivity;)V");
+
+  helper.jni_helper_java_ref_ = env
+      ->NewObject(helper.jni_helper_java_class_, constructor, activity->clazz);
   helper.jni_helper_java_ref_ = env->NewGlobalRef(helper.jni_helper_java_ref_);
 
-  env->ReleaseStringUTFChars(packageName, appname);
-  helper.activity_->vm->DetachCurrentThread();
+  //Get app label
+  jstring labelName = (jstring)
+      helper.CallObjectMethod("getApplicationName", "()Ljava/lang/String;");
+  const char *label = env->GetStringUTFChars(labelName, NULL);
+  helper.app_label_ = std::string(label);
 
-  pthread_mutex_unlock(&helper.mutex_);
+  env->ReleaseStringUTFChars(packageName, appname);
+  env->ReleaseStringUTFChars(labelName, label);
+  env->DeleteLocalRef(packageName);
+  env->DeleteLocalRef(labelName);
+  env->DeleteLocalRef(cls);
+}
+
+void JNIHelper::Init(ANativeActivity* activity, const char* helper_class_name,
+                     const char *native_soname) {
+  Init(activity, helper_class_name);
+  if (native_soname) {
+    JNIHelper &helper = *GetInstance();
+    // Lock mutex
+    std::lock_guard<std::mutex> lock(helper.mutex_);
+
+    JNIEnv* env = helper.AttachCurrentThread();
+
+    // Setup soname
+    jstring soname = env->NewStringUTF(native_soname);
+
+    jmethodID mid = env->GetMethodID(helper.jni_helper_java_class_,
+                                     "loadLibrary", "(Ljava/lang/String;)V");
+    env->CallVoidMethod(helper.jni_helper_java_ref_, mid, soname);
+
+    env->DeleteLocalRef(soname);
+  }
 }
 
 //---------------------------------------------------------------------------
@@ -107,11 +135,11 @@ bool JNIHelper::ReadFile(const char* fileName,
     return false;
   }
 
-  // First, try reading from externalFileDir;
-  JNIEnv* env;
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
 
-  pthread_mutex_lock(&mutex_);
-  activity_->vm->AttachCurrentThread(&env, NULL);
+  // First, try reading from externalFileDir;
+  JNIEnv* env = AttachCurrentThread();
 
   jstring str_path = GetExternalFilesDirJString(env);
   const char* path = env->GetStringUTFChars(str_path, NULL);
@@ -136,7 +164,6 @@ bool JNIHelper::ReadFile(const char* fileName,
     buffer_ref->assign(std::istreambuf_iterator<char>(f),
                        std::istreambuf_iterator<char>());
     f.close();
-    pthread_mutex_unlock(&mutex_);
     return true;
   } else {
     // Fallback to assetManager
@@ -144,7 +171,6 @@ bool JNIHelper::ReadFile(const char* fileName,
     AAsset* assetFile =
         AAssetManager_open(assetManager, fileName, AASSET_MODE_BUFFER);
     if (!assetFile) {
-      pthread_mutex_unlock(&mutex_);
       return false;
     }
     uint8_t* data = (uint8_t*)AAsset_getBuffer(assetFile);
@@ -153,7 +179,6 @@ bool JNIHelper::ReadFile(const char* fileName,
       AAsset_close(assetFile);
 
       LOGI("Failed to load:%s", fileName);
-      pthread_mutex_unlock(&mutex_);
       return false;
     }
 
@@ -161,25 +186,22 @@ bool JNIHelper::ReadFile(const char* fileName,
     buffer_ref->assign(data, data + size);
 
     AAsset_close(assetFile);
-    pthread_mutex_unlock(&mutex_);
     return true;
   }
 }
 
 std::string JNIHelper::GetExternalFilesDir() {
   if (activity_ == NULL) {
-    LOGI(
-        "JNIHelper has not been initialized. Call init() to initialize the "
-        "helper");
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
     return std::string("");
   }
 
-  pthread_mutex_lock(&mutex_);
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
 
   // First, try reading from externalFileDir;
-  JNIEnv* env;
-
-  activity_->vm->AttachCurrentThread(&env, NULL);
+  JNIEnv *env = AttachCurrentThread();
 
   jstring strPath = GetExternalFilesDirJString(env);
   const char* path = env->GetStringUTFChars(strPath, NULL);
@@ -187,26 +209,21 @@ std::string JNIHelper::GetExternalFilesDir() {
 
   env->ReleaseStringUTFChars(strPath, path);
   env->DeleteLocalRef(strPath);
-  activity_->vm->DetachCurrentThread();
-
-  pthread_mutex_unlock(&mutex_);
   return s;
 }
 
-uint32_t JNIHelper::LoadTexture(const char* file_name) {
+uint32_t JNIHelper::LoadTexture(const char* file_name, int32_t* outWidth,
+                                int32_t* outHeight, bool* hasAlpha) {
   if (activity_ == NULL) {
-    LOGI(
-        "JNIHelper has not been initialized. Call init() to initialize the "
-        "helper");
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
     return 0;
   }
 
-  JNIEnv* env;
-  jmethodID mid;
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
 
-  pthread_mutex_lock(&mutex_);
-  activity_->vm->AttachCurrentThread(&env, NULL);
-
+  JNIEnv *env = AttachCurrentThread();
   jstring name = env->NewStringUTF(file_name);
 
   GLuint tex;
@@ -216,27 +233,159 @@ uint32_t JNIHelper::LoadTexture(const char* file_name) {
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                   GL_LINEAR_MIPMAP_NEAREST);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  jmethodID mid = env->GetMethodID(jni_helper_java_class_, "loadTexture",
+                                   "(Ljava/lang/String;)Ljava/lang/Object;");
 
-  mid = env->GetMethodID(jni_helper_java_class_, "loadTexture",
-                         "(Ljava/lang/String;)Z");
-  jboolean ret = env->CallBooleanMethod(jni_helper_java_ref_, mid, name);
+  jobject out = env->CallObjectMethod(jni_helper_java_ref_, mid, name);
+
+  jclass javaCls =
+      RetrieveClass(env, "com/sample/helper/NDKHelper$TextureInformation");
+  jfieldID fidRet = env->GetFieldID(javaCls, "ret", "Z");
+  jfieldID fidHasAlpha = env->GetFieldID(javaCls, "alphaChannel", "Z");
+  jfieldID fidWidth = env->GetFieldID(javaCls, "originalWidth", "I");
+  jfieldID fidHeight = env->GetFieldID(javaCls, "originalHeight", "I");
+  bool ret = env->GetBooleanField(out, fidRet);
+  bool alpha = env->GetBooleanField(out, fidHasAlpha);
+  int32_t width = env->GetIntField(out, fidWidth);
+  int32_t height = env->GetIntField(out, fidHeight);
   if (!ret) {
     glDeleteTextures(1, &tex);
     tex = -1;
     LOGI("Texture load failed %s", file_name);
+  }
+  LOGI("Loaded texture original size:%dx%d alpha:%d", width, height,
+       (int32_t) alpha);
+  if (outWidth != NULL) {
+    *outWidth = width;
+  }
+  if (outHeight != NULL) {
+    *outHeight = height;
+  }
+  if (hasAlpha != NULL) {
+    *hasAlpha = alpha;
   }
 
   // Generate mipmap
   glGenerateMipmap(GL_TEXTURE_2D);
 
   env->DeleteLocalRef(name);
-  activity_->vm->DetachCurrentThread();
-  pthread_mutex_unlock(&mutex_);
+  DetachCurrentThread();
 
   return tex;
 }
 
-std::string JNIHelper::ConvertString(const char* str, const char* encode) {
+
+uint32_t JNIHelper::LoadCubemapTexture(const char* file_name,
+                                       const int32_t face,
+                                       const int32_t miplevel,
+                                       const bool sRGB,
+                                       int32_t* outWidth,
+                                       int32_t* outHeight,
+                                       bool* hasAlpha)
+{
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return 0;
+  }
+
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  JNIEnv* env = AttachCurrentThread();
+  jstring name = env->NewStringUTF(file_name);
+
+  jmethodID mid = env->GetMethodID(jni_helper_java_class_, "loadCubemapTexture",
+                                   "(Ljava/lang/String;IIZ)Ljava/lang/Object;");
+
+  jobject out = env->CallObjectMethod(jni_helper_java_ref_, mid, name, face, miplevel);
+
+  jclass javaCls =
+      RetrieveClass(env, "com/sample/helper/NDKHelper$TextureInformation");
+  jfieldID fidRet = env->GetFieldID(javaCls, "ret", "Z");
+  jfieldID fidHasAlpha = env->GetFieldID(javaCls, "alphaChannel", "Z");
+  jfieldID fidWidth = env->GetFieldID(javaCls, "originalWidth", "I");
+  jfieldID fidHeight = env->GetFieldID(javaCls, "originalHeight", "I");
+  bool ret = env->GetBooleanField(out, fidRet);
+  bool alpha = env->GetBooleanField(out, fidHasAlpha);
+  int32_t width = env->GetIntField(out, fidWidth);
+  int32_t height = env->GetIntField(out, fidHeight);
+  if (!ret) {
+    LOGI("Texture load failed %s", file_name);
+  }
+  LOGI("Loaded texture original size:%dx%d alpha:%d", width, height,
+       (int32_t) alpha);
+  if (outWidth != NULL) {
+    *outWidth = width;
+  }
+  if (outHeight != NULL) {
+    *outHeight = height;
+  }
+  if (hasAlpha != NULL) {
+    *hasAlpha = alpha;
+  }
+
+  env->DeleteLocalRef(name);
+  env->DeleteLocalRef(javaCls);
+
+  return 0;
+}
+
+jobject JNIHelper::LoadImage(const char* file_name, int32_t* outWidth,
+                     int32_t* outHeight, bool* hasAlpha) {
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return 0;
+  }
+
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  JNIEnv* env = AttachCurrentThread();
+  jstring name = env->NewStringUTF(file_name);
+
+  jmethodID mid = env->GetMethodID(jni_helper_java_class_, "loadImage",
+                                   "(Ljava/lang/String;)Ljava/lang/Object;");
+
+  jobject out = env->CallObjectMethod(jni_helper_java_ref_, mid, name);
+
+  jclass javaCls =
+      RetrieveClass(env, "com/sample/helper/NDKHelper$TextureInformation");
+  jfieldID fidRet = env->GetFieldID(javaCls, "ret", "Z");
+  jfieldID fidHasAlpha = env->GetFieldID(javaCls, "alphaChannel", "Z");
+  jfieldID fidWidth = env->GetFieldID(javaCls, "originalWidth", "I");
+  jfieldID fidHeight = env->GetFieldID(javaCls, "originalHeight", "I");
+  bool ret = env->GetBooleanField(out, fidRet);
+  bool alpha = env->GetBooleanField(out, fidHasAlpha);
+  int32_t width = env->GetIntField(out, fidWidth);
+  int32_t height = env->GetIntField(out, fidHeight);
+  if (!ret) {
+    LOGI("Texture load failed %s", file_name);
+  }
+  LOGI("Loaded texture original size:%dx%d alpha:%d", width, height,
+       (int32_t) alpha);
+  if (outWidth != NULL) {
+    *outWidth = width;
+  }
+  if (outHeight != NULL) {
+    *outHeight = height;
+  }
+  if (hasAlpha != NULL) {
+    *hasAlpha = alpha;
+  }
+
+  jfieldID fidImage = env->GetFieldID(javaCls, "image", "Ljava/lang/Object;");
+  jobject array = env->GetObjectField (out, fidImage);
+  jobject objGlobal = env->NewGlobalRef(array);
+
+  env->DeleteLocalRef(name);
+  env->DeleteLocalRef(javaCls);
+
+  return objGlobal;
+}
+
+std::string JNIHelper::ConvertString(const char *str, const char *encode) {
   if (activity_ == NULL) {
     LOGI(
         "JNIHelper has not been initialized. Call init() to initialize the "
@@ -244,10 +393,11 @@ std::string JNIHelper::ConvertString(const char* str, const char* encode) {
     return std::string("");
   }
 
-  JNIEnv* env;
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
 
-  pthread_mutex_lock(&mutex_);
-  activity_->vm->AttachCurrentThread(&env, NULL);
+  JNIEnv *env = AttachCurrentThread();
+  env->PushLocalFrame(16);
 
   int32_t iLength = strlen((const char*)str);
 
@@ -265,60 +415,75 @@ std::string JNIHelper::ConvertString(const char* str, const char* encode) {
   std::string s = std::string(cparam);
 
   env->ReleaseStringUTFChars(object, cparam);
+  env->DeleteLocalRef(array);
   env->DeleteLocalRef(strEncode);
   env->DeleteLocalRef(object);
-  activity_->vm->DetachCurrentThread();
-  pthread_mutex_unlock(&mutex_);
+  env->DeleteLocalRef(cls);
+
+  env->PopLocalFrame(NULL);
 
   return s;
 }
+/*
+ * Retrieve string resource with a given name
+ * arguments:
+ *  in: resourceName, name of string resource to retrieve
+ * return: string resource value, returns "" when there is no string resource with given name
+ */
+std::string JNIHelper::GetStringResource(const std::string& resourceName)
+{
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return std::string("");
+  }
 
-//---------------------------------------------------------------------------
-// Audio helpers
-//---------------------------------------------------------------------------
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  JNIEnv* env = AttachCurrentThread();
+  jstring name = env->NewStringUTF(resourceName.c_str());
+
+  jstring ret = (jstring)
+      CallObjectMethod("getStringResource", "(Ljava/lang/String;)Ljava/lang/String;", name);
+
+  const char* resource = env->GetStringUTFChars(ret, NULL);
+  std::string s = std::string(resource);
+
+  env->ReleaseStringUTFChars(ret, resource);
+  env->DeleteLocalRef(ret);
+  env->DeleteLocalRef(name);
+
+  return s;
+}
+/*
+ * Audio helpers
+ */
 int32_t JNIHelper::GetNativeAudioBufferSize() {
   if (activity_ == NULL) {
-    LOGI(
-        "JNIHelper has not been initialized. Call init() to initialize the "
-        "helper");
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
     return 0;
   }
 
-  JNIEnv* env;
-  jmethodID mid;
-
-  pthread_mutex_lock(&mutex_);
-  activity_->vm->AttachCurrentThread(&env, NULL);
-
-  mid = env->GetMethodID(jni_helper_java_class_, "getNativeAudioBufferSize",
-                         "()I");
+  JNIEnv* env = AttachCurrentThread();
+  jmethodID mid = env->GetMethodID(jni_helper_java_class_,
+                                   "getNativeAudioBufferSize", "()I");
   int32_t i = env->CallIntMethod(jni_helper_java_ref_, mid);
-  activity_->vm->DetachCurrentThread();
-  pthread_mutex_unlock(&mutex_);
-
   return i;
 }
 
 int32_t JNIHelper::GetNativeAudioSampleRate() {
   if (activity_ == NULL) {
-    LOGI(
-        "JNIHelper has not been initialized. Call init() to initialize the "
-        "helper");
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
     return 0;
   }
 
-  JNIEnv* env;
-  jmethodID mid;
-
-  pthread_mutex_lock(&mutex_);
-  activity_->vm->AttachCurrentThread(&env, NULL);
-
-  mid = env->GetMethodID(jni_helper_java_class_, "getNativeAudioSampleRate",
-                         "()I");
+  JNIEnv *env = AttachCurrentThread();
+  jmethodID mid = env->GetMethodID(jni_helper_java_class_,
+                                   "getNativeAudioSampleRate", "()I");
   int32_t i = env->CallIntMethod(jni_helper_java_ref_, mid);
-  activity_->vm->DetachCurrentThread();
-  pthread_mutex_unlock(&mutex_);
-
   return i;
 }
 
@@ -326,7 +491,7 @@ int32_t JNIHelper::GetNativeAudioSampleRate() {
 // Misc implementations
 //---------------------------------------------------------------------------
 jclass JNIHelper::RetrieveClass(JNIEnv* jni, const char* class_name) {
-  jclass activity_class = jni->FindClass(CLASS_NAME);
+  jclass activity_class = jni->FindClass(NATIVEACTIVITY_CLASS_NAME);
   jmethodID get_class_loader = jni->GetMethodID(
       activity_class, "getClassLoader", "()Ljava/lang/ClassLoader;");
   jobject cls = jni->CallObjectMethod(activity_->clazz, get_class_loader);
@@ -338,6 +503,8 @@ jclass JNIHelper::RetrieveClass(JNIEnv* jni, const char* class_name) {
   jclass class_retrieved =
       (jclass)jni->CallObjectMethod(cls, find_class, str_class_name);
   jni->DeleteLocalRef(str_class_name);
+  jni->DeleteLocalRef(activity_class);
+  jni->DeleteLocalRef(class_loader);
   return class_retrieved;
 }
 
@@ -350,7 +517,7 @@ jstring JNIHelper::GetExternalFilesDirJString(JNIEnv* env) {
   }
 
   // Invoking getExternalFilesDir() java API
-  jclass cls_Env = env->FindClass(CLASS_NAME);
+  jclass cls_Env = env->FindClass(NATIVEACTIVITY_CLASS_NAME);
   jmethodID mid = env->GetMethodID(cls_Env, "getExternalFilesDir",
                                    "(Ljava/lang/String;)Ljava/io/File;");
   jobject obj_File = env->CallObjectMethod(activity_->clazz, mid, NULL);
@@ -362,4 +529,226 @@ jstring JNIHelper::GetExternalFilesDirJString(JNIEnv* env) {
   return obj_Path;
 }
 
-}  // namespace ndkHelper
+void JNIHelper::DeleteObject(jobject obj) {
+  if (obj == NULL) {
+    LOGI("obj can not be NULL");
+    return;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  env->DeleteGlobalRef(obj);
+}
+
+jobject JNIHelper::CallObjectMethod(const char* strMethodName,
+                                    const char* strSignature, ...) {
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return NULL;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  jmethodID mid =
+      env->GetMethodID(jni_helper_java_class_, strMethodName, strSignature);
+  if (mid == NULL) {
+    LOGI("method ID %s, '%s' not found", strMethodName, strSignature);
+    return NULL;
+  }
+
+  va_list args;
+  va_start(args, strSignature);
+  jobject obj = env->CallObjectMethodV(jni_helper_java_ref_, mid, args);
+  va_end(args);
+
+  return obj;
+}
+
+void JNIHelper::CallVoidMethod(const char* strMethodName,
+                               const char* strSignature, ...) {
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  jmethodID mid =
+      env->GetMethodID(jni_helper_java_class_, strMethodName, strSignature);
+  if (mid == NULL) {
+    LOGI("method ID %s, '%s' not found", strMethodName, strSignature);
+    return;
+  }
+  va_list args;
+  va_start(args, strSignature);
+  env->CallVoidMethodV(jni_helper_java_ref_, mid, args);
+  va_end(args);
+
+  return;
+}
+
+jobject JNIHelper::CallObjectMethod(jobject object, const char* strMethodName,
+                                    const char* strSignature, ...) {
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return NULL;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  jclass cls = env->GetObjectClass(object);
+  jmethodID mid = env->GetMethodID(cls, strMethodName, strSignature);
+  if (mid == NULL) {
+    LOGI("method ID %s, '%s' not found", strMethodName, strSignature);
+    return NULL;
+  }
+
+  va_list args;
+  va_start(args, strSignature);
+  jobject obj = env->CallObjectMethodV(object, mid, args);
+  va_end(args);
+
+  env->DeleteLocalRef(cls);
+  return obj;
+}
+
+void JNIHelper::CallVoidMethod(jobject object, const char* strMethodName,
+                               const char* strSignature, ...) {
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  jclass cls = env->GetObjectClass(object);
+  jmethodID mid = env->GetMethodID(cls, strMethodName, strSignature);
+  if (mid == NULL) {
+    LOGI("method ID %s, '%s' not found", strMethodName, strSignature);
+    return;
+  }
+
+  va_list args;
+  va_start(args, strSignature);
+  env->CallVoidMethodV(object, mid, args);
+  va_end(args);
+
+  env->DeleteLocalRef(cls);
+  return;
+}
+
+float JNIHelper::CallFloatMethod(jobject object, const char* strMethodName,
+                                 const char* strSignature, ...) {
+  float f = 0.f;
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return f;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  jclass cls = env->GetObjectClass(object);
+  jmethodID mid = env->GetMethodID(cls, strMethodName, strSignature);
+  if (mid == NULL) {
+    LOGI("method ID %s, '%s' not found", strMethodName, strSignature);
+    return f;
+  }
+  va_list args;
+  va_start(args, strSignature);
+  f = env->CallFloatMethodV(object, mid, args);
+  va_end(args);
+
+  env->DeleteLocalRef(cls);
+  return f;
+}
+
+int32_t JNIHelper::CallIntMethod(jobject object, const char* strMethodName,
+                                 const char* strSignature, ...) {
+  int32_t i = 0;
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return i;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  jclass cls = env->GetObjectClass(object);
+  jmethodID mid = env->GetMethodID(cls, strMethodName, strSignature);
+  if (mid == NULL) {
+    LOGI("method ID %s, '%s' not found", strMethodName, strSignature);
+    return i;
+  }
+  va_list args;
+  va_start(args, strSignature);
+  i = env->CallIntMethodV(object, mid, args);
+  va_end(args);
+
+  env->DeleteLocalRef(cls);
+  return i;
+}
+
+bool JNIHelper::CallBooleanMethod(jobject object, const char* strMethodName,
+                                  const char* strSignature, ...) {
+  bool b;
+  if (activity_ == NULL) {
+    LOGI("JNIHelper has not been initialized. Call init() to initialize the "
+         "helper");
+    return false;
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  jclass cls = env->GetObjectClass(object);
+  jmethodID mid = env->GetMethodID(cls, strMethodName, strSignature);
+  if (mid == NULL) {
+    LOGI("method ID %s, '%s' not found", strMethodName, strSignature);
+    return false;
+  }
+  va_list args;
+  va_start(args, strSignature);
+  b = env->CallBooleanMethodV(object, mid, args);
+  va_end(args);
+
+  env->DeleteLocalRef(cls);
+  return b;
+}
+
+jobject JNIHelper::CreateObject(const char* class_name) {
+  JNIEnv* env = AttachCurrentThread();
+
+  jclass cls = env->FindClass(class_name);
+  jmethodID constructor = env->GetMethodID(cls, "<init>", "()V");
+
+  jobject obj = env->NewObject(cls, constructor);
+  jobject objGlobal = env->NewGlobalRef(obj);
+  env->DeleteLocalRef(obj);
+  env->DeleteLocalRef(cls);
+  return objGlobal;
+}
+
+void JNIHelper::RunOnUiThread(std::function<void()> callback) {
+  // Lock mutex
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  JNIEnv* env = AttachCurrentThread();
+  static jmethodID mid = NULL;
+  if (mid == NULL)
+    mid = env->GetMethodID(jni_helper_java_class_, "runOnUIThread", "(J)V");
+
+  // Allocate temporary function object to be passed around
+  std::function<void()> *pCallback = new std::function<void()>(callback);
+  env->CallVoidMethod(jni_helper_java_ref_, mid, (int64_t) pCallback);
+}
+
+// This JNI function is invoked from UIThread asynchronously
+extern "C" {
+JNIEXPORT void
+Java_com_sample_helper_NDKHelper_RunOnUiThreadHandler(JNIEnv* env, jobject thiz,
+                                                      int64_t pointer) {
+  std::function<void()>* pCallback = (std::function<void()> *)pointer;
+  (*pCallback)();
+
+  // Deleting temporary object
+  delete pCallback;
+}
+}
+
+} // namespace ndkHelper

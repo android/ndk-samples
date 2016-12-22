@@ -60,6 +60,7 @@ class TapCamera {
 
   // Momentum support
   bool momentum_;
+  double time_stamp_;
   Vec2 vec_drag_delta_;
   Vec2 vec_last_input_;
   Vec3 vec_offset_last_;
@@ -85,6 +86,7 @@ class TapCamera {
   void EndDrag();
   void Drag(const Vec2& vec);
   void Update();
+  void Update(const double time);
 
   Mat4& GetRotationMatrix();
   Mat4& GetTransformMatrix();
