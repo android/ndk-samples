@@ -17,7 +17,7 @@ JNI_SRC_PATH := $(LOCAL_PATH)/../../../../hello-libs/app/src/main/cpp
 include $(CLEAR_VARS)
 
 # config distributed lib path
-EXT_LIB_ROOT := $(LOCAL_PATH)/../distribution
+EXT_LIB_ROOT := $(LOCAL_PATH)/../../../../hello-libs/distribution
 
 # import 2 libs: remember to generate them SEPARATELY in terminal/command line first!
 LOCAL_MODULE := local_gmath
