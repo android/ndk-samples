@@ -122,6 +122,49 @@ void TapCamera::Update() {
   mat_transform_ = Mat4::Translation(vec);
 }
 
+void TapCamera::Update(const double time) {
+  if (momentum_) {
+    const float MOMENTAM_UNIT = 0.0166f;
+    //Activate every 16.6msec
+    if (time - time_stamp_ >= MOMENTAM_UNIT) {
+      float momenttum_steps = momemtum_steps_;
+
+      //Momentum rotation
+      Vec2 v = vec_drag_delta_;
+      BeginDrag(Vec2()); //NOTE:This call reset _VDragDelta
+      Drag(v * vec_flip_);
+
+      //Momentum shift
+      vec_offset_ += vec_offset_delta_;
+
+      BallUpdate();
+      EndDrag();
+
+      //Decrease deltas
+      vec_drag_delta_ = v * MOMENTUM_FACTOR_DECREASE;
+      vec_offset_delta_ = vec_offset_delta_ * MOMENTUM_FACTOR_DECREASE_SHIFT;
+
+      //Count steps
+      momemtum_steps_ = momenttum_steps * MOMENTUM_FACTOR_DECREASE;
+      if (momemtum_steps_ < MOMENTUM_FACTOR_THRESHOLD) {
+        momentum_ = false;
+      }
+      time_stamp_ = time;
+    }
+  } else {
+    vec_drag_delta_ *= MOMENTUM_FACTOR;
+    vec_offset_delta_ = vec_offset_delta_ * MOMENTUM_FACTOR;
+    BallUpdate();
+    time_stamp_ = time;
+  }
+
+  Vec3 vec = vec_offset_ + vec_offset_now_;
+  Vec3 vec_tmp(TRANSFORM_FACTOR, -TRANSFORM_FACTOR, TRANSFORM_FACTORZ);
+
+  vec *= vec_tmp * vec_pinch_transform_factor_;
+
+  mat_transform_ = Mat4::Translation(vec);
+}
 Mat4& TapCamera::GetRotationMatrix() { return mat_rotation_; }
 
 Mat4& TapCamera::GetTransformMatrix() { return mat_transform_; }

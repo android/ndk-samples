@@ -97,13 +97,16 @@ class GLContext {
   void Suspend();
   EGLint Resume(ANativeWindow* window);
 
-  int32_t GetScreenWidth() { return screen_width_; }
-  int32_t GetScreenHeight() { return screen_height_; }
+  int32_t GetScreenWidth() const { return screen_width_; }
+  int32_t GetScreenHeight() const { return screen_height_; }
 
-  int32_t GetBufferColorSize() { return color_size_; }
-  int32_t GetBufferDepthSize() { return depth_size_; }
-  float GetGLVersion() { return gl_version_; }
+  int32_t GetBufferColorSize() const { return color_size_; }
+  int32_t GetBufferDepthSize() const { return depth_size_; }
+  float GetGLVersion() const { return gl_version_; }
   bool CheckExtension(const char* extension);
+
+  EGLDisplay GetDisplay() const { return display_; }
+  EGLSurface GetSurface() const { return surface_; }
 };
 
 }  // namespace ndkHelper
