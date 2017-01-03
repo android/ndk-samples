@@ -27,10 +27,11 @@ namespace ndk_helper {
 //--------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-//Sensor handlers
+// Sensor handlers
 //-------------------------------------------------------------------------
 SensorManager::SensorManager()
-    : sensorManager_(nullptr), accelerometerSensor_(nullptr),
+    : sensorManager_(nullptr),
+      accelerometerSensor_(nullptr),
       sensorEventQueue_(nullptr) {}
 
 SensorManager::~SensorManager() {}
@@ -64,9 +65,9 @@ void SensorManager::Process(const int32_t id) {
             orientation = ORIENTATION_REVERSE_PORTRAIT;
           }
 
-          //					LOGI( "orientation %f %d", angle, orientation);
+          //					LOGI( "orientation %f %d", angle,
+          //orientation);
         }
-
       }
     }
   }
@@ -90,4 +91,4 @@ void SensorManager::Suspend() {
   }
 }
 
-} //namespace ndkHelper
+}  // namespace ndkHelper

@@ -49,7 +49,7 @@ Vec4 Vec4::operator*(const Mat4& rhs) const {
 Mat4::Mat4() {
   for (int32_t i = 0; i < 16; ++i) f_[i] = 0.f;
   // column major identity matrix
-    f_[0] = f_[5] = f_[10] = f_[15] = 1.0f;
+  f_[0] = f_[5] = f_[10] = f_[15] = 1.0f;
 }
 
 Mat4::Mat4(const float* mIn) {

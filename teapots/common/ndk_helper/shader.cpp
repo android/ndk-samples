@@ -49,7 +49,6 @@ bool shader::CompileShader(
 
       size_t replaced_pos = str_replacement_map.find(REPLACEMENT_TAG, pos);
       if (replaced_pos == std::string::npos || replaced_pos > pos) {
-
         str.replace(pos, it->first.length(), it->second);
         str_replacement_map.replace(pos, it->first.length(), it->first.length(),
                                     REPLACEMENT_TAG);
