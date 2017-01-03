@@ -75,27 +75,24 @@ class JNIHelper {
 
   std::string app_label_;
 
-
-  //mutex for synchronization
-  //This class uses singleton pattern and can be invoked from multiple threads,
-  //each methods locks the mutex for a thread safety
+  // mutex for synchronization
+  // This class uses singleton pattern and can be invoked from multiple threads,
+  // each methods locks the mutex for a thread safety
   mutable std::mutex mutex_;
-
-
 
   /*
    * Call method in JNIHelper class
    */
-  jobject CallObjectMethod(const char *strMethodName, const char *strSignature,
+  jobject CallObjectMethod(const char* strMethodName, const char* strSignature,
                            ...);
-  void CallVoidMethod(const char *strMethodName, const char *strSignature, ...);
+  void CallVoidMethod(const char* strMethodName, const char* strSignature, ...);
 
   /*
    * Unregister this thread from the VM
    */
-  static void DetachCurrentThreadDtor(void *p) {
+  static void DetachCurrentThreadDtor(void* p) {
     LOGI("detached current thread");
-    ANativeActivity *activity = (ANativeActivity *)p;
+    ANativeActivity* activity = (ANativeActivity*)p;
     activity->vm->DetachCurrentThread();
   }
 
@@ -128,8 +125,8 @@ class JNIHelper {
    * in: native_soname, pointer to soname of native library. (e.g.
    * "NativeActivity" for "libNativeActivity.so" )
    */
-  static void Init(ANativeActivity *activity, const char *helper_class_name,
-                   const char *native_soname);
+  static void Init(ANativeActivity* activity, const char* helper_class_name,
+                   const char* native_soname);
 
   /*
    * Retrieve the singleton object of the helper.
@@ -193,10 +190,8 @@ class JNIHelper {
    * OpenGL texture name when the call succeeded
    * When it failed to load the texture, it returns -1
    */
-  uint32_t LoadCubemapTexture(const char* file_name,
-                              const int32_t face,
-                              const int32_t miplevel,
-                              const bool sRGB,
+  uint32_t LoadCubemapTexture(const char* file_name, const int32_t face,
+                              const int32_t miplevel, const bool sRGB,
                               int32_t* outWidth = nullptr,
                               int32_t* outHeight = nullptr,
                               bool* hasAlpha = nullptr);
@@ -238,7 +233,8 @@ class JNIHelper {
    * Retrieve string resource with a given name
    * arguments:
    *  in: resourceName, name of string resource to retrieve
-   * return: string resource value, returns "" when there is no string resource with given name
+   * return: string resource value, returns "" when there is no string resource
+   * with given name
    */
   std::string GetStringResource(const std::string& resourceName);
 
@@ -296,10 +292,10 @@ class JNIHelper {
    */
   JNIEnv* AttachCurrentThread() {
     JNIEnv* env;
-    if (activity_->vm->GetEnv((void **)&env, JNI_VERSION_1_4) == JNI_OK)
+    if (activity_->vm->GetEnv((void**)&env, JNI_VERSION_1_4) == JNI_OK)
       return env;
     activity_->vm->AttachCurrentThread(&env, NULL);
-    pthread_key_create((int32_t *)activity_, DetachCurrentThreadDtor);
+    pthread_key_create((int32_t*)activity_, DetachCurrentThreadDtor);
     return env;
   }
 
@@ -329,7 +325,6 @@ class JNIHelper {
                         const char* strSignature, ...);
   bool CallBooleanMethod(jobject object, const char* strMethodName,
                          const char* strSignature, ...);
-
 };
 
 }  // namespace ndkHelper

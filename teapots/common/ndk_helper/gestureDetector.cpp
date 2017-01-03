@@ -39,7 +39,7 @@ void GestureDetector::SetConfiguration(AConfiguration* config) {
 //--------------------------------------------------------------------------------
 TapDetector::TapDetector() : down_x_(0), down_y_(0) {}
 
-GESTURE_STATE TapDetector::Detect(const AInputEvent *motion_event) {
+GESTURE_STATE TapDetector::Detect(const AInputEvent* motion_event) {
   if (AMotionEvent_getPointerCount(motion_event) > 1) {
     // Only support single touch
     return false;
@@ -76,9 +76,9 @@ GESTURE_STATE TapDetector::Detect(const AInputEvent *motion_event) {
 // DoubletapDetector
 //--------------------------------------------------------------------------------
 DoubletapDetector::DoubletapDetector()
-  : last_tap_x_(0), last_tap_y_(0), last_tap_time_(0) {}
+    : last_tap_x_(0), last_tap_y_(0), last_tap_time_(0) {}
 
-GESTURE_STATE DoubletapDetector::Detect(const AInputEvent *motion_event) {
+GESTURE_STATE DoubletapDetector::Detect(const AInputEvent* motion_event) {
   if (AMotionEvent_getPointerCount(motion_event) > 1) {
     // Only support single double tap
     return false;

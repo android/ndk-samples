@@ -133,7 +133,7 @@ class DragDetector : public GestureDetector {
   const AInputEvent* event_;
   std::vector<int32_t> vec_pointers_;
 
-public:
+ public:
   DragDetector() : event_(nullptr) {}
   virtual ~DragDetector() {}
   virtual GESTURE_STATE Detect(const AInputEvent* event);

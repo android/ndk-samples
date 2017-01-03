@@ -45,8 +45,8 @@ class SensorManager {
   const ASensor *accelerometerSensor_;
   ASensorEventQueue *sensorEventQueue_;
 
-protected:
-public:
+ protected:
+ public:
   SensorManager();
   ~SensorManager();
   void Init(android_app *state);
@@ -55,5 +55,5 @@ public:
   void Resume();
 };
 
-}      //namespace ndkHelper
+}  // namespace ndkHelper
 #endif /* SENSORMANAGER_H_ */

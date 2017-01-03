@@ -460,22 +460,22 @@ extern GL_APICALL GLvoid* (*GL_APIENTRY glMapBufferRange)(GLenum target,
 extern GL_APICALL void (*GL_APIENTRY glFlushMappedBufferRange)(
     GLenum target, GLintptr offset, GLsizeiptr length);
 extern GL_APICALL void (*GL_APIENTRY glBindVertexArray)(GLuint array);
-extern GL_APICALL void (*GL_APIENTRY
-                            glDeleteVertexArrays)(GLsizei n,
-                                                  const GLuint* arrays);
+extern GL_APICALL void (*GL_APIENTRY glDeleteVertexArrays)(
+    GLsizei n, const GLuint* arrays);
 extern GL_APICALL void (*GL_APIENTRY glGenVertexArrays)(GLsizei n,
                                                         GLuint* arrays);
 extern GL_APICALL GLboolean (*GL_APIENTRY glIsVertexArray)(GLuint array);
 extern GL_APICALL void (*GL_APIENTRY glGetIntegeri_v)(GLenum target,
                                                       GLuint index,
                                                       GLint* data);
-extern GL_APICALL void (*GL_APIENTRY
-                            glBeginTransformFeedback)(GLenum primitiveMode);
+extern GL_APICALL void (*GL_APIENTRY glBeginTransformFeedback)(
+    GLenum primitiveMode);
 extern GL_APICALL void (*GL_APIENTRY glEndTransformFeedback)(void);
-extern GL_APICALL void (*GL_APIENTRY
-                            glBindBufferRange)(GLenum target, GLuint index,
-                                               GLuint buffer, GLintptr offset,
-                                               GLsizeiptr size);
+extern GL_APICALL void (*GL_APIENTRY glBindBufferRange)(GLenum target,
+                                                        GLuint index,
+                                                        GLuint buffer,
+                                                        GLintptr offset,
+                                                        GLsizeiptr size);
 extern GL_APICALL void (*GL_APIENTRY glBindBufferBase)(GLenum target,
                                                        GLuint index,
                                                        GLuint buffer);
@@ -485,10 +485,9 @@ extern GL_APICALL void (*GL_APIENTRY glTransformFeedbackVaryings)(
 extern GL_APICALL void (*GL_APIENTRY glGetTransformFeedbackVarying)(
     GLuint program, GLuint index, GLsizei bufSize, GLsizei* length,
     GLsizei* size, GLenum* type, GLchar* name);
-extern GL_APICALL void (*GL_APIENTRY
-                            glVertexAttribIPointer)(GLuint index, GLint size,
-                                                    GLenum type, GLsizei stride,
-                                                    const GLvoid* pointer);
+extern GL_APICALL void (*GL_APIENTRY glVertexAttribIPointer)(
+    GLuint index, GLint size, GLenum type, GLsizei stride,
+    const GLvoid* pointer);
 extern GL_APICALL void (*GL_APIENTRY glGetVertexAttribIiv)(GLuint index,
                                                            GLenum pname,
                                                            GLint* params);
@@ -508,9 +507,8 @@ extern GL_APICALL void (*GL_APIENTRY glVertexAttribI4uiv)(GLuint index,
 extern GL_APICALL void (*GL_APIENTRY glGetUniformuiv)(GLuint program,
                                                       GLint location,
                                                       GLuint* params);
-extern GL_APICALL GLint (*GL_APIENTRY
-                             glGetFragDataLocation)(GLuint program,
-                                                    const GLchar* name);
+extern GL_APICALL GLint (*GL_APIENTRY glGetFragDataLocation)(
+    GLuint program, const GLchar* name);
 extern GL_APICALL void (*GL_APIENTRY glUniform1ui)(GLint location, GLuint v0);
 extern GL_APICALL void (*GL_APIENTRY glUniform2ui)(GLint location, GLuint v0,
                                                    GLuint v1);
@@ -540,9 +538,10 @@ extern GL_APICALL void (*GL_APIENTRY glClearBufferuiv)(GLenum buffer,
 extern GL_APICALL void (*GL_APIENTRY glClearBufferfv)(GLenum buffer,
                                                       GLint drawbuffer,
                                                       const GLfloat* value);
-extern GL_APICALL void (*GL_APIENTRY
-                            glClearBufferfi)(GLenum buffer, GLint drawbuffer,
-                                             GLfloat depth, GLint stencil);
+extern GL_APICALL void (*GL_APIENTRY glClearBufferfi)(GLenum buffer,
+                                                      GLint drawbuffer,
+                                                      GLfloat depth,
+                                                      GLint stencil);
 extern GL_APICALL const GLubyte* (*GL_APIENTRY glGetStringi)(GLenum name,
                                                              GLuint index);
 extern GL_APICALL void (*GL_APIENTRY glCopyBufferSubData)(GLenum readTarget,
@@ -607,9 +606,8 @@ extern GL_APICALL void (*GL_APIENTRY glSamplerParameteriv)(GLuint sampler,
 extern GL_APICALL void (*GL_APIENTRY glSamplerParameterf)(GLuint sampler,
                                                           GLenum pname,
                                                           GLfloat param);
-extern GL_APICALL void (*GL_APIENTRY
-                            glSamplerParameterfv)(GLuint sampler, GLenum pname,
-                                                  const GLfloat* param);
+extern GL_APICALL void (*GL_APIENTRY glSamplerParameterfv)(
+    GLuint sampler, GLenum pname, const GLfloat* param);
 extern GL_APICALL void (*GL_APIENTRY glGetSamplerParameteriv)(GLuint sampler,
                                                               GLenum pname,
                                                               GLint* params);
@@ -620,9 +618,8 @@ extern GL_APICALL void (*GL_APIENTRY glVertexAttribDivisor)(GLuint index,
                                                             GLuint divisor);
 extern GL_APICALL void (*GL_APIENTRY glBindTransformFeedback)(GLenum target,
                                                               GLuint id);
-extern GL_APICALL void (*GL_APIENTRY
-                            glDeleteTransformFeedbacks)(GLsizei n,
-                                                        const GLuint* ids);
+extern GL_APICALL void (*GL_APIENTRY glDeleteTransformFeedbacks)(
+    GLsizei n, const GLuint* ids);
 extern GL_APICALL void (*GL_APIENTRY glGenTransformFeedbacks)(GLsizei n,
                                                               GLuint* ids);
 extern GL_APICALL GLboolean (*GL_APIENTRY glIsTransformFeedback)(GLuint id);
@@ -645,10 +642,11 @@ extern GL_APICALL void (*GL_APIENTRY glInvalidateFramebuffer)(
 extern GL_APICALL void (*GL_APIENTRY glInvalidateSubFramebuffer)(
     GLenum target, GLsizei numAttachments, const GLenum* attachments, GLint x,
     GLint y, GLsizei width, GLsizei height);
-extern GL_APICALL void (*GL_APIENTRY
-                            glTexStorage2D)(GLenum target, GLsizei levels,
-                                            GLenum internalformat,
-                                            GLsizei width, GLsizei height);
+extern GL_APICALL void (*GL_APIENTRY glTexStorage2D)(GLenum target,
+                                                     GLsizei levels,
+                                                     GLenum internalformat,
+                                                     GLsizei width,
+                                                     GLsizei height);
 extern GL_APICALL void (*GL_APIENTRY glTexStorage3D)(
     GLenum target, GLsizei levels, GLenum internalformat, GLsizei width,
     GLsizei height, GLsizei depth);
