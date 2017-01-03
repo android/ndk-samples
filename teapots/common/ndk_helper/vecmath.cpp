@@ -368,7 +368,7 @@ Mat4 Mat4::Ortho2D(float left, float top, float right, float bottom) {
   return result;
 }
 
-Mat4 Mat4::LookAt(const Vec3 &vec_eye, const Vec3 &vec_at, const Vec3 &vec_up) {
+Mat4 Mat4::LookAt(const Vec3& vec_eye, const Vec3& vec_at, const Vec3& vec_up) {
   Vec3 vec_forward, vec_up_norm, vec_side;
   Mat4 result;
 
