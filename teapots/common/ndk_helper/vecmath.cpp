@@ -48,6 +48,8 @@ Vec4 Vec4::operator*(const Mat4& rhs) const {
 //--------------------------------------------------------------------------------
 Mat4::Mat4() {
   for (int32_t i = 0; i < 16; ++i) f_[i] = 0.f;
+  // column major identity matrix
+  f_[0] = f_[5] = f_[10] = f_[15] = 1.0f;
 }
 
 Mat4::Mat4(const float* mIn) {
@@ -256,6 +258,18 @@ Mat4 Mat4::RotationZ(const float fAngle) {
   return ret;
 }
 
+Mat4 Mat4::Scale(const float scaleX, const float scaleY, const float scaleZ) {
+  Mat4 ret;
+  ret.f_[0] = scaleX;
+  ret.f_[5] = scaleY;
+  ret.f_[10] = scaleZ;
+  ret.f_[1] = ret.f_[2] = ret.f_[3] = ret.f_[4] = ret.f_[6] = ret.f_[7] =
+      ret.f_[8] = ret.f_[9] = ret.f_[11] = ret.f_[12] = ret.f_[13] =
+          ret.f_[14] = 0.f;
+  ret.f_[15] = 1.0f;
+  return ret;
+}
+
 Mat4 Mat4::Translation(const float fX, const float fY, const float fZ) {
   Mat4 ret;
   ret.f_[0] = 1.0f;
@@ -321,6 +335,36 @@ Mat4 Mat4::Perspective(float width, float height, float nearPlane,
   result.f_[11] = -1.0;
   result.f_[15] = 0;
 
+  return result;
+}
+
+Mat4 Mat4::Ortho2D(float left, float top, float right, float bottom) {
+  const float zNear = -1.0f;
+  const float zFar = 1.0f;
+  const float inv_z = 1.0f / (zFar - zNear);
+  const float inv_y = 1.0f / (-top + bottom);
+  const float inv_x = 1.0f / (right - left);
+
+  Mat4 result;
+  result.f_[0] = 2.0f * inv_x;
+  result.f_[1] = 0.0f;
+  result.f_[2] = 0.0f;
+  result.f_[3] = 0.0f;
+
+  result.f_[4] = 0.0f;
+  result.f_[5] = 2.0 * inv_y;
+  result.f_[6] = 0.0f;
+  result.f_[7] = 0.0f;
+
+  result.f_[8] = 0.0f;
+  result.f_[9] = 0.0f;
+  result.f_[10] = -2.0f * inv_z;
+  result.f_[11] = 0.0f;
+
+  result.f_[12] = -(right + left) * inv_x;
+  result.f_[13] = (top + bottom) * inv_y;
+  result.f_[14] = -(zFar + zNear) * inv_z;
+  result.f_[15] = 1.0f;
   return result;
 }
 

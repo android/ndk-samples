@@ -24,7 +24,7 @@
 
 namespace ndk_helper {
 
-const int32_t NUM_SAMPLES = 100;
+const int32_t kNumSamples = 100;
 
 /******************************************************************
  * Helper class for a performance monitoring and get current tick time
@@ -37,7 +37,7 @@ class PerfMonitor {
   double last_tick_;
   int32_t tickindex_;
   double ticksum_;
-  double ticklist_[NUM_SAMPLES];
+  double ticklist_[kNumSamples];
 
   double UpdateTick(double current_tick);
 

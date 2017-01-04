@@ -78,7 +78,7 @@ class TapDetector : public GestureDetector {
   float down_y_;
 
  public:
-  TapDetector() {}
+  TapDetector();
   virtual ~TapDetector() {}
   virtual GESTURE_STATE Detect(const AInputEvent* motion_event);
 };
@@ -96,7 +96,7 @@ class DoubletapDetector : public GestureDetector {
   float last_tap_y_;
 
  public:
-  DoubletapDetector() {}
+  DoubletapDetector();
   virtual ~DoubletapDetector() {}
   virtual GESTURE_STATE Detect(const AInputEvent* motion_event);
   virtual void SetConfiguration(AConfiguration* config);
@@ -134,7 +134,7 @@ class DragDetector : public GestureDetector {
   std::vector<int32_t> vec_pointers_;
 
  public:
-  DragDetector() {}
+  DragDetector() : event_(nullptr) {}
   virtual ~DragDetector() {}
   virtual GESTURE_STATE Detect(const AInputEvent* event);
   bool GetPointer(Vec2& v);

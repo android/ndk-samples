@@ -23,7 +23,8 @@ add_library(app-glue STATIC
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -fno-exceptions -fno-rtti")
 
 # build the ndk-helper library
-add_subdirectory(ndk_helper)
+set(ndk_helper_dir ../../../../common/ndk_helper)
+add_subdirectory(${ndk_helper_dir} ndk_helper)
 
 # now build app's shared lib
 add_library(ChoreographerNativeActivity SHARED
@@ -33,7 +34,7 @@ add_library(ChoreographerNativeActivity SHARED
 target_include_directories(ChoreographerNativeActivity PRIVATE
                            ${ANDROID_NDK}/sources/android/cpufeatures
                            ${ANDROID_NDK}/sources/android/native_app_glue
-                           ndk_helper)
+                           ${ndk_helper_dir})
 
 # add lib dependencies
 target_link_libraries(ChoreographerNativeActivity
