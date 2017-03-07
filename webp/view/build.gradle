@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
  android {
-     compileSdkVersion 23
-     buildToolsVersion '23.0.2'
+     compileSdkVersion 25
+     buildToolsVersion '25.0.2'
 
      defaultConfig {
          applicationId 'com.example.webp_view'
          minSdkVersion  9
-         targetSdkVersion 23
+         targetSdkVersion 25
          externalNativeBuild {
              cmake {
                  // when using arguments, the latest (cmake version 3.6+, android studio

@@ -4,13 +4,13 @@ def platformVersion = 18    //openGLES 3 min Version
 //def platformVersion = 11 //openGLES 2 min version
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId 'com.android.gles3jni'
         minSdkVersion 18
-        targetSdkVersion 23
+        targetSdkVersion 25
         ndk {
             abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
         }
