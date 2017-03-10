@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 def platformVersion = 18    //openGLES 3 min Version
-//def platformVersion = 11 //openGLES 2 min version
+//def platformVersion = 12 //openGLES 2 min version
 
 android {
     compileSdkVersion 25
