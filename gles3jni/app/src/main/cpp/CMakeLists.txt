@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.4.1)
 # set targetPlatform, will be passed in from gradle when this sample is completed
 # openGL Supportability
 # platform         status
-#   (0 11)           ES2/ES3 not supported
-#   [11, 18)         ES2 only, for ES3, app do dynamic load
+#   (0 12)           ES2/ES3 not supported
+#   [12, 18)         ES2 only, for ES3, app do dynamic load
 #   [18, 24)         ES2 & ES3
 #   [24, infinite)   ES2 & ES3 & Vulkan
 
@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.4.1)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
 
-if (${ANDROID_PLATFORM_LEVEL} LESS 11)
+if (${ANDROID_PLATFORM_LEVEL} LESS 12)
   message(FATAL_ERROR "OpenGL 2 is not supported before API level 11 (currently using ${ANDROID_PLATFORM_LEVEL}).")
   return()
 elseif (${ANDROID_PLATFORM_LEVEL} LESS 18)
