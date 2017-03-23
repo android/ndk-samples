@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <cstdlib>
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 

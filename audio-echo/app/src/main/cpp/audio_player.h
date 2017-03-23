@@ -17,7 +17,6 @@
 #ifndef NATIVE_AUDIO_AUDIO_PLAYER_H
 #define NATIVE_AUDIO_AUDIO_PLAYER_H
 #include <sys/types.h>
-#include <SLES/OpenSLES_Android.h>
 #include "audio_common.h"
 #include "buf_manager.h"
 #include "debug_utils.h"

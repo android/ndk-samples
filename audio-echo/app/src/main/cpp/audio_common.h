@@ -18,6 +18,7 @@
 #ifndef NATIVE_AUDIO_AUDIO_COMMON_H
 #define NATIVE_AUDIO_AUDIO_COMMON_H
 
+#include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 
 #include "android_debug.h"

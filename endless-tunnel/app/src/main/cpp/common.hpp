@@ -25,6 +25,7 @@ extern "C" {
     #include <android/log.h>
     #include <android_native_app_glue.h>
     #include <unistd.h>
+    #include <stdlib.h>
 }
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
