@@ -18,6 +18,7 @@
 //BEGIN_INCLUDE(all)
 #include <initializer_list>
 #include <memory>
+#include <cstdlib>
 #include <jni.h>
 #include <errno.h>
 #include <cassert>
