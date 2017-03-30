@@ -189,7 +189,7 @@ class Vec2 {
   float Dot(const Vec2& rhs) { return x_ * rhs.x_ + y_ * rhs.y_; }
 
   bool Validate() {
-    if (isnan(x_) || isnan(y_)) return false;
+    if (isnanf(x_) || isnanf(y_)) return false;
     return true;
   }
 
@@ -386,7 +386,7 @@ class Vec3 {
   }
 
   bool Validate() {
-    if (isnan(x_) || isnan(y_) || isnan(z_)) return false;
+    if (isnanf(x_) || isnanf(y_) || isnanf(z_)) return false;
     return true;
   }
 
@@ -604,7 +604,7 @@ class Vec4 {
   }
 
   bool Validate() {
-    if (isnan(x_) || isnan(y_) || isnan(z_) || isnan(w_)) return false;
+    if (isnanf(x_) || isnanf(y_) || isnanf(z_) || isnanf(w_)) return false;
     return true;
   }
 
