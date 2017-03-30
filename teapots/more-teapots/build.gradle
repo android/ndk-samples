@@ -7,15 +7,15 @@ android {
 
     defaultConfig {
         applicationId  'com.sample.moreteapots'
-        minSdkVersion   17
+        minSdkVersion   21
         targetSdkVersion 25
         ndk {
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a','x86'
         }
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-22',
-                    '-DANDROID_TOOLCHAIN=gcc', '-DANDROID_STL=c++_static'
+                arguments '-DANDROID_PLATFORM=android-21',
+                    '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static'
             }
         }
     }
