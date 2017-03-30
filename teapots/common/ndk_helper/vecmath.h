@@ -17,7 +17,7 @@
 #ifndef VECMATH_H_
 #define VECMATH_H_
 
-#include <math.h>
+#include <cmath>
 #include "JNIHelper.h"
 
 namespace ndk_helper {
@@ -189,7 +189,7 @@ class Vec2 {
   float Dot(const Vec2& rhs) { return x_ * rhs.x_ + y_ * rhs.y_; }
 
   bool Validate() {
-    if (isnan(x_) || isnan(y_)) return false;
+    if (std::isnan(x_) || std::isnan(y_)) return false;
     return true;
   }
 
@@ -386,7 +386,7 @@ class Vec3 {
   }
 
   bool Validate() {
-    if (isnan(x_) || isnan(y_) || isnan(z_)) return false;
+    if (std::isnan(x_) || std::isnan(y_) || std::isnan(z_)) return false;
     return true;
   }
 
@@ -604,7 +604,10 @@ class Vec4 {
   }
 
   bool Validate() {
-    if (isnan(x_) || isnan(y_) || isnan(z_) || isnan(w_)) return false;
+    if (std::isnan(x_) || std::isnan(y_) ||
+        std::isnan(z_) || std::isnan(w_))
+      return false;
+
     return true;
   }
 

@@ -269,7 +269,7 @@ void TapCamera::Pinch(const Vec2& v1, const Vec2& v2) {
     f = -1.f / f + 1.0f;
   else
     f = f - 1.f;
-  if (isnan(f)) f = 0.f;
+  if (std::isnan(f)) f = 0.f;
 
   vec = (v1 + v2) / 2.f - vec_pinch_start_center_;
   vec_offset_now_ = Vec3(vec, flip_z_ * f);
