@@ -17,8 +17,7 @@ android {
         versionName  "1.0"
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-9',
-                          '-DANDROID_TOOLCHAIN=gcc'
+                arguments '-DANDROID_PLATFORM=android-9'
             }
         }
     }
