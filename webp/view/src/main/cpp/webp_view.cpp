@@ -46,9 +46,12 @@ const int kFRAME_DISPLAY_TIME = 2;
 class Engine {
   public:
     explicit Engine(android_app* app) :
-            app_(app), animating_(false), decoder_(nullptr) {
+                app_(app),
+                decoder_(nullptr),
+                animating_(false) {
         memset(&frameStartTime_, 0, sizeof(frameStartTime_));
     }
+
     ~Engine() {}
 
     struct android_app* AndroidApp(void) const { return app_; }
@@ -66,8 +69,8 @@ class Engine {
 
   private:
     void UpdateFrameBuffer(ANativeWindow_Buffer* buf, uint8_t* src);
-    WebpDecoder* decoder_;
     struct android_app* app_;
+    WebpDecoder* decoder_;
     bool animating_;
     struct timespec frameStartTime_;
 };
@@ -203,6 +206,8 @@ bool Engine::PrepareDrawing(void) {
         return false;
     }
     decoder_->DecodeFrame();
+
+    return true;
 }
 
 /*

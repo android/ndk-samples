@@ -63,6 +63,7 @@ uint8_t* WebpDecoder::GetDecodedFrame(void) {
  */
 void* DecodeFrame(void * decoder) {
     reinterpret_cast<WebpDecoder*>(decoder)->DecodeFrameInternal();
+    return nullptr;
 }
 
 /*
@@ -111,6 +112,7 @@ void WebpDecoder::DecodeFrameInternal() {
             break;
         default:
             assert( 0 );
+            delete  [] buf;
             return;
     }
     config.output.width = bufInfo_.width_;
@@ -124,7 +126,7 @@ void WebpDecoder::DecodeFrameInternal() {
 
     status = WebPDecode(buf, len, &config);
     WebPFreeDecBuffer(&config.output);
-    delete buf;
+    delete [] buf;
 
     // only change state when it is decoded OK. Our small decoder engine will be
     // in decoding state when error happens
@@ -162,11 +164,16 @@ bool WebpDecoder::DecodeFrame(void) {
     pthread_attr_init( &attrib);
     pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_DETACHED);
     int status = pthread_create(&worker_, &attrib, ::DecodeFrame, this);
-    assert(status == 0 );
     pthread_attr_destroy(&attrib);
 
-    state_ = state_decoding;
-    return true;
+    if (status == 0) {
+        state_ = state_decoding;
+        return true;
+    }
+
+    // create thread failed...
+    assert(false);
+    return false;
 }
 
 /*
