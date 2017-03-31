@@ -12,10 +12,7 @@ apply plugin: 'com.android.application'
              cmake {
                  // when using arguments, the latest (cmake version 3.6+, android studio
                  // beta2+) must be used to compile
-
-                 // I have to use gcc to compile, clang compiled code generate error
-                 // at run time for any std::queue etc.
-                 arguments '-DANDROID_STL=gnustl_static', '-DANDROID_TOOLCHAIN=gcc'
+                 arguments '-DANDROID_STL=c++_static', '-DANDROID_TOOLCHAIN=clang'
                  arguments '-DANDROID_PLATFORM=android-9'
              }
          }
