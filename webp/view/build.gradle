@@ -59,11 +59,3 @@ apply plugin: 'com.android.application'
      }
 }
 
-// ******** Get Webp source code if not downloaded yet *******
-if(!file("../libwebp").exists()) {
-    exec {
-        workingDir("..")
-        executable 'git'
-        args = ["clone", "https://chromium.googlesource.com/webm/libwebp", "libwebp"]
-    }
-}
