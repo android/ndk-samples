@@ -1,0 +1,21 @@
+apply plugin: "com.android.model.native"
+
+model {
+    android {
+        compileSdkVersion = 23
+    }
+
+    android.ndk {
+        moduleName = "firstlib"
+    }
+    
+    android.sources {
+        main {
+	    jni {
+		exportedHeaders {
+		   srcDir "src/main/jni"
+		}
+	    }
+	}
+    }
+}

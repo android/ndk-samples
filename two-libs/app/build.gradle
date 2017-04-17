@@ -1,0 +1,29 @@
+apply plugin: "com.android.model.application"
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.0"
+
+        defaultConfig.with {
+            applicationId = "com.example.twolibs"
+            minSdkVersion.apiLevel = 4
+            targetSdkVersion.apiLevel = 23
+        }
+    }
+
+    android.ndk {
+        moduleName = "secondlib"
+    }
+
+    android.sources {
+        main {
+             jni {
+	         dependencies {
+		     project ":firstlib" buildType "debug" linkage "static"
+		 }
+             }
+	     // TODO(proppy): show jniLibs dependencies on .so
+        }
+    }
+}
