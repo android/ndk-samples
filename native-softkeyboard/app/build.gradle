@@ -1,0 +1,30 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.0"
+
+        defaultConfig.with {
+            applicationId = "com.example.native_softkeyboard"
+            minSdkVersion.apiLevel    = 9
+            targetSdkVersion.apiLevel = 23
+        }
+    }
+
+    android.dataBinding {
+        enabled = true
+    }
+
+    android.ndk {
+        moduleName = "native-softkeyboard"
+        cppFlags.add("-I${file("src/main/jni/native_app_glue")}".toString())
+        ldLibs.addAll(["log", "android"])
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+        }
+    }
+}
