@@ -1,0 +1,5 @@
+builders: [cmake]
+
+dependencies:
+# Uncomment next line to get header-only boost
+- compile: com.github.ggfan:hello-libs:0.0.0

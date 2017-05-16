@@ -1,0 +1,13 @@
+# This file is automatically maintained by CDep.
+#
+#     MANUAL EDITS WILL BE LOST ON THE NEXT CDEP RUN
+#
+# This file contains a list of CDep coordinates along with the SHA256 hash of their
+# manifest file. This is to ensure that a manifest hasn't changed since the last
+# time CDep ran.
+# The recommended best practice is to check this file into source control so that
+# anyone else who builds this project is guaranteed to get the same dependencies.
+
+- coordinate: com.github.ggfan:hello-libs:0.0.0
+  sha256: 9ce64b89b8f801d25fc64c4f65a5ae3e5cc9c7e101b2679edcf660fafc1b4093
+
