@@ -1,0 +1,4 @@
+builders: [cmake]
+
+dependencies:
+- compile: com.github.ggfan:hello-libs:0.0.0
