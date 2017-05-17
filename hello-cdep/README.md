@@ -8,7 +8,7 @@ This sample uses the new [Android Studio CMake plugin](http://tools.android.com/
 * How to use external pre-build libs packed inside [CDep](https://github.com/google/cdep) package
 
 Refer to [CDep documentation](http://github.com/google/cdep/blob/master/README.md)
-The lib binaries and header files are hosted in [temporary repo](https://github.com/ggfan/hello-libs), this sample use 
+The lib binaries and header files are hosted in [temporary repo](https://github.com/ggfan/hello-CDep/releases), this sample uses 
 [CDep](https://github.com/google/cdep) to pull it into Android Studio's [cmake](https://cmake.org/documentation) script.
 
 Pre-requisites
@@ -19,7 +19,10 @@ Getting Started
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
 1. Launch Android Studio.
 1. Download cdep dependences:
-* inside terminal, cd ${PROJECT_DIR}; ./cdep
+* inside terminal
+```
+    cd ${PROJECT_DIR}; ./cdep
+```
 1. Open the sample directory.
 1. Open *File/Project Structure...*
   - Click *Download* or *Select NDK location*.
