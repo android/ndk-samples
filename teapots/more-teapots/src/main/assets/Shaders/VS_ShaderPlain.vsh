@@ -31,7 +31,6 @@ uniform highp vec3      vLight0;
 
 uniform lowp vec4       vMaterialDiffuse;
 uniform lowp vec3       vMaterialAmbient;
-uniform lowp vec4       vMaterialSpecular;
 
 void main(void)
 {
