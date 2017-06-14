@@ -39,7 +39,7 @@ class GLES3JNIView extends GLSurfaceView {
         // Pick an EGLConfig with RGB8 color, 16-bit depth, no stencil,
         // supporting OpenGL ES 2.0 or later backwards-compatible versions.
         setEGLConfigChooser(8, 8, 8, 0, 16, 0);
-        setEGLContextClientVersion(2);
+        setEGLContextClientVersion(3);
         setRenderer(new Renderer());
     }
 
