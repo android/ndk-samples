@@ -24,6 +24,11 @@ LOCAL_CPPFLAGS += -std=c++11
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -latomic
 LOCAL_STATIC_LIBRARIES := cpufeatures android_native_app_glue
 
+# Force export ANativeActivity_onCreate(), 
+# Refer to: https://github.com/android-ndk/ndk/issues/381.
+# Only needed when building with NDK-R14 and older
+LOCAL_LDFLAGS   := -u ANativeActivity_onCreate
+
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,android/native_app_glue)

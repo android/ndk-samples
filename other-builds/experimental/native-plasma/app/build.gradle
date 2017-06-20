@@ -5,12 +5,12 @@ def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
 
 model {
     android {
-        compileSdkVersion = 23
-        buildToolsVersion = '23.0.2'
+        compileSdkVersion = 25
+        buildToolsVersion = '25.0.3'
 
         defaultConfig {
             applicationId='com.example.native_plasma'
-            minSdkVersion.apiLevel   = 9
+            minSdkVersion.apiLevel   = 14
             targetSdkVersion.apiLevel = 23
         }
         ndk {
@@ -18,6 +18,7 @@ model {
             moduleName = 'native-plasma'
             toolchain = 'clang'
             ldLibs.addAll(['m', 'log','android'])
+            ldFlags.addAll(["-uANativeActivity_onCreate"])
         }
         sources {
             main {
