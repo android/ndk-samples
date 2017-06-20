@@ -18,12 +18,12 @@ def REMOTE_COMMON_ROOT = '../../../../' + rootProject.getName() +
 
 model {
     android {
-        compileSdkVersion = 23
-        buildToolsVersion = '23.0.2'
+        compileSdkVersion = 25
+        buildToolsVersion = '25.0.3'
 
         defaultConfig {
             applicationId = 'com.sample.teapot'
-            minSdkVersion.apiLevel = 17
+            minSdkVersion.apiLevel = 21
             targetSdkVersion.apiLevel = 22
         }
         ndk {
@@ -36,6 +36,7 @@ model {
             cppFlags.addAll(['-std=c++11', '-Wall',
                              '-fno-exceptions', '-fno-rtti'])
             ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
+            ldFlags.addAll(["-uANativeActivity_onCreate"])
         }
         sources {
             main {
@@ -49,6 +50,7 @@ model {
                     source {
                         srcDirs "${REMOTE_PROJ_ROOT}/cpp", "${REMOTE_COMMON_ROOT}/ndk_helper"
                         srcDir "${ndkDir}/sources/android/cpufeatures"
+                        exclude "gl3stub.c"
                     }
                 }
                 java {

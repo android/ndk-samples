@@ -130,9 +130,6 @@ extern "C" void android_main(struct android_app* state) {
 
     Engine engine(state);
 
-    // Make sure glue isn't stripped.
-    app_dummy();
-
     state->userData = reinterpret_cast<void*>(&engine);
     state->onAppCmd = ProcessAndroidCmd;
     state->onInputEvent = ProcessAndroidInput;

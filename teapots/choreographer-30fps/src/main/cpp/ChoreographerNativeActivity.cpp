@@ -562,7 +562,6 @@ void Engine::UpdateFPS(float fFPS) {
  * event loop for receiving input events and doing other things.
  */
 void android_main(android_app* state) {
-  app_dummy();
 
   g_engine.SetState(state);
 

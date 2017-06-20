@@ -13,7 +13,7 @@
     <activity android:name="android.app.NativeActivity"
               android:label="@string/app_name">
       <meta-data android:name="android.app.lib_name"
-                 android:value="webp-view" />
+                 android:value="webp_view" />
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

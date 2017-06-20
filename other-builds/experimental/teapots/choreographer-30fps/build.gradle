@@ -10,19 +10,21 @@ if (propertiesFile.exists()) {
     properties.load(propertiesFile.newDataInputStream())
     ndkDir = properties.getProperty('ndk.dir')
 }
+
 // pointing to cmake's source code for the same project
 def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
         project.getName() + '/src/main'
-def REMOTE_COMMON_ROOT = "${REMOTE_PROJ_ROOT}/cpp"
+def REMOTE_COMMON_ROOT = '../../../../' + rootProject.getName() +
+        '/common'
 
 model {
     android {
-        compileSdkVersion = 23
-        buildToolsVersion = '23.0.2'
+        compileSdkVersion = 25
+        buildToolsVersion = '25.0.3'
 
         defaultConfig {
             applicationId = 'com.sample.choreographer'
-            minSdkVersion.apiLevel = 16
+            minSdkVersion.apiLevel = 21
             targetSdkVersion.apiLevel = 22
         }
         ndk {
@@ -35,6 +37,7 @@ model {
             cppFlags.addAll(['-std=c++11', '-Wall',
                              '-fno-exceptions', '-fno-rtti'])
             ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
+            ldFlags.addAll(["-uANativeActivity_onCreate"])
         }
         sources {
             main {
@@ -46,7 +49,10 @@ model {
                         project ':nativeactivity' linkage 'static'
                     }
                     source {
-                        srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                        srcDirs "${REMOTE_PROJ_ROOT}/cpp",
+                                "${REMOTE_COMMON_ROOT}/ndk_helper",
+                                "${ndkDir}/sources/android/cpufeatures"
+                        exclude  'gl3stub.c'
                     }
                 }
                 java {

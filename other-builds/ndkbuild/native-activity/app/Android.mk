@@ -21,6 +21,12 @@ LOCAL_MODULE    := native-activity
 LOCAL_SRC_FILES := $(JNI_SRC_PATH)/main.cpp
 LOCAL_CPPFLAGS  := -std=c++11
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv1_CM
+
+# Force export ANativeActivity_onCreate(), 
+# Refer to: https://github.com/android-ndk/ndk/issues/381.
+# Only needed when building with NDK-R14 and older
+LOCAL_LDFLAGS   := -u ANativeActivity_onCreate
+
 LOCAL_STATIC_LIBRARIES := android_native_app_glue
 
 include $(BUILD_SHARED_LIBRARY)

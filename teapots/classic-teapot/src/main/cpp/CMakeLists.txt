@@ -17,8 +17,8 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 # build native_app_glue as a static lib
-add_library(app-glue STATIC
-            ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+add_library(native_app_glue STATIC
+    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -fno-exceptions -fno-rtti")
 
@@ -26,22 +26,27 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -fno-exceptions -fno-
 set(ndk_helper_dir ../../../../common/ndk_helper)
 add_subdirectory(${ndk_helper_dir} ndk_helper)
 
+# Export ANativeActivity_onCreate(), 
+# Refer to: https://github.com/android-ndk/ndk/issues/381.
+set(CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+
 # now build app's shared lib
 add_library(TeapotNativeActivity SHARED
-            TeapotNativeActivity.cpp
-            TeapotRenderer.cpp)
+    TeapotNativeActivity.cpp
+    TeapotRenderer.cpp)
 
 target_include_directories(TeapotNativeActivity PRIVATE
-                           ${ANDROID_NDK}/sources/android/cpufeatures
-                           ${ANDROID_NDK}/sources/android/native_app_glue
-                           ${ndk_helper_dir})
+    ${ANDROID_NDK}/sources/android/cpufeatures
+    ${ANDROID_NDK}/sources/android/native_app_glue
+    ${ndk_helper_dir})
 
 # add lib dependencies
 target_link_libraries(TeapotNativeActivity
-                      android
-                      app-glue
-                      atomic
-                      EGL
-                      GLESv2
-                      log
-                      ndk-helper)
+    android
+    native_app_glue
+    atomic
+    EGL
+    GLESv2
+    log
+    ndk-helper)

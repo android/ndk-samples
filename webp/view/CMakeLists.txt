@@ -37,16 +37,24 @@ add_subdirectory(${webp_src_dir} ${webp_src_dir}/build/)
 # build native_app_glue as a static lib
 include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 
-add_library(app-glue STATIC
-            ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+add_library(native_app_glue STATIC
+    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 # now build app's shared lib
-include_directories(${webp_src_dir}/examples
-                    ${webp_src_dir}/src)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
-add_library(webp-view SHARED src/main/cpp/webp_decode.cpp
-                             src/main/cpp/webp_view.cpp)
+
+# Export ANativeActivity_onCreate(), 
+# Refer to: https://github.com/android-ndk/ndk/issues/381.
+set(CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+
+add_library(webp_view SHARED
+    src/main/cpp/webp_decode.cpp
+    src/main/cpp/webp_view.cpp)
+target_include_directories(webp_view PRIVATE
+    ${webp_src_dir}/examples
+    ${webp_src_dir}/src)
 
 # add lib dependencies
-target_link_libraries(webp-view android log m app-glue webp)
+target_link_libraries(webp_view android log m native_app_glue webp)
