@@ -15,7 +15,7 @@
  */
 
 // OpenGL ES 2.0 code
-
+#include <dlfcn.h>
 #include <jni.h>
 #include <GLES2/gl2.h>
 
@@ -36,6 +36,29 @@ const int SENSOR_REFRESH_RATE_HZ = 100;
 constexpr int32_t SENSOR_REFRESH_PERIOD_US = int32_t(1000000 / SENSOR_REFRESH_RATE_HZ);
 const float SENSOR_FILTER_ALPHA = 0.1f;
 
+/*
+ * AcquireASensorManagerInstance(void)
+ *    Workaround AsensorManager_getInstance() deprecation false alarm
+ *    for Android-N and before, when compiling with NDK-r15
+ */
+#include <dlfcn.h>
+const char*  kPackageName = "com.android.accelerometergraph";
+ASensorManager* AcquireASensorManagerInstance(void) {
+    typedef ASensorManager *(*PF_GETINSTANCEFORPACKAGE)(const char *name);
+    void* androidHandle = dlopen("libandroid.so", RTLD_NOW);
+    PF_GETINSTANCEFORPACKAGE getInstanceForPackageFunc = (PF_GETINSTANCEFORPACKAGE)
+        dlsym(androidHandle, "ASensorManager_getInstanceForPackage");
+    if (getInstanceForPackageFunc) {
+        return getInstanceForPackageFunc(kPackageName);
+    }
+
+    typedef ASensorManager *(*PF_GETINSTANCE)();
+    PF_GETINSTANCE getInstanceFunc = (PF_GETINSTANCE)
+        dlsym(androidHandle, "ASensorManager_getInstance");
+    // by all means at this point, ASensorManager_getInstance should be available
+    assert(getInstanceFunc);
+    return getInstanceFunc();
+}
 
 class sensorgraph {
     std::string vertexShaderSource;
@@ -84,7 +107,7 @@ class sensorgraph {
                                            (size_t)fragmentShaderLength);
         AAsset_close(fragmentShaderAsset);
 
-        sensorManager = ASensorManager_getInstance();
+        sensorManager = AcquireASensorManagerInstance();
         assert(sensorManager != NULL);
         accelerometer = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
         assert(accelerometer != NULL);
