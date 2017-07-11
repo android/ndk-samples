@@ -20,3 +20,8 @@ android {
 ```
 ## How to Pack standard stl shared libs:
  Please check the [workaround](http://stackoverflow.com/questions/39620739)
+
+## How to build target other than shared lib in CMakeList.txt?
+```java 
+defaultConfig.externalNativeBuild.cmake.targets "target1", "target2"
+```
