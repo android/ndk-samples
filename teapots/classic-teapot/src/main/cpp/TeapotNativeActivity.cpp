@@ -283,7 +283,7 @@ void Engine::HandleCmd(struct android_app* app, int32_t cmd) {
 // Sensor handlers
 //-------------------------------------------------------------------------
 void Engine::InitSensors() {
-  sensor_manager_ = ASensorManager_getInstance();
+  sensor_manager_ = ndk_helper::AcquireASensorManagerInstance(app_);
   accelerometer_sensor_ = ASensorManager_getDefaultSensor(
       sensor_manager_, ASENSOR_TYPE_ACCELEROMETER);
   sensor_event_queue_ = ASensorManager_createEventQueue(
