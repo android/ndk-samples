@@ -140,21 +140,21 @@ bool JNIHelper::ReadFile(const char* fileName,
 
   // First, try reading from externalFileDir;
   JNIEnv* env = AttachCurrentThread();
-
   jstring str_path = GetExternalFilesDirJString(env);
-  const char* path = env->GetStringUTFChars(str_path, NULL);
-  std::string s(path);
 
-  if (fileName[0] != '/') {
-    s.append("/");
+  std::string s;
+  if(str_path) {
+    const char* path = env->GetStringUTFChars(str_path, NULL);
+    s = std::string(path);
+    if (fileName[0] != '/') {
+      s.append("/");
+    }
+    s.append(fileName);
+    env->ReleaseStringUTFChars(str_path, path);
+    env->DeleteLocalRef(str_path);
   }
-  s.append(fileName);
   std::ifstream f(s.c_str(), std::ios::binary);
-
-  env->ReleaseStringUTFChars(str_path, path);
-  env->DeleteLocalRef(str_path);
   activity_->vm->DetachCurrentThread();
-
   if (f) {
     LOGI("reading:%s", s.c_str());
     f.seekg(0, std::ifstream::end);
@@ -520,16 +520,18 @@ jstring JNIHelper::GetExternalFilesDirJString(JNIEnv* env) {
     return NULL;
   }
 
+  jstring obj_Path = nullptr;
   // Invoking getExternalFilesDir() java API
   jclass cls_Env = env->FindClass(NATIVEACTIVITY_CLASS_NAME);
   jmethodID mid = env->GetMethodID(cls_Env, "getExternalFilesDir",
                                    "(Ljava/lang/String;)Ljava/io/File;");
   jobject obj_File = env->CallObjectMethod(activity_->clazz, mid, NULL);
-  jclass cls_File = env->FindClass("java/io/File");
-  jmethodID mid_getPath =
-      env->GetMethodID(cls_File, "getPath", "()Ljava/lang/String;");
-  jstring obj_Path = (jstring)env->CallObjectMethod(obj_File, mid_getPath);
-
+  if (obj_File) {
+    jclass cls_File = env->FindClass("java/io/File");
+    jmethodID mid_getPath =
+        env->GetMethodID(cls_File, "getPath", "()Ljava/lang/String;");
+    obj_Path = (jstring)env->CallObjectMethod(obj_File, mid_getPath);
+  }
   return obj_Path;
 }
 
