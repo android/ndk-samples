@@ -46,7 +46,7 @@ public class ChoreographerNativeActivity extends NativeActivity
     @Override
     public void doFrame(long frameTimeNanos) {
         Choreographer.getInstance().postFrameCallback(this);
-        choregrapherCallback();
+        choregrapherCallback(frameTimeNanos);
     }
 
     @TargetApi(16)
@@ -61,7 +61,7 @@ public class ChoreographerNativeActivity extends NativeActivity
         use_choreographer = false;
     }
 
-    protected native void choregrapherCallback();
+    protected native void choregrapherCallback(long frameTimeNamos);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

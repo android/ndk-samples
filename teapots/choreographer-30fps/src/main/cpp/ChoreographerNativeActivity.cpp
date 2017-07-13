@@ -126,7 +126,7 @@ class Engine {
 
   // Do swap operation while Choreographer callback. Need to be a public method
   // since it's called from JNI callback.
-  void SynchInCallback();
+  void SynchInCallback(jlong frameTimeNamos);
 };
 
 // Global instance of the Engine class.
@@ -292,19 +292,18 @@ void Engine::StopJavaChoreographer() {
   return;
 }
 
-void Engine::SynchInCallback() {
+void Engine::SynchInCallback(jlong frameTimeInNanos) {
   // Signal render thread if the render cycle meet the condition.
-  int64_t cur  = GetCurrentTime();
-  if (COULD_RENDER(cur, prevFrameTimeNanos_)) {
-    prevFrameTimeNanos_ = cur;
+  if (COULD_RENDER(frameTimeInNanos, prevFrameTimeNanos_)) {
+    prevFrameTimeNanos_ = frameTimeInNanos;
     cv_.notify_one();
   }
 };
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_choreographer_ChoreographerNativeActivity_choregrapherCallback(
-    JNIEnv* env, jobject instance) {
-  g_engine.SynchInCallback();
+    JNIEnv* env, jobject instance, jlong frameTimeInNanos) {
+  g_engine.SynchInCallback(frameTimeInNanos);
 }
 
 // Helper functions.
