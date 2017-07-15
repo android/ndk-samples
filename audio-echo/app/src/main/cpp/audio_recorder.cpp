@@ -43,15 +43,7 @@ void AudioRecorder::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
         SLASSERT(result);
     }
 
-    /*
-     * PLAY_KICKSTART_BUFFER_COUNT: # of buffers cached in the queue before
-     * STARTING player. it is defined in audio_common.h. Whatever buffered
-     * here is the part of the audio LATENCY! adjust to fit your bill [ until
-     * it busts ]
-     */
-    if(++audioBufCount == PLAY_KICKSTART_BUFFER_COUNT && callback_) {
-        callback_(ctx_, ENGINE_SERVICE_MSG_KICKSTART_PLAYER, NULL);
-    }
+    ++audioBufCount;
 
     // should leave the device to sleep to save power if no buffers
     if(devShadowQueue_->size() == 0) {
@@ -179,12 +171,6 @@ SLboolean  AudioRecorder::Stop(void) {
     result = (*recBufQueueItf_)->Clear(recBufQueueItf_);
     SLASSERT(result);
 
-    sample_buf *buf = NULL;
-    while(devShadowQueue_->front(&buf)) {
-        devShadowQueue_->pop();
-        freeQueue_->push(buf);
-    }
-
 #ifdef ENABLE_LOG
     recLog_->flush();
 #endif
@@ -198,8 +184,14 @@ AudioRecorder::~AudioRecorder() {
         (*recObjectItf_)->Destroy(recObjectItf_);
     }
 
-    if(devShadowQueue_)
-        delete (devShadowQueue_);
+    if(devShadowQueue_) {
+      sample_buf *buf = NULL;
+      while(devShadowQueue_->front(&buf)) {
+        devShadowQueue_->pop();
+        freeQueue_->push(buf);
+      }
+      delete (devShadowQueue_);
+   }
 #ifdef  ENABLE_LOG
     if(recLog_) {
         delete recLog_;

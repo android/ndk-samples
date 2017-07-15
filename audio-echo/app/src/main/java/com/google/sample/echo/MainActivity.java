@@ -127,8 +127,8 @@ public class MainActivity extends Activity
         }
         stopPlay();  //this must include stopRecording()
         updateNativeAudioUI();
-        deleteSLBufferQueueAudioPlayer();
         deleteAudioRecorder();
+        deleteSLBufferQueueAudioPlayer();
         isPlaying = false;
     }
     public void getLowLatencyParameters(View view) {

@@ -34,6 +34,7 @@ void AudioPlayer::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
 #ifdef ENABLE_LOG
     logFile_->logTime();
 #endif
+  std::lock_guard<std::mutex> lock(stopMutex_);
 
     // retrieve the finished device buf and put onto the free queue
     // so recorder could re-use it
@@ -51,12 +52,39 @@ void AudioPlayer::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
         return;
     }
     devShadowQueue_->pop();
-    buf->size_ = 0;
-    freeQueue_->push(buf);
-    while(playQueue_->front(&buf) && devShadowQueue_->push(buf)) {
-        (*bq)->Enqueue(bq, buf->buf_, buf->size_);
-        playQueue_->pop();
+
+    if( buf != &silentBuf_) {
+        buf->size_ = 0;
+        freeQueue_->push(buf);
+
+        if (!playQueue_->front(&buf)) {
+#ifdef ENABLE_LOG
+          logFile->log("%s", "====Warning: running out of the Audio buffers")
+#endif
+          return;
+        }
+
+      devShadowQueue_->push(buf);
+      (*bq)->Enqueue(bq, buf->buf_, buf->size_);
+      playQueue_->pop();
+      return;
     }
+
+    if (playQueue_->size() < PLAY_KICKSTART_BUFFER_COUNT) {
+        (*bq)->Enqueue(bq, buf->buf_, buf->size_);
+        devShadowQueue_->push(&silentBuf_);
+        return;
+    }
+
+    assert(PLAY_KICKSTART_BUFFER_COUNT <=
+           (DEVICE_SHADOW_BUFFER_QUEUE_LEN - devShadowQueue_->size()));
+    for (int32_t idx = 0; idx < PLAY_KICKSTART_BUFFER_COUNT; idx++) {
+        playQueue_->front(&buf);
+        playQueue_->pop();
+        devShadowQueue_->push(buf);
+        (*bq)->Enqueue(bq, buf->buf_, buf->size_);
+    }
+
 }
 
 AudioPlayer::AudioPlayer(SampleFormat *sampleFormat, SLEngineItf slEngine) :
@@ -121,6 +149,12 @@ AudioPlayer::AudioPlayer(SampleFormat *sampleFormat, SLEngineItf slEngine) :
     devShadowQueue_ = new AudioQueue(DEVICE_SHADOW_BUFFER_QUEUE_LEN);
     assert(devShadowQueue_);
 
+    silentBuf_.cap_ = (format_pcm.containerSize >> 3) *
+                      format_pcm.numChannels * sampleInfo_.framesPerBuf_;
+    silentBuf_.buf_ = new uint8_t[silentBuf_.cap_];
+    memset(silentBuf_.buf_, 0, silentBuf_.cap_);
+    silentBuf_.size_ = silentBuf_.cap_;
+
 #ifdef  ENABLE_LOG
     std::string name = "play";
     logFile_ = new AndroidLog(name);
@@ -129,18 +163,33 @@ AudioPlayer::AudioPlayer(SampleFormat *sampleFormat, SLEngineItf slEngine) :
 
 AudioPlayer::~AudioPlayer() {
 
+  std::lock_guard<std::mutex> lock(stopMutex_);
+
     // destroy buffer queue audio player object, and invalidate all associated interfaces
     if (playerObjectItf_ != NULL) {
         (*playerObjectItf_)->Destroy(playerObjectItf_);
     }
-    if(devShadowQueue_) {
-        delete devShadowQueue_;
+    // Consume all non-completed audio buffers
+    sample_buf *buf = NULL;
+    while(devShadowQueue_->front(&buf)) {
+      buf->size_ = 0;
+      devShadowQueue_->pop();
+      freeQueue_->push(buf);
+    }
+    delete devShadowQueue_;
+
+    while(playQueue_->front(&buf)) {
+      buf->size_ = 0;
+      playQueue_->pop();
+      freeQueue_->push(buf);
     }
 
     // destroy output mix object, and invalidate all associated interfaces
     if (outputMixObjectItf_) {
         (*outputMixObjectItf_)->Destroy(outputMixObjectItf_);
     }
+
+    delete [] silentBuf_.buf_;
 }
 
 void AudioPlayer::SetBufQueue(AudioQueue *playQ, AudioQueue *freeQ) {
@@ -161,25 +210,14 @@ SLresult AudioPlayer::Start(void) {
     result = (*playItf_)->SetPlayState(playItf_, SL_PLAYSTATE_STOPPED);
     SLASSERT(result);
 
+    result = (*playBufferQueueItf_)->Enqueue(playBufferQueueItf_,
+                                             silentBuf_.buf_,
+                                             silentBuf_.size_);
+    SLASSERT(result);
+    devShadowQueue_->push(&silentBuf_);
+
     result = (*playItf_)->SetPlayState(playItf_, SL_PLAYSTATE_PLAYING);
     SLASSERT(result);
-
-    // send pre-defined audio buffers to device
-    int i = PLAY_KICKSTART_BUFFER_COUNT;
-    while(i--) {
-        sample_buf *buf;
-        if(!playQueue_->front(&buf))    //we have buffers for sure
-            break;
-        if(SL_RESULT_SUCCESS !=
-           (*playBufferQueueItf_)->Enqueue(playBufferQueueItf_, buf, buf->size_))
-        {
-            LOGE("====failed to enqueue (%d) in %s", i, __FUNCTION__);
-            return SL_BOOLEAN_FALSE;
-        } else {
-            playQueue_->pop();
-            devShadowQueue_->push(buf);
-        }
-    }
     return SL_BOOLEAN_TRUE;
 }
 
@@ -192,21 +230,11 @@ void AudioPlayer::Stop(void) {
     if(state == SL_PLAYSTATE_STOPPED)
         return;
 
+    std::lock_guard<std::mutex> lock(stopMutex_);
+
     result = (*playItf_)->SetPlayState(playItf_, SL_PLAYSTATE_STOPPED);
     SLASSERT(result);
-
-    // Consume all non-completed audio buffers
-    sample_buf *buf = NULL;
-    while(devShadowQueue_->front(&buf)) {
-        buf->size_ = 0;
-        devShadowQueue_->pop();
-        freeQueue_->push(buf);
-    }
-    while(playQueue_->front(&buf)) {
-        buf->size_ = 0;
-        playQueue_->pop();
-        freeQueue_->push(buf);
-    }
+    (*playBufferQueueItf_)->Clear(playBufferQueueItf_);
 
 #ifdef ENABLE_LOG
     if (logFile_) {
@@ -214,49 +242,6 @@ void AudioPlayer::Stop(void) {
         logFile_ = nullptr;
     }
 #endif
-}
-
-void AudioPlayer::PlayAudioBuffers(int32_t count) {
-    if(!count) {
-        return;
-    }
-
-    while(count--) {
-        sample_buf *buf = NULL;
-        if(!playQueue_->front(&buf)) {
-            uint32_t totalBufCount;
-            callback_(ctx_, ENGINE_SERVICE_MSG_RETRIEVE_DUMP_BUFS,
-                      &totalBufCount);
-            LOGE("====Run out of buffers in %s @(count = %d), totalBuf =%d",
-                 __FUNCTION__, count, totalBufCount);
-            break;
-        }
-        if(!devShadowQueue_->push(buf)) {
-            break;  // PlayerBufferQueue is full!!!
-        }
-
-        SLresult result = (*playBufferQueueItf_)->Enqueue(playBufferQueueItf_,
-                                                  buf->buf_, buf->size_);
-        if(result != SL_RESULT_SUCCESS) {
-            if(callback_) {
-                uint32_t totalBufCount;
-                callback_(ctx_, ENGINE_SERVICE_MSG_RETRIEVE_DUMP_BUFS,
-                          &totalBufCount);
-            }
-            LOGE("%s Error @( %p, %d ), result = %d", __FUNCTION__,
-                 (void*)buf->buf_, buf->size_, result);
-            /*
-             * when this happens, a buffer is lost. Need to remove the buffer
-             * from top of the devShadowQueue. Since I do not have it now,
-             * just pop out the one that is being played right now. Afer a
-             * cycle it will be normal.
-             */
-            devShadowQueue_->front(&buf), devShadowQueue_->pop();
-            freeQueue_->push(buf);
-            break;
-        }
-        playQueue_->pop();   // really pop out the buffer
-    }
 }
 
 void AudioPlayer::RegisterCallback(ENGINE_CALLBACK cb, void *ctx) {

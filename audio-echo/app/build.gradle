@@ -6,7 +6,12 @@ android {
 
     defaultConfig {
         applicationId 'com.google.sample.echo'
-        minSdkVersion 21
+        /*
+           To run on earlier version of Android than android-21, do:
+             *) set this minSDKVersion and cmake's ANDROID_PLATFORM to your version
+             *) set ANDROID_STL to c++_static for some very earlier version android.
+         */
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName '1.0'
@@ -18,7 +23,7 @@ android {
                 // With android studio 2.2.0 +cmake, app needs to pack shared lib to
                 // into APK. Refer to CMakeLists.txt for details
                 arguments '-DANDROID_STL=c++_shared', '-DANDROID_TOOLCHAIN=clang',
-                          '-DANDROID_PLATFORM=android-21'
+                          '-DANDROID_PLATFORM=android-23'
             }
         }
     }

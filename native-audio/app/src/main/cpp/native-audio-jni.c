@@ -684,6 +684,8 @@ jboolean Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv* env, jclass
             pthread_mutex_unlock(&audioEngineLock);
             return JNI_FALSE;
         }
+    } else {
+        pthread_mutex_unlock(&audioEngineLock);
     }
 
     return JNI_TRUE;
