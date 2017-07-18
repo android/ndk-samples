@@ -253,7 +253,7 @@ void Engine::choreographer_callback(long frameTimeNanos, void* data) {
     engine->StartChoreographer();
   }
 
-  // Swap buffer if the render cycle meet the condition.
+  // Swap buffer if the timing meets the 30fps time interval condition.
   // The callback is in the same thread context, so that we can just invoke
   // eglSwapBuffers().
   if (COULD_RENDER(frameTimeNanos, engine->prevFrameTimeNanos_)) {
@@ -293,7 +293,7 @@ void Engine::StopJavaChoreographer() {
 }
 
 void Engine::SynchInCallback(jlong frameTimeInNanos) {
-  // Signal render thread if the render cycle meet the condition.
+  // Signal render thread if the timing meets the 30fps time interval condition.
   if (COULD_RENDER(frameTimeInNanos, prevFrameTimeNanos_)) {
     prevFrameTimeNanos_ = frameTimeInNanos;
     cv_.notify_one();
