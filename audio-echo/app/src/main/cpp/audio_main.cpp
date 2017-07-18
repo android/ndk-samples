@@ -226,11 +226,6 @@ uint32_t dbgEngineGetBufCount(void) {
 bool EngineService(void* ctx, uint32_t msg, void* data ) {
     assert(ctx == &engine);
     switch (msg) {
-        case ENGINE_SERVICE_MSG_KICKSTART_PLAYER:
-            engine.player_->PlayAudioBuffers(PLAY_KICKSTART_BUFFER_COUNT);
-            // we only allow it to call once, so tell caller do not call
-            // anymore
-            return false;
         case ENGINE_SERVICE_MSG_RETRIEVE_DUMP_BUFS:
             *(static_cast<uint32_t*>(data)) = dbgEngineGetBufCount();
             break;
