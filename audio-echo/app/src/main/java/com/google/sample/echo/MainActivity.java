@@ -29,25 +29,26 @@ import android.support.v4.app.ActivityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
     private static final int AUDIO_ECHO_REQUEST = 0;
-
-    TextView status_view;
+    Button   controlButton;
+    TextView statusView;
     String  nativeSampleRate;
     String  nativeSampleBufSize;
     boolean supportRecording;
-    Boolean isPlaying;
+    Boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        status_view = (TextView)findViewById(R.id.statusView);
+        controlButton = (Button)findViewById((R.id.capture_control_button));
+        statusView = (TextView)findViewById(R.id.statusView);
         queryNativeAudioParameters();
 
         // initialize native audio system
@@ -55,7 +56,6 @@ public class MainActivity extends Activity
         if (supportRecording) {
             createSLEngine(Integer.parseInt(nativeSampleRate), Integer.parseInt(nativeSampleBufSize));
         }
-        isPlaying = false;
     }
     @Override
     protected void onDestroy() {
@@ -92,45 +92,44 @@ public class MainActivity extends Activity
     }
 
     private void startEcho() {
-        if(!supportRecording || isPlaying) {
+        if(!supportRecording){
             return;
         }
-        if(!createSLBufferQueueAudioPlayer()) {
-            status_view.setText("Failed to create Audio Player");
-            return;
-        }
-        if(!createAudioRecorder()) {
+        if (!isPlaying) {
+            if(!createSLBufferQueueAudioPlayer()) {
+                statusView.setText(getString(R.string.error_player));
+                return;
+            }
+            if(!createAudioRecorder()) {
+                deleteSLBufferQueueAudioPlayer();
+                statusView.setText(getString(R.string.error_recorder));
+                return;
+            }
+            startPlay();   // this must include startRecording()
+            statusView.setText(getString(R.string.status_echoing));
+        } else {
+            stopPlay();  //this must include stopRecording()
+            updateNativeAudioUI();
+            deleteAudioRecorder();
             deleteSLBufferQueueAudioPlayer();
-            status_view.setText("Failed to create Audio Recorder");
-            return;
         }
-        startPlay();   //this must include startRecording()
-        isPlaying = true;
-        status_view.setText("Engine Echoing ....");
+        isPlaying = !isPlaying;
+        controlButton.setText(getString((isPlaying == true) ?
+                R.string.StopEcho: R.string.StartEcho));
     }
-    public void startEcho(View view) {
+    public void onEchoClick(View view) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
                                                PackageManager.PERMISSION_GRANTED) {
+            statusView.setText(getString(R.string.status_record_perm));
             ActivityCompat.requestPermissions(
                     this,
                     new String[] { Manifest.permission.RECORD_AUDIO },
                     AUDIO_ECHO_REQUEST);
-            status_view.setText("Requesting RECORD_AUDIO Permission...");
             return;
         }
         startEcho();
     }
 
-    public void stopEcho(View view) {
-        if(!supportRecording || !isPlaying) {
-            return;
-        }
-        stopPlay();  //this must include stopRecording()
-        updateNativeAudioUI();
-        deleteAudioRecorder();
-        deleteSLBufferQueueAudioPlayer();
-        isPlaying = false;
-    }
     public void getLowLatencyParameters(View view) {
         updateNativeAudioUI();
         return;
@@ -152,11 +151,12 @@ public class MainActivity extends Activity
     }
     private void updateNativeAudioUI() {
         if (!supportRecording) {
-            status_view.setText("Error: Audio recording is not supported");
+            statusView.setText(getString(R.string.error_no_mic));
+            controlButton.setEnabled(false);
             return;
         }
 
-        status_view.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
+        statusView.setText("nativeSampleRate    = " + nativeSampleRate + "\n" +
                 "nativeSampleBufSize = " + nativeSampleBufSize + "\n");
 
     }
@@ -174,18 +174,16 @@ public class MainActivity extends Activity
         if (grantResults.length != 1  ||
             grantResults[0] != PackageManager.PERMISSION_GRANTED) {
             /*
-             * When user denied the permission, throw a Toast to prompt that RECORD_AUDIO
-             * is necessary; on UI, we display the current status as permission was denied so
-             * user know what is going on.
-             * This application go back to the original state: it behaves as if the button
+             * When user denied permission, throw a Toast to prompt that RECORD_AUDIO
+             * is necessary; also display the status on UI
+             * Then application goes back to the original state: it behaves as if the button
              * was not clicked. The assumption is that user will re-click the "start" button
              * (to retry), or shutdown the app in normal way.
              */
-            status_view.setText("Error: Permission for RECORD_AUDIO was denied");
+            statusView.setText(getString(R.string.error_no_permission));
             Toast.makeText(getApplicationContext(),
-                           getString(R.string.NeedRecordAudioPermission),
-                           Toast.LENGTH_SHORT)
-                 .show();
+                    getString(R.string.prompt_permission),
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -194,8 +192,8 @@ public class MainActivity extends Activity
          * re-try the "start" button to perform the normal operation. This saves us the extra
          * logic in code for async processing of the button listener.
          */
-        status_view.setText("RECORD_AUDIO permission granted, touch " +
-                             getString(R.string.StartEcho) + " to begin");
+        statusView.setText("RECORD_AUDIO permission granted, touch " +
+                           getString(R.string.StartEcho) + " to begin");
 
 
         // The callback runs on app's thread, so we are safe to resume the action
