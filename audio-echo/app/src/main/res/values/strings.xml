@@ -4,6 +4,14 @@
     <string name="action_settings">Settings</string>
     <string name="StartEcho">Start</string>
     <string name="StopEcho">Stop</string>
-    <string name="GetParam">Get Param</string>
-    <string name="NeedRecordAudioPermission">"This sample needs RECORD_AUDIO permission"</string>
+    <string name="GetParam">View Audio Param</string>
+    <string name="status_echoing">Engine Echoing...</string>
+    <string name="status_record_perm">"Requesting RECORD_AUDIO Permission..."</string>
+
+    <string name="error_player">Failed to Create Audio Player</string>
+    <string name="error_recorder">Failed to Create Audio Recorder</string>
+    <string name="error_no_mic">"Error: Audio recording is not supported"</string>
+    <string name="error_no_permission">"Error: Permission for RECORD_AUDIO was denied"</string>
+
+    <string name="prompt_permission">"This sample needs RECORD_AUDIO permission"</string>
 </resources>
