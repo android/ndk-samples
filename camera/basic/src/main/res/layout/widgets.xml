@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/exposureLabel"
+        android:text="Exposure"
+        android:textColor="#FFFF00"
+        android:textSize="20sp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="60dp"
+        android:layout_above="@+id/sensitivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/exposureVal"
+        android:text="0"
+        android:textColor="#FFFF00"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/exposureLabel"
+        android:layout_above="@+id/exposureLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <SeekBar
+        android:id="@+id/exposure_seekbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/exposureLabel"
+        android:layout_toRightOf="@+id/exposureLabel"
+        android:minHeight="2dip"
+        android:maxHeight="2dip"
+        android:max="100" />
+    <TextView
+        android:id="@+id/sensitivityLabel"
+        android:text="Sensitivity"
+        android:textColor="#FFFF00"
+        android:textSize="20sp"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/takePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/sensitivityVal"
+        android:text="0"
+        android:textColor="#FFFF00"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/sensitivityLabel"
+        android:layout_above="@+id/sensitivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <SeekBar
+        android:id="@+id/sensitivity_seekbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/sensitivityLabel"
+        android:layout_alignTop="@+id/sensitivityLabel"
+        android:minHeight="2dip"
+        android:maxHeight="2dip"
+        android:max="100"/>
+    <ImageButton
+        android:id="@+id/takePhoto"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:src = "@drawable/camera_button"
+        android:background="@android:color/transparent"
+        android:adjustViewBounds ="true"
+        android:scaleType="fitCenter"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"/>
+</RelativeLayout>

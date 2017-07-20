@@ -1,15 +1,13 @@
 Camera Samples
 =============
 Camera is a collection of Android NDKCamera samples:
-- preview: preview camera images into the ANativeWindow of an [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html)
-- read-image: preview camera images with AReadImage
-- texture-view: preview NDK camera into Java textureView object
+- basic: preview camera images with AReadImage and take jpeg photos
 
 This sample uses the new [Android Studio CMake plugin](https://developer.android.com/ndk/guides/cmake.html).
 
 Pre-requisites
 --------------
-- Android Studio 2.2.0+ with [NDK-r12+](https://developer.android.com/ndk/) bundle
+- Android Studio 2.3.0+ with [NDK-r15+](https://developer.android.com/ndk/) bundle
 - Android device support android-24+
 
 Getting Started
