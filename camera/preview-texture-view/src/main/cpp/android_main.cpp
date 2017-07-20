@@ -119,6 +119,7 @@ void Engine::DeleteCamera(void) {
     }
 }
 
+
 /*
  * The stub engine reference:
  *     need by run-time camera request callback function
@@ -182,3 +183,4 @@ Java_com_sample_textureview_ViewActivity_notifySurfaceTextureDestroyed(
   delete pEngineObj;
   pEngineObj = nullptr;
 }
+
