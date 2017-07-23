@@ -43,8 +43,10 @@ List<String> WORKING_DIR = [projectDir.toString() + '/../third_party',
                             projectDir.toString() + '/../third_party']
 for (int i = 0; i < TARGET_DIR.size(); i++) {
     if (!file(TARGET_DIR[i].toString()).exists()) {
+       if(!file(WORKING_DIR[i].toString()).exists())
+           file(WORKING_DIR[i].toString()).mkdir()
        exec {
-           workingDir(WORKING_DIR[i].toString())
+           workingDir(file(WORKING_DIR[i].toString()))
            executable "git"
            args GIT_PARAMETERS[i]
        }
