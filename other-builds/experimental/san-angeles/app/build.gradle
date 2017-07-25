@@ -10,7 +10,7 @@ model {
 
         defaultConfig.with {
             applicationId = 'com.example.SanAngeles'
-            minSdkVersion.apiLevel    = 4
+            minSdkVersion.apiLevel    = 14
             targetSdkVersion.apiLevel = 23
         }
         ndk {

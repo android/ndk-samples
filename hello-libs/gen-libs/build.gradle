@@ -5,14 +5,14 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        minSdkVersion 13
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-9',
+                arguments '-DANDROID_PLATFORM=android-14',
                           '-DANDROID_TOOLCHAIN=clang'
                 // explicitly build libs
                 targets 'gmath', 'gperf'

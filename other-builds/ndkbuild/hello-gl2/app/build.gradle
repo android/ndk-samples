@@ -8,7 +8,7 @@ android {
     buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId 'com.android.gl2jni'
-        minSdkVersion 5
+        minSdkVersion 14
         targetSdkVersion 23
         ndk {
             abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'

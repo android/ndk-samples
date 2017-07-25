@@ -6,14 +6,14 @@ apply plugin: 'com.android.application'
 
      defaultConfig {
          applicationId 'com.example.webp_view'
-         minSdkVersion  9
+         minSdkVersion 14
          targetSdkVersion 25
          externalNativeBuild {
              cmake {
                  // when using arguments, the latest (cmake version 3.6+, android studio
                  // beta2+) must be used to compile
                  arguments '-DANDROID_STL=c++_static', '-DANDROID_TOOLCHAIN=clang'
-                 arguments '-DANDROID_PLATFORM=android-9'
+                 arguments '-DANDROID_PLATFORM=android-14'
              }
          }
      }

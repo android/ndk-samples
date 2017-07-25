@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId 'com.google.sample.tunnel'
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode     1
         versionName    '1.0'
@@ -31,7 +31,7 @@ android {
         }
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-9',
+                arguments '-DANDROID_PLATFORM=android-14',
                      '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
             }
         }

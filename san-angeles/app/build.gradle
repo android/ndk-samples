@@ -11,13 +11,13 @@ android {
 
     defaultConfig {
         applicationId 'com.example.SanAngeles'
-        minSdkVersion 4
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode  1
         versionName  "1.0"
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-9'
+                arguments '-DANDROID_PLATFORM=android-14'
             }
         }
     }

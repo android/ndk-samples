@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.sample.teapot"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 19
 
     }

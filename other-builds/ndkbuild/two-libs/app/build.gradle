@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.twolibs"
-        minSdkVersion 3
+        minSdkVersion 14
         targetSdkVersion 3
 
         testApplicationId "com.example.twolibs.tests"

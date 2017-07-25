@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId 'com.example.native_plasma'
-        minSdkVersion  9
+        minSdkVersion 14
         targetSdkVersion 23
         ndk {
             abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'

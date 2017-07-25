@@ -10,7 +10,7 @@ model {
 
         defaultConfig {
             applicationId    = 'com.android.accelerometergraph'
-            minSdkVersion.apiLevel    = 8
+            minSdkVersion.apiLevel = 14
             targetSdkVersion.apiLevel = 23
         }
         ndk {

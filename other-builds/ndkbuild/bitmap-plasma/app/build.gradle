@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.plasma"
-        minSdkVersion 8
+        minSdkVersion 14
         targetSdkVersion 8
         ndk {
             abiFilters 'armeabi'

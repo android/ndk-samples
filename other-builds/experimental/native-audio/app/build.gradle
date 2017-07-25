@@ -10,7 +10,7 @@ model {
 
         defaultConfig {
             applicationId    = 'com.example.nativeaudio'
-            minSdkVersion.apiLevel    = 9
+            minSdkVersion.apiLevel    = 14
             targetSdkVersion.apiLevel = 23
         }
         ndk {

@@ -6,14 +6,14 @@ android {
 
     defaultConfig.with {
         applicationId 'com.example.plasma'
-        minSdkVersion 8
+        minSdkVersion 14
         targetSdkVersion 25
         ndk {
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
         }
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-8', '-DANDROID_TOOLCHAIN=clang'
+                arguments '-DANDROID_PLATFORM=android-14', '-DANDROID_TOOLCHAIN=clang'
             }
         }
     }

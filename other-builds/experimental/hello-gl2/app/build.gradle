@@ -9,7 +9,7 @@ model {
         buildToolsVersion = '23.0.2'
         defaultConfig {
             applicationId    = 'com.android.gl2jni'
-            minSdkVersion.apiLevel    = 5
+            minSdkVersion.apiLevel = 14
             targetSdkVersion.apiLevel = 23
         }
         ndk {
