@@ -48,7 +48,7 @@ model {
             versionName = '1.0'
         }
         ndk {
-            platformVersion = 21
+            platformVersion = 14
             moduleName = 'hello-libs'
             toolchain = 'clang'
             stl = 'gnustl_static'
