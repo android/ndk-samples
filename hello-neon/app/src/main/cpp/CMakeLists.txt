@@ -19,6 +19,17 @@ if (${ANDROID_ABI} STREQUAL "armeabi-v7a")
   set_property(SOURCE ${neon_SRCS}
                APPEND_STRING PROPERTY COMPILE_FLAGS " -mfpu=neon")
   add_definitions("-DHAVE_NEON=1")
+elseif (${ANDROID_ABI} STREQUAL "x86")
+    set(neon_SRCS helloneon-intrinsics.c)
+    set_property(SOURCE ${neon_SRCS}
+        APPEND_STRING PROPERTY COMPILE_FLAGS " -msse4")
+    # just for cosmetic purpose: suppress the compile warning
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unknown-attributes  \
+                                        -Wno-deprecated-declarations \
+                                        -Wno-constant-conversion \
+                                        -Wno-static-in-inline")
+    add_definitions(-DHAVE_NEON_X86=1 -DHAVE_NEON=1 -DUSE_SSE4)
+
 else ()
   set(neon_SRCS)
 endif ()
@@ -26,7 +37,6 @@ endif ()
 add_library(hello-neon SHARED
             helloneon.c
             ${neon_SRCS})
-
 target_include_directories(hello-neon PRIVATE
                            ${ANDROID_NDK}/sources/android/cpufeatures)
 

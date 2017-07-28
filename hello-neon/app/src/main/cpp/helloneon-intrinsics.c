@@ -15,7 +15,11 @@
  *
  */
 #include "helloneon-intrinsics.h"
-#include <arm_neon.h>
+#if defined(HAVE_NEON) && defined(HAVE_NEON_X86)
+  #include "NEON_2_SSE.h"
+#elif defined(HAVE_NEON)
+  #include <arm_neon.h>
+#endif
 
 /* this source file should only be compiled by Android.mk /CMake when targeting
  * the armeabi-v7a ABI, and should be built in NEON mode
