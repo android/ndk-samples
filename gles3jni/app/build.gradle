@@ -8,7 +8,7 @@ def TARGET_SDK_VERSION = 18
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.android.gles3jni"
