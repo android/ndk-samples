@@ -6,7 +6,8 @@ A sample to view Display P3 image on Android Device. If Android OS and device su
 
 Pre-requisites
 --------------
-- Android O (API >= 26) device that supports Display P3 mode
+- Android O (API >= 26) device that supports wide color gamut color space
+  (Implemented on Android - O with Display P3 color space)
 - Android Studio 2.3+
 - Android [NDK-r15+](https://developer.android.com/ndk/downloads/index.html)
 
@@ -25,7 +26,8 @@ Screenshots
 
 Description
 -----------
-This sample creates Display P3 OpenGL eglContext_, create 2 textures
+This sample creates [Display P3](http://www.androidbeat.com/2017/04/android-o-feature-highlight-support-wide-color-gamut-profile)
+OpenGL eglContext_, create 2 textures
 for each PNG files under "assets": the first is in Display P3 image mode,
 the second is in sRGB mode.  The sRGB texture is created by transforming the 
 original Display P3 image into CIExyz 1931 color space, clamping colors in
@@ -52,6 +54,11 @@ To add new images, simply drop the new file into this folder.
 Changing display_ mode:
 - Tap on image to show/hide (Display P3 mode or sRGB mode)
 - Swipe up / down to rotate through image files
+
+More About Wide Color Gamut
+- [Android O release note](https://developer.android.com/preview/api-overview.html) for Color Management
+- [Wide Color at I/O 17](https://www.youtube.com/watch?v=r8NeG0wmFXM)
+- [AhdredHeadLines description](https://www.androidheadlines.com/2017/03/apps-android-o-will-wide-color-gamut-support.html)
 
 
 Version History
