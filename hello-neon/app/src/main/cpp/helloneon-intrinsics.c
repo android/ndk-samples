@@ -16,6 +16,10 @@
  */
 #include "helloneon-intrinsics.h"
 #if defined(HAVE_NEON) && defined(HAVE_NEON_X86)
+ /*
+  * The latest version and instruction for NEON_2_SSE.h is at:
+  *    https://github.com/intel/ARM_NEON_2_x86_SSE
+  */
   #include "NEON_2_SSE.h"
 #elif defined(HAVE_NEON)
   #include <arm_neon.h>
