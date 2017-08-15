@@ -167,5 +167,6 @@ Java_com_example_helloneon_HelloNeon_stringFromJNI( JNIEnv* env,
     strlcat(buffer, "Program not compiled with ARMv7 support !\n", sizeof buffer);
 #endif /* !HAVE_NEON */
 EXIT:
+    D("%s",  buffer);
     return (*env)->NewStringUTF(env, buffer);
 }
