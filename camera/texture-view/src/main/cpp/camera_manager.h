@@ -40,7 +40,7 @@ struct ImageFormat {
   int32_t height;
 
   int32_t format;  // Through out this demo, the format is fixed to
-  // YUV_420 format
+                   // YUV_420 format
 };
 
 template <typename T>
@@ -103,9 +103,10 @@ class NDKCamera {
   NDKCamera();
   ~NDKCamera();
   void EnumerateCamera(void);
-  bool MatchCaptureSizeRequest(int32_t requestWidth, int32_t requestHeight, ImageFormat *view);
-  bool MatchCaptureSizeRequest(int32_t requestWidth, int32_t requestHeight, ImageFormat* view,
-                               ImageFormat* capture);
+  bool MatchCaptureSizeRequest(int32_t requestWidth, int32_t requestHeight,
+                               ImageFormat* view);
+  bool MatchCaptureSizeRequest(int32_t requestWidth, int32_t requestHeight,
+                               ImageFormat* view, ImageFormat* capture);
   void CreateSession(ANativeWindow* previewWindow, ANativeWindow* jpgWindow,
                      bool manaulPreview, int32_t imageRotation);
   void CreateSession(ANativeWindow* previewWindow);

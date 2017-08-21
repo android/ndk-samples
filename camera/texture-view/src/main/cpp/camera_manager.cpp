@@ -156,15 +156,16 @@ class DisplayDimension {
  *    2) the smallest resolution in the camera mode list
  * This is to minimize the later color space conversion workload.
  */
-bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth, int32_t requestHeight,
-                             ImageFormat *view) {
+bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
+                                        int32_t requestHeight,
+                                        ImageFormat* view) {
   return MatchCaptureSizeRequest(requestWidth, requestHeight, view, nullptr);
 }
 
 bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
-                                   int32_t requestHeight,
-                                   ImageFormat* resView,
-                                   ImageFormat* resCap) {
+                                        int32_t requestHeight,
+                                        ImageFormat* resView,
+                                        ImageFormat* resCap) {
   DisplayDimension disp(requestWidth, requestHeight);
   if (cameraOrientation_ == 90 || cameraOrientation_ == 270) {
     disp.Flip();
@@ -201,7 +202,7 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
   if (foundIt) {
     resView->width = foundRes.org_width();
     resView->height = foundRes.org_height();
-    if(resCap) {
+    if (resCap) {
       resCap->width = maxJPG.org_width();
       resCap->height = maxJPG.org_height();
     }
@@ -217,14 +218,12 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
     resCap = resView;
   }
   resView->format = AIMAGE_FORMAT_YUV_420_888;
-  if (resCap)
-    resCap->format = AIMAGE_FORMAT_JPEG;
+  if (resCap) resCap->format = AIMAGE_FORMAT_JPEG;
   return foundIt;
 }
 
 void NDKCamera::CreateSession(ANativeWindow* previewWindow,
-                              ANativeWindow* jpgWindow,
-                              bool manualPreview,
+                              ANativeWindow* jpgWindow, bool manualPreview,
                               int32_t imageRotation) {
   // Create output from this app's ANativeWindow, and add into output container
   requests_[PREVIEW_REQUEST_IDX].outputNativeWindow_ = previewWindow;
@@ -234,8 +233,7 @@ void NDKCamera::CreateSession(ANativeWindow* previewWindow,
 
   CALL_CONTAINER(create(&outputContainer_));
   for (auto& req : requests_) {
-    if (!req.outputNativeWindow_)
-      continue;
+    if (!req.outputNativeWindow_) continue;
 
     ANativeWindow_acquire(req.outputNativeWindow_);
     CALL_OUTPUT(create(req.outputNativeWindow_, &req.sessionOutput_));
@@ -288,8 +286,7 @@ NDKCamera::~NDKCamera() {
   ACameraCaptureSession_close(captureSession_);
 
   for (auto& req : requests_) {
-    if (!req.outputNativeWindow_)
-      continue;
+    if (!req.outputNativeWindow_) continue;
 
     CALL_REQUEST(removeTarget(req.request_, req.target_));
     ACaptureRequest_free(req.request_);
@@ -406,11 +403,6 @@ void NDKCamera::StartPreview(bool start) {
                                      nullptr));
   } else if (!start && captureSessionState_ == CaptureSessionState::ACTIVE) {
     ACameraCaptureSession_stopRepeating(captureSession_);
-  } else {
-/*   TODO: debug this!
- * ASSERT(false, "Conflict states(%s, %d)", (start ? "true" : "false"),
-           captureSessionState_);
- */
   }
 }
 

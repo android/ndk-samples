@@ -1,6 +1,7 @@
 Camera Samples
 =============
 Camera is a collection of Android NDKCamera samples:
+- textureView: camera preview with Java TextureView
 - basic: preview camera images with AReadImage and take jpeg photos
 
 This sample uses the new [Android Studio CMake plugin](https://developer.android.com/ndk/guides/cmake.html).
