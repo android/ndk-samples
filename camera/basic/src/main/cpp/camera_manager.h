@@ -105,7 +105,6 @@ class NDKCamera {
                             int64_t frameNumber);
   void OnCaptureFailed(ACameraCaptureSession* session, ACaptureRequest* request,
                        ACameraCaptureFailure* failure);
-
   void StartPreview(bool start);
   bool TakePhoto(void);
   bool GetExposureRange(int64_t* min, int64_t* max, int64_t* curVal);

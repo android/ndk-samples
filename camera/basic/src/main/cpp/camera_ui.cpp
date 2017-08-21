@@ -87,6 +87,19 @@ void CameraEngine::OnTakePhoto() {
   }
 }
 
+void CameraEngine::OnPhotoTaken(const char* fileName) {
+  int32_t nameLen = strlen(fileName);
+  JNIEnv *jni;
+  app_->activity->vm->AttachCurrentThread(&jni, NULL);
+
+  // Default class retrieval
+  jclass clazz = jni->GetObjectClass(app_->activity->clazz);
+  jmethodID methodID = jni->GetMethodID(clazz, "OnPhotoTaken", "(Ljava/lang/String;)V");
+  jstring javaName = jni->NewStringUTF(fileName);
+
+  jni->CallVoidMethod(app_->activity->clazz, methodID, javaName);
+  app_->activity->vm->DetachCurrentThread();
+}
 /**
  * Process user camera and disk writing permission
  * Resume application initialization after user granted camera and disk usage

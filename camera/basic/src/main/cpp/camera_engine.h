@@ -58,12 +58,14 @@ class CameraEngine {
   void DeleteCamera(void);
 
  private:
+  void OnPhotoTaken(const char* fileName);
+  int  GetDisplayRotation(void);
+
   struct android_app* app_;
   ImageFormat savedNativeWinRes_;
   bool cameraGranted_;
   int rotation_;
   volatile bool cameraReady_;
-  int GetDisplayRotation(void);
   NDKCamera* camera_;
   ImageReader* yuvReader_;
   ImageReader* jpgReader_;

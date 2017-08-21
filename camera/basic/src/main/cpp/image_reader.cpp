@@ -54,6 +54,9 @@ void OnImageCallback(void *ctx, AImageReader *reader) {
  */
 ImageReader::ImageReader(ImageFormat *res, enum AIMAGE_FORMATS format)
     : reader_(nullptr), presentRotation_(0) {
+  callback_ = nullptr;
+  callbackCtx_ = nullptr;
+
   media_status_t status = AImageReader_new(res->width, res->height, format,
                                            MAX_BUF_COUNT, &reader_);
   ASSERT(reader_ && status == AMEDIA_OK, "Failed to create AImageReader");
@@ -67,6 +70,12 @@ ImageReader::ImageReader(ImageFormat *res, enum AIMAGE_FORMATS format)
 ImageReader::~ImageReader() {
   ASSERT(reader_, "NULL Pointer to %s", __FUNCTION__);
   AImageReader_delete(reader_);
+}
+
+void ImageReader::RegisterCallback(void* ctx,
+                      std::function<void(void* ctx, const char*fileName)> func) {
+  callbackCtx_ = ctx;
+  callback_ = func;
 }
 
 void ImageReader::ImageCallback(AImageReader *reader) {
@@ -442,5 +451,8 @@ bool ImageReader::WriteFile(void *buf, int32_t size) {
   fwrite(buf, 1, size, file);
   fclose(file);
 
+  if (callback_) {
+    callback_(callbackCtx_, fileName.c_str());
+  }
   return true;
 }

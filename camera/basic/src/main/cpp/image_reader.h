@@ -17,7 +17,7 @@
 #ifndef CAMERA_IMAGE_READER_H
 #define CAMERA_IMAGE_READER_H
 #include <media/NdkImageReader.h>
-
+#include <functional>
 /*
  * ImageFormat:
  *     A Data Structure to communicate resolution between camera and ImageReader
@@ -84,9 +84,16 @@ class ImageReader {
    */
   void SetPresentRotation(int32_t angle);
 
+  /**
+   *
+   */
+  void RegisterCallback(void* ctx, std::function<void(void* ctx, const char* fileName)>);
  private:
   int32_t presentRotation_;
   AImageReader* reader_;
+
+  std::function<void(void *ctx, const char* fileName)> callback_;
+  void *callbackCtx_;
 
   void PresentImage(ANativeWindow_Buffer* buf, AImage* img);
   void PresentImage90(ANativeWindow_Buffer* buf, AImage* img);

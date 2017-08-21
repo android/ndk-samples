@@ -1,12 +1,12 @@
 NdkCamera Sample
 =============
 Two API samples:
-- basic
+- texture-view:
+Preview NDK camera image with [Android TextureView](https://developer.android.com/reference/android/view/TextureView.html)
+- basic:
 A basic NdkCamera sample to preview camera images with AReadImage and take jpeg photos.
 Exposure and sensitivity are adjustable for preview, however capturing photos is in auto mode
 (it could be adjustable with similar method as used for preview). 
-- texture-view
-Preview NDK camera image with [Android TextureView](https://developer.android.com/reference/android/view/TextureView.html)
 
 Pre-requisites
 --------------
