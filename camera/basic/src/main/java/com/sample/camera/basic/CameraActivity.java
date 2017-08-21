@@ -19,6 +19,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NativeActivity;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import junit.framework.Assert;
 
@@ -257,7 +259,19 @@ public class CameraActivity extends NativeActivity
                 });
             }});
     }
-
+    /**
+      Called from Native side to notify that a photo is taken
+     */
+    public void OnPhotoTaken(String fileName) {
+        final String name = fileName;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(),
+                        "Photo saved to " + name, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     native static void notifyCameraPermission(boolean granted);
     native static void TakePhoto();

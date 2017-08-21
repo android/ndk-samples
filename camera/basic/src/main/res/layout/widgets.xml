@@ -5,6 +5,7 @@
     android:gravity="bottom"
     android:orientation="vertical" >
 
+
     <TextView
         android:id="@+id/exposureLabel"
         android:text="Exposure"
