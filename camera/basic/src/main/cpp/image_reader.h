@@ -85,7 +85,10 @@ class ImageReader {
   void SetPresentRotation(int32_t angle);
 
   /**
-   *
+   * regsiter a callback function for client to be notified that jpeg already
+   * written out.
+   * @param ctx is client context when callback is invoked
+   * @param callback is the actual callback function
    */
   void RegisterCallback(void* ctx, std::function<void(void* ctx, const char* fileName)>);
  private:
@@ -100,7 +103,7 @@ class ImageReader {
   void PresentImage180(ANativeWindow_Buffer* buf, AImage* img);
   void PresentImage270(ANativeWindow_Buffer* buf, AImage* img);
 
-  bool WriteFile(void* buf, int32_t size);
+  void WriteFile(AImage* image);
 };
 
 #endif  // CAMERA_IMAGE_READER_H
