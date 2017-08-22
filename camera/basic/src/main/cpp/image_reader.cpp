@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #include <string>
+#include <functional>
+#include <thread>
 #include <cstdlib>
 #include <dirent.h>
 #include <ctime>
@@ -83,21 +85,13 @@ void ImageReader::ImageCallback(AImageReader *reader) {
   media_status_t status = AImageReader_getFormat(reader, &format);
   ASSERT(status == AMEDIA_OK, "Failed to get the media format");
   if (format == AIMAGE_FORMAT_JPEG) {
-    // Create a thread and write out the jpeg files
     AImage *image = nullptr;
     media_status_t status = AImageReader_acquireNextImage(reader, &image);
     ASSERT(status == AMEDIA_OK && image, "Image is not available");
 
-    int planeCount;
-    status = AImage_getNumberOfPlanes(image, &planeCount);
-    ASSERT(status == AMEDIA_OK && planeCount == 1,
-           "Error: getNumberOfPlanes() planceCount = %d", planeCount);
-    uint8_t *data = nullptr;
-    int len = 0;
-    AImage_getPlaneData(image, 0, &data, &len);
-    WriteFile(data, len);
-
-    AImage_delete(image);
+    // Create a thread and write out the jpeg files
+    std::thread writeFileHandler(&ImageReader::WriteFile, this, image);
+    writeFileHandler.detach();
   }
 }
 
@@ -416,11 +410,18 @@ void ImageReader::SetPresentRotation(int32_t angle) {
 
 /**
  * Write out jpeg files to kDirName directory
- * @param buf is the full jpg image (with headers and compressed yuv pixels
- * @param size is the length of buf memory
- * @return true for success, false for failure.
+ * @param image point capture jpg image
  */
-bool ImageReader::WriteFile(void *buf, int32_t size) {
+void ImageReader::WriteFile(AImage* image) {
+
+  int planeCount;
+  media_status_t status = AImage_getNumberOfPlanes(image, &planeCount);
+  ASSERT(status == AMEDIA_OK && planeCount == 1,
+         "Error: getNumberOfPlanes() planeCount = %d", planeCount);
+  uint8_t *data = nullptr;
+  int len = 0;
+  AImage_getPlaneData(image, 0, &data, &len);
+
   DIR *dir = opendir(kDirName);
   if (dir) {
     closedir(dir);
@@ -431,7 +432,7 @@ bool ImageReader::WriteFile(void *buf, int32_t size) {
   }
 
   struct timespec ts {
-    0, 0
+      0, 0
   };
   clock_gettime(CLOCK_REALTIME, &ts);
   struct tm localTime;
@@ -445,14 +446,16 @@ bool ImageReader::WriteFile(void *buf, int32_t size) {
               std::to_string(localTime.tm_min) +
               std::to_string(localTime.tm_sec) + ".jpg";
   FILE *file = fopen(fileName.c_str(), "wb");
-  if (!file || !buf || !size) {
-    return false;
-  }
-  fwrite(buf, 1, size, file);
-  fclose(file);
+  if (file && data && len) {
+    fwrite(data, 1, len, file);
+    fclose(file);
 
-  if (callback_) {
-    callback_(callbackCtx_, fileName.c_str());
+    if (callback_) {
+      callback_(callbackCtx_, fileName.c_str());
+    }
+  } else {
+    if (file)
+      fclose(file);
   }
-  return true;
+  AImage_delete(image);
 }
