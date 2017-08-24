@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WideColor</string>
+    <string name="p3_name">P3 View</string>
+    <string name="srgb_name">sRGB View</string>
+    <string name="welcome">Loading Images ...</string>
+</resources>
