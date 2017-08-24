@@ -443,7 +443,6 @@ Engine g_engine;
  */
 void android_main( android_app* state )
 {
-    app_dummy();
 
     g_engine.SetState( state );
 
