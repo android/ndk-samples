@@ -507,6 +507,18 @@ void Java_com_example_nativemedia_NativeMedia_setSurface(JNIEnv *env, jclass cla
 void Java_com_example_nativemedia_NativeMedia_rewindStreamingMediaPlayer(JNIEnv *env, jclass clazz)
 {
     XAresult res;
+    XAuint32  state;
+
+    if (!playerPlayItf) {
+        return;
+    }
+    res = (*playerPlayItf)->GetPlayState(playerPlayItf, &state);
+    assert(XA_RESULT_SUCCESS == res);
+
+    if(state == XA_PLAYSTATE_PAUSED || state == XA_PLAYSTATE_STOPPED) {
+        discontinuity = JNI_TRUE;
+        return;
+    }
 
     // make sure the streaming media player was created
     if (NULL != playerBQItf && NULL != file) {
