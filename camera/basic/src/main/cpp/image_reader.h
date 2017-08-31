@@ -51,6 +51,11 @@ class ImageReader {
   AImage* GetNextImage(void);
 
   /**
+  * Retrieve Image on the back of Reader's queue, dropping older images
+  */
+  AImage* GetLatestImage(void);
+
+  /**
    * Delete Image
    * @param image {@link AImage} instance to be deleted
    */

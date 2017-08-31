@@ -107,8 +107,7 @@ ANativeWindow *ImageReader::GetNativeWindow(void) {
 /**
  * GetNextImage()
  *   Retrieve the next image in ImageReader's bufferQueue, NOT the last image so
- * no image is
- *   skipped
+ * no image is skipped. Recommended for batch/background processing.
  */
 AImage *ImageReader::GetNextImage(void) {
   AImage *image;
@@ -117,6 +116,20 @@ AImage *ImageReader::GetNextImage(void) {
     return nullptr;
   }
   return image;
+}
+
+/**
+ * GetLatestImage()
+ *   Retrieve the last image in ImageReader's bufferQueue, deleting images in
+ * in front of it on the queue. Recommended for real-time processing.
+ */
+AImage *ImageReader::GetLatestImage(void) {
+    AImage *image;
+    media_status_t status = AImageReader_acquireLatestImage(reader_, &image);
+    if (status != AMEDIA_OK) {
+        return nullptr;
+    }
+    return image;
 }
 
 /**
