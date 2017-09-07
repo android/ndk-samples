@@ -16,6 +16,7 @@ include 'services:webservice'
 */
 
 rootProject.name = 'android-ndk-apps'
+
 file('.').eachDir { sub ->
     include sub.name
 }
