@@ -1,30 +1,38 @@
-Hello-libs
+hello-libs
 =========
-Hello-Libs is an Android sample that demos 3rd party native lib management with Android Studio
+hello-libs is a sample that shows you how to manage 3rd party C/C++ libraries with Android Studio.
 
 Introduction
 ------------
-This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external lib support.
-* how external pre-build static lib (gmath) could be used in app
-* how external pre-built shared lib (gperf) could be used in app
+This sample uses the [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external library support. It shows you how to:
+
+* include a pre-built static library (gmath) in your app
+* include a pre-built shared library (gperf) in your app
 
 Description
 -----------
-The sample includes 2 modules but only uses app module:
-*    app -- uses one shared lib and one static lib from $project/distribution/
-*    gen-libs -- generates one shared and one static lib, and copy them into $project/distribution
-For this demo purpose, you do not need to build libs: binaries are included in the project -- the 
-debug library binaries are saved inside distribution folder. If you want, you could build your own with
-gen-libs source, just follow comment in setting.gradle and app/build.gradle  -- do it once, then
-comment them out again so you are not affected by lib building
+The sample includes 2 modules:
+*    app -- imports a shared library (libgperf.so) and a static library (libgmath.a) from the `distribution` folder
+*    gen-libs -- contains the source code and CMake build script for the gmath and gperf example libraries. The resulting binaries are copied into the `distribution` folder
 
-The key point is to inform app's CMakeLists.txt
-*    where lib/header are
-*    where lib binaries are and import them as static or shared
+For this demo you do not need to build the libraries because pre-built binaries are included in the `distribution` folder. The default "Android" project view in Android Studio will not show the `gen-libs` module.
 
-Note: for shared lib, with android plugin 2.2.0-alpha3+, once declared as SHARED IMPORTED, Android
-Studio will automatically pack them into apk too! So lib just need tell Android Studio once, it
-will be used both on Host and on Target
+To build these libraries from source and show the `gen-libs` module: 
+
+1) Uncomment the `include ':gen-libs'` line in `settings.gradle`
+2) Uncommemt the `compile project(':gen-libs')` line in `app/build.gradle`
+3) Run the build
+
+Once you have finished building the libraries it's worth commenting these lines out to avoid performing longer library builds each time you run the app. 
+
+When including libraries in your app, include the following in your app's `CMakeLists.txt` file: 
+
+*    where the library headers are stored (using `target_include_directories`)
+*    where the library binaries are stored (using `set_target_properties`)
+*    whether to import libraries as static or shared (using `add_library`)
+
+Note: For shared libraries, with android plugin 2.2.0-alpha3+, once declared as SHARED IMPORTED, Android
+Studio will automatically pack them into the resulting APK. The library will be used both on host and on the target Android device.
 
 Pre-requisites
 --------------
