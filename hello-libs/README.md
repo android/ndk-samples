@@ -25,11 +25,11 @@ To build these libraries from source and show the `gen-libs` module:
 
 Once you have finished building the libraries it's worth commenting these lines out to avoid performing longer library builds each time you run the app. 
 
-When including libraries in your app, include the following in your app's `CMakeLists.txt` file: 
+When including libraries in your app, include the following in your app's `CMakeLists.txt` file (in the following order): 
 
-*    where the library headers are stored (using `target_include_directories`)
-*    where the library binaries are stored (using `set_target_properties`)
 *    whether to import libraries as static or shared (using `add_library`)
+*    where the library binaries are stored (using `set_target_properties`)
+*    where the library headers are stored (using `target_include_directories`)
 
 Note: For shared libraries, with android plugin 2.2.0-alpha3+, once declared as SHARED IMPORTED, Android
 Studio will automatically pack them into the resulting APK. The library will be used both on host and on the target Android device.
