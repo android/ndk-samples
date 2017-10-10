@@ -175,14 +175,14 @@ bool NDKCamera::MatchCaptureSizeRequest(ANativeWindow* display,
   DisplayDimension foundRes(4000, 4000);
   DisplayDimension maxJPG(0, 0);
 
-  for (int i = 0; i < entry.count; ++i) {
-    int32_t input = entry.data.i32[i * 4 + 3];
-    int32_t format = entry.data.i32[i * 4 + 0];
+  for (int i = 0; i < entry.count; i += 4) {
+    int32_t input = entry.data.i32[i + 3];
+    int32_t format = entry.data.i32[i + 0];
     if (input) continue;
 
     if (format == AIMAGE_FORMAT_YUV_420_888 || format == AIMAGE_FORMAT_JPEG) {
-      DisplayDimension res(entry.data.i32[i * 4 + 1],
-                           entry.data.i32[i * 4 + 2]);
+      DisplayDimension res(entry.data.i32[i + 1],
+                           entry.data.i32[i + 2]);
       if (!disp.IsSameRatio(res)) continue;
       if (format == AIMAGE_FORMAT_YUV_420_888 && foundRes > res) {
         foundIt = true;
