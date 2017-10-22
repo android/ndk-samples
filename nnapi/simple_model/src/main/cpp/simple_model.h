@@ -14,40 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef NNAPI_SIMPLE_MODEL_H_H
-#define NNAPI_SIMPLE_MODEL_H_H
+#ifndef NNAPI_SIMPLE_MODEL_H
+#define NNAPI_SIMPLE_MODEL_H
 
-#include <wrapper/NeuralNetworksApi.h>
+#include <android/NeuralNetworks.h>
 #include <vector>
 
 #define FLOAT_EPISILON (1e-6)
-
-enum OP_NAME {
-  NO_OP,
-  ADDER_ONE,
-  ADDER_TWO,
-  MUL_ONE,
-  OP_COUNT,
-};
-
-#define INVALID_OPERAND_INDEX (0xFFFFFFFF)
-struct SimpleOperand {
-  uint32_t name_;  // Operand name is the index when it is adding to NNAPI model
-                   // application must keep the track of calling sequence to
-                   // ANeuralNetworksModel_addOperand()
-  OP_NAME src_;    // OpNode that outputs to this operand (could be NO_OP
-                   // when it is
-                   // user input
-  uint32_t srcIdx_;  // output index of producing OpNode
-  OP_NAME dst_;  // OpNode that receiving this operand (could be NO_OP when
-                 // this operand is part of model outputs
-  uint32_t dstIdx_;  // Input parameter idx of receiving OpNode for this operand
-
-  uint32_t inputIdx_;   // location inside inputs when calling
-                        // identifyInputsAndOutputs()
-  uint32_t outputIdx_;  // location inside outputs when calling
-                        // identifyInputsAndOutputs()
-};
 
 /**
  * SimpleModel
@@ -56,47 +29,57 @@ struct SimpleOperand {
  *             +--- Multiplier--->output result
  *   Adder2 ---+
  *
- *   Operands are all 1-D TENSOR_FLOAT32, with NO fused_activation
+ *   Operands are all 2-D TENSOR_FLOAT32 of:
+ *       dimLength x dimLength
+ *   with NO fused_activation operation
+ *
  */
 class SimpleModel {
  public:
-  explicit SimpleModel();
+  explicit SimpleModel(uint32_t dimLength);
   ~SimpleModel();
-  bool IsReady();
-  bool IsBusy();
-  /**
-   * inputs( array of float32):
-   *   index 0: ADDER_ONE 1st input operand
-   *   index 1: ADDER_ONE 2nd input operand
-   *   index 2: ADDER_TWO 1st input operand
-   *   index 3: ADDER_TWO 2nd input operand
-   */
-  float Compute(std::vector<float>& inputs);
+  bool IsReady() const;
 
   /**
-   * calculate the result without using NNAPI
-   * for result comparison purpose
+   * inputs:
+   *   inputVale1: ADDER_ONE 2nd input operand
+   *   inputValue2: ADDER_TWO 2nd input operand
+   *   result: model's computation result buffer
+   *   SimpleModel will duplicate each value as a
+   *     dimLength_ x dimLength_
+   *   2-D tensor and feed to NNAPI model
+   *
+   *   Note: 2 adders' 1st input operand is a constant, hardcoded
+   *   to kAdder1WeightValue (0.5f) &
+   *      kAdder2WeightValue (0.4f)
+   *
    */
-  float SimulatedResult(std::vector<float>& inputs);
+  bool Compute(float inputValue1, float inputValue2, float* result);
+
+  /*
+   * return hardcoded constant value for adder1 and adder2 in the graph
+   */
+  static float getAdderConstant(uint32_t adderIdx);
 
  private:
   ANeuralNetworksModel* model_;
   ANeuralNetworksCompilation* compilation_;
-  ANeuralNetworksExecution* execution_;
-  bool modelReady_;
-  volatile bool busy_;
-  std::vector<SimpleOperand> operands_;
-  std::vector<uint32_t> userInputIndex_;
 
-  bool CreateOperands(void);
-  bool FindOperandsForOp(OP_NAME name, std::vector<uint32_t>& in,
-                         std::vector<uint32_t>& out);
-  uint32_t MapOperationIndexToModelIndex(OP_NAME opName, bool input,
-                                         uint32_t opIndex);
+  uint32_t dimLength_;
+  uint32_t tensorSize_;
+
+  std::vector<float> inputTensor1_;
+  std::vector<float> inputTensor2_;
+  std::vector<float> outputTensor_;
+
+  std::vector<float> adder1Weights_;
+  std::vector<float> adder2Weights_;
+
+  bool modelReady_;
+
+  bool CreateCompiledModel(void);
 };
 
-#define ANN_ASSERT(v) assert((v) == ANEURALNETWORKS_NO_ERROR)
+const size_t kUserInputLength = 2;
 
-const size_t kUserInputLength = 4;
-
-#endif  // NNAPI_SIMPLE_MODEL_H_H
+#endif  // NNAPI_SIMPLE_MODEL_H

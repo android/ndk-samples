@@ -9,11 +9,6 @@ Key concepts:
 * Model creation, compilation, execution phases
 * Model input/output index regarding to operand index
 
-Screenshots
------------
-![screenshot](screenshot.png)
-
-
 License
 -------
 Copyright 2017 Google, Inc.

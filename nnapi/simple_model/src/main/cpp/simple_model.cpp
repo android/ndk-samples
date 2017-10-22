@@ -14,149 +14,92 @@
  * limitations under the License.
  */
 #include "simple_model.h"
+#include "native_debug.h"
 #include <string>
-#include <cstdlib>
-#include <cassert>
-#include <map>
+
+// a macro to save some typing, note that v must be an error code
+// could not be a function call.
+#define RETURN_FALSE_ON_FAILURE(v)                             \
+  do {                                                                       \
+    if (v != ANEURALNETWORKS_NO_ERROR) {                                     \
+      LOGE("ANN failed with error code (%d), in %s at line %d", v, __FILE__, \
+           __LINE__);                                                        \
+      return false;                                                          \
+    }                                                                        \
+  } while (0)
+
+// Hardcoded constant value for adder1Input1
+const float kAdder1WeightValue = .5f;
+const float kAdder2WeightValue = .4f;
 
 /**
  * SimpleModel Constructor
  */
-SimpleModel::SimpleModel() {
-  model_ = nullptr;
-  compilation_ = nullptr;
-  execution_ = nullptr;
-  modelReady_ = false;
-  busy_ = false;
+SimpleModel::SimpleModel(uint32_t dimLength) :
+    model_(nullptr),
+    compilation_(nullptr),
+    modelReady_ (false),
+    dimLength_(dimLength)
+{
 
-  int32_t status;
+  tensorSize_ = dimLength_ * dimLength_;
 
-  // 1. Create and configure model
-  status = ANeuralNetworksModel_create(&model_);
-  ANN_ASSERT(status);
-
-  // Create operands (10 in total):
-  //   Adder1: 3 (2 for inputs, 1 fuseCode)
-  //   Adder2: 3 (2 for inputs, 1 fuseCode)
-  //   Mul:    4 (2 for inputs, 1 fuseCode, 1 output)
-  //   (2 are shared: adders' outputs and Mul's 2 inputs are the same)
-  CreateOperands();
-
-  // Assign input / output operands to our SimpleModel
-  std::vector<uint32_t> inputNames;
-  std::vector<uint32_t> outputNames;
-  for (auto& opr : operands_) {
-    // when an operand is input from user, its src_ should be NO_OP
-    if (opr.src_ == OP_NAME::NO_OP) {
-      opr.inputIdx_ = inputNames.size();
-      inputNames.push_back(opr.name_);
-      // an edge could be both input AND output for our model.
-      assert(opr.outputIdx_ == INVALID_OPERAND_INDEX);
-    }
-    if (opr.dst_ == OP_NAME::NO_OP) {
-      opr.outputIdx_ = outputNames.size();
-      outputNames.push_back(opr.name_);
-      assert(opr.inputIdx_ == INVALID_OPERAND_INDEX);
-    }
+  if (!CreateCompiledModel()) {
+    return;
   }
 
-  // Identify to model which ones are input/outputs.
-  // For scalar type, if the value is
-  //   a) not set before calling ANeuralNetworksModel_finish(), it is an input
-  //   b) set before calling ANeuralNetworksModel_finish(), it is a constant
-  // constant shall NOT be inside inputs for Model_setInputsAndOutputs()
-  // Runtime uses these inputs and outputs arrays and index in
-  // ANeuralNetworksExecution_setInput(execution_, index, .., data)
-  // to connect the data to the right operand:
-  //    data --> the operand of inputs[index]
-  // same for outputs.
-  status = ANeuralNetworksModel_identifyInputsAndOutputs(
-      model_, inputNames.size(), inputNames.data(), outputNames.size(),
-      outputNames.data());
-  ANN_ASSERT(status);
-
-  std::map<OP_NAME, OperationCode> ops = {
-      { OP_NAME::ADDER_ONE, ANEURALNETWORKS_ADD },
-      { OP_NAME::ADDER_TWO, ANEURALNETWORKS_ADD },
-      { OP_NAME::MUL_ONE, ANEURALNETWORKS_MUL },
-  };
-  for (auto& op : ops) {
-    FindOperandsForOp(op.first, inputNames, outputNames);
-    status = ANeuralNetworksModel_addOperation(
-        model_, op.second, inputNames.size(), inputNames.data(),
-        outputNames.size(), outputNames.data());
-    ANN_ASSERT(status);
-  }
-
-  status = ANeuralNetworksModel_finish(model_);
-  ANN_ASSERT(status);
-
-  // 2. Compile the model
-  status = ANeuralNetworksCompilation_create(model_, &compilation_);
-  ANN_ASSERT(status);
-
-  status = ANeuralNetworksCompilation_finish(compilation_);
-  ANN_ASSERT(status);
-
-  // Create an execution (an instance of model), all data goes to
-  // execution of the model.
-  status = ANeuralNetworksExecution_create(compilation_, &execution_);
-  ANN_ASSERT(status);
-
-  // Configure fused_activation functions for all Ops in the model
-  // a bit of cautious: setInput() perform lazy copying -- setInput()
-  // does a shallow copy first, at compute() stage, the buffer data will
-  // be copied over to shared place, and NNAPI runtime works with that copy.
-  // So the buffer must be valid after setInput(), until (probably after) calling
-  // ANeuralNetworksExecution_compute(). Using static to serve this purpose
-  // [ANeuralNetworksExecution_setInputFromMemory() works directly from
-  //  the given memory, so no this problem at all and more performance friendly]
-  static int32_t fusedActivation = ANEURALNETWORKS_FUSED_NONE;
-  {
-    std::vector<OP_NAME> ops{OP_NAME::ADDER_ONE, OP_NAME::ADDER_TWO,
-                             OP_NAME::MUL_ONE};
-    for (auto& op : ops) {
-      // fused_activation function is always input index 2 for ADD & MUL
-      int32_t index = MapOperationIndexToModelIndex(op, true, 2);
-      status = ANeuralNetworksExecution_setInput(execution_, index, nullptr,
-                                                 &fusedActivation,
-                                                 sizeof(fusedActivation));
-      ANN_ASSERT(status);
-    }
-  }
-
-  // Retrieve model input indices for user inputs: the array sequence must
-  // match the data sequence in function Compute(inputs)
-  std::vector<std::pair<OP_NAME, uint32_t>> ins{
-      std::make_pair(ADDER_ONE, 0), std::make_pair(ADDER_ONE, 1),
-      std::make_pair(ADDER_TWO, 0), std::make_pair(ADDER_TWO, 1),
-  };
-  for (auto in : ins) {
-    uint32_t index = MapOperationIndexToModelIndex(in.first, true, in.second);
-    assert(index != INVALID_OPERAND_INDEX);
-    userInputIndex_.push_back(index);
-  }
+  // reserve memory for 2 input tensors and 1 output tensor
+  inputTensor1_.resize(tensorSize_);
+  inputTensor2_.resize(tensorSize_);
+  outputTensor_.resize(tensorSize_);
 
   modelReady_ = true;
 }
 
 /**
- * Creates all needed operands( edges ) for SimpleModel into a structure
- * type struct SimpleOperand; at the same time also assign their usage
+ * We create a graph that consists of three operations: two additions and a
+ * multiplication.
+ * The sums created by the additions are the inputs to the multiplication. In
+ * essence, we are creating a graph that computes (a + b)// (c + d).
+ *
+ * Two of the four tensors being added will be constants, defined in the
+ * model. They represent the weights that would have been learned during a training
+ * process. The other two tensors will be inputs to the model. Their values will be
+ * provided when we execute the model. They can change from execution to execution.
+ *
+ * Besides the two input tensors, an optional fused activation function can
+ * also be defined for additions and multiplications. In this example,
+ * we'll not use an activation function.
+ *
+ * The graph then has 10 operands:
+ *  - 2 tensors that are inputs to the model. These are fed to the two
+ *      additions.
+ *  - 2 constant tensors that are the other two inputs to the additions.
+ *  - 3 fuse activation codes for the two additions and the multiplication.
+ *  - 2 intermediate tensors, outputs of the additions and inputs to the
+ *      multiplication.
+ *  - 1 model output.
  * @return true for success, false otherwise
  */
-bool SimpleModel::CreateOperands(void) {
+bool SimpleModel::CreateCompiledModel(void) {
   int32_t status;
 
-  uint32_t dimensions[] = {1};
-  ANeuralNetworksOperandType OneDimFloat32Tensor{
+  adder1Weights_.resize(tensorSize_);
+  adder2Weights_.resize(tensorSize_);
+
+  // Create the model
+  status = ANeuralNetworksModel_create(&model_);
+  RETURN_FALSE_ON_FAILURE(status);
+
+  uint32_t dimensions[] = {dimLength_, dimLength_};
+  ANeuralNetworksOperandType squareFloat32TensorType {
       .type = ANEURALNETWORKS_TENSOR_FLOAT32,
-      .dimensionCount = 1,
+      .dimensionCount = sizeof(dimensions) / sizeof(dimensions[0]),
       .dimensions = dimensions,
       .scale = 0.0f,
       .zeroPoint = 0,
   };
-  ANeuralNetworksOperandType scalarInt32Type{
+  ANeuralNetworksOperandType scalarInt32Type {
       .type = ANEURALNETWORKS_INT32,
       .dimensionCount = 0,
       .dimensions = nullptr,
@@ -164,140 +107,155 @@ bool SimpleModel::CreateOperands(void) {
       .zeroPoint = 0,
   };
 
-  ANeuralNetworksOperandType* operandTypes[] = {
-      // Operand1             Operand2              Fused_Activation
-      &OneDimFloat32Tensor, &OneDimFloat32Tensor, &scalarInt32Type,
-      &OneDimFloat32Tensor, &OneDimFloat32Tensor, &scalarInt32Type,
-      &OneDimFloat32Tensor, &OneDimFloat32Tensor, &scalarInt32Type,
+  // Add all operands & operations
+  // Operands are implicitly identified by the order in which they are added to the model.
+  // The first operand added will have the index value of 0. The second operand will have
+  // an index value of 1, the third a value of 2, and so on.
+  //
+  // These index values are used when specifying the operands used by an operation,
+  // when specifying the value of constant operands, and when specifying the inputs
+  // and outputs of the model.
+  //
+  // These indexes are not returned by the model_addOperand call. The application must
+  // manage these values. We do this with opIdx.
+  uint32_t opIdx = 0;
 
-      // Output Operands
-      &OneDimFloat32Tensor,  // MUL_ONE output
+  // Add operands used by the first adder
+  status = ANeuralNetworksModel_addOperand(model_, &squareFloat32TensorType);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder1Input1OperandId_ = opIdx++;
+
+  // The first tensor to be added is a constant tensor that was established
+  // during training. We simulate this training here by setting all elements
+  // of the tensor to kAdder1WeightValue.
+  // For a real program, we would likely read these values from a file.
+  std::fill(adder1Weights_.data(),
+            adder1Weights_.data() + dimLength_ * dimLength_,
+            kAdder1WeightValue);
+  status = ANeuralNetworksModel_setOperandValue(
+      model_, adder1Input1OperandId_, adder1Weights_.data(),
+      adder1Weights_.size() * sizeof(float));
+  RETURN_FALSE_ON_FAILURE(status);
+
+  status = ANeuralNetworksModel_addOperand(model_, &squareFloat32TensorType);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder1Input2OperandId_ = opIdx++;
+
+  // The fuse code passed to the addition is also a constant.
+  // Add the operand and set its value.
+  status = ANeuralNetworksModel_addOperand(model_, &scalarInt32Type);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder1FusecodeOperandId_ = opIdx++;
+  FuseCode fusedActivationCodeValue = ANEURALNETWORKS_FUSED_NONE;
+  status = ANeuralNetworksModel_setOperandValue(
+      model_, adder1FusecodeOperandId_, &fusedActivationCodeValue,
+      sizeof(fusedActivationCodeValue));
+  RETURN_FALSE_ON_FAILURE(status);
+
+  status = ANeuralNetworksModel_addOperand(model_, &squareFloat32TensorType);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder1OutputOperandId_ = opIdx++;
+
+  // Add the first Adder
+  std::vector<uint32_t> adder1InputOperandIds = {
+      adder1Input1OperandId_, adder1Input2OperandId_, adder1FusecodeOperandId_,
   };
+  status = ANeuralNetworksModel_addOperation(
+      model_, ANEURALNETWORKS_ADD, adder1InputOperandIds.size(),
+      adder1InputOperandIds.data(), 1, &adder1OutputOperandId_);
+  RETURN_FALSE_ON_FAILURE(status);
 
-  // Add all operands
-  std::vector<uint32_t> operandNames;
-  for (uint32_t idx = 0; idx < sizeof(operandTypes) / sizeof(operandTypes[0]);
-       idx++) {
-    status = ANeuralNetworksModel_addOperand(model_, operandTypes[idx]);
-    if (status != ANEURALNETWORKS_NO_ERROR) {
-      assert(false);
-      return false;
-    }
+  // Add the second Adder and its operands
+  status = ANeuralNetworksModel_addOperand(model_, &squareFloat32TensorType);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder2Input1OperandId_ = opIdx++;
+  std::fill(adder2Weights_.data(),
+            adder2Weights_.data() + dimLength_ * dimLength_,
+            kAdder2WeightValue);
+  status = ANeuralNetworksModel_setOperandValue(
+      model_, adder2Input1OperandId_, adder2Weights_.data(),
+      adder2Weights_.size() * sizeof(float));
+  RETURN_FALSE_ON_FAILURE(status);
 
-    /*
-     * Application must remember the calling sequence to addOperand():
-     * the sequence number is the name for the operand. It is the only
-     * way to communicate with NNAPI runtime to configure OperationCode;
-     * so name is starting with 0 and increase by 1 as operands are added.
-     * The return value of addOperand() is error code, NOT operand name.
-     */
-    operandNames.push_back(idx);
-  }
+  status = ANeuralNetworksModel_addOperand(model_, &squareFloat32TensorType);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder2Input2OperandId_ = opIdx++;
 
-  // Assign operands to model: graph is embedded in operand table.
-  operands_.clear();
-  SimpleOperand tmpOperand{
-      .name_ = operandNames[0],
-      .src_ = OP_NAME::NO_OP,
-      .srcIdx_ = INVALID_OPERAND_INDEX,
-      .dst_ = OP_NAME::ADDER_ONE,
-      .dstIdx_ = 0,  // goes to ADDER_ONE's 1st operand
-      .inputIdx_ = INVALID_OPERAND_INDEX,
-      .outputIdx_ = INVALID_OPERAND_INDEX,
+  status = ANeuralNetworksModel_addOperand(model_, &scalarInt32Type);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder2FusecodeOperandId_ = opIdx++;
+  status = ANeuralNetworksModel_setOperandValue(
+      model_, adder2FusecodeOperandId_, &fusedActivationCodeValue,
+      sizeof(fusedActivationCodeValue));
+  RETURN_FALSE_ON_FAILURE(status);
+
+  status = ANeuralNetworksModel_addOperand(model_, &squareFloat32TensorType);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t adder2OutputOperandId_ = opIdx++;
+
+  std::vector<uint32_t> adder2InputOperandIds = {
+      adder2Input1OperandId_,
+      adder2Input2OperandId_,
+      adder2FusecodeOperandId_,
   };
-  operands_.push_back(tmpOperand);
-  tmpOperand.name_ = operandNames[1];
-  tmpOperand.dstIdx_ = 1;
-  operands_.push_back(tmpOperand);
+  status = ANeuralNetworksModel_addOperation(
+      model_, ANEURALNETWORKS_ADD, adder2InputOperandIds.size(),
+      adder2InputOperandIds.data(), 1, &adder2OutputOperandId_);
+  RETURN_FALSE_ON_FAILURE(status);
 
-  tmpOperand.name_ = operandNames[2];
-  tmpOperand.dstIdx_ = 2;  // ADDER_ONE fused_activation
-  operands_.push_back(tmpOperand);
+  status = ANeuralNetworksModel_addOperand(model_, &scalarInt32Type);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t multiplierFusecodeOperandId_ = opIdx++;
+  status = ANeuralNetworksModel_setOperandValue(
+      model_, multiplierFusecodeOperandId_, &fusedActivationCodeValue,
+      sizeof(fusedActivationCodeValue));
+  RETURN_FALSE_ON_FAILURE(status);
 
-  tmpOperand.name_ = operandNames[3];
-  tmpOperand.src_ = OP_NAME::NO_OP;
-  tmpOperand.srcIdx_ = INVALID_OPERAND_INDEX;
-  tmpOperand.dst_ = OP_NAME::ADDER_TWO;  // ADDER_TWO
-  tmpOperand.dstIdx_ = 0;
-  operands_.push_back(tmpOperand);
+  status = ANeuralNetworksModel_addOperand(model_, &squareFloat32TensorType);
+  RETURN_FALSE_ON_FAILURE(status);
+  uint32_t multiplierOutputOperandId_ = opIdx++;
 
-  tmpOperand.name_ = operandNames[4];
-  tmpOperand.dstIdx_ = 1;
-  operands_.push_back(tmpOperand);
-  tmpOperand.name_ = operandNames[5];
-  tmpOperand.dstIdx_ = 2;
-  operands_.push_back(tmpOperand);
+  // Add the only Multiplier
+  std::vector<uint32_t> mulInputOperandIds = {
+      adder1OutputOperandId_,  // Adder1's output is input1 for the Multiplier
+      adder2OutputOperandId_,  // Adder2's output is input2 for the Multiplier
+      multiplierFusecodeOperandId_};
+  status = ANeuralNetworksModel_addOperation(
+      model_, ANEURALNETWORKS_MUL, mulInputOperandIds.size(),
+      mulInputOperandIds.data(), 1, &multiplierOutputOperandId_);
+  RETURN_FALSE_ON_FAILURE(status);
 
-  memset(&tmpOperand, 0, sizeof(tmpOperand));
-  tmpOperand.name_ = operandNames[6];
-  tmpOperand.src_ = OP_NAME::ADDER_ONE;
-  tmpOperand.srcIdx_ = 0;  // first and the only output from adder1
-  tmpOperand.dst_ = OP_NAME::MUL_ONE;
-  tmpOperand.dstIdx_ = 0;
-  tmpOperand.inputIdx_ = INVALID_OPERAND_INDEX;
-  tmpOperand.outputIdx_ = INVALID_OPERAND_INDEX;
-  operands_.push_back(tmpOperand);
-
-  tmpOperand.name_ = operandNames[7];
-  tmpOperand.src_ = OP_NAME::ADDER_TWO;
-  tmpOperand.srcIdx_ = 0;
-  tmpOperand.dstIdx_ = 1;  // second input for MUL op
-  operands_.push_back(tmpOperand);
-
-  tmpOperand.name_ = operandNames[8];
-  tmpOperand.src_ = OP_NAME::NO_OP;
-  tmpOperand.srcIdx_ = INVALID_OPERAND_INDEX;
-  tmpOperand.dst_ = OP_NAME::MUL_ONE;
-  tmpOperand.dstIdx_ = 2;  // fused_activation function
-  tmpOperand.inputIdx_ = INVALID_OPERAND_INDEX;
-  tmpOperand.outputIdx_ = INVALID_OPERAND_INDEX;
-  operands_.push_back(tmpOperand);
-
-  tmpOperand = {
-      .name_ = operandNames[9],
-      .src_ = OP_NAME::MUL_ONE,
-      .srcIdx_ = 0,
-      .dst_ = OP_NAME::NO_OP,
-      .dstIdx_ = INVALID_OPERAND_INDEX,
-      .inputIdx_ = INVALID_OPERAND_INDEX,
-      .outputIdx_ = INVALID_OPERAND_INDEX,
+  // Identify the operands that are the inputs and outputs of the model.
+  //
+  // The order of the operands in the input and output lists matters. When users of the
+  // model set each input and output values, they identify which value they are setting
+  // by specifying an index in the corresponding array.  In this case, as we have two
+  // inputs and one output, we will have calls to ANeuralNetworksExecution_setInput with
+  // indexes of 0 and 1, and one call to ANeuralNetworksExecution_setOutput with a value of 0.
+  // The API is designed this way so that users of the model do not need to know the
+  // internal structure of the model.
+  std::vector<uint32_t> modelInputOperandIds = {
+      adder1Input2OperandId_, adder2Input2OperandId_,
   };
-  operands_.push_back(tmpOperand);
+  status = ANeuralNetworksModel_identifyInputsAndOutputs(
+      model_, modelInputOperandIds.size(), modelInputOperandIds.data(), 1,
+      &multiplierOutputOperandId_);
+  RETURN_FALSE_ON_FAILURE(status);
 
-  return true;
-}
+  status = ANeuralNetworksModel_finish(model_);
+  RETURN_FALSE_ON_FAILURE(status);
 
-/**
- * Walking through operands_ table to find out all operands for a given OpNode
- * @param name identifies the operation nodes in the simpleMode(adder1, adder1,
- * mul1)
- * @param in to hold the inputs to the OpNode in the right order
- * @param out to hold the outpus to the OpNode in the right order
- * @return true for success, false otherwise
- */
-bool SimpleModel::FindOperandsForOp(OP_NAME name, std::vector<uint32_t>& in,
-                                    std::vector<uint32_t>& out) {
-  std::map<uint32_t, uint32_t> inMap, outMap;
-  for (auto& opr : operands_) {
-    if (name == opr.src_) {
-      outMap[opr.srcIdx_] = opr.name_;
-    }
-    if (name == opr.dst_) {
-      inMap[opr.dstIdx_] = opr.name_;
-    }
-    assert(opr.src_ != opr.dst_);
-  }
+  // Compile the model
+  status = ANeuralNetworksCompilation_create(model_, &compilation_);
+  RETURN_FALSE_ON_FAILURE(status);
 
-  // Operands for any opCode is index from 0 and up,
-  // simply move them over from map
-  in.resize(0);
-  out.resize(0);
-  for (int32_t idx = 0; idx < inMap.size(); idx++) {
-    in.push_back(inMap[idx]);
-  }
-  for (int32_t idx = 0; idx < outMap.size(); idx++) {
-    out.push_back(outMap[idx]);
-  }
+  // We prefer to get the answer quickly, as opposed to conserving battery.
+  status = ANeuralNetworksCompilation_setPreference(compilation_,
+                  ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER);
+  RETURN_FALSE_ON_FAILURE(status);
+
+  status = ANeuralNetworksCompilation_finish(compilation_);
+  RETURN_FALSE_ON_FAILURE(status);
   return true;
 }
 
@@ -305,118 +263,93 @@ bool SimpleModel::FindOperandsForOp(OP_NAME name, std::vector<uint32_t>& in,
  * Report whether model is constructed and ready to compute
  * @return true if ready to compute, false otherwise
  */
-bool SimpleModel::IsReady() { return modelReady_; }
-
-/**
- * SimpleModel is busy computing or not. If it is busy, most likely inside
- * waiting
- * for event.
- * @return true if busy, false otherwise.
- */
-bool SimpleModel::IsBusy() { return busy_; }
-
-/**
- * Map opNode's input/output index into SimpleModel's input/output.
- * @param opName is the OpNode's name (ADDER_ONE, ADDER_TWO, MUL_1)
- * @param input mapping for input or output
- * @param opIndex is the index to the opName's local operand Idx
- * @return Model's input/output if the give opIdex is part of SimpleModel's
- *         inputs / outputs; otherwise, INVALID_OPERAND_INDEX
- */
-uint32_t SimpleModel::MapOperationIndexToModelIndex(OP_NAME opName, bool input,
-                                                    uint32_t opIndex) {
-  for (auto& opr : operands_) {
-    if (input) {
-      // opIndex is input to the opName;
-      // from operand (edge) standing point, the opName would be dst_
-      if (opr.dst_ == opName && opIndex == opr.dstIdx_) {
-        assert(opr.inputIdx_ != INVALID_OPERAND_INDEX);
-        return opr.inputIdx_;
-      }
-    } else {
-      // opIndex is output of opName;
-      // for operand (edge), the opName would be src_
-      if (opr.src_ == opName && opIndex == opr.srcIdx_) {
-        assert(opr.outputIdx_ != INVALID_OPERAND_INDEX);
-        return opr.outputIdx_;
-      }
-    }
-  }
-  // This means caller tries to map an internal operand into input/output
-  // which should not happen.
-  assert(false);
-  return INVALID_OPERAND_INDEX;
-}
+bool SimpleModel::IsReady() const { return modelReady_; }
 
 /**
  * Compute with the given input data
  * @param modelInputs:
- *    1st   Adder1_InputOperand1
- *    2st   Adder1_InputOperand2
- *    3rd   Adder2_InputOperand1
- *    4th   Adder2_InputOperand2
+ *    1st   Adder1_InputOperand2
+ *    2nd   Adder2_InputOperand2
  * @return  computed result, or 0.0f if there is error.
  */
-float SimpleModel::Compute(std::vector<float>& modelInputs) {
-  int32_t status;
-
-  // 3. compute: configure inputs/output streaming data to the model
-  //         All input/output memory locations must be present during compute
-  //         period.
-  for (int32_t idx = 0; idx < kUserInputLength; idx++) {
-    status = ANeuralNetworksExecution_setInput(execution_, userInputIndex_[idx],
-                                               nullptr, &modelInputs[idx],
-                                               sizeof(modelInputs[idx]));
-    ANN_ASSERT(status);
+bool SimpleModel::Compute(float inputValue1, float inputValue2,
+                           float *result) {
+  if(!result) {
+    return false;
   }
+  // Create an execution (an instance of model):
+  //   all data go to execution of the model
+  //   multiple execution instances could be created from the same compiled
+  //   model.
+  // This sample only uses one execution of the compiled model.
+  ANeuralNetworksExecution* execution;
+  int32_t status = ANeuralNetworksExecution_create(compilation_, &execution);
+  RETURN_FALSE_ON_FAILURE(status);
 
-  // The index used in setOutput() is the index to outputs when calling
-  // Model_identifyInputsAndOutputs(..., outputSize, outputs); index is not
-  // the operand name. Operand name is the application's calling sequence
-  // number to Model_AddOperands(); NNAPI does not return, to application,
-  // operand name with function Model_AddOperand() call ( the returned value
-  // instead is an error code ). It is application's responsibility
-  // to keep track of the operand names, and pass the operand names that to
-  // be used as inputs/outputs via Model_identifyInputsAndOutputs(); later
-  // (like here) application could stream input/output data to input/output.
+  // Set all the elements of the first input tensor to the same value.
+  // It's not a realistic example but it shows how to pass a small tensor
+  // to an execution.
+  std::fill(inputTensor1_.data(), inputTensor1_.data() + tensorSize_,
+            inputValue1);
 
-  // For out simple 2-layer model, we just need to provide a memory location
-  // to hold the result.
-  float result = 0.0;
-  uint32_t index = MapOperationIndexToModelIndex(OP_NAME::MUL_ONE, false, 0);
-  status = ANeuralNetworksExecution_setOutput(execution_, index, nullptr,
-                                              &result, sizeof(result));
-  ANN_ASSERT(status);
-  ANeuralNetworksEvent* event;
-  status = ANeuralNetworksExecution_startCompute(execution_, &event);
-  ANN_ASSERT(status);
+  // Tell the execution to associate inputTensor1 to the first of the two
+  // model inputs.
+  status = ANeuralNetworksExecution_setInput(execution, 0, nullptr,
+                                     inputTensor1_.data(),
+                                     tensorSize_ * sizeof(float));
+  RETURN_FALSE_ON_FAILURE(status);
 
-  busy_ = true;
+  // Do the same thing for the second model input.
+  std::fill(inputTensor2_.data(), inputTensor2_.data() + tensorSize_,
+            inputValue2);
+  status = ANeuralNetworksExecution_setInput(execution, 1, nullptr,
+                                             inputTensor2_.data(),
+                                             tensorSize_ * sizeof(float));
+  RETURN_FALSE_ON_FAILURE(status);
+
+  // Set the output tensor that will be filled by executing the model.
+  status = ANeuralNetworksExecution_setOutput(execution, 0, nullptr,
+                                              outputTensor_.data(),
+                                              tensorSize_ * sizeof(float));
+  RETURN_FALSE_ON_FAILURE(status);
+
+  // Start the execution of the model.
+  ANeuralNetworksEvent* event = nullptr;
+  status = ANeuralNetworksExecution_startCompute(execution, &event);
+  RETURN_FALSE_ON_FAILURE(status);
+
+  // Wait until the completion of the execution. This could be done on a different
+  // thread. By waiting immediately, we effectively make this a synchronous call.
   status = ANeuralNetworksEvent_wait(event);
-  ANN_ASSERT(status);
-  ANeuralNetworksEvent_free(event);
-  busy_ = false;
+  RETURN_FALSE_ON_FAILURE(status);
 
+  ANeuralNetworksEvent_free(event);
+  ANeuralNetworksExecution_free(execution);
+
+  for (int32_t idx = 0; idx < tensorSize_; idx++) {
+    float delta = outputTensor_[idx] - outputTensor_[0];
+    delta = (delta < 0.0f) ? (-delta) : delta;
+    if (delta > FLOAT_EPISILON) {
+      LOGE("Output computation Error: output0(%f), delta(%f) @ idx(%d)",
+           outputTensor_[0], delta, idx);
+    }
+  }
+  *result = outputTensor_[0];
   return result;
 }
 
-/**
- * Calculate a simulated version of the model with this apps implementation
- * without using NNAPI.
- *
- * @param inputs inputs to the SimpleModel, refer to function Compute()
- * @return computed result.
+/*
+ * Hardcode a constant value for Adder1Input1Operand and Adder2Input1Operand
  */
-float SimpleModel::SimulatedResult(std::vector<float>& inputs) {
-  return (inputs[0] + inputs[1]) * (inputs[2] + inputs[3]);
+float SimpleModel::getAdderConstant(uint32_t adderIdx) {
+  return (adderIdx) ? kAdder2WeightValue : kAdder1WeightValue;
 }
+
 /**
  * release NNAPI objects
  * @return none
  */
 SimpleModel::~SimpleModel() {
-  ANeuralNetworksExecution_free(execution_);
   ANeuralNetworksCompilation_free(compilation_);
   ANeuralNetworksModel_free(model_);
 }
-

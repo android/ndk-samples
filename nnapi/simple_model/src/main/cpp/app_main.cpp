@@ -13,126 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "application_engine.h"
 
-#include "simple_model.h"
-#include <native_debug.h>
-#include <jni.h>
-#include <string>
-#include <cstdlib>
-#include <cassert>
-
-class SimpleModelEngine {
- private:
-  JavaVM *javaVM_;
-  jobject javaMainActivityObj_;
-
-  SimpleModel *simpleModel_;
-  volatile bool deletePending_;
-
- public:
-  explicit SimpleModelEngine(JNIEnv *env, jobject obj) {
-    jint status = env->GetJavaVM(&javaVM_);
-    javaMainActivityObj_ = env->NewGlobalRef(obj);
-    assert(status == JNI_OK);
-
-    deletePending_ = false;
-    simpleModel_ = new SimpleModel;
-  };
-
-  ~SimpleModelEngine() {
-    delete simpleModel_;
-
-    JNIEnv *env;
-    javaVM_->AttachCurrentThread(&env, NULL);
-    env->DeleteGlobalRef(javaMainActivityObj_);
-  }
-
-  bool IsReady() { return simpleModel_->IsReady(); }
-
-  bool IsBusy() { return simpleModel_->IsBusy(); }
-  void setDeletePending(bool pending) { deletePending_ = pending; }
-  bool getDeletePending() { return deletePending_; }
-
-  float Compute(std::vector<float> &inputs) {
-    float result = simpleModel_->Compute(inputs);
-    float simResult = simpleModel_->SimulatedResult(inputs);
-    float delta = result - simResult;
-    if (delta < 0.0) {
-      delta = -delta;
-    }
-    assert(delta < FLOAT_EPISILON);
-    return result;
-  }
-  void onCompute(std::vector<float> *userInput);
-};
-
-SimpleModelEngine *appEngine = nullptr;
+// Global object for application engine
+ApplicationEngine *appEngine = nullptr;
 
 /**
  * Initialize basicModel
- * returns: JNI_TRUE after initialization correctly, JNI_FALSE otherwise
+ * returns: JNI_TRUE after initialized correctly, JNI_FALSE otherwise
  */
 extern "C" JNIEXPORT jboolean JNICALL
-Java_com_google_nnapi_simpleModel_MainActivity_basicModeInit(JNIEnv *env,
+Java_com_google_nnapi_simpleModel_MainActivity_basicModelInit(JNIEnv *env,
                                                              jobject instance) {
-  if (initNNAPI() < 0) {
-    assert(0);
+  JavaVM *javaVM;
+  jint status = env->GetJavaVM(&javaVM);
+  jobject javaMainActivityObj = env->NewGlobalRef(instance);
+  if (status != JNI_OK || javaMainActivityObj == nullptr) {
     return JNI_FALSE;
   }
-  appEngine = new SimpleModelEngine(env, instance);
-  return (appEngine->IsReady() ? JNI_TRUE : JNI_FALSE);
+
+  appEngine = new ApplicationEngine(javaVM, javaMainActivityObj);
+  bool initSuccess = false;
+  if (appEngine && appEngine->IsReady()) {
+    initSuccess = true;
+  }
+  return initSuccess;
 }
 
 /**
- * Perform compute in new thread
- * @param userInput: array of float from user inputs (length = 4 )
+ * return native side hardcoded constant value for
+ * ADDER1_INPUT1 in the graph
  */
-void SimpleModelEngine::onCompute(std::vector<float> *userInput) {
-  jfloat result = appEngine->Compute(*userInput);
-  delete userInput;
+extern "C" JNIEXPORT jfloat JNICALL
+Java_com_google_nnapi_simpleModel_MainActivity_basicModelGetAdder1ConstantValue(
+    JNIEnv *env, jobject instance) {
 
-  if (appEngine->getDeletePending()) {
-    delete appEngine;
-    appEngine = nullptr;
+  if (appEngine->IsReady()) {
+    return appEngine->getAdderConstant(0);
+  } else {
+    return 0.0f;
   }
+}
 
-  JNIEnv *env;
-  javaVM_->AttachCurrentThread(&env, NULL);
-  jclass clazz = env->GetObjectClass(javaMainActivityObj_);
-  if (!clazz) {
-    clazz = env->FindClass("MainActivity");
+extern "C" JNIEXPORT jfloat JNICALL
+Java_com_google_nnapi_simpleModel_MainActivity_basicModelGetAdder2ConstantValue(
+    JNIEnv *env, jobject instance) {
+
+  if (appEngine->IsReady()) {
+    return appEngine->getAdderConstant(1);
+  } else {
+    return 0.0f;
   }
-  jmethodID methodID = env->GetMethodID(clazz, "UpdateResult", "(F)V");
-
-  assert(methodID);
-  env->CallVoidMethod(javaMainActivityObj_, methodID, result);
-  javaVM_->DetachCurrentThread();
 }
 
 /**
- * Compute with input from user for the basic model.
- * inputs: an array of floats with 4 elements for 1st layer adders
+ * Compute with input from user for the simple model.
+ * inputs: an array of floats with 2 elements for 1st layer adders
  * returns: ouput from MUL ops in the second layer
  */
-#include <thread>
-extern "C" JNIEXPORT jboolean JNICALL
+extern "C" JNIEXPORT jfloat JNICALL
 Java_com_google_nnapi_simpleModel_MainActivity_basicModelCompute(
     JNIEnv *env, jobject instance, jfloatArray inputs) {
   if (!appEngine->IsReady()) {
     LOGE("====SimpleModel is not initialized");
-    return JNI_FALSE;
+    return 0.0f;
   }
 
   jfloat *inputData = env->GetFloatArrayElements(inputs, NULL);
   jsize len = env->GetArrayLength(inputs);
   assert(len == kUserInputLength);
-  std::vector<float> *modelInputs =
-      new std::vector<float>(inputData, &inputData[len]);
-  std::thread computeHandler(&SimpleModelEngine::onCompute, appEngine,
-                             modelInputs);
-  computeHandler.detach();
+
+  jfloat result = appEngine->Compute(inputData[0], inputData[1]);
+
   env->ReleaseFloatArrayElements(inputs, inputData, 0);
-  return JNI_TRUE;
+
+  return result;
 }
 
 /**

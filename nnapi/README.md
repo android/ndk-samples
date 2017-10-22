@@ -1,6 +1,10 @@
 NNAPI
-=========
-NNAPI is an Android sample that uses NNAPI available from Android-27 (Android O MR1+) to create a simple NeuralNetwork model.
+======
+NNAPI is an Android sample that uses the Neural Networks API available from Android-27 (Android O MR1+) to create a sample NeuralNetworks model.
+Note that NeuralNetworksApi.h may not include the latest interface description. Please refer to the latest
+[NNAPI doc](https://developer.android.com/ndk/reference/neural_networks_8h.htm) for details.
+
+Most of the NNAPI related code is in simple_model.cpp file; the rest of the code in the project is common for normal Android native project.
 
 This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 

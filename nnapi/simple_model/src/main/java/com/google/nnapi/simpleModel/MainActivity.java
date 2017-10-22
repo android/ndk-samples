@@ -28,10 +28,10 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
     // just to cap the value to avoid overflow from input
     final float kMaxValue = 1000.0f;
-    int[] inputIds_ = { R.id.adder1Operand1,
+    int[] inputIds_ = {
                        R.id.adder1Operand2,
-                       R.id.adder2Operand1,
-                       R.id.adder2Operand2};
+                       R.id.adder2Operand2
+                      };
     EditText [] inputViews_;
     float[] inputValues_;
 
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         for (int idx = 0; idx < inputIds_.length; idx++) {
             inputViews_[idx] = findViewById(inputIds_[idx]);
         }
-        Button btCompute = findViewById(R.id.compute);
+        final Button btCompute = findViewById(R.id.compute);
         btCompute.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 onCompute();
@@ -67,31 +67,33 @@ public class MainActivity extends Activity {
 
         tvSampleResult_ = findViewById(R.id.sampleResult);
 
-        DrawView drawView = findViewById(R.id.drawView);
-        int operandLines[] = {
-                R.id.adder1Operand1, R.id.adder1Op,
-                R.id.adder1Operand2, R.id.adder1Op,
-                R.id.adder2Operand1, R.id.adder2Op,
-                R.id.adder2Operand2, R.id.adder2Op,
-                R.id.adder1Op,       R.id.mulOp,
-                R.id.adder2Op,       R.id.mulOp,
-                R.id.mulOp,          R.id.sampleResult,
-        };
-        for (int idx = 0; idx < operandLines.length - 1; idx += 2) {
-            drawView.AddLine(findViewById(operandLines[idx]),
-                    findViewById(operandLines[idx+1]));
-        }
+        InitDrawModelUI();
 
-        // init simpleModel in JNI and compute with default inputs
-        initSuccess_ = basicModeInit();
-        if(initSuccess_) {
-            onCompute();
-        } else {
-            // init failed, could not compute
-            btCompute.setEnabled(false);
-            ((TextView)findViewById(R.id.prompt))
-                    .setText("Error: BasicModel initialization failed");
-        }
+        // Init simpleModel in JNI and compute with default inputs
+        btCompute.setEnabled(false);
+        new Runnable() {
+            @Override
+            public void run() {
+                initSuccess_ = basicModelInit();
+                runOnUiThread(new Runnable() {
+                    // init failed, could not compute
+                    @Override
+                    public void run() {
+                        if (!initSuccess_) {
+                            ((TextView)findViewById(R.id.prompt))
+                                    .setText("Error: BasicModel initialization failed");
+                            return;
+                        }
+                        findViewById(R.id.compute).setEnabled(true);
+                        float adder1ConstantInputVal =  basicModelGetAdder1ConstantValue();
+                        ((TextView)findViewById(R.id.adder1Operand1)).setText("" + adder1ConstantInputVal);
+                        float adder2ConstantInputVal = basicModelGetAdder2ConstantValue();
+                        ((TextView)findViewById(R.id.adder2Operand1)).setText("" + adder2ConstantInputVal);
+                        onCompute();
+                    };
+                });
+            }
+        }.run();
     }
 
     private void onCompute() {
@@ -107,21 +109,47 @@ public class MainActivity extends Activity {
                 }
             }
         }
-
-        if(basicModelCompute(inputValues_) == false) {
-            findViewById(R.id.compute).setEnabled(false);
-        }
-    }
-
-    // called by jni code...
-    public void UpdateResult(float res) {
-        final float result = res;
-        runOnUiThread(new Runnable() {
+        new Runnable() {
             @Override
             public void run() {
-                tvSampleResult_.setText("Result: " + result);
+                final float result = basicModelCompute(inputValues_);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvSampleResult_.setText("Result: " + result);
+                    }
+                });
             }
-        });
+        }.run();
+
+    }
+
+    private void InitDrawModelUI() {
+        DrawView drawView = findViewById(R.id.drawView);
+        int operandLines[] = {
+                R.id.adder1Operand1, R.id.adder1Op,
+                R.id.adder1Operand2, R.id.adder1Op,
+                R.id.adder2Operand1, R.id.adder2Op,
+                R.id.adder2Operand2, R.id.adder2Op,
+                R.id.adder1Op,       R.id.mulOp,
+                R.id.adder2Op,       R.id.mulOp,
+                R.id.mulOp,          R.id.sampleResult,
+        };
+        for (int idx = 0; idx < operandLines.length - 1; idx += 2) {
+            drawView.AddLine(findViewById(operandLines[idx]),
+                    findViewById(operandLines[idx+1]));
+        }
+
+        int modelBoundViews[] = {
+                R.id.prompt,  R.id.adder1Operand1,  // top horizontal line
+                R.id.adder2Op, R.id.compute,        // bottom horizontal line
+                R.id.adder1Operand2, R.id.adder1Operand1, // left vertical line
+                R.id.mulOp, R.id.sampleResult,            // right vertical line
+        };
+        for (int idx = 0; idx < modelBoundViews.length - 1; idx += 2) {
+            drawView.AddBoundingViews(findViewById(modelBoundViews[idx]),
+                             findViewById(modelBoundViews[idx+1]));
+        }
     }
     @Override
     protected void onDestroy() {
@@ -129,7 +157,9 @@ public class MainActivity extends Activity {
         basicModelFinish();
     }
 
-    public native boolean  basicModeInit();
-    public native boolean basicModelCompute(float[] inputData);
+    public native boolean  basicModelInit();
+    public native float basicModelGetAdder1ConstantValue();
+    public native float basicModelGetAdder2ConstantValue();
+    public native float basicModelCompute(float[] inputData);
     public native boolean basicModelFinish();
 }
