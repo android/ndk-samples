@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <EGL/egl.h>
-#include <GLES2/gl2.h>
+
+#include "JNIHelper.h"
+
+#include <string.h>
+
 #include <fstream>
 #include <iostream>
 
-#include "JNIHelper.h"
+#include <EGL/egl.h>
+#include <GLES2/gl2.h>
 
 namespace ndk_helper {
 

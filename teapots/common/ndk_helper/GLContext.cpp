@@ -20,8 +20,11 @@
 //--------------------------------------------------------------------------------
 // includes
 //--------------------------------------------------------------------------------
-#include <unistd.h>
 #include "GLContext.h"
+
+#include <string.h>
+#include <unistd.h>
+
 #include "gl3stub.h"
 
 namespace ndk_helper {
