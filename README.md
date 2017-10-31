@@ -11,9 +11,13 @@ Additional Android Studio samples:
 - [Android Vulkan API Basic Samples](https://github.com/googlesamples/vulkan-basic-samples)
 - [Android High Performance Audio](https://github.com/googlesamples/android-audio-high-performance)	
 
+Documentation
+- [Add Native Code to Your Project](https://developer.android.com/studio/projects/add-native-code.html)
+- [CMake for NDK](https://developer.android.com/ndk/guides/cmake.html)
+- [Hello-CMake Codelab](https://codelabs.developers.google.com/codelabs/android-studio-cmake/index.html)
+
 Known Issues
 - Some are documented at [Android Studio](http://tools.android.com/knownissues) page
-- For native application, editing some gradle properties [like sdk version] from Android Studio UI is not supported
 
 For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
 
@@ -21,6 +25,10 @@ Build Steps
 ----------
 - With Android Studio: use "Import Project(Eclipse ADT, Gradle, etc)" or "File" > "Import Project" option
 - On Command Line/Terminal:  make sure set up ANDROID_HOME and ANDROID_NDK_HOME to local installation of SDK and NDK, then go to individual sample dir, and use "gradlew assembleDebug"
+
+Debugging
+---------
+- [References](REFERENCE.md)
  
 Support
 -------
