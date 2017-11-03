@@ -79,8 +79,8 @@ class Engine {
 
   Engine();
   ~Engine();
-  void SetState(android_app* state);
-  int InitDisplay();
+  void SetState(android_app* app);
+  int InitDisplay(android_app* app);
   void LoadResources();
   void UnloadResources();
   void DrawFrame();
@@ -130,16 +130,28 @@ void Engine::UnloadResources() { renderer_.Unload(); }
 /**
  * Initialize an EGL context for the current display.
  */
-int Engine::InitDisplay() {
+int Engine::InitDisplay(android_app *app) {
   if (!initialized_resources_) {
     gl_context_->Init(app_->window);
     LoadResources();
     initialized_resources_ = true;
+  } else if(app->window != gl_context_->GetANativeWindow()) {
+    // Re-initialize ANativeWindow.
+    // On some devices, ANativeWindow is re-created when the app is resumed
+    assert(gl_context_->GetANativeWindow());
+    UnloadResources();
+    gl_context_->Invalidate();
+    app_ = app;
+    gl_context_->Init(app->window);
+    LoadResources();
+    initialized_resources_ = true;
   } else {
     // initialize OpenGL ES and EGL
-    if (EGL_SUCCESS != gl_context_->Resume(app_->window)) {
+    if (EGL_SUCCESS == gl_context_->Resume(app_->window)) {
       UnloadResources();
       LoadResources();
+    } else {
+      assert(0);
     }
   }
 
@@ -260,7 +272,7 @@ void Engine::HandleCmd(struct android_app* app, int32_t cmd) {
     case APP_CMD_INIT_WINDOW:
       // The window is being shown, get it ready.
       if (app->window != NULL) {
-        eng->InitDisplay();
+        eng->InitDisplay(app);
         eng->DrawFrame();
       }
       break;

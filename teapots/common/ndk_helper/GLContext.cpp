@@ -37,7 +37,8 @@ namespace ndk_helper {
 // Ctor
 //--------------------------------------------------------------------------------
 GLContext::GLContext()
-    : display_(EGL_NO_DISPLAY),
+    : window_(nullptr),
+      display_(EGL_NO_DISPLAY),
       surface_(EGL_NO_SURFACE),
       context_(EGL_NO_CONTEXT),
       screen_width_(0),
@@ -192,6 +193,7 @@ void GLContext::Terminate() {
   display_ = EGL_NO_DISPLAY;
   context_ = EGL_NO_CONTEXT;
   surface_ = EGL_NO_SURFACE;
+  window_ = nullptr;
   context_valid_ = false;
 }
 
