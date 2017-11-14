@@ -1,3 +1,0 @@
-include ':basicModel'
-project(':basicModel').projectDir = new File('./simple_model')
-
