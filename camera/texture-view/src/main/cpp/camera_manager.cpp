@@ -17,6 +17,7 @@
 #include <queue>
 #include <unistd.h>
 #include <cinttypes>
+#include <cstring>
 #include <camera/NdkCameraManager.h>
 #include <media/NdkImage.h>
 #include "camera_manager.h"
