@@ -19,6 +19,7 @@
  */
 
 #include <cstdio>
+#include <cstring>
 #include "camera_engine.h"
 #include "utils/native_debug.h"
 

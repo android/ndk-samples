@@ -19,6 +19,7 @@
 #include <initializer_list>
 #include <memory>
 #include <cstdlib>
+#include <cstring>
 #include <jni.h>
 #include <errno.h>
 #include <cassert>
