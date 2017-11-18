@@ -33,7 +33,9 @@ public class Plasma extends Activity
     {
         super.onCreate(savedInstanceState);
         Display display = getWindowManager().getDefaultDisplay();
-        setContentView(new PlasmaView(this, display.getWidth(), display.getHeight()));
+        Point displaySize = new Point();
+        display.getSize(displaySize);
+        setContentView(new PlasmaView(this, displaySize.x, displaySize.y));
     }
 
     // load our native library
