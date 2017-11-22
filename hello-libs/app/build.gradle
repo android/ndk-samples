@@ -49,3 +49,11 @@ dependencies {
     // after lib is generated, just comment them out again
 //        compile project(':gen-libs')
 }
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'externalNativeBuildRelease') {
+        task.dependsOn ":gen-libs:externalNativeBuildRelease"
+    } else if (task.name == 'externalNativeBuildDebug') {
+        task.dependsOn ":gen-libs:externalNativeBuildDebug"
+    }
+}
