@@ -43,12 +43,15 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    // uncomment out this one to generate lib binaries,
-    // and also uncommented out the one in settings.gradle
-    // after lib is generated, just comment them out again
-//        compile project(':gen-libs')
 }
 
+// Workaround library native code dependency issue in gradle 3.0.0
+// refer to https://issuetracker.google.com/issues/69616088
+// Note that the followings are only needed to generate lib package
+// into $project/distribution directory, does NOT affect application module;
+// Only enable these when want to build libs (together with note
+// inside settings.gradle)
+/*
 tasks.whenTaskAdded { task ->
     if (task.name == 'externalNativeBuildRelease') {
         task.dependsOn ":gen-libs:externalNativeBuildRelease"
@@ -56,3 +59,4 @@ tasks.whenTaskAdded { task ->
         task.dependsOn ":gen-libs:externalNativeBuildDebug"
     }
 }
+*/
