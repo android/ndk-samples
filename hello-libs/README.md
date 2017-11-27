@@ -4,7 +4,7 @@ hello-libs is a sample that shows you how to manage 3rd party C/C++ libraries wi
 
 Introduction
 ------------
-This sample uses the [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external library support. It shows you how to:
+This sample uses the [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with external library support. It demos how to:
 
 * include a pre-built static library (gmath) in your app
 * include a pre-built shared library (gperf) in your app
@@ -13,30 +13,22 @@ Description
 -----------
 The sample includes 2 modules:
 *    app -- imports a shared library (libgperf.so) and a static library (libgmath.a) from the `distribution` folder
-*    gen-libs -- contains the source code and CMake build script for the gmath and gperf example libraries. The resulting binaries are copied into the `distribution` folder
+*    gen-libs -- contains the source code and CMake build script for the gmath and gperf example libraries. The resulting binaries are copied into the `distribution` folder. By default, gen-libs module is disabled in setting.gradle and app/build.gradle, so it won't show up in Android Studio IDE. If re-generating lib is desirable, follow comments inside settings.gradle and app/build.gradle to enable this module, generate libs, then disable it again to avoid unnecessary confusion.
 
-For this demo you do not need to build the libraries because pre-built binaries are included in the `distribution` folder. The default "Android" project view in Android Studio will not show the `gen-libs` module.
+The main goal of the sample is to demo how to use 3rd party libs, it is not to demonstrate lib package generation. Toward that goal, the pre-built libs are included in the `distribution` folder.
 
-To build these libraries from source and show the `gen-libs` module: 
+When importing libraries into your app, include the following in your app's `CMakeLists.txt` file (in the following order): 
 
-1) Uncomment the `include ':gen-libs'` line in `settings.gradle`
-2) Uncommemt the `compile project(':gen-libs')` line in `app/build.gradle`
-3) Run the build
-
-Once you have finished building the libraries it's worth commenting these lines out to avoid performing longer library builds each time you run the app. 
-
-When including libraries in your app, include the following in your app's `CMakeLists.txt` file (in the following order): 
-
-*    whether to import libraries as static or shared (using `add_library`)
-*    where the library binaries are stored (using `set_target_properties`)
-*    where the library headers are stored (using `target_include_directories`)
+*    import libraries as static or shared(using `add_library`)
+*    configure each library binary location(using `set_target_properties`)
+*    configure each library headers location (using `target_include_directories`)
 
 Note: For shared libraries, with android plugin 2.2.0-alpha3+, once declared as SHARED IMPORTED, Android
 Studio will automatically pack them into the resulting APK. The library will be used both on host and on the target Android device.
 
 Pre-requisites
 --------------
-- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 3.0.0 with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
@@ -81,3 +73,5 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
+
+ 
