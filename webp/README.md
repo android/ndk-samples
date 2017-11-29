@@ -5,12 +5,11 @@ view:
 - rotate decoding 3 webp images and load them into on-screen buffer. Decoding is in its own thread
 
 
-This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds).
+This sample uses the new [Android Studio CMake plugin](https://developer.android.com/ndk/guides/cmake.html).
 
 Pre-requisites
 --------------
-- Android Studio 2.2.0-beta2+ with [NDK-r12+](https://developer.android.com/ndk/) bundle. Note that 2.2.0-beta does not work with NDK-r13-beta
-- cmake version inside ${ANDRIOD_SDK}/cmake/ must be 3.6 or later, see comment in webp/build.gradle for details
+- Android Studio 3.0.0+ and android-ndk-r16 
 
 Getting Started
 ---------------

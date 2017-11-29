@@ -2,16 +2,15 @@ apply plugin: 'com.android.application'
 
  android {
      compileSdkVersion 25
-     buildToolsVersion '25.0.2'
 
      defaultConfig {
          applicationId 'com.example.webp_view'
          minSdkVersion 14
          targetSdkVersion 25
+         ndk.abiFilters 'armeabi-v7a'
+
          externalNativeBuild {
              cmake {
-                 // when using arguments, the latest (cmake version 3.6+, android studio
-                 // beta2+) must be used to compile
                  arguments '-DANDROID_STL=c++_static', '-DANDROID_TOOLCHAIN=clang'
                  arguments '-DANDROID_PLATFORM=android-14'
              }
@@ -26,35 +25,7 @@ apply plugin: 'com.android.application'
      }
      externalNativeBuild {
          cmake {
-             path 'CMakeLists.txt'
-         }
-     }
-     productFlavors {
-         // Create product flavors
-         arm7 {
-            ndk {
-                abiFilter 'armeabi-v7a'
-            }
-         }
-         arm8 {
-            ndk {
-                abiFilter 'arm64-v8a'
-            }
-         }
-         arm {
-            ndk {
-                abiFilter 'armeabi'
-            }
-         }
-         x86 {
-            ndk {
-                abiFilter 'x86'
-            }
-         }
-         x86_64 {
-            ndk {
-                abiFilter 'x86_64'
-            }
+             path 'src/main/cpp/CMakeLists.txt'
          }
      }
 }

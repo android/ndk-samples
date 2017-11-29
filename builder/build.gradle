@@ -5,10 +5,10 @@ repositories {
 }
 
 dependencies {
-    compile 'org.gradle:gradle-tooling-api:+'
-    compile 'org.slf4j:slf4j-api:1.7.7'
-    compile 'org.eclipse.jgit:org.eclipse.jgit:4.0.1.201506240215-r'
-    compile 'com.google.guava:guava:+'
+    implementation 'org.gradle:gradle-tooling-api:+'
+    implementation 'org.slf4j:slf4j-api:1.7.7'
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:4.0.1.201506240215-r'
+    implementation 'com.google.guava:guava:+'
     testCompile 'junit:junit:4.12'
 }
 

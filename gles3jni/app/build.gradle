@@ -5,7 +5,6 @@ def platformVersion = 18    //openGLES 3 min Version
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId 'com.android.gles3jni'

@@ -18,21 +18,23 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-set(webp_src_dir ../libwebp)
+get_filename_component(WEBP_SAMPLE_PROJ_DIR
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../.. ABSOLUTE)
+set(WEBP_SRC_DIR ${WEBP_SAMPLE_PROJ_DIR}/libwebp)
 # clone the dependency repo.
 # git submodule could also be used if this sample does not need
 #     Android Studio's "Import Android code sample" option
-if ((NOT EXISTS ${webp_src_dir}) OR
-    (NOT EXISTS ${webp_src_dir}/CMakeLists.txt))
+if ((NOT EXISTS ${WEBP_SRC_DIR}) OR
+    (NOT EXISTS ${WEBP_SRC_DIR}/CMakeLists.txt))
     execute_process(COMMAND git clone
                             https://chromium.googlesource.com/webm/libwebp
                             libwebp
-                    WORKING_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                    WORKING_DIRECTORY ${WEBP_SAMPLE_PROJ_DIR}/)
 endif()
 
 SET(WEBP_ENABLE_SWAP_16BIT_CSP ON CACHE BOOL
     "Enable byte swap for 16 bit colorspaces." FORCE)
-add_subdirectory(${webp_src_dir} ${webp_src_dir}/build/)
+add_subdirectory(${WEBP_SRC_DIR} ${WEBP_SRC_DIR}/build/)
 
 # build native_app_glue as a static lib
 include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
@@ -50,11 +52,11 @@ set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
 add_library(webp_view SHARED
-    src/main/cpp/webp_decode.cpp
-    src/main/cpp/webp_view.cpp)
+    webp_decode.cpp
+    webp_view.cpp)
 target_include_directories(webp_view PRIVATE
-    ${webp_src_dir}/examples
-    ${webp_src_dir}/src)
+    ${WEBP_SRC_DIR}/examples
+    ${WEBP_SRC_DIR}/src)
 
 # add lib dependencies
 target_link_libraries(webp_view android log m native_app_glue webp)

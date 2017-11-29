@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion = 26
-    buildToolsVersion = 26
 
     defaultConfig {
         applicationId = 'com.example.widecolor'
@@ -54,5 +53,5 @@ for (int i = 0; i < TARGET_DIR.size(); i++) {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:appcompat-v7:25.4.0'
 }
