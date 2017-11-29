@@ -6,7 +6,7 @@ def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = '23.0.2'
+        buildToolsVersion = '25.0.3'
 
         defaultConfig {
             applicationId    = 'com.android.accelerometergraph'
@@ -21,6 +21,7 @@ model {
             // abiFilters.addAll(['armeabi','armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
             cppFlags.addAll(['-std=c++11','-Wall'])
             ldLibs.addAll([ 'android', 'log', 'GLESv2'])
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
         }
         sources {
             main {

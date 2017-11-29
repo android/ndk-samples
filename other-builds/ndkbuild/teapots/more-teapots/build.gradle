@@ -6,7 +6,6 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.sample.moreteapots"

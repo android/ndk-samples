@@ -31,13 +31,14 @@ model {
             platformVersion = 21
             moduleName = 'ChoreographerNativeActivity'
             toolchain = "clang"
-            // this sample uses std::mutex, which will not implementation with ndk-r12 with gnustl_static
+            // this sample uses std::mutex, which will not compile with ndk-r12 with gnustl_static
             stl       = 'c++_static'
             cppFlags.addAll(['-I' + file("${REMOTE_COMMON_ROOT}/ndk_helper")])
             cppFlags.addAll(['-std=c++11', '-Wall',
                              '-fno-exceptions', '-fno-rtti'])
             ldLibs.addAll(['android', 'log', 'EGL', 'GLESv2','atomic'])
             ldFlags.addAll(["-uANativeActivity_onCreate"])
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
         }
         sources {
             main {

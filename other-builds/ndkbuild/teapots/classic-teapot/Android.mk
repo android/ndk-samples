@@ -10,6 +10,7 @@ LOCAL_SRC_FILES := $(JNI_SRC_PATH)/TeapotNativeActivity.cpp \
                    $(JNI_SRC_PATH)/TeapotRenderer.cpp \
                    $(NDK_HELPER_SRC)/JNIHelper.cpp    \
                    $(NDK_HELPER_SRC)/interpolator.cpp \
+                   $(NDK_HELPER_SRC)/sensorManager.cpp \
                    $(NDK_HELPER_SRC)/tapCamera.cpp    \
                    $(NDK_HELPER_SRC)/gestureDetector.cpp \
                    $(NDK_HELPER_SRC)/perfMonitor.cpp \

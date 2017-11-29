@@ -7,11 +7,10 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
         project.getName() + '/src/main'
 
 import com.android.build.OutputFile
-ext.versionCodes = ['armeabi-v7a':1, 'arm64-v8a':2, 'mips':3, 'x86':4]
+ext.versionCodes = ['armeabi-v7a':1, 'arm64-v8a':2, 'x86':3]
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId 'com.example.SanAngeles'
@@ -43,7 +42,7 @@ android {
         abi {
             enable true
             reset()
-            include 'armeabi-v7a', 'arm64-v8a','mips', 'x86'
+            include 'armeabi-v7a', 'arm64-v8a', 'x86'
             universalApk false
         }
     }

@@ -19,6 +19,7 @@ model {
             versionName = "0.0.1"
         }
         ndk {
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
             moduleName = 'native-activity'
             ldLibs.addAll(['log', 'android'])
             ldFlags.add("-c")

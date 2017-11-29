@@ -21,7 +21,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := plasma
 LOCAL_SRC_FILES := $(JNI_SRC_PATH)/plasma.c
 LOCAL_LDLIBS    := -lm -llog -ljnigraphics
-LOCAL_CFLAGS    := -Wall -Werror
+LOCAL_CFLAGS    := -Wall -Werror -Wno-unused-function
 
 NDK_TOOLCHAIN_VERSION := clang
 include $(BUILD_SHARED_LIBRARY)

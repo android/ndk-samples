@@ -42,6 +42,7 @@ model {
                              '-I' + file("${REMOTE_PROJ_ROOT}/cpp/data")])
             ldLibs.addAll(['android', 'EGL', 'GLESv2', 'OpenSLES', 'log'])
             ldFlags.addAll(["-uANativeActivity_onCreate"])
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
         }
         sources {
             main {

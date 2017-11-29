@@ -5,7 +5,6 @@ def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
                         project.getName() + '/src/main'
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.example.hellojni"
@@ -37,6 +36,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:23.4.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
 }
 

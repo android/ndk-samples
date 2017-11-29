@@ -7,7 +7,7 @@ def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = '23.0.2'
+        buildToolsVersion = '25.0.3'
 
         defaultConfig {
             applicationId = 'com.example.nativecodec'
@@ -22,6 +22,7 @@ model {
             cppFlags.addAll(['-std=c++11','-Wall', '-UNDEBUG'])
             ldLibs.addAll(['android', 'log',        // For android and log_print
                           'OpenMAXAL', 'mediandk']) //for native media
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
         }
         sources {
             main {
