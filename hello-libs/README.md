@@ -23,8 +23,8 @@ When importing libraries into your app, include the following in your app's `CMa
 *    configure each library binary location(using `set_target_properties`)
 *    configure each library headers location (using `target_include_directories`)
 
-Note: For shared libraries, with android plugin 2.2.0-alpha3+, once declared as SHARED IMPORTED, Android
-Studio will automatically pack them into the resulting APK. The library will be used both on host and on the target Android device.
+For shared libraries, notify gradle to pack them into APK. One simple way is to include the shared lib directory into application's jniLibs directory:
+*    jniLibs.srcDirs = ['../distribution/gperf/lib']
 
 Pre-requisites
 --------------
