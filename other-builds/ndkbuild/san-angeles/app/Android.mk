@@ -1,5 +1,7 @@
+abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+
 LOCAL_PATH := $(call my-dir)
-JNI_SRC_PATH := $(LOCAL_PATH)/../../../../san-angeles/app/src/main/cpp
+JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../san-angeles/app/src/main/cpp)
 
 include $(CLEAR_VARS)
 

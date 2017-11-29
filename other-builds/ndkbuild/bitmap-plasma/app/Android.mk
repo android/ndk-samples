@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+
 LOCAL_PATH := $(call my-dir)
 PROJECT_DIR :=bitmap-plasma
-JNI_SRC_PATH := $(LOCAL_PATH)/../../../../$(PROJECT_DIR)/app/src/main/cpp
+JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../$(PROJECT_DIR)/app/src/main/cpp)
 
 include $(CLEAR_VARS)
 
