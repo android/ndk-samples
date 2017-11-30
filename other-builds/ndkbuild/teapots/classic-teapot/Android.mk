@@ -1,7 +1,9 @@
+abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+
 LOCAL_PATH := $(call my-dir)
 
-JNI_SRC_PATH := $(LOCAL_PATH)/../../../../teapots/classic-teapot/src/main/cpp
-NDK_HELPER_SRC :=$(LOCAL_PATH)/../../../../teapots/common/ndk_helper
+JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../teapots/classic-teapot/src/main/cpp)
+NDK_HELPER_SRC :=$(call abspath_wa, $(LOCAL_PATH)/../../../../teapots/common/ndk_helper)
 
 include $(CLEAR_VARS)
 

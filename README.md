@@ -5,6 +5,10 @@ This repository contains [Android NDK][0] samples with Android Studio [C++ integ
 
 These samples uses the new [CMake Android plugin](https://developer.android.com/studio/projects/add-native-code.html) with C++ support.
 
+Samples could also be built with other build systems:
+- for ndk-build with Android Studio, refer to directory [other-builds/ndkbuild](https://github.com/googlesamples/android-ndk/tree/master/other-builds/ndkbuild)
+- for gradle-experimental plugin, refer to directory other-builds/experimental. Note that gradle-experiemental could not work with unified headers yet: use NDK version up to r15 and Android Studio up to version 2.3
+
 Additional Android Studio samples:    
 - [Google Play Game Samples with Android Studio](https://github.com/playgameservices/cpp-android-basic-samples)
 - [Google Android Vulkan Tutorials](https://github.com/googlesamples/android-vulkan-tutorials)
