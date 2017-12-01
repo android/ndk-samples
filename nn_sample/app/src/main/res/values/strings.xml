@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NN API Demo</string>
+    <string name="compute">Compute</string>
+    <string name="result">Result: </string>
+    <string name="input1">Input1: </string>
+    <string name="input2">Input2: </string>
+    <string name="none">None</string>
+</resources>
