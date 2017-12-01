@@ -11,3 +11,4 @@ target_link_libraries(nn_sample
                       neuralnetworks
                       android
                       log)
+
