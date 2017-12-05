@@ -132,6 +132,14 @@ public class CameraActivity extends NativeActivity
         super.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (_popupWindow != null && _popupWindow.isShowing()) {
+            _popupWindow.dismiss();
+        }
+        super.onDestroy();
+    }
+
     private static final int PERMISSION_REQUEST_CODE_CAMERA = 1;
     public void RequestCamera() {
         String[] accessPermissions = new String[] {
