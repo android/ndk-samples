@@ -17,8 +17,7 @@ model {
             platformVersion = 21
             moduleName = 'accelerometergraph'
             toolchain = 'clang'
-            stl        = 'gnustl_static'
-            // abiFilters.addAll(['armeabi','armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
+            stl        = 'c++_static'
             cppFlags.addAll(['-std=c++11','-Wall'])
             ldLibs.addAll([ 'android', 'log', 'GLESv2'])
             abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])

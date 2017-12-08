@@ -6,22 +6,18 @@ android {
     defaultConfig {
         applicationId 'com.google.sample.echo'
         /*
-           To run on earlier version of Android than android-21, do:
+           To run on earlier version of Android other than android-23, do:
              *) set this minSDKVersion and cmake's ANDROID_PLATFORM to your version
-             *) set ANDROID_STL to c++_static for some very earlier version android.
+             *) set ANDROID_STL to c++_static for earlier Android API levels
          */
         minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName '1.0'
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-        }
+
         externalNativeBuild {
             cmake {
-                // With android studio 2.2.0 +cmake, app needs to pack shared lib to
-                // into APK. Refer to CMakeLists.txt for details
-                arguments '-DANDROID_STL=c++_shared', '-DANDROID_TOOLCHAIN=clang',
+                arguments '-DANDROID_STL=c++_shared',
                           '-DANDROID_PLATFORM=android-23'
             }
         }

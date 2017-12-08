@@ -16,7 +16,6 @@ model {
         ndk {
             platformVersion = 21
             moduleName = 'plasma'
-            toolchain = 'clang'
             CFlags.addAll(['-Wall'])
             ldLibs.addAll(['m', 'log', 'jnigraphics'])
             abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])

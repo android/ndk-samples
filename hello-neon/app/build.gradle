@@ -11,8 +11,7 @@ android {
         ndk.abiFilters 'x86', 'x86_64', 'armeabi-v7a'
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-14',
-                    '-DANDROID_TOOLCHAIN=clang'
+                arguments '-DANDROID_PLATFORM=android-14'
             }
         }
     }

@@ -18,7 +18,7 @@ model {
             platformVersion = 21
             moduleName ='native-activity'
             toolchain = 'clang'
-            stl = 'gnustl_static'
+            stl = 'c++_static'
             cppFlags.addAll(['-std=c++11'])
             ldLibs.addAll(['log', 'android', 'EGL', 'GLESv1_CM'])
             ldFlags.addAll(["-uANativeActivity_onCreate"])
