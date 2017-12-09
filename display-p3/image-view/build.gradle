@@ -13,8 +13,7 @@ android {
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_PLATFORM=android-26',
-                          '-DANDROID_TOOLCHAIN=clang',
-                          '-DANDROID_STL=c++_static'
+                          '-DANDROID_STL=c++_shared'
             }
         }
     }

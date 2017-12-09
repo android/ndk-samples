@@ -30,7 +30,7 @@ model {
             platformVersion = 21
             moduleName = 'MoreTeapotsNativeActivity'
             toolchain = "clang"
-            stl       = 'gnustl_static'
+            stl       = 'c++_static'
             cppFlags.addAll(['-I' + "${ndkDir}/sources/android/cpufeatures",
                              '-I' + file("${REMOTE_COMMON_ROOT}/ndk_helper")])
             cppFlags.addAll(['-std=c++11', '-Wall',

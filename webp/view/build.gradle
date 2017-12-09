@@ -8,10 +8,8 @@ apply plugin: 'com.android.application'
          minSdkVersion 14
          targetSdkVersion 25
          ndk.abiFilters 'armeabi-v7a'
-
          externalNativeBuild {
              cmake {
-                 arguments '-DANDROID_STL=c++_static', '-DANDROID_TOOLCHAIN=clang'
                  arguments '-DANDROID_PLATFORM=android-14'
              }
          }

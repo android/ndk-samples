@@ -19,8 +19,7 @@ model {
         ndk {
             platformVersion = 21
             moduleName = 'echo'
-            toolchain  = "clang"
-            stl        = 'c++_static'   //std::mutex not in gnustl_static
+            stl        = 'c++_shared'
             cppFlags.add('-std=c++11')
             ldLibs.addAll(['android', 'log', 'OpenSLES', 'atomic'])
             abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])

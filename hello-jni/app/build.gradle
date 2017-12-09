@@ -8,11 +8,6 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        externalNativeBuild {
-            cmake {
-                arguments '-DANDROID_TOOLCHAIN=clang'
-            }
-        }
     }
     buildTypes {
         release {
@@ -40,12 +35,6 @@ android {
                 abiFilters 'arm64-v8a'
             }
         }
-        arm {
-            dimension 'cpuArch'
-            ndk {
-                abiFilter 'armeabi'
-            }
-        }
         x86 {
             dimension 'cpuArch'
             ndk {
@@ -58,16 +47,10 @@ android {
                 abiFilter 'x86_64'
             }
         }
-        mips {
-            dimension 'cpuArch'
-            ndk {
-                abiFilters 'mips', 'mips64'
-            }
-        }
         universal {
             dimension 'cpuArch'
             ndk {
-                abiFilters 'mips', 'mips64', 'x86', 'x86_64'
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
             }
         }
     }

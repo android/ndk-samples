@@ -7,13 +7,9 @@ apply plugin: 'com.android.application'
          applicationId 'com.sample.choreographer'
          minSdkVersion 16
          targetSdkVersion 25
-         ndk {
-             abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-         }
          externalNativeBuild {
             cmake {
-                arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static',
-                          '-DANDROID_PLATFORM=android-16'
+                arguments '-DANDROID_PLATFORM=android-16'
             }
          }
      }

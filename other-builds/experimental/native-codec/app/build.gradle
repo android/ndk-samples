@@ -18,7 +18,7 @@ model {
             platformVersion = 21
             moduleName = 'native-codec-jni'
             toolchain = 'clang'
-            stl        = 'gnustl_static'
+            stl        = 'c++_static'
             cppFlags.addAll(['-std=c++11','-Wall', '-UNDEBUG'])
             ldLibs.addAll(['android', 'log',        // For android and log_print
                           'OpenMAXAL', 'mediandk']) //for native media

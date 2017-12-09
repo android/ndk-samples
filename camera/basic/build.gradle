@@ -12,7 +12,7 @@ apply plugin: 'com.android.application'
          }
          externalNativeBuild {
              cmake {
-                 arguments '-DANDROID_STL=c++_static', '-DANDROID_TOOLCHAIN=clang'
+                 arguments '-DANDROID_STL=c++_shared'
                  arguments '-DANDROID_PLATFORM=android-24'
              }
          }

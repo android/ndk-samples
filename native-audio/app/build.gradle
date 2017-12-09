@@ -7,13 +7,9 @@ android {
         applicationId 'com.example.nativeaudio'
         minSdkVersion 14
         targetSdkVersion 25
-        ndk {
-            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-        }
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-23',
-                          '-DANDROID_TOOLCHAIN=clang'
+                arguments '-DANDROID_PLATFORM=android-23'
             }
         }
     }
