@@ -11,9 +11,6 @@ android {
         applicationId "com.example.plasma"
         minSdkVersion 14
         targetSdkVersion 23
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
-        }
     }
 
     sourceSets {

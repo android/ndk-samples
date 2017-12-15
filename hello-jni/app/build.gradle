@@ -40,12 +40,6 @@ android {
                 abiFilters 'arm64-v8a'
             }
         }
-        arm {
-            dimension 'cpuArch'
-            ndk {
-                abiFilter 'armeabi'
-            }
-        }
         x86 {
             dimension 'cpuArch'
             ndk {
@@ -58,17 +52,10 @@ android {
                 abiFilter 'x86_64'
             }
         }
-        mips {
-            dimension 'cpuArch'
-            ndk {
-                abiFilters 'mips', 'mips64'
-            }
-        }
         universal {
             dimension 'cpuArch'
-            ndk {
-                abiFilters 'mips', 'mips64', 'x86', 'x86_64'
-            }
+            // include all default ABIs. with NDK-r16,  it is:
+            //   armeabi-v7a, arm64-v8a, x86, x86_64
         }
     }
 }

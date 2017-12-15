@@ -18,9 +18,6 @@ android {
         applicationId 'com.android.gles3jni'
         minSdkVersion 18
         targetSdkVersion 18
-        ndk {
-            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
-        }
     }
     sourceSets {
         main {
