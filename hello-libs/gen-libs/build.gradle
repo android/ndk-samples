@@ -11,8 +11,6 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-14',
-                          '-DANDROID_TOOLCHAIN=clang'
                 // explicitly build libs
                 targets 'gmath', 'gperf'
             }

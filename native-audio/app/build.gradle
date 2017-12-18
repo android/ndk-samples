@@ -5,14 +5,8 @@ android {
 
      defaultConfig {
         applicationId 'com.example.nativeaudio'
-        minSdkVersion 14
+        minSdkVersion 23
         targetSdkVersion 25
-        externalNativeBuild {
-            cmake {
-                arguments '-DANDROID_PLATFORM=android-23',
-                          '-DANDROID_TOOLCHAIN=clang'
-            }
-        }
     }
     buildTypes {
         release {

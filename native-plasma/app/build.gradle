@@ -7,12 +7,6 @@ apply plugin: 'com.android.application'
          applicationId 'com.example.native_plasma'
          minSdkVersion 14
          targetSdkVersion 25
-         externalNativeBuild {
-            cmake {
-                arguments '-DANDROID_PLATFORM=android-14',
-                          '-DANDROID_TOOLCHAIN=clang'
-            }
-         }
      }
      buildTypes {
          release {

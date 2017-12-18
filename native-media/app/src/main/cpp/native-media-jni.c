@@ -162,7 +162,6 @@ static XAresult AndroidBufferQueueCallback(
         goto exit;
     }
 
-    size_t nbRead;
     // note we do call fread from multiple threads, but never concurrently
     size_t bytesRead;
     bytesRead = fread(pBufferData, 1, BUFFER_SIZE, file);

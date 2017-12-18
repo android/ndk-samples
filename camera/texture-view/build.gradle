@@ -7,13 +7,9 @@ android {
         applicationId "com.sample.textureview"
         minSdkVersion 24
         targetSdkVersion 24
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
-        }
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_STL=gnustl_static', '-DANDROID_TOOLCHAIN=clang'
-                arguments '-DANDROID_PLATFORM=android-24'
+                arguments '-DANDROID_STL=c++_static'
             }
         }
     }

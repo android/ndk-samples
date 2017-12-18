@@ -14,11 +14,6 @@ android {
         targetSdkVersion 25
         versionCode  1
         versionName  "1.0"
-        externalNativeBuild {
-            cmake {
-                arguments '-DANDROID_PLATFORM=android-14'
-            }
-        }
     }
     buildTypes {
         release {

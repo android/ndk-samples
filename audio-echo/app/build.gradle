@@ -16,10 +16,7 @@ android {
         versionName '1.0'
         externalNativeBuild {
             cmake {
-                // With android studio 2.2.0 +cmake, app needs to pack shared lib to
-                // into APK. Refer to CMakeLists.txt for details
-                arguments '-DANDROID_STL=c++_shared', '-DANDROID_TOOLCHAIN=clang',
-                          '-DANDROID_PLATFORM=android-23'
+                arguments '-DANDROID_STL=c++_static'
             }
         }
     }

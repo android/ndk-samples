@@ -7,14 +7,9 @@ android {
         applicationId = 'com.example.widecolor'
         minSdkVersion   26
         targetSdkVersion  26
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
-        }
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-26',
-                          '-DANDROID_TOOLCHAIN=clang',
-                          '-DANDROID_STL=c++_static'
+                arguments '-DANDROID_STL=c++_static'
             }
         }
     }
@@ -22,7 +17,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    'proguard-rules.pro'
+                          'proguard-rules.pro'
         }
     }
     externalNativeBuild {

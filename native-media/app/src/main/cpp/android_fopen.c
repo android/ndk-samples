@@ -15,9 +15,6 @@
  */
 
 // The original code is from https://github.com/netguy204/gambit-game-lib
-
-#include <stdio.h>
-
 #include "android_fopen.h"
 #include <errno.h>
 #include <android/asset_manager.h>

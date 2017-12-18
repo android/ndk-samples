@@ -35,7 +35,7 @@ model {
             platformVersion = 14
             moduleName = 'game'
             toolchain = 'clang'
-            stl        = 'gnustl_static' // recommending gnustl_static/gnustl_shared for android
+            stl        = 'c++_static' // recommending c++_static/c++_shared for Android
             cppFlags.addAll(['-std=c++11','-Wall', // glm could not take -Wall -Werror
                              '-D GLM_FORCE_SIZE_T_LENGTH', '-D GLM_FORCE_RADIANS',
                              '-I' + file("${REMOTE_PROJ_ROOT}/cpp"),

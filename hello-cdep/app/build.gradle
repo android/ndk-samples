@@ -11,8 +11,7 @@ android {
         versionName = '1.0'
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-23',
-                        '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
+                arguments '-DANDROID_STL=c++_static'
                 arguments "-Dcdep-dependencies_DIR=../../../../.cdep/modules"
             }
         }
@@ -21,7 +20,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    'proguard-rules.pro'
+                          'proguard-rules.pro'
         }
     }
     sourceSets {

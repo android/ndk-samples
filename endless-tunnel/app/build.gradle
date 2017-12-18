@@ -27,8 +27,7 @@ android {
         versionName    '1.0'
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-14',
-                     '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
+                arguments '-DANDROID_STL=c++_static'
             }
         }
     }

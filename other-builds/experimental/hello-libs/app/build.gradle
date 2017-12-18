@@ -52,7 +52,7 @@ model {
             platformVersion = 14
             moduleName = 'hello-libs'
             toolchain = 'clang'
-            stl = 'gnustl_static'
+            stl = 'c++_static'
             cppFlags.addAll(['-std=c++11'])
             ldLibs.addAll(['android', 'log'])
             // build a default combined apk including all ABIs.

@@ -31,7 +31,6 @@ model {
             platformVersion = 21
             moduleName = 'ChoreographerNativeActivity'
             toolchain = "clang"
-            // this sample uses std::mutex, which will not compile with ndk-r12 with gnustl_static
             stl       = 'c++_static'
             cppFlags.addAll(['-I' + file("${REMOTE_COMMON_ROOT}/ndk_helper")])
             cppFlags.addAll(['-std=c++11', '-Wall',

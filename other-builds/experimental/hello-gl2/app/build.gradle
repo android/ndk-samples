@@ -16,7 +16,7 @@ model {
             platformVersion = 14
             moduleName = 'gl2jni'
             toolchain = 'clang'
-            stl        = 'gnustl_static'
+            stl        = 'c++_static'
             cppFlags.addAll(['-std=c++11','-Wall'])
             ldLibs.addAll(['log', 'GLESv2'])
             abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])

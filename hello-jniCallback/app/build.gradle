@@ -8,12 +8,6 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        externalNativeBuild {
-            cmake {
-                arguments '-DANDROID_PLATFORM=android-21',
-                          '-DANDROID_TOOLCHAIN=clang'
-            }
-        }
     }
     buildTypes {
         release {

@@ -76,7 +76,7 @@ GESTURE_STATE TapDetector::Detect(const AInputEvent* motion_event) {
 // DoubletapDetector
 //--------------------------------------------------------------------------------
 DoubletapDetector::DoubletapDetector()
-    : last_tap_x_(0), last_tap_y_(0), last_tap_time_(0) {}
+    : last_tap_time_(0), last_tap_x_(0), last_tap_y_(0) {}
 
 GESTURE_STATE DoubletapDetector::Detect(const AInputEvent* motion_event) {
   if (AMotionEvent_getPointerCount(motion_event) > 1) {

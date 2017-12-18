@@ -9,12 +9,12 @@ android {
         minSdkVersion   21
         targetSdkVersion 25
         ndk {
-            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a','x86'
+            abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
         }
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-21',
-                    '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static'
+                arguments '-DANDROID_TOOLCHAIN=clang',
+                          '-DANDROID_STL=c++_static'
             }
         }
     }
