@@ -6,15 +6,11 @@ def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.example.plasma"
         minSdkVersion 14
-        targetSdkVersion 8
-        ndk {
-            abiFilters 'armeabi'
-        }
+        targetSdkVersion 23
     }
 
     sourceSets {

@@ -38,7 +38,7 @@ model {
     }
     android {
         compileSdkVersion = 24
-        buildToolsVersion = '24.0.0'
+        buildToolsVersion = '25.0.3'
 
         defaultConfig {
             applicationId = 'com.example.hellolibs'
@@ -48,6 +48,7 @@ model {
             versionName = '1.0'
         }
         ndk {
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
             platformVersion = 14
             moduleName = 'hello-libs'
             toolchain = 'clang'

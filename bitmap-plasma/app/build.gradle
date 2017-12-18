@@ -2,15 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
 
     defaultConfig.with {
         applicationId 'com.example.plasma'
         minSdkVersion 14
         targetSdkVersion 25
-        ndk {
-            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
-        }
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_PLATFORM=android-14', '-DANDROID_TOOLCHAIN=clang'

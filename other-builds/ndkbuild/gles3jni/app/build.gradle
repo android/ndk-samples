@@ -13,15 +13,11 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId 'com.android.gles3jni'
         minSdkVersion 18
-        targetSdkVersion 11
-        ndk {
-            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-        }
+        targetSdkVersion 18
     }
     sourceSets {
         main {

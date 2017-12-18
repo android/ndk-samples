@@ -2,15 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
      compileSdkVersion 25
-     buildToolsVersion '25.0.2'
 
      defaultConfig {
         applicationId 'com.example.nativeaudio'
         minSdkVersion 14
         targetSdkVersion 25
-        ndk {
-            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-        }
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_PLATFORM=android-23',
@@ -34,5 +30,5 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.2.0'
+    implementation 'com.android.support:appcompat-v7:25.4.0'
 }

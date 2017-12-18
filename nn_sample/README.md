@@ -3,7 +3,7 @@ Android Neural Networks API Sample
 Android Neural Networks API (NN API) Sample demonstrates basic usages of NN API with a simple model that consists of three operations: two additions and a multiplication.
 
 The sums created by the additions are the inputs to the multiplication. In essence, we are creating a graph that computes: (tensor0 + tensor1) * (tensor2 + tensor3).
-
+```java
 tensor0 ---+
            +--- ADD ---> intermediateOutput0 ---+
 tensor1 ---+                                    |
@@ -11,6 +11,7 @@ tensor1 ---+                                    |
 tensor2 ---+                                    |
            +--- ADD ---> intermediateOutput1 ---+
 tensor3 ---+
+```
 
 Two of the four tensors, tensor0 and tensor2 being added are constants, defined in the model. They represent the weights that would have been learned during a training process, loaded from model_data.bin.
 

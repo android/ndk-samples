@@ -16,7 +16,7 @@ model {
         }
         ndk {
             moduleName = 'gmath'
-            abiFilters.addAll(['armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64']) //this is default
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'])
             ldLibs.addAll(['android', 'log'])
         }
         sources {

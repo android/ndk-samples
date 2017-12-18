@@ -14,7 +14,9 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-JNI_SRC_PATH := $(LOCAL_PATH)/../../../../gles3jni/app/src/main/cpp
+abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+
+JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../gles3jni/app/src/main/cpp)
 
 LOCAL_MODULE    := libgles3jni
 LOCAL_CPPFLAGS    := -Werror -std=c++11 -fno-rtti -fno-exceptions -Wall

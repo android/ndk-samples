@@ -6,7 +6,7 @@ def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = '23.0.2'
+        buildToolsVersion = '25.0.0'
 
         defaultConfig {
             applicationId = 'com.example.hellojni'
@@ -46,9 +46,6 @@ model {
         productFlavors {
             // for detailed abiFilter descriptions, refer to "Supported ABIs" @
             // https://developer.android.com/ndk/guides/abis.html#sa
-            create("arm") {
-                ndk.abiFilters.add("armeabi")
-            }
             create("arm7") {
                 ndk.abiFilters.add("armeabi-v7a")
             }
@@ -61,14 +58,6 @@ model {
             create("x86-64") {
                 ndk.abiFilters.add("x86_64")
             }
-            create("mips") {
-                ndk.abiFilters.add("mips")
-            }
-            create("mips-64") {
-                ndk.abiFilters.add("mips64")
-            }
-            // To include all cpu architectures, leaves abiFilters empty
-            create("all")
         }
     }
 }

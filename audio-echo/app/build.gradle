@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId 'com.google.sample.echo'
@@ -15,9 +14,6 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName '1.0'
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-        }
         externalNativeBuild {
             cmake {
                 // With android studio 2.2.0 +cmake, app needs to pack shared lib to
@@ -42,6 +38,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.2.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:25.4.0'
 }

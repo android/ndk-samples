@@ -6,7 +6,7 @@ def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = '23.0.2'
+        buildToolsVersion = '25.0.3'
 
         defaultConfig.with {
             applicationId = 'com.example.plasma'
@@ -19,6 +19,7 @@ model {
             toolchain = 'clang'
             CFlags.addAll(['-Wall'])
             ldLibs.addAll(['m', 'log', 'jnigraphics'])
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
         }
         sources {
             main {

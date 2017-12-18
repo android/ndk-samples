@@ -21,6 +21,7 @@
  *   src/com/example/nativeaudio/NativeAudio/NativeAudio.java
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <jni.h>
 #include <string.h>

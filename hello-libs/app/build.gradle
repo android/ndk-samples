@@ -1,18 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.2'
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId = 'com.example.hellolibs'
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode = 1
         versionName = '1.0'
-        ndk {
-            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-        }
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_PLATFORM=android-14',
@@ -41,11 +37,23 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.1'
-    // uncomment out this one to generate lib binaries,
-    // and also uncommented out the one in settings.gradle
-    // after lib is generated, just comment them out again
-//        compile project(':gen-libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
+
+// Workaround library native code dependency issue in gradle 3.0.0
+// refer to https://issuetracker.google.com/issues/69616088
+// Note that the followings are only needed to generate lib package
+// into $project/distribution directory, does NOT affect application module;
+// Only enable these when want to build libs (together with note
+// inside settings.gradle)
+/*
+tasks.whenTaskAdded { task ->
+    if (task.name == 'externalNativeBuildRelease') {
+        task.dependsOn ":gen-libs:externalNativeBuildRelease"
+    } else if (task.name == 'externalNativeBuildDebug') {
+        task.dependsOn ":gen-libs:externalNativeBuildDebug"
+    }
+}
+*/

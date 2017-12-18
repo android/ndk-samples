@@ -19,6 +19,7 @@ model {
             toolchain = 'clang'
             ldLibs.addAll(['m', 'log','android'])
             ldFlags.addAll(["-uANativeActivity_onCreate"])
+            abiFilters.addAll(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86-64'])
         }
         sources {
             main {

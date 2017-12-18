@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+
 LOCAL_PATH := $(call my-dir)
 PROJECT_DIR :=bitmap-plasma
-JNI_SRC_PATH := $(LOCAL_PATH)/../../../../$(PROJECT_DIR)/app/src/main/cpp
+JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../$(PROJECT_DIR)/app/src/main/cpp)
 
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := plasma
 LOCAL_SRC_FILES := $(JNI_SRC_PATH)/plasma.c
 LOCAL_LDLIBS    := -lm -llog -ljnigraphics
-LOCAL_CFLAGS    := -Wall -Werror
+LOCAL_CFLAGS    := -Wall -Werror -Wno-unused-function
 
 NDK_TOOLCHAIN_VERSION := clang
 include $(BUILD_SHARED_LIBRARY)

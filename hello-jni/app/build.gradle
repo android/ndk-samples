@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId 'com.example.hellojni'
         minSdkVersion 23
@@ -26,48 +25,43 @@ android {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
+
+    flavorDimensions 'cpuArch'
     productFlavors {
         arm7 {
-            // in the future, ndk.abiFilter might also work
+            dimension 'cpuArch'
             ndk {
                 abiFilter 'armeabi-v7a'
             }
         }
         arm8 {
+            dimension 'cpuArch'
             ndk {
                 abiFilters 'arm64-v8a'
             }
         }
-        arm {
-            ndk {
-                abiFilter 'armeabi'
-            }
-        }
         x86 {
+            dimension 'cpuArch'
             ndk {
                 abiFilter 'x86'
             }
         }
         x86_64 {
+            dimension 'cpuArch'
             ndk {
                 abiFilter 'x86_64'
             }
         }
-        mips {
-            ndk {
-                abiFilters 'mips', 'mips64'
-            }
-        }
         universal {
-            ndk {
-                abiFilters 'mips', 'mips64', 'x86', 'x86_64'
-            }
+            dimension 'cpuArch'
+            // include all default ABIs. with NDK-r16,  it is:
+            //   armeabi-v7a, arm64-v8a, x86, x86_64
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }

@@ -5,15 +5,11 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
 
 android {
      compileSdkVersion 23
-     buildToolsVersion '23.0.2'
 
      defaultConfig {
         applicationId 'com.example.nativemedia'
         minSdkVersion 14
         targetSdkVersion 22
-        ndk {
-            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-        }
      }
      sourceSets {
         main {

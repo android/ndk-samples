@@ -17,6 +17,7 @@ package com.example.plasma;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.content.Context;
 import android.view.View;
@@ -33,7 +34,9 @@ public class Plasma extends Activity
     {
         super.onCreate(savedInstanceState);
         Display display = getWindowManager().getDefaultDisplay();
-        setContentView(new PlasmaView(this, display.getWidth(), display.getHeight()));
+        Point displaySize = new Point();
+        display.getSize(displaySize);
+        setContentView(new PlasmaView(this, displaySize.x, displaySize.y));
     }
 
     // load our native library
