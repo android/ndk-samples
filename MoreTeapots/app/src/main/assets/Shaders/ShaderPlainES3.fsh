@@ -17,7 +17,7 @@
 #version 300 es
 precision mediump float;
 
-uniform mediump vec4  vMaterialSpecular;
+uniform lowp vec4  vMaterialSpecular;
 uniform highp vec3 vLight0;
 
 in lowp vec4 colorDiffuse;
