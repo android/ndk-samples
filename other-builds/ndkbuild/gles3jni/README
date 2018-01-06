@@ -4,14 +4,7 @@ The sample can be built two different ways:
   * Compatible with API level 11 and later [*1]
   * Require API level 18 or later.
 Both versions include an OpenGL ES 2.0 fallback path for devices that don't
-support OpenGL ES 3.0.
-
-To build and install the sample:
-$ cp -f app/src/main/AndroidManifest-$N.xml app/src/main/AndroidManifest.xml
-$ cp -f app/src/main/cpp/Android-$N.mk app/src/main/cpp/Android.mk
-Use Android Studio to import the project, build and run
-
-where $N is '11' or '18' and
+support OpenGL ES 3.0. Refer to the project Android.mk file for details
 
 The OpenGL ES 3.0 rendering path uses a few new features compared to the
 OpenGL ES 2.0 path:
