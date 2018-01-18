@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">KotlinJni</string>
+    <string name="default_msg">Hello World</string>
+</resources>
