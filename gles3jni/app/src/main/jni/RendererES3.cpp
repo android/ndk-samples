@@ -103,7 +103,7 @@ bool RendererES3::init() {
     glBindVertexArray(mVBState);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVB[VB_INSTANCE]);
-    glVertexAttribPointer(POS_ATTRIB, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
+    glVertexAttribPointer(POS_ATTRIB, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
     glVertexAttribPointer(COLOR_ATTRIB, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rgba));
     glEnableVertexAttribArray(POS_ATTRIB);
     glEnableVertexAttribArray(COLOR_ATTRIB);
