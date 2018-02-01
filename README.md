@@ -1,11 +1,11 @@
 NDK Samples
 ===========
 
-This branch in this repository contains samples for Android Studio with [Android NDK C/C++ support][0].
-Other related branchs
-- master: gradle-experimental samples
-- master-cmake: cmake support
-- master-ndkbuild: ndk-build support for legacy project
+This branch is DEPRECATED, may be UPDATED with critical bug fixes.
+For the latest samples with Android Studio + ndk-build support, please refer to master
+branch's [other-builds/ndk-build](https://github.com/googlesamples/android-ndk/tree/master/other-builds/ndkbuild) directory 
+
+The samples in this branch known to build with Android Studio 2.2.x and 2.3.x
 
 Pre-requisites
 --------------
@@ -33,7 +33,7 @@ submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUT
 License
 -------
 
-Copyright 2015 The Android Open Source Project, Inc.
+Copyright 2018 The Android Open Source Project, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for
