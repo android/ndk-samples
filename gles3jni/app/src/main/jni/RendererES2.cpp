@@ -129,7 +129,7 @@ void RendererES2::draw(unsigned int numInstances) {
     glUseProgram(mProgram);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVB);
-    glVertexAttribPointer(mPosAttrib, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
+    glVertexAttribPointer(mPosAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
     glVertexAttribPointer(mColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rgba));
     glEnableVertexAttribArray(mPosAttrib);
     glEnableVertexAttribArray(mColorAttrib);

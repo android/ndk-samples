@@ -17,6 +17,7 @@
 #include <jni.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #include "gles3jni.h"
 
