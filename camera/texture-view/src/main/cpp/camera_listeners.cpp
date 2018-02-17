@@ -67,8 +67,8 @@ void OnDeviceStateChanges(void* ctx, ACameraDevice* dev) {
 void OnDeviceErrorChanges(void* ctx, ACameraDevice* dev, int err) {
   reinterpret_cast<NDKCamera*>(ctx)->OnDeviceError(dev, err);
 }
-ACameraDevice_stateCallbacks* NDKCamera::GetDeviceListener() {
-  static ACameraDevice_stateCallbacks cameraDeviceListener = {
+ACameraDevice_StateCallbacks* NDKCamera::GetDeviceListener() {
+  static ACameraDevice_StateCallbacks cameraDeviceListener = {
       .context = this,
       .onDisconnected = ::OnDeviceStateChanges,
       .onError = ::OnDeviceErrorChanges,
