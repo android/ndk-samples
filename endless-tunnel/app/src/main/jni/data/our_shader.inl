@@ -19,7 +19,7 @@
 #define OUR_VERTEX_SHADER_SOURCE \
            "uniform mat4 u_MVP;            \n" \
            "uniform vec4 u_PointLightPos;  \n" \
-           "uniform vec4 u_PointLightColor; \n" \
+           "uniform mediump vec4 u_PointLightColor; \n" \
            "attribute vec4 a_Position;     \n" \
            "attribute vec4 a_Color;        \n" \
            "attribute vec2 a_TexCoord;     \n" \
