@@ -106,6 +106,7 @@ void Shader::Compile() {
     glGetProgramiv(mProgramH, GL_LINK_STATUS, &status);
     if (status == 0) {
         LOGE("*** Shader program link failed, %d", status);
+        _printProgramLog(mProgramH);
         ABORT_GAME;
     }
     LOGD("Program linking succeeded.");
