@@ -87,9 +87,12 @@ bool ImageViewEngine::CreateWideColorCtx(WIDECOLOR_MODE mode) {
   };
 
   // for RGBA888, still set to EGL_COLOR_COMPONENT_TYPE_FIXED_EXT?
-  if (mode == WIDECOLOR_MODE::P3_R10G10B10A2_REV) {
+  if (mode == WIDECOLOR_MODE::P3_FP16) {
     attributes.push_back(EGL_COLOR_COMPONENT_TYPE_EXT);
     attributes.push_back(EGL_COLOR_COMPONENT_TYPE_FLOAT_EXT);
+  } else {
+    attributes.push_back(EGL_COLOR_COMPONENT_TYPE_EXT);
+    attributes.push_back(EGL_COLOR_COMPONENT_TYPE_FIXED_EXT);
   }
   attributes.push_back(EGL_NONE);
 
