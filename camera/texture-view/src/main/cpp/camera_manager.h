@@ -95,7 +95,7 @@ class NDKCamera {
   volatile bool valid_;
 
   ACameraManager_AvailabilityCallbacks* GetManagerListener();
-  ACameraDevice_stateCallbacks* GetDeviceListener();
+  ACameraDevice_StateCallbacks* GetDeviceListener();
   ACameraCaptureSession_stateCallbacks* GetSessionListener();
   ACameraCaptureSession_captureCallbacks* GetCaptureCallback();
 
