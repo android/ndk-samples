@@ -67,6 +67,7 @@ void SensorManager::Process(const int32_t id) {
 
           //					LOGI( "orientation %f %d", angle,
           //orientation);
+          (void)orientation;
         }
       }
     }
