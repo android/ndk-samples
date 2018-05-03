@@ -50,7 +50,6 @@ class SensorManager {
   SensorManager();
   ~SensorManager();
   void Init(android_app *state);
-  void Process(const int32_t id);
   void Suspend();
   void Resume();
 };
