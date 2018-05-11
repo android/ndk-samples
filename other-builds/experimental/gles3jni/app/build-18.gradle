@@ -36,6 +36,7 @@ model {
                 }
                 jni {
                     source.srcDir "${REMOTE_PROJ_ROOT}/cpp"
+                    source.exclude 'gl3stub.c'
                 }
             }
         }

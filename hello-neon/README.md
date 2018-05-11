@@ -5,7 +5,7 @@ Hello Neon is an Android sample that uses ARM NEON for fir filter implementation
 - append -mfpu=neon to CMake compile flag for neon source files.
 This is different from android.mk, in that:
 - *.c.neon is fake file name; cmake does not need that mechanism
-- cmake scripts does not need the fake *.neon name since cmake scripts could handle it directly
+
 
 If there are lot of NEON files in the project, make a NEON lib:
 - turn NEON compile flags for the lib
@@ -25,10 +25,15 @@ Getting Started
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
 1. Launch Android Studio.
 1. Open the sample directory.
-1. Open *File/Project Structure...*
-  - Click *Download* or *Select NDK location*.
-1. Click *Tools/Android/Sync Project with Gradle Files*.
-1. Click *Run/Run 'app'*.
+1. Open *File/Project Structure...*, then click *Download* or *Select NDK location*.
+1. Click *Build/Generate Signed APK* to [build release APK](https://developer.android.com/studio/publish/app-signing.html#sign-apk).
+1. Install your signed APK with *adb install -r your-signed-apk*.
+1. Run it on your target device
+
+Notes:
+- Build for release version(signed APK will do that) to view the performance numbers
+- The performance number may vary with different platforms
+- On x86 platforms, the purpose is to demo the neon code portability: neon performance number may not be better than that of the "C" version
 
 Screenshots
 -----------

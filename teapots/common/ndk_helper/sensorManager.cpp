@@ -44,35 +44,6 @@ void SensorManager::Init(android_app *app) {
       sensorManager_, app->looper, LOOPER_ID_USER, NULL, NULL);
 }
 
-void SensorManager::Process(const int32_t id) {
-  // If a sensor has data, process it now.
-  if (id == LOOPER_ID_USER) {
-    if (accelerometerSensor_ != NULL) {
-      ASensorEvent event;
-      while (ASensorEventQueue_getEvents(sensorEventQueue_, &event, 1) > 0) {
-        float maginitude = event.acceleration.x * event.acceleration.x +
-                           event.acceleration.y * event.acceleration.y;
-        if (maginitude * 4 >= event.acceleration.z * event.acceleration.z) {
-          int32_t orientation = ORIENTATION_REVERSE_LANDSCAPE;
-          float angle = atan2f(-event.acceleration.y, event.acceleration.x);
-          if (angle <= -M_PI_2 - M_PI_4) {
-            orientation = ORIENTATION_REVERSE_LANDSCAPE;
-          } else if (angle <= -M_PI_4) {
-            orientation = ORIENTATION_PORTRAIT;
-          } else if (angle <= M_PI_4) {
-            orientation = ORIENTATION_LANDSCAPE;
-          } else if (angle <= M_PI_2 + M_PI_4) {
-            orientation = ORIENTATION_REVERSE_PORTRAIT;
-          }
-
-          //					LOGI( "orientation %f %d", angle,
-          //orientation);
-        }
-      }
-    }
-  }
-}
-
 void SensorManager::Resume() {
   // When the app gains focus, start monitoring the accelerometer.
   if (accelerometerSensor_ != NULL) {
