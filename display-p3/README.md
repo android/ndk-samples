@@ -65,6 +65,16 @@ Version History
 | --------- | -------- | ---------------------------------|
 |    1.0    | 07/2017  |    Initial Version               |
 
+Support
+-------
+If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+
+Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
+submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
+
+- [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
+- [Google+ Community](https://plus.google.com/communities/105153134372062985968)
+- [Android Tools Feedbacks](http://tools.android.com/feedback)
 
 License
 -------
