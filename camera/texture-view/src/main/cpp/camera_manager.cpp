@@ -216,7 +216,8 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
       resView->width = 640;
       resView->height = 480;
     }
-    resCap = resView;
+    if (resCap)
+      *resCap = *resView;
   }
   resView->format = AIMAGE_FORMAT_YUV_420_888;
   if (resCap) resCap->format = AIMAGE_FORMAT_JPEG;
