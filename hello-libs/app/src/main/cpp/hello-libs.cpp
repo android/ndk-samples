@@ -20,7 +20,7 @@
 #include <android/log.h>
 #include <gmath.h>
 #include <gperf.h>
-
+#include <string>
 
 #define LOGI(...) \
   ((void)__android_log_print(ANDROID_LOG_INFO, "hello-libs::", __VA_ARGS__))

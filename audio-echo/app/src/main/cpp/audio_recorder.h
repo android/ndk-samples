@@ -24,32 +24,32 @@
 #include "debug_utils.h"
 
 class AudioRecorder {
-    SLObjectItf recObjectItf_;
-    SLRecordItf recItf_;
-    SLAndroidSimpleBufferQueueItf recBufQueueItf_;
+  SLObjectItf recObjectItf_;
+  SLRecordItf recItf_;
+  SLAndroidSimpleBufferQueueItf recBufQueueItf_;
 
-    SampleFormat  sampleInfo_;
-    AudioQueue *freeQueue_;         // user
-    AudioQueue *recQueue_;          // user
-    AudioQueue *devShadowQueue_;    // owner
-    uint32_t    audioBufCount;
+  SampleFormat sampleInfo_;
+  AudioQueue *freeQueue_;       // user
+  AudioQueue *recQueue_;        // user
+  AudioQueue *devShadowQueue_;  // owner
+  uint32_t audioBufCount;
 
-    ENGINE_CALLBACK callback_;
-    void           *ctx_;
+  ENGINE_CALLBACK callback_;
+  void *ctx_;
 
-public:
-    explicit AudioRecorder(SampleFormat *, SLEngineItf engineEngine);
-    ~AudioRecorder();
-    SLboolean Start(void);
-    SLboolean Stop(void);
-    void      SetBufQueues(AudioQueue *freeQ, AudioQueue *recQ);
-    void      ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq);
-    void      RegisterCallback(ENGINE_CALLBACK cb, void *ctx);
-    int32_t   dbgGetDevBufCount(void);
+ public:
+  explicit AudioRecorder(SampleFormat *, SLEngineItf engineEngine);
+  ~AudioRecorder();
+  SLboolean Start(void);
+  SLboolean Stop(void);
+  void SetBufQueues(AudioQueue *freeQ, AudioQueue *recQ);
+  void ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq);
+  void RegisterCallback(ENGINE_CALLBACK cb, void *ctx);
+  int32_t dbgGetDevBufCount(void);
 
-#ifdef  ENABLE_LOG
-    AndroidLog *recLog_;
+#ifdef ENABLE_LOG
+  AndroidLog *recLog_;
 #endif
 };
 
-#endif //NATIVE_AUDIO_AUDIO_RECORDER_H
+#endif  // NATIVE_AUDIO_AUDIO_RECORDER_H
