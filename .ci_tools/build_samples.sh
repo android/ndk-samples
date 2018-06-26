@@ -35,10 +35,9 @@ declare projects=(
     teapots)
 
 for d in "${projects[@]}"; do 
-    pushd ${NDK_SAMPLE_REPO}/${d}
-    ./gradlew  -q clean
-    ./gradlew -q assembleDebug
-    popd
+    pushd ${NDK_SAMPLE_REPO}/${d} >/dev/null
+    TERM=dumb ./gradlew  -q clean assembleDebug
+    popd >/dev/null
 done
 
 
