@@ -68,26 +68,34 @@ NDKCamera::NDKCamera()
   };
   camera_status_t status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE, &val);
-  ASSERT(status == ACAMERA_OK,
-         "Unsupported ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE");
-  exposureRange_.min_ = val.data.i64[0];
-  if (exposureRange_.min_ < kMinExposureTime) {
-    exposureRange_.min_ = kMinExposureTime;
+  if (status == ACAMERA_OK) {
+    exposureRange_.min_ = val.data.i64[0];
+    if (exposureRange_.min_ < kMinExposureTime) {
+      exposureRange_.min_ = kMinExposureTime;
+    }
+    exposureRange_.max_ = val.data.i64[1];
+    if (exposureRange_.max_ > kMaxExposureTime) {
+      exposureRange_.max_ = kMaxExposureTime;
+    }
+    exposureTime_ = exposureRange_.value(2);
+  } else {
+    LOGW("Unsupported ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE");
+    exposureRange_.min_ = exposureRange_.max_ = 0l;
+    exposureTime_ = 0l;
   }
-  exposureRange_.max_ = val.data.i64[1];
-  if (exposureRange_.max_ > kMaxExposureTime) {
-    exposureRange_.max_ = kMaxExposureTime;
-  }
-  exposureTime_ = exposureRange_.value(2);
-
   status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE, &val);
-  ASSERT(status == ACAMERA_OK,
-         "failed for ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE");
-  sensitivityRange_.min_ = val.data.i32[0];
-  sensitivityRange_.max_ = val.data.i32[1];
 
-  sensitivity_ = sensitivityRange_.value(2);
+  if (status == ACAMERA_OK){
+    sensitivityRange_.min_ = val.data.i32[0];
+    sensitivityRange_.max_ = val.data.i32[1];
+
+    sensitivity_ = sensitivityRange_.value(2);
+  } else {
+    LOGW("failed for ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE");
+    sensitivityRange_.min_ = sensitivityRange_.max_ = 0;
+    sensitivity_ = 0;
+  }
   valid_ = true;
 }
 
@@ -162,6 +170,7 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
                                         ImageFormat* view) {
   return MatchCaptureSizeRequest(requestWidth, requestHeight, view, nullptr);
 }
+
 
 bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
                                         int32_t requestHeight,

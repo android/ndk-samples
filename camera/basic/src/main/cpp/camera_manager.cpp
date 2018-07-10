@@ -20,7 +20,7 @@
 #include <camera/NdkCameraManager.h>
 #include "camera_manager.h"
 #include "utils/native_debug.h"
-#include "camera_utils.h"
+#include "utils/camera_utils.h"
 
 /**
  * Range of Camera Exposure Time:
@@ -66,26 +66,34 @@ NDKCamera::NDKCamera()
   };
   camera_status_t status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE, &val);
-  ASSERT(status == ACAMERA_OK,
-         "Unsupported ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE");
-  exposureRange_.min_ = val.data.i64[0];
-  if (exposureRange_.min_ < kMinExposureTime) {
-    exposureRange_.min_ = kMinExposureTime;
+  if (status == ACAMERA_OK) {
+    exposureRange_.min_ = val.data.i64[0];
+    if (exposureRange_.min_ < kMinExposureTime) {
+      exposureRange_.min_ = kMinExposureTime;
+    }
+    exposureRange_.max_ = val.data.i64[1];
+    if (exposureRange_.max_ > kMaxExposureTime) {
+      exposureRange_.max_ = kMaxExposureTime;
+    }
+    exposureTime_ = exposureRange_.value(2);
+  } else {
+    LOGW("Unsupported ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE");
+    exposureRange_.min_ = exposureRange_.max_ = 0l;
+    exposureTime_ = 0l;
   }
-  exposureRange_.max_ = val.data.i64[1];
-  if (exposureRange_.max_ > kMaxExposureTime) {
-    exposureRange_.max_ = kMaxExposureTime;
-  }
-  exposureTime_ = exposureRange_.value(2);
-
   status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE, &val);
-  ASSERT(status == ACAMERA_OK,
-         "failed for ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE");
-  sensitivityRange_.min_ = val.data.i32[0];
-  sensitivityRange_.max_ = val.data.i32[1];
 
-  sensitivity_ = sensitivityRange_.value(2);
+  if (status == ACAMERA_OK){
+    sensitivityRange_.min_ = val.data.i32[0];
+    sensitivityRange_.max_ = val.data.i32[1];
+
+    sensitivity_ = sensitivityRange_.value(2);
+  } else {
+    LOGW("failed for ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE");
+    sensitivityRange_.min_ = sensitivityRange_.max_ = 0;
+    sensitivity_ = 0;
+  }
   valid_ = true;
 }
 
@@ -265,7 +273,6 @@ NDKCamera::~NDKCamera() {
   }
   ACameraCaptureSession_close(captureSession_);
 
-#if 1
   for (auto& req : requests_) {
     CALL_REQUEST(removeTarget(req.request_, req.target_));
     ACaptureRequest_free(req.request_);
@@ -276,7 +283,7 @@ NDKCamera::~NDKCamera() {
 
     ANativeWindow_release(req.outputNativeWindow_);
   }
-#endif
+
   requests_.resize(0);
   ACaptureSessionOutputContainer_free(outputContainer_);
 
@@ -409,15 +416,19 @@ void NDKCamera::UpdateCameraRequestParameter(int32_t code, int64_t val) {
   ACaptureRequest* request = requests_[PREVIEW_REQUEST_IDX].request_;
   switch (code) {
     case ACAMERA_SENSOR_EXPOSURE_TIME:
-      exposureTime_ = val;
-      CALL_REQUEST(setEntry_i64(request, ACAMERA_SENSOR_EXPOSURE_TIME, 1,
+      if (exposureRange_.Supported()) {
+        exposureTime_ = val;
+        CALL_REQUEST(setEntry_i64(request, ACAMERA_SENSOR_EXPOSURE_TIME, 1,
                                 &exposureTime_));
+      }
       break;
 
     case ACAMERA_SENSOR_SENSITIVITY:
-      sensitivity_ = val;
-      CALL_REQUEST(
+      if(sensitivityRange_.Supported()) {
+        sensitivity_ = val;
+        CALL_REQUEST(
           setEntry_i32(request, ACAMERA_SENSOR_SENSITIVITY, 1, &sensitivity_));
+      }
       break;
     default:
       ASSERT(false, "==ERROR==: error code for CameraParameterChange: %d",
@@ -442,7 +453,7 @@ void NDKCamera::UpdateCameraRequestParameter(int32_t code, int64_t val) {
  *         false camera has not initialized, no value available
  */
 bool NDKCamera::GetExposureRange(int64_t* min, int64_t* max, int64_t* curVal) {
-  if (!exposureTime_ || !min || !max || !curVal) {
+  if (!exposureRange_.Supported() || !exposureTime_ || !min || !max || !curVal) {
     return false;
   }
   *min = exposureRange_.min_;
@@ -463,7 +474,7 @@ bool NDKCamera::GetExposureRange(int64_t* min, int64_t* max, int64_t* curVal) {
  */
 bool NDKCamera::GetSensitivityRange(int64_t* min, int64_t* max,
                                     int64_t* curVal) {
-  if (!sensitivity_ || !min || !max || !curVal) {
+  if (!sensitivityRange_.Supported()|| !sensitivity_ || !min || !max || !curVal) {
     return false;
   }
   *min = static_cast<int64_t>(sensitivityRange_.min_);
