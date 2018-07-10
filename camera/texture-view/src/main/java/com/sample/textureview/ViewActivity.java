@@ -18,12 +18,17 @@ package com.sample.textureview;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
@@ -33,6 +38,8 @@ import android.util.Size;
 import android.widget.FrameLayout;
 
 import junit.framework.Assert;
+
+import static android.hardware.camera2.CameraMetadata.LENS_FACING_BACK;
 
 public class ViewActivity extends Activity
         implements TextureView.SurfaceTextureListener,
@@ -47,7 +54,11 @@ public class ViewActivity extends Activity
         super.onCreate(savedInstanceState);
         onWindowFocusChanged(true);
         setContentView(R.layout.activity_main);
-        RequestCamera();
+        if (isCamera2Device()) {
+            RequestCamera();
+        } else {
+            Log.e("CameraSample", "Found legacy camera device, this sample needs camera2 device");
+        }
     }
 
     @Override
@@ -63,7 +74,28 @@ public class ViewActivity extends Activity
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
+    private boolean isCamera2Device() {
+        CameraManager camMgr = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
+        boolean camera2Dev = true;
+        try {
+            String[] cameraIds = camMgr.getCameraIdList();
+            if (cameraIds.length != 0 ) {
+                for (String id : cameraIds) {
+                    CameraCharacteristics characteristics = camMgr.getCameraCharacteristics(id);
+                    int deviceLevel = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+                    int facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                    if (deviceLevel == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY &&
+                            facing == LENS_FACING_BACK) {
+                        camera2Dev =  false;
+                    }
+                }
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+            camera2Dev = false;
+        }
+        return camera2Dev;
+    }
     private void createTextureView() {
         textureView_ = (TextureView) findViewById(R.id.texturePreview);
         textureView_.setSurfaceTextureListener(this);

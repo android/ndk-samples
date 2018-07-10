@@ -55,6 +55,8 @@ class RangeValue {
     return static_cast<T>(min_ + (max_ - min_) * percent / 100);
   }
   RangeValue() { min_ = max_ = static_cast<T>(0); }
+
+  bool Supported(void) const { return (min_ != max_); }
 };
 
 enum PREVIEW_INDICES {

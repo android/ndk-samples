@@ -21,8 +21,7 @@ set(COMMON_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../../../common)
 
 # build native_app_glue as a static lib
 include_directories(${ANDROID_NDK}/sources/android/native_app_glue
-    ${COMMON_SOURCE_DIR}
-    ${COMMON_SOURCE_DIR}/utils)
+    ${COMMON_SOURCE_DIR})
 
 add_library(app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
