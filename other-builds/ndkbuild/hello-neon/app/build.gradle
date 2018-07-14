@@ -39,7 +39,7 @@ android {
         }
         x86 {
             dimension "abi"
-            ndk.abiFilters 'x86', 'x86_64'
+            ndk.abiFilters 'x86'
         }
     }
 }

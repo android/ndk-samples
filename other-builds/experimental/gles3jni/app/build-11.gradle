@@ -18,7 +18,7 @@ model {
             platformVersion =  14
             moduleName  = 'gles3jni'
             toolchain = 'clang'
-            stl         = 'gnustl_static'
+            stl         = 'c++_static'
             cppFlags.addAll(['-std=c++11', '-Wall', '-fno-rtti', '-fno-exceptions',
                              '-DDYNAMIC_ES3' ])
             CFlags.addAll(['-Wall', '-DDYNAMIC_ES3'])
