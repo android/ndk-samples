@@ -3,11 +3,11 @@ NDK Samples [![Build Status](https://travis-ci.org/googlesamples/android-ndk.svg
 
 This repository contains [Android NDK][0] samples with Android Studio [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
 
-These samples uses the new [CMake Android plugin](https://developer.android.com/studio/projects/add-native-code.html) with C++ support.
+These samples use the new [CMake Android plugin](https://developer.android.com/studio/projects/add-native-code.html) with C++ support.
 
 Samples could also be built with other build systems:
 - for ndk-build with Android Studio, refer to directory [other-builds/ndkbuild](https://github.com/googlesamples/android-ndk/tree/master/other-builds/ndkbuild)
-- for gradle-experimental plugin, refer to directory other-builds/experimental. Note that gradle-experimental does not work with unified headers yet: use NDK version up to r15 and Android Studio up to version 2.3
+- for gradle-experimental plugin, refer to directory other-builds/experimental. Note that gradle-experimental does not work with unified headers yet: use NDK version up to r15 and Android Studio up to version 2.3. When starting new project, please use CMake or ndk-build plugin.
 
 Additional Android Studio samples:    
 - [Google Play Game Samples with Android Studio](https://github.com/playgameservices/cpp-android-basic-samples)
@@ -27,12 +27,9 @@ For samples using `Android.mk` build system with `ndk-build` see the [android-mk
 
 Build Steps
 ----------
-- With Android Studio: use "Import Project(Eclipse ADT, Gradle, etc)" or "File" > "Import Project" option
-- On Command Line/Terminal:  make sure set up ANDROID_HOME and ANDROID_NDK_HOME to local installation of SDK and NDK, then go to individual sample dir, and use "gradlew assembleDebug"
+- With Android Studio: "Open An Existing Android Studio Project" or "File" > "Open", then nevigate to & select project's build.gradle file.
+- On Command Line: set up ANDROID_HOME and ANDROID_NDK_HOME to your SDK and NDK path, cd to individual sample dir, and do "gradlew assembleDebug"
 
-Debugging
----------
-- [References](REFERENCE.md)
  
 Support
 -------
@@ -48,7 +45,7 @@ submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUT
 License
 -------
 
-Copyright 2015 The Android Open Source Project, Inc.
+Copyright 2018 The Android Open Source Project, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for

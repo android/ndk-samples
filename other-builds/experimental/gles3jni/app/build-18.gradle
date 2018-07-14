@@ -17,7 +17,7 @@ model {
             platformVersion = 18
             moduleName  = 'gles3jni'
             toolchain = 'clang'
-            stl         = 'gnustl_static'
+            stl         = 'c++_static'
             cppFlags.addAll(['-std=c++11', '-Wall', '-fno-rtti', '-fno-exceptions'])
             CFlags.addAll(['-Wall'])
             ldLibs.addAll(['log','GLESv3', 'EGL'])
