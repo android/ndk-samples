@@ -16,7 +16,7 @@
  */
 #include <cstring>
 #include <jni.h>
-#include <cinttypes>
+#include <inttypes.h>
 #include <android/log.h>
 #include <gmath.h>
 #include <gperf.h>
