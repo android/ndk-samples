@@ -1,6 +1,6 @@
 //created by Victoria Zhislina, the Senior Application Engineer, Intel Corporation,  victoria.zhislina@intel.com
 
-//*** Copyright (C) 2012-2016 Intel Corporation.  All rights reserved.
+//*** Copyright (C) 2012-2018 Intel Corporation.  All rights reserved.
 
 //IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
 
@@ -36,21 +36,21 @@
 //performance overhead and the necessity to use the EMMS instruction (_mm_empty())for mmx-x87 floating point  switching
 //*****************************************************************************************
 
-//!!!!!!!!!!!!!!  To use this file just include it in your project that uses ARM NEON intinsics instead of "arm_neon.h" and complile it as usual
-//!!!!!!!!!!!!!!  but please pay attention at #define USE_SSE4 below - you might need to define it manualy for newest Intel Atom platforms for greater performance.
+//!!!!!!!!!!!!!!  To use this file just include it in your project that uses ARM NEON intinsics instead of "arm_neon.h" and compile it as usual
+//!!!!!!!!!!!!!!  but please pay attention at #define USE_SSE4 below - you might need to define it manualy for newest Intel Atom or any Intel Core platforms for greater performance.
 
 #ifndef NEON2SSE_H
 #define NEON2SSE_H
 
 /*********************************************************************************************************************/
 //!!!!!!!!!!!!!! 
+//if USE_SSE4 is defined, some functions use SSE4 instructions instead of earlier SSE versions, when undefined - SIMD up to SSSE3 are used
+//For older devices without SSE4 support it should be undefined,  for newer devices - defined, probably manualy if your compiler doesn't set __SSE4_2__ predefine
 #ifndef USE_SSE4
 #if defined(__SSE4_2__)
     #define USE_SSE4
 #endif
 #endif
-//if USE_SSE4 is defined, some functions use SSE4 instructions instead of earlier SSE versions, when undefined - SIMD up to SSSE3 are used
-//For older devices without SSE4 support it should be undefined,  for newer devices - defined, probably manualy if your compiler doesn't set __SSE4_2__ predefine
 /*********************************************************************************************************************/
 
 #include <xmmintrin.h>     //SSE
@@ -62,6 +62,7 @@
 #include <nmmintrin.h> //SSE4.2
 #endif
 
+#include <math.h>
 
 //***************  functions and data attributes, compiler dependent  *********************************
 //***********************************************************************************
@@ -150,6 +151,9 @@ typedef __m128 float32x4_t;
 typedef __m128 float16x4_t; //not supported by IA, for compartibility
 typedef __m128 float16x8_t; //not supported by IA, for compartibility
 
+typedef __m64_128 float64x1_t;
+typedef __m128d float64x2_t;
+
 typedef __m128i int8x16_t;
 typedef __m128i int16x8_t;
 typedef __m128i int32x4_t;
@@ -173,6 +177,9 @@ typedef   float float32_t;
 #if !defined(__clang__)
 typedef   float __fp16;
 #endif
+
+typedef   double float64_t;
+
 
 typedef  uint8_t poly8_t;
 typedef  uint16_t poly16_t;
@@ -861,6 +868,9 @@ uint8x16_t vmaxq_u8(uint8x16_t a, uint8x16_t b); // VMAX.U8 q0,q0,q0
 uint16x8_t vmaxq_u16(uint16x8_t a, uint16x8_t b); // VMAX.U16 q0,q0,q0
 uint32x4_t vmaxq_u32(uint32x4_t a, uint32x4_t b); // VMAX.U32 q0,q0,q0
 float32x4_t vmaxq_f32(float32x4_t a, float32x4_t b); // VMAX.F32 q0,q0,q0
+
+float64x2_t vmaxq_f64(float64x2_t a, float64x2_t b); // VMAX.F64 q0,q0,q0
+
 //vmin -> Vr[i] := (Va[i] >= Vb[i]) ? Vb[i] : Va[i]
 int8x8_t vmin_s8(int8x8_t a, int8x8_t b); // VMIN.S8 d0,d0,d0
 int16x4_t vmin_s16(int16x4_t a, int16x4_t b); // VMIN.S16 d0,d0,d0
@@ -876,6 +886,9 @@ uint8x16_t vminq_u8(uint8x16_t a, uint8x16_t b); // VMIN.U8 q0,q0,q0
 uint16x8_t vminq_u16(uint16x8_t a, uint16x8_t b); // VMIN.U16 q0,q0,q0
 uint32x4_t vminq_u32(uint32x4_t a, uint32x4_t b); // VMIN.U32 q0,q0,q0
 float32x4_t vminq_f32(float32x4_t a, float32x4_t b); // VMIN.F32 q0,q0,q0
+
+float64x2_t vminq_f64(float64x2_t a, float64x2_t b); // VMIN.F64 q0,q0,q0
+
 //Pairwise addition
 //Pairwise add
 int8x8_t vpadd_s8(int8x8_t a, int8x8_t b); // VPADD.I8 d0,d0,d0
@@ -1225,6 +1238,9 @@ float16x4_t vld1_f16(__transfersize(4) __fp16 const * ptr); // VLD1.16 {d0}, [r0
 float32x2_t vld1_f32(__transfersize(2) float32_t const * ptr); // VLD1.32 {d0}, [r0]
 poly8x8_t vld1_p8(__transfersize(8) poly8_t const * ptr); // VLD1.8 {d0}, [r0]
 poly16x4_t vld1_p16(__transfersize(4) poly16_t const * ptr); // VLD1.16 {d0}, [r0]
+
+float64x2_t vld1q_f64(__transfersize(4) float64_t const * ptr); // VLD1.64 {d0, d1}, [r0]
+
 //Load a single lane from memory
 uint8x16_t vld1q_lane_u8(__transfersize(1) uint8_t const * ptr, uint8x16_t vec, __constrange(0,15) int lane); //VLD1.8 {d0[0]}, [r0]
 uint16x8_t vld1q_lane_u16(__transfersize(1) uint16_t const * ptr, uint16x8_t vec, __constrange(0,7) int lane); // VLD1.16 {d0[0]}, [r0]
@@ -1755,6 +1771,7 @@ int32x2_t vcvt_n_s32_f32(float32x2_t a, __constrange(1,32) int b); // VCVT.S32.F
 uint32x2_t vcvt_n_u32_f32(float32x2_t a, __constrange(1,32) int b); // VCVT.U32.F32 d0, d0, #32
 int32x4_t vcvtq_n_s32_f32(float32x4_t a, __constrange(1,32) int b); // VCVT.S32.F32 q0, q0, #32
 uint32x4_t vcvtq_n_u32_f32(float32x4_t a, __constrange(1,32) int b); // VCVT.U32.F32 q0, q0, #32
+int32x4_t vcvtnq_s32_f32(float32x4_t a); // VCVTN.S32.F32 q0, q0
 //Convert to float
 float32x2_t vcvt_f32_s32(int32x2_t a); // VCVT.F32.S32 d0, d0
 float32x2_t vcvt_f32_u32(uint32x2_t a); // VCVT.F32.U32 d0, d0
@@ -2003,6 +2020,10 @@ int8x16_t vabsq_s8(int8x16_t a); // VABS.S8 q0,q0
 int16x8_t vabsq_s16(int16x8_t a); // VABS.S16 q0,q0
 int32x4_t vabsq_s32(int32x4_t a); // VABS.S32 q0,q0
 float32x4_t vabsq_f32(float32x4_t a); // VABS.F32 q0,q0
+
+int64x2_t vabsq_s64(int64x2_t a); // VABS.S64 q0,q0
+float64x2_t vabsq_f64(float64x2_t a); // VABS.F64 q0,q0
+
 //Saturating absolute: Vd[i] = sat(|Va[i]|)
 int8x8_t vqabs_s8(int8x8_t a); // VQABS.S8 d0,d0
 int16x4_t vqabs_s16(int16x4_t a); // VQABS.S16 d0,d0
@@ -2246,16 +2267,26 @@ float32x4x2_t vuzpq_f32(float32x4_t a, float32x4_t b); // VUZP.32 q0,q0
 poly8x16x2_t vuzpq_p8(poly8x16_t a, poly8x16_t b); // VUZP.8 q0,q0
 poly16x8x2_t vuzpq_p16(poly16x8_t a, poly16x8_t b); // VUZP.16 q0,q0
 
+float32x4_t vrndnq_f32(float32x4_t a); // VRND.F32 q0,q0
+
+float64x2_t vrndnq_f64(float64x2_t a); // VRND.F64 q0,q0
+
+//Sqrt
+float32x4_t vsqrtq_f32(float32x4_t a); // VSQRT.F32 q0,q0
+
+float64x2_t vsqrtq_f64(float64x2_t a); // VSQRT.F64 q0,q0
+
+
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 // the following macros solve the problem of the "immediate parameters requirement" for some x86 intrinsics. 
 // we need it to compile the code unless the "Intrinsic parameter must be an immediate value" error is our goal
 //
-#if ( ((defined(_MSC_VER)|| defined (__INTEL_COMPILER)) && defined DEBUG ) || defined(__GNUC__) && !defined(__llvm__) )    
+#if  ( defined (__INTEL_COMPILER)  || defined (__GNUC__) && !defined(__llvm__) )    
 
     #define _MM_ALIGNR_EPI8 _mm_alignr_epi8
 
-    #define _MM_EXTRACT_EPI16  _mm_extract_epi16
+#define _MM_EXTRACT_EPI16  (int16_t) _mm_extract_epi16
     #define _MM_INSERT_EPI16 _mm_insert_epi16
 #ifdef USE_SSE4
         #define _MM_EXTRACT_EPI8  _mm_extract_epi8
@@ -2328,7 +2359,7 @@ poly16x8x2_t vuzpq_p16(poly16x8_t a, poly16x8_t b); // VUZP.16 q0,q0
         _NEON2SSE_SWITCH8(_mm_insert_epi16, vec, LANE, _NEON2SSE_COMMA p)
     }
 
-    _NEON2SSE_INLINE int _MM_EXTRACT_EPI16(__m128i vec, const int LANE)
+    _NEON2SSE_INLINE int16_t _MM_EXTRACT_EPI16(__m128i vec, const int LANE)
     {
         _NEON2SSE_SWITCH8(_mm_extract_epi16, vec, LANE,)
     }
@@ -3117,7 +3148,7 @@ _NEON2SSE_INLINE int8x16_t  vrhaddq_s8(int8x16_t a, int8x16_t b) // VRHADD.S8 q0
 {
     //no signed average in x86 SIMD, go to unsigned
     __m128i c128, au, bu, sum;
-    c128 = _mm_set1_epi8(0x80); //-128
+    c128 = _mm_set1_epi8((int8_t)0x80); //-128
     au = _mm_sub_epi8(a, c128); //add 128
     bu = _mm_sub_epi8(b, c128); //add 128
     sum = _mm_avg_epu8(au, bu);
@@ -3129,7 +3160,7 @@ _NEON2SSE_INLINE int16x8_t  vrhaddq_s16(int16x8_t a, int16x8_t b) // VRHADD.S16 
 {
     //no signed average in x86 SIMD, go to unsigned
     __m128i cx8000, au, bu, sum;
-    cx8000 = _mm_set1_epi16(0x8000); // - 32768
+    cx8000 = _mm_set1_epi16((int16_t)0x8000); // - 32768
     au = _mm_sub_epi16(a, cx8000); //add 32768
     bu = _mm_sub_epi16(b, cx8000); //add 32768
     sum = _mm_avg_epu16(au, bu);
@@ -3536,7 +3567,6 @@ _NEON2SSE_INLINE uint16x4_t vmul_u16(uint16x4_t a, uint16x4_t b)
     uint16x4_t res64;
     return64(_mm_mullo_epi16(_pM128i(a),_pM128i(b)));
 }
-
 
 uint32x2_t   vmul_u32(uint32x2_t a, uint32x2_t b); // VMUL.I32 d0,d0,d0
 _NEON2SSE_INLINE _NEON2SSE_PERFORMANCE_WARNING( uint32x2_t   vmul_u32(uint32x2_t a, uint32x2_t b), _NEON2SSE_REASON_SLOW_SERIAL)
@@ -4747,7 +4777,7 @@ _NEON2SSE_INLINE int8x16_t vhsubq_s8(int8x16_t a, int8x16_t b) // VHSUB.S8 q0,q0
 {
     // //need to deal with the possibility of internal overflow
     __m128i c128, au,bu;
-    c128 = _mm_set1_epi8 (128);
+    c128 = _mm_set1_epi8((int8_t)128);
     au = _mm_add_epi8( a, c128);
     bu = _mm_add_epi8( b, c128);
     return vhsubq_u8(au,bu);
@@ -4758,7 +4788,7 @@ _NEON2SSE_INLINE int16x8_t vhsubq_s16(int16x8_t a, int16x8_t b) // VHSUB.S16 q0,
 {
     //need to deal with the possibility of internal overflow
     __m128i c8000, au,bu;
-    c8000 = _mm_set1_epi16(0x8000);
+    c8000 = _mm_set1_epi16((int16_t)0x8000);
     au = _mm_add_epi16( a, c8000);
     bu = _mm_add_epi16( b, c8000);
     return vhsubq_u16(au,bu);
@@ -5191,13 +5221,12 @@ _NEON2SSE_INLINE uint16x8_t vcgeq_u16(uint16x8_t a, uint16x8_t b) // VCGE.s16 q0
         cmp = _mm_max_epu16(a, b);
         return _mm_cmpeq_epi16(cmp, a); //a>=b
     #else
-        __m128i c8000, as, bs, m1, m2;
-        c8000 = _mm_set1_epi16 (0x8000);
-        as = _mm_sub_epi16(a,c8000);
-        bs = _mm_sub_epi16(b,c8000);
-        m1 = _mm_cmpgt_epi16(as, bs);
-        m2 = _mm_cmpeq_epi16 (as, bs);
-        return _mm_or_si128 ( m1, m2);
+	__m128i as, mask;
+	__m128i zero = _mm_setzero_si128();
+	__m128i cffff = _mm_set1_epi16(0xffff);
+	as = _mm_subs_epu16(b,a);
+	mask = _mm_cmpgt_epi16(as, zero);
+	return _mm_xor_si128 ( mask, cffff);
     #endif
 }
 
@@ -5427,22 +5456,20 @@ uint8x16_t vcgtq_u8(uint8x16_t a, uint8x16_t b); // VCGT.U8 q0, q0, q0
 _NEON2SSE_INLINE uint8x16_t vcgtq_u8(uint8x16_t a, uint8x16_t b) // VCGT.U8 q0, q0, q0
 {
     //no unsigned chars comparison, only signed available,so need the trick
-    __m128i c128, as, bs;
-    c128 = _mm_set1_epi8 (128);
-    as = _mm_sub_epi8(a,c128);
-    bs = _mm_sub_epi8(b,c128);
-    return _mm_cmpgt_epi8 (as, bs);
+	__m128i as, mask;
+	__m128i zero = _mm_setzero_si128();
+	as = _mm_subs_epu8(a, b);
+	return _mm_cmpgt_epi8(as, zero);
 }
 
 uint16x8_t vcgtq_u16(uint16x8_t a, uint16x8_t b); // VCGT.s16 q0, q0, q0
 _NEON2SSE_INLINE uint16x8_t vcgtq_u16(uint16x8_t a, uint16x8_t b) // VCGT.s16 q0, q0, q0
 {
     //no unsigned short comparison, only signed available,so need the trick
-    __m128i c8000, as, bs;
-    c8000 = _mm_set1_epi16 (0x8000);
-    as = _mm_sub_epi16(a,c8000);
-    bs = _mm_sub_epi16(b,c8000);
-    return _mm_cmpgt_epi16 ( as, bs);
+	__m128i as, mask;
+	__m128i zero = _mm_setzero_si128();
+	as = _mm_subs_epu16(a, b);
+	return _mm_cmpgt_epi16(as, zero);
 }
 
 uint32x4_t vcgtq_u32(uint32x4_t a, uint32x4_t b); // VCGT.U32 q0, q0, q0
@@ -5796,24 +5823,18 @@ _NEON2SSE_INLINE int32x4_t vabdq_s32(int32x4_t a, int32x4_t b) // VABD.S32 q0,q0
 uint8x16_t vabdq_u8(uint8x16_t a, uint8x16_t b); // VABD.U8 q0,q0,q0
 _NEON2SSE_INLINE uint8x16_t vabdq_u8(uint8x16_t a, uint8x16_t b) //no abs for unsigned
 {
-    __m128i cmp, difab, difba;
-    cmp = vcgtq_u8(a,b);
-    difab = _mm_sub_epi8(a,b);
-    difba = _mm_sub_epi8 (b,a);
-    difab = _mm_and_si128(cmp, difab);
-    difba = _mm_andnot_si128(cmp, difba);
+    __m128i  difab, difba;
+    difab = _mm_subs_epu8(a,b);
+    difba = _mm_subs_epu8 (b,a);
     return _mm_or_si128(difab, difba);
 }
 
 uint16x8_t vabdq_u16(uint16x8_t a, uint16x8_t b); // VABD.s16 q0,q0,q0
 _NEON2SSE_INLINE uint16x8_t vabdq_u16(uint16x8_t a, uint16x8_t b)
 {
-    __m128i cmp, difab, difba;
-    cmp = vcgtq_u16(a,b);
-    difab = _mm_sub_epi16(a,b);
-    difba = _mm_sub_epi16 (b,a);
-    difab = _mm_and_si128(cmp, difab);
-    difba = _mm_andnot_si128(cmp, difba);
+    __m128i difab, difba;
+    difab = _mm_subs_epu16(a,b);
+    difba = _mm_subs_epu16 (b,a);
     return _mm_or_si128(difab, difba);
 }
 
@@ -6137,6 +6158,11 @@ uint32x4_t   vmaxq_u32(uint32x4_t a, uint32x4_t b); // VMAX.U32 q0,q0,q0
 float32x4_t vmaxq_f32(float32x4_t a, float32x4_t b); // VMAX.F32 q0,q0,q0
 #define vmaxq_f32 _mm_max_ps
 
+
+float64x2_t vmaxq_f64(float64x2_t a, float64x2_t b); // VMAX.F64 q0,q0,q0
+#define vmaxq_f64 _mm_max_pd
+
+
 //*************** Minimum: vmin -> Vr[i] := (Va[i] >= Vb[i]) ? Vb[i] : Va[i] ********************************
 //***********************************************************************************************************
 int8x8_t   vmin_s8(int8x8_t a, int8x8_t b); // VMIN.S8 d0,d0,d0
@@ -6221,6 +6247,11 @@ uint32x4_t   vminq_u32(uint32x4_t a, uint32x4_t b); // VMIN.U32 q0,q0,q0
 float32x4_t vminq_f32(float32x4_t a, float32x4_t b); // VMIN.F32 q0,q0,q0
 #define vminq_f32 _mm_min_ps
 
+
+float64x2_t vminq_f64(float64x2_t a, float64x2_t b); // VMIN.F64 q0,q0,q0
+#define vminq_f64 _mm_min_pd
+
+
 //*************  Pairwise addition operations. **************************************
 //************************************************************************************
 //Pairwise add - adds adjacent pairs of elements of two vectors, and places the results in the destination vector
@@ -6283,7 +6314,7 @@ _NEON2SSE_INLINE uint16x4_t vpadd_u16(uint16x4_t a, uint16x4_t b) // VPADD.I16 d
     uint16x4_t res64;
     __m128i c32767,  cfffe, as, bs, res;
     c32767 = _mm_set1_epi16 (32767);
-    cfffe = _mm_set1_epi16 (0xfffe);
+    cfffe = _mm_set1_epi16 ((int16_t)0xfffe);
     as = _mm_sub_epi16 (_pM128i(a), c32767);
     bs = _mm_sub_epi16 (_pM128i(b), c32767);
     res = _mm_hadd_epi16 (as, bs);
@@ -8355,7 +8386,7 @@ _NEON2SSE_INLINE uint16x8_t vqshlq_n_u16(uint16x8_t a, __constrange(0,15) int b)
     // manual saturation solution looks more optimal than 32 bits conversion one
     __m128i cb, c8000, a_signed, saturation_mask,  shift_res;
     cb = _mm_set1_epi16((1 << (16 - b)) - 1 - 0x8000 );
-    c8000 = _mm_set1_epi16 (0x8000);
+    c8000 = _mm_set1_epi16 ((int16_t)0x8000);
 //no unsigned shorts comparison in SSE, only signed available, so need the trick
     a_signed = _mm_sub_epi16(a, c8000); //go to signed
     saturation_mask = _mm_cmpgt_epi16 (a_signed, cb);
@@ -9196,7 +9227,7 @@ poly16x8_t vsliq_n_p16(poly16x8_t a, poly16x8_t b, __constrange(0,15) int c); //
 // it loads a 32-byte block aligned on a 16-byte boundary and extracts the 16 bytes corresponding to the unaligned access
 //If the ptr is aligned then could use __m128i _mm_load_si128 ((__m128i*) ptr) instead;
 #define LOAD_SI128(ptr) \
-        ( ((unsigned long)(ptr) & 15) == 0 ) ? _mm_load_si128((__m128i*)(ptr)) : _mm_loadu_si128((__m128i*)(ptr))
+        ( ((uintptr_t)(ptr) & 15) == 0 ) ? _mm_load_si128((__m128i*)(ptr)) : _mm_loadu_si128((__m128i*)(ptr))
 
 uint8x16_t vld1q_u8(__transfersize(16) uint8_t const * ptr); // VLD1.8 {d0, d1}, [r0]
 #define vld1q_u8 LOAD_SI128
@@ -9233,7 +9264,7 @@ f2 = _mm_set_ps (ptr[7], ptr[6], ptr[5], ptr[4]);
 float32x4_t vld1q_f32(__transfersize(4) float32_t const * ptr); // VLD1.32 {d0, d1}, [r0]
 _NEON2SSE_INLINE float32x4_t vld1q_f32(__transfersize(4) float32_t const * ptr)
 {
-    if( (((unsigned long)(ptr)) & 15 ) == 0 ) //16 bits aligned
+    if( (((uintptr_t)(ptr)) & 15 ) == 0 ) //16 bits aligned
         return _mm_load_ps(ptr);
     else
         return _mm_loadu_ps(ptr);
@@ -9287,6 +9318,17 @@ poly8x8_t vld1_p8(__transfersize(8) poly8_t const * ptr); // VLD1.8 {d0}, [r0]
 
 poly16x4_t vld1_p16(__transfersize(4) poly16_t const * ptr); // VLD1.16 {d0}, [r0]
 #define vld1_p16 vld1_u16
+
+
+float64x2_t vld1q_f64(__transfersize(4) float64_t const * ptr); // VLD1.64 {d0, d1}, [r0]
+_NEON2SSE_INLINE float64x2_t vld1q_f64(__transfersize(4) float64_t const * ptr)
+{
+    if ((((uintptr_t)(ptr)) & 15) == 0) //16 bits aligned
+        return _mm_load_pd(ptr);
+    else
+        return _mm_loadu_pd(ptr);
+}
+
 
 //***********************************************************************************************************
 //******* Lane load functions - insert the data at  vector's given position (lane) *************************
@@ -9522,7 +9564,7 @@ poly16x4_t vld1_dup_p16(__transfersize(1) poly16_t const * ptr); // VLD1.16 {d0[
 // If ptr is 16bit aligned and you  need to store data without cache pollution then use void _mm_stream_si128 ((__m128i*)ptr, val);
 //here we assume the case of  NOT 16bit aligned ptr possible. If it is aligned we could to use _mm_store_si128 like shown in the following macro
 #define STORE_SI128(ptr, val) \
-        (((unsigned long)(ptr) & 15) == 0 ) ? _mm_store_si128 ((__m128i*)(ptr), val) : _mm_storeu_si128 ((__m128i*)(ptr), val);
+        (((uintptr_t)(ptr) & 15) == 0 ) ? _mm_store_si128 ((__m128i*)(ptr), val) : _mm_storeu_si128 ((__m128i*)(ptr), val);
 
 void vst1q_u8(__transfersize(16) uint8_t * ptr, uint8x16_t val); // VST1.8 {d0, d1}, [r0]
 #define vst1q_u8 STORE_SI128
@@ -9554,7 +9596,7 @@ void vst1q_f16(__transfersize(8) __fp16 * ptr, float16x8_t val); // VST1.16 {d0,
 void vst1q_f32(__transfersize(4) float32_t * ptr, float32x4_t val); // VST1.32 {d0, d1}, [r0]
 _NEON2SSE_INLINE void vst1q_f32(__transfersize(4) float32_t * ptr, float32x4_t val)
 {
-    if( ((unsigned long)(ptr) & 15)  == 0 ) //16 bits aligned
+    if( ((uintptr_t)(ptr) & 15)  == 0 ) //16 bits aligned
         _mm_store_ps (ptr, val);
     else
         _mm_storeu_ps (ptr, val);
@@ -9639,22 +9681,22 @@ void vst1_p16(__transfersize(4) poly16_t * ptr, poly16x4_t val); // VST1.16 {d0}
 //***********Store a lane of a vector into memory (extract given lane) *********************
 //******************************************************************************************
 void vst1q_lane_u8(__transfersize(1) uint8_t * ptr, uint8x16_t val, __constrange(0,15) int lane); // VST1.8 {d0[0]}, [r0]
-#define vst1q_lane_u8(ptr, val, lane) *(ptr) = _MM_EXTRACT_EPI8 (val, lane)
+#define vst1q_lane_u8(ptr, val, lane) *(ptr) = (uint8_t) _MM_EXTRACT_EPI8 (val, lane)
 
 void vst1q_lane_u16(__transfersize(1) uint16_t * ptr, uint16x8_t val, __constrange(0,7) int lane); // VST1.16 {d0[0]}, [r0]
-#define vst1q_lane_u16(ptr, val, lane) *(ptr) = _MM_EXTRACT_EPI16 (val, lane)
+#define vst1q_lane_u16(ptr, val, lane) *(ptr) = (uint16_t) _MM_EXTRACT_EPI16 (val, lane)
 
 void vst1q_lane_u32(__transfersize(1) uint32_t * ptr, uint32x4_t val, __constrange(0,3) int lane); // VST1.32 {d0[0]}, [r0]
-#define vst1q_lane_u32(ptr, val, lane) *(ptr) = _MM_EXTRACT_EPI32 (val, lane)
+#define vst1q_lane_u32(ptr, val, lane) *(ptr) = (uint32_t) _MM_EXTRACT_EPI32 (val, lane)
 
 void vst1q_lane_u64(__transfersize(1) uint64_t * ptr, uint64x2_t val, __constrange(0,1) int lane); // VST1.64 {d0}, [r0]
-#define vst1q_lane_u64(ptr, val, lane) *(ptr) = _MM_EXTRACT_EPI64 (val, lane)
+#define vst1q_lane_u64(ptr, val, lane) *(ptr) = (uint64_t) _MM_EXTRACT_EPI64 (val, lane)
 
 void vst1q_lane_s8(__transfersize(1) int8_t * ptr, int8x16_t val, __constrange(0,15) int lane); // VST1.8 {d0[0]}, [r0]
-#define vst1q_lane_s8(ptr, val, lane) *(ptr) = _MM_EXTRACT_EPI8 (val, lane)
+#define vst1q_lane_s8(ptr, val, lane) *(ptr) = (int8_t) _MM_EXTRACT_EPI8 (val, lane)
 
 void vst1q_lane_s16(__transfersize(1) int16_t * ptr, int16x8_t val, __constrange(0,7) int lane); // VST1.16 {d0[0]}, [r0]
-#define vst1q_lane_s16(ptr, val, lane) *(ptr) = _MM_EXTRACT_EPI16 (val, lane)
+#define vst1q_lane_s16(ptr, val, lane) *(ptr) = (int16_t) _MM_EXTRACT_EPI16 (val, lane)
 
 void vst1q_lane_s32(__transfersize(1) int32_t * ptr, int32x4_t val, __constrange(0,3) int lane); // VST1.32 {d0[0]}, [r0]
 #define vst1q_lane_s32(ptr, val, lane) *(ptr) = _MM_EXTRACT_EPI32 (val, lane)
@@ -11881,22 +11923,22 @@ float32_t vget_lane_f32(float32x2_t vec, __constrange(0,1) int lane); // VMOV.32
 #define vget_lane_f32(vec, lane) vec.m64_f32[lane]
 
 uint8_t vgetq_lane_u8(uint8x16_t vec, __constrange(0,15) int lane); // VMOV.U8 r0, d0[0]
-#define vgetq_lane_u8 _MM_EXTRACT_EPI8
+#define vgetq_lane_u8 (uint8_t) _MM_EXTRACT_EPI8
 
 uint16_t vgetq_lane_u16(uint16x8_t vec, __constrange(0,7) int lane); // VMOV.s16 r0, d0[0]
-#define  vgetq_lane_u16 _MM_EXTRACT_EPI16
+#define  vgetq_lane_u16 (uint16_t) _MM_EXTRACT_EPI16
 
 uint32_t vgetq_lane_u32(uint32x4_t vec, __constrange(0,3) int lane); // VMOV.32 r0, d0[0]
-#define vgetq_lane_u32 _MM_EXTRACT_EPI32
+#define vgetq_lane_u32 (uint32_t) _MM_EXTRACT_EPI32
 
 int8_t vgetq_lane_s8(int8x16_t vec, __constrange(0,15) int lane); // VMOV.S8 r0, d0[0]
-#define vgetq_lane_s8 vgetq_lane_u8
+#define vgetq_lane_s8 _MM_EXTRACT_EPI8
 
 int16_t vgetq_lane_s16(int16x8_t vec, __constrange(0,7) int lane); // VMOV.S16 r0, d0[0]
-#define vgetq_lane_s16 vgetq_lane_u16
+#define vgetq_lane_s16 _MM_EXTRACT_EPI16
 
 int32_t vgetq_lane_s32(int32x4_t vec, __constrange(0,3) int lane); // VMOV.32 r0, d0[0]
-#define vgetq_lane_s32 vgetq_lane_u32
+#define vgetq_lane_s32 _MM_EXTRACT_EPI32
 
 poly8_t vgetq_lane_p8(poly8x16_t vec, __constrange(0,15) int lane); // VMOV.U8 r0, d0[0]
 #define vgetq_lane_p8 vgetq_lane_u8
@@ -11920,10 +11962,10 @@ uint64_t vget_lane_u64(uint64x1_t vec, __constrange(0,0) int lane); // VMOV r0,r
 
 
 int64_t vgetq_lane_s64(int64x2_t vec, __constrange(0,1) int lane); // VMOV r0,r0,d0
-#define vgetq_lane_s64 (int64_t) vgetq_lane_u64
+#define vgetq_lane_s64 _MM_EXTRACT_EPI64
 
 uint64_t vgetq_lane_u64(uint64x2_t vec, __constrange(0,1) int lane); // VMOV r0,r0,d0
-#define vgetq_lane_u64 _MM_EXTRACT_EPI64
+#define vgetq_lane_u64 (uint64_t) _MM_EXTRACT_EPI64
 
 // ***************** Set lanes within a vector ********************************************
 // **************************************************************************************
@@ -12645,7 +12687,7 @@ poly16x4_t vget_low_p16(poly16x8_t a); // VMOV d0,d0
 // need to set _MM_SET_ROUNDING_MODE ( x) accordingly
 int32x2_t   vcvt_s32_f32(float32x2_t a); // VCVT.S32.F32 d0, d0
 _NEON2SSE_INLINE int32x2_t   vcvt_s32_f32(float32x2_t a)
-{
+{ 
     int32x2_t res64;
     __m128i res;
     res =  _mm_cvtps_epi32(_pM128(a)); //use low 64 bits of result only
@@ -12655,30 +12697,44 @@ _NEON2SSE_INLINE int32x2_t   vcvt_s32_f32(float32x2_t a)
 uint32x2_t vcvt_u32_f32(float32x2_t a); // VCVT.U32.F32 d0, d0
 _NEON2SSE_INLINE uint32x2_t vcvt_u32_f32(float32x2_t a)
 {
-    //may be not effective compared with a serial SIMD solution
     uint32x2_t res64;
     __m128i res;
     res = vcvtq_u32_f32(_pM128(a));
     return64(res);
 }
 
-int32x4_t   vcvtq_s32_f32(float32x4_t a); // VCVT.S32.F32 q0, q0
-#define vcvtq_s32_f32 _mm_cvttps_epi32
+int32x4_t  vcvtq_s32_f32(float32x4_t a); // VCVT.S32.F32 q0, q0
+_NEON2SSE_INLINE int32x4_t  vcvtq_s32_f32(float32x4_t a)
+{
+    __m128 dif;
+    __m128i res;
+    //_mm_cvttps_epi32 incorrectly treats the case a > =2.14748364e+009, therefore the special processing is necessary
+    _NEON2SSE_ALIGN_16 float32_t fmax[] = { 2.14748364e+009, 2.14748364e+009, 2.14748364e+009, 2.14748364e+009 };
+    dif = _mm_cmpge_ps(a, *(__m128*)fmax);
+    res = _mm_cvttps_epi32(a);
+    return _mm_xor_si128(res, _M128i(dif));
+}
 
 uint32x4_t vcvtq_u32_f32(float32x4_t a); // VCVT.U32.F32 q0, q0
 _NEON2SSE_INLINE uint32x4_t vcvtq_u32_f32(float32x4_t a) // VCVT.U32.F32 q0, q0
 {
     //No single instruction SSE solution  but we could implement it as following:
-    __m128i resi;
-    __m128 zero,  mask, a_pos, mask_f_max_si, res;
-    _NEON2SSE_ALIGN_16 int32_t c7fffffff[4] = {0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff};
-    zero = _mm_setzero_ps();
-    mask = _mm_cmpgt_ps(a, zero);
-    a_pos = _mm_and_ps(a, mask);
-    mask_f_max_si = _mm_cmpgt_ps(a_pos,*(__m128*)c7fffffff);
-    res =  _mm_sub_ps(a_pos, mask_f_max_si); //if the input fits to signed we don't subtract anything
-    resi = _mm_cvttps_epi32(res);
-    return _mm_add_epi32(resi, *(__m128i*)&mask_f_max_si);
+    __m128i res1, res2, zero, mask;
+    __m128  max, min, dif;
+    _NEON2SSE_ALIGN_16 float32_t fmax[] = { 2.14748364e+009, 2.14748364e+009, 2.14748364e+009, 2.14748364e+009 };
+    _NEON2SSE_ALIGN_16 float32_t fmax_unsigned[] = { 4.29496729e+009, 4.29496729e+009, 4.29496729e+009, 4.29496729e+009 };
+    zero = _mm_setzero_si128();
+    mask = _mm_cmpgt_epi32(_M128i(a), zero);
+    min = _mm_and_ps(_M128(mask), a);
+    max = _mm_min_ps(min, *(__m128*)fmax_unsigned); //clamped in 0 - 4.29496729+009 
+
+    dif = _mm_sub_ps(max, *(__m128*)fmax);
+	mask = _mm_cmpgt_epi32(_M128i(dif),zero);
+	dif = _mm_and_ps(_M128(mask), dif);
+
+    res1 = _mm_cvttps_epi32(dif);
+    res2 = vcvtq_s32_f32(max);
+    return _mm_add_epi32(res1, res2);
 }
 
 // ***** Convert to the fixed point  with   the number of fraction bits specified by b ***********
@@ -12723,6 +12779,13 @@ _NEON2SSE_INLINE uint32x4_t vcvtq_n_u32_f32(float32x4_t a, __constrange(1,32) in
     convconst = (float)(1 << b);
     cconst128 = vdupq_n_f32(convconst);
     return vcvtq_u32_f32(_mm_mul_ps(a,cconst128));
+}
+
+
+int32x4_t vcvtnq_s32_f32(float32x4_t a); // VCVTN.S32.F32 q0, q0
+_NEON2SSE_INLINE int32x4_t vcvtnq_s32_f32(float32x4_t a)
+{
+  return _mm_cvtps_epi32(a);
 }
 
 //***************** Convert to float *************************
@@ -14562,6 +14625,22 @@ _NEON2SSE_INLINE float32x4_t vabsq_f32(float32x4_t a) // VABS.F32 q0,q0
     return _mm_and_ps (a, *(__m128*)c7fffffff);
 }
 
+#ifdef _NEON2SSE_64BIT
+int64x2_t vabsq_s64(int64x2_t a); // VABS.S64 q0,q0
+_NEON2SSE_INLINE int64x2_t vabsq_s64(int64x2_t a) // VABS.S64 q0,q0
+{
+    __m128i sign = _mm_srai_epi32 (_mm_shuffle_epi32 (a, 0xf5), 31);
+    return _mm_sub_epi64 (_mm_xor_si128 (a, sign), sign);
+}
+
+float64x2_t vabsq_f64(float64x2_t a); // VABS.F64 q0,q0
+_NEON2SSE_INLINE float64x2_t vabsq_f64(float64x2_t a) // VABS.F64 q0,q0
+{
+    _NEON2SSE_ALIGN_16 int64_t mask[2] = {0x7fffffffffffffffLL, 0x7fffffffffffffffLL};
+    return _mm_and_pd (a, *(__m128d*)mask);
+}
+#endif
+
 //****** Saturating absolute: Vd[i] = sat(|Va[i]|) *********************
 //**********************************************************************
 //For signed-integer data types, the absolute value of the most negative value is not representable by the data type, saturation takes place
@@ -14596,7 +14675,7 @@ int8x16_t vqabsq_s8(int8x16_t a); // VQABS.S8 q0,q0
 _NEON2SSE_INLINE int8x16_t vqabsq_s8(int8x16_t a) // VQABS.S8 q0,q0
 {
     __m128i c_128, abs, abs_cmp;
-    c_128 = _mm_set1_epi8 (0x80); //-128
+    c_128 = _mm_set1_epi8 ((int8_t)0x80); //-128
     abs = _mm_abs_epi8 (a);
     abs_cmp = _mm_cmpeq_epi8 (abs, c_128);
     return _mm_xor_si128 (abs,  abs_cmp);
@@ -14606,7 +14685,7 @@ int16x8_t vqabsq_s16(int16x8_t a); // VQABS.S16 q0,q0
 _NEON2SSE_INLINE int16x8_t vqabsq_s16(int16x8_t a) // VQABS.S16 q0,q0
 {
     __m128i c_32768, abs, abs_cmp;
-    c_32768 = _mm_set1_epi16 (0x8000); //-32768
+    c_32768 = _mm_set1_epi16 ((int16_t)0x8000); //-32768
     abs = _mm_abs_epi16 (a);
     abs_cmp = _mm_cmpeq_epi16 (abs, c_32768);
     return _mm_xor_si128 (abs,  abs_cmp);
@@ -14919,7 +14998,7 @@ _NEON2SSE_INLINE int8x16_t vclsq_s8(int8x16_t a)
 {
     __m128i cff, c80, c1, a_mask, a_neg, a_pos, a_comb;
     cff = _mm_cmpeq_epi8 (a,a); //0xff
-    c80 = _mm_set1_epi8(0x80);
+    c80 = _mm_set1_epi8((int8_t)0x80);
     c1 = _mm_set1_epi8(1);
     a_mask = _mm_and_si128(a, c80);
     a_mask = _mm_cmpeq_epi8(a_mask, c80); //0xff if negative input and 0 if positive
@@ -16588,5 +16667,47 @@ uint32x4_t vreinterpretq_u32_p16 (poly16x8_t t);
 
 uint32x4_t vreinterpretq_u32_p8 (poly8x16_t t);
 #define vreinterpretq_u32_p8
+
+//*************  Round ******************
+float32x4_t vrndnq_f32(float32x4_t a);
+#ifdef USE_SSE4
+#define vrndnq_f32(a) _mm_round_ps(a, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC)
+#else
+_NEON2SSE_INLINE _NEON2SSE_PERFORMANCE_WARNING( float32x4_t vrndnq_f32(float32x4_t a), _NEON2SSE_REASON_SLOW_SERIAL)
+{
+    int i;
+    _NEON2SSE_ALIGN_16 float32_t res[4];
+    _mm_store_ps(res, a);
+     for(i = 0; i<4; i++) {
+       res[i] = nearbyintf(res[i]);
+     }
+    return _mm_load_ps(res);
+}
+#endif
+
+
+float64x2_t vrndnq_f64(float64x2_t a);
+#ifdef USE_SSE4
+#define  vrndnq_f64(a)  _mm_round_pd(a, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC)
+#else
+_NEON2SSE_INLINE _NEON2SSE_PERFORMANCE_WARNING(float64x2_t vrndnq_f64(float64x2_t a), _NEON2SSE_REASON_SLOW_SERIAL)
+{
+     _NEON2SSE_ALIGN_16 float64_t res[2];
+     _mm_store_pd(res, a);
+     res[0] = nearbyintf(res[0]);
+     res[1] = nearbyintf(res[1]);
+     return _mm_load_pd(res);
+}
+#endif
+
+
+
+//************* Sqrt ******************
+float32x4_t vsqrtq_f32(float32x4_t a);
+#define vsqrtq_f32 _mm_sqrt_ps
+
+float64x2_t vsqrtq_f64(float64x2_t a);
+#define vsqrtq_f64 _mm_sqrt_pd
+
 
 #endif /* NEON2SSE_H */
