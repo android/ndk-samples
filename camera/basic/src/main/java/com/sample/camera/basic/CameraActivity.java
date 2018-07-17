@@ -100,7 +100,7 @@ class CameraSeekBar {
 
 public class CameraActivity extends NativeActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
-    CameraActivity _savedInstance;
+    volatile CameraActivity _savedInstance;
     PopupWindow _popupWindow;
     ImageButton _takePhoto;
     CameraSeekBar _exposure, _sensitivity;
@@ -171,14 +171,15 @@ public class CameraActivity extends NativeActivity
 
     @Override
     protected void onPause() {
+        if (_popupWindow != null && _popupWindow.isShowing()) {
+            _popupWindow.dismiss();
+            _popupWindow = null;
+        }
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        if (_popupWindow != null && _popupWindow.isShowing()) {
-            _popupWindow.dismiss();
-        }
         super.onDestroy();
     }
 
@@ -248,69 +249,82 @@ public class CameraActivity extends NativeActivity
         runOnUiThread(new Runnable()  {
             @Override
             public void run()  {
-                if (_popupWindow != null) {
-                    _popupWindow.dismiss();
+                try {
+                    if (_popupWindow != null) {
+                        _popupWindow.dismiss();
+                    }
+                    LayoutInflater layoutInflater
+                            = (LayoutInflater) getBaseContext()
+                            .getSystemService(LAYOUT_INFLATER_SERVICE);
+                    View popupView = layoutInflater.inflate(R.layout.widgets, null);
+                    _popupWindow = new PopupWindow(
+                            popupView,
+                            WindowManager.LayoutParams.MATCH_PARENT,
+                            WindowManager.LayoutParams.WRAP_CONTENT);
+
+                    RelativeLayout mainLayout = new RelativeLayout(_savedInstance);
+                    ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(
+                            -1, -1);
+                    params.setMargins(0, 0, 0, 0);
+                    _savedInstance.setContentView(mainLayout, params);
+
+                    // Show our UI over NativeActivity window
+                    _popupWindow.showAtLocation(mainLayout, Gravity.BOTTOM | Gravity.START, 0, 0);
+                    _popupWindow.update();
+
+                    _takePhoto = (ImageButton) popupView.findViewById(R.id.takePhoto);
+                    _takePhoto.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TakePhoto();
+                        }
+                    });
+                    _takePhoto.setEnabled(true);
+                    (popupView.findViewById(R.id.exposureLabel)).setEnabled(true);
+                    (popupView.findViewById(R.id.sensitivityLabel)).setEnabled(true);
+
+                    SeekBar seekBar = (SeekBar) popupView.findViewById(R.id.exposure_seekbar);
+                    _exposure = new CameraSeekBar(seekBar,
+                            (TextView) popupView.findViewById(R.id.exposureVal),
+                            _initParams[0], _initParams[1], _initParams[2]);
+                    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            _exposure.updateProgress(progress);
+                            OnExposureChanged(_exposure.getAbsProgress());
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                        }
+                    });
+                    seekBar = ((SeekBar) popupView.findViewById(R.id.sensitivity_seekbar));
+                    _sensitivity = new CameraSeekBar(seekBar,
+                            (TextView) popupView.findViewById(R.id.sensitivityVal),
+                            _initParams[3], _initParams[4], _initParams[5]);
+                    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            _sensitivity.updateProgress(progress);
+                            OnSensitivityChanged(_sensitivity.getAbsProgress());
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                        }
+                    });
+                } catch (WindowManager.BadTokenException e) {
+                    // UI error out, ignore and continue
+                    Log.e(DBG_TAG, "UI Exception Happened: " + e.getMessage());
                 }
-                LayoutInflater layoutInflater
-                        = (LayoutInflater)getBaseContext()
-                        .getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = layoutInflater.inflate(R.layout.widgets, null);
-                _popupWindow = new PopupWindow(
-                        popupView,
-                        WindowManager.LayoutParams.MATCH_PARENT,
-                        WindowManager.LayoutParams.WRAP_CONTENT);
-
-                RelativeLayout mainLayout = new RelativeLayout(_savedInstance);
-                ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(
-                        -1, -1);
-                params.setMargins(0, 0, 0, 0);
-                _savedInstance.setContentView(mainLayout, params);
-
-                // Show our UI over NativeActivity window
-                _popupWindow.showAtLocation(mainLayout, Gravity.BOTTOM | Gravity.START, 0, 0);
-                _popupWindow.update();
-
-                _takePhoto = (ImageButton) popupView.findViewById(R.id.takePhoto);
-                _takePhoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TakePhoto();
-                    }
-                });
-                _takePhoto.setEnabled(true);
-                (popupView.findViewById(R.id.exposureLabel)).setEnabled(true);
-                (popupView.findViewById(R.id.sensitivityLabel)).setEnabled(true);
-
-                SeekBar seekBar = (SeekBar) popupView.findViewById(R.id.exposure_seekbar);
-                _exposure  = new CameraSeekBar(seekBar,
-                        (TextView) popupView.findViewById(R.id.exposureVal),
-                        _initParams[0], _initParams[1], _initParams[2]);
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        _exposure.updateProgress(progress);
-                        OnExposureChanged(_exposure.getAbsProgress());
-                    }
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {}
-                });
-                seekBar  =  ((SeekBar) popupView.findViewById(R.id.sensitivity_seekbar));
-                _sensitivity = new CameraSeekBar(seekBar,
-                        (TextView)popupView.findViewById(R.id.sensitivityVal),
-                        _initParams[3], _initParams[4], _initParams[5]);
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        _sensitivity.updateProgress(progress);
-                        OnSensitivityChanged(_sensitivity.getAbsProgress());
-                    }
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {}
-                });
             }});
     }
     /**
