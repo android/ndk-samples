@@ -7,4 +7,5 @@ build
 .externalNativeBuild
 libwebp
 .DS_Store
+**/ndkHelperBin
 

@@ -485,6 +485,7 @@ void Engine::HandleCmd(struct android_app* app, int32_t cmd) {
       // The window is being shown, get it ready.
       if (app->window != NULL) {
         eng->InitDisplay(app);
+        eng->has_focus_ = true;
         eng->DrawFrame();
       }
       break;
