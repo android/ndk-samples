@@ -22,9 +22,11 @@ void ConvertToSLSampleFormat(SLAndroidDataFormat_PCM_EX* pFormat,
   memset(pFormat, 0, sizeof(*pFormat));
 
   pFormat->formatType = SL_DATAFORMAT_PCM;
+  // Only support 2 channels
+  // For channelMask, refer to wilhelm/src/android/channels.c for details
   if (pSampleInfo_->channels_ <= 1) {
     pFormat->numChannels = 1;
-    pFormat->channelMask = SL_SPEAKER_FRONT_CENTER;
+    pFormat->channelMask = SL_SPEAKER_FRONT_LEFT;
   } else {
     pFormat->numChannels = 2;
     pFormat->channelMask = SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT;
