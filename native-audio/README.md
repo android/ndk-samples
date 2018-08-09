@@ -22,6 +22,11 @@ Screenshots
 -----------
 ![screenshot](screenshot.png)
 
+Known Issues
+-----------
+- URI Player streaming is [broken](https://github.com/googlesamples/android-ndk/issues/229)
+ 
+
 Support
 -------
 If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
