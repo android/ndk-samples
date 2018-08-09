@@ -26,7 +26,7 @@ set(WEBP_SRC_DIR ${WEBP_SAMPLE_PROJ_DIR}/libwebp)
 #     Android Studio's "Import Android code sample" option
 if ((NOT EXISTS ${WEBP_SRC_DIR}) OR
     (NOT EXISTS ${WEBP_SRC_DIR}/CMakeLists.txt))
-    execute_process(COMMAND git clone
+    execute_process(COMMAND git clone -b 1.0.0
                             https://chromium.googlesource.com/webm/libwebp
                             libwebp
                     WORKING_DIRECTORY ${WEBP_SAMPLE_PROJ_DIR}/)
