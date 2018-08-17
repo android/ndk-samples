@@ -1,1 +1,2 @@
-include ':classic-teapot', ':more-teapots', ':choreographer-30fps'
+include ':classic-teapot', ':more-teapots',
+        ':choreographer-30fps', ':textured-teapot'
