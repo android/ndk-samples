@@ -17,7 +17,7 @@
 #ifndef TEAPOTS_TEXTUREDTEAPOTRENDER_H
 #define TEAPOTS_TEXTUREDTEAPOTRENDER_H
 #include "TeapotRenderer.h"
-
+#include "Texture.h"
 /**
  *  class TextureTeapotRender
  *    adding texture into teapot
@@ -26,13 +26,18 @@
  *     - enable texturing inside shaders
  */
 class TexturedTeapotRender :public TeapotRenderer {
-    GLuint texId_ = GL_INVALID_VALUE;
     GLuint texVbo_ = GL_INVALID_VALUE;
-    bool LoadTexture(const char* fileName, AAssetManager* assetMgr);
-
+    Texture* texObj_  = nullptr;
   public:
     TexturedTeapotRender();
     virtual ~TexturedTeapotRender();
+    // This is to decide which teapot type to render:
+    //   plain teapot
+    //   2D textured teapot
+    //   Cubemap textured teapot
+    // the rest of the code looks this function to decide
+    // what to render.
+    virtual GLint GetTextureType(void);
     virtual void Init(AAssetManager* amgr);
     virtual void Render();
     virtual void Unload();

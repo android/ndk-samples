@@ -21,10 +21,13 @@
 uniform lowp vec3       vMaterialAmbient;
 uniform lowp vec4       vMaterialSpecular;
 
-varying lowp vec4 colorDiffuse;
+uniform sampler2D samplerObj;
+
+varying mediump vec2    texCoord;
+varying lowp vec4 diffuseLight;
 
 #if USE_PHONG
-uniform highp vec3      vLight0;
+uniform highp vec3   vLight0;
 varying mediump vec3 position;
 varying mediump vec3 normal;
 #else
@@ -40,8 +43,11 @@ void main()
     mediump float specular = pow(NdotH, fPower);
 
     lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
-    gl_FragColor = colorDiffuse + colorSpecular;
+
+    // increase ambient light to brighten the teapot :-)
+    gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
+            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
 #else
-    gl_FragColor = colorDiffuse + colorSpecular;
+    gl_FragColor = mix(colorDiffuse, texture2D(samplerObj, texCoord), 0.5) + colorSpecular;
 #endif
 }
