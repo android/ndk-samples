@@ -15,11 +15,9 @@
  */
 
 #include "TexturedTeapotRender.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
-#include "AssetUtil.h"
+
 /**
- * Texture Coordinators:
+ * Texture Coordinators for 2D texture:
  *    they are declared in file model file teapot.inl with tiles
  *    for front and back teapot faces. If you do not want see
  *    the tiles but would like to see the stretched version, simply
@@ -33,56 +31,6 @@
 extern float  teapotTexCoords[];
 constexpr  int32_t kCoordElementCount = (TILED_TEXTURE ? 3 : 2);
 
-/**
- * LoadTexture()
- *   - Load given asset file ( bmp or tga types ) to OpenGL
- *   - Configure Texture filters
- *   - Activate Texture Stage 0
- */
-bool TexturedTeapotRender::LoadTexture(const char* fileName, AAssetManager* mgr) {
-
-    int32_t imgWidth, imgHeight, channelCount;
-    std::string texName(fileName);
-    std::vector<uint8_t> fileBits;
-
-    if (!mgr) {
-        assert(false);
-        return false;
-    }
-
-    glGenTextures(1, &texId_);
-    glBindTexture(GL_TEXTURE_2D, texId_);
-
-    if(texId_ == GL_INVALID_VALUE) {
-        assert(false);
-        return false;
-    }
-
-    AssetReadFile(mgr, texName, fileBits);
-
-    // tga/bmp files are saved as vertical mirror images ( at least more than half ).
-    stbi_set_flip_vertically_on_load(1);
-
-    uint8_t* imageBits = stbi_load_from_memory(
-            fileBits.data(), fileBits.size(),
-            &imgWidth, &imgHeight, &channelCount, 4);
-    glTexImage2D(GL_TEXTURE_2D, 0,  // mip level
-                 GL_RGBA,
-                 imgWidth, imgHeight,
-                 0,                // border color
-                 GL_RGBA, GL_UNSIGNED_BYTE, imageBits);
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
-    glActiveTexture(GL_TEXTURE0);
-
-    stbi_image_free(imageBits);
-
-    return true;
-}
 
 /**
  * Constructor: all work is done inside Init() function.
@@ -100,6 +48,22 @@ TexturedTeapotRender::~TexturedTeapotRender() {
 };
 
 /**
+ * Report type of teapot we are rendering. This is the only place
+ * to decide what kind of teapot to render.
+ *
+ * @return
+ *   GL_TEXTURE_CUBE_MAP if you want to render cubemaped teapot
+ *   GL_TEXTURE_2D if just to render a 2D textured teapot
+ *   GL_INVALID_VALUE no texture for teapot
+ */
+GLint TexturedTeapotRender::GetTextureType(void) {
+    return
+            GL_TEXTURE_CUBE_MAP;
+//            GL_TEXTURE_2D;
+//            GL_INVALID_VALUE;
+}
+
+/**
  * Init: Initialize the GL with needed data. We add on the things
  * needed for textures
  *  - load image data into generated glBuffers
@@ -107,40 +71,78 @@ TexturedTeapotRender::~TexturedTeapotRender() {
  * @param assetMgr android assetManager from java side
  */
 void TexturedTeapotRender::Init(AAssetManager* assetMgr) {
-
     // initialize the basic things from TeapotRenderer, no change
     TeapotRenderer::Init();
 
-    // do Texture related initializations...
-    glGenBuffers(1, &texVbo_);
-    assert(texVbo_ != GL_INVALID_VALUE);
+    GLint type = GetTextureType();
+    if(type == GL_INVALID_VALUE) {
+        // Plain teapot no texture
+        return;
+    }
 
-    /*
-     * Loading Texture coord directly from data declared in model file
-     *   teapot.inl
-     * which is 3 floats/vertex.
-     */
-    glBindBuffer(GL_ARRAY_BUFFER, texVbo_);
+    // load texture coordinator for 2D texture. Cubemap texture uses world space normal
+    // to sample cubemap.
+    if(type == GL_TEXTURE_2D) {
+        // do Texture related initializations...
+        glGenBuffers(1, &texVbo_);
+        assert(texVbo_ != GL_INVALID_VALUE);
+
+        /*
+         * Loading Texture coord directly from data declared in model file
+         *   teapot.inl
+         * which is 3 floats/vertex.
+         */
+        glBindBuffer(GL_ARRAY_BUFFER, texVbo_);
 
 #if (TILED_TEXTURE)
-    glBufferData(GL_ARRAY_BUFFER,
+        glBufferData(GL_ARRAY_BUFFER,
                  kCoordElementCount * sizeof(float) * num_vertices_,
                  teapotTexCoords, GL_STATIC_DRAW);
 #else
-    std::vector<float> coords;
-    for (int32_t idx = 0; idx < num_vertices_; idx++) {
-        coords.push_back(teapotTexCoords[3 * idx] / 2);
-        coords.push_back(teapotTexCoords[3* idx + 1] / 2);
-    }
-    glBufferData(GL_ARRAY_BUFFER,
-                 kCoordElementCount * sizeof(float) * num_vertices_,
-                 coords.data(), GL_STATIC_DRAW);
+        std::vector<float> coords;
+        for (int32_t idx = 0; idx < num_vertices_; idx++) {
+            coords.push_back(teapotTexCoords[3 * idx] / 2);
+            coords.push_back(teapotTexCoords[3* idx + 1] / 2);
+        }
+        glBufferData(GL_ARRAY_BUFFER,
+                     kCoordElementCount * sizeof(float) * num_vertices_,
+                     coords.data(), GL_STATIC_DRAW);
 #endif
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
+                              kCoordElementCount * sizeof(float),
+                              BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(ATTRIB_UV);
 
-    LoadTexture("Textures/android_pie.tga", assetMgr);
-    GLint sampler = glGetUniformLocation(shader_param_.program_, "samplerObj");
-    glUniform1i(sampler, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    // Need flip Y, so as top/bottom image
+    std::vector<std::string> textures {
+            std::string("Textures/right.tga"),  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
+            std::string("Textures/left.tga"),   // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+            std::string("Textures/bottom.tga"), // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+            std::string("Textures/top.tga"),    // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+            std::string("Textures/front.tga"),  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+            std::string("Textures/back.tga")    // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+    };
+
+    if(type == GL_TEXTURE_2D) {
+        textures[0] = std::string("Textures/front.tga");
+    }
+
+    texObj_ = Texture::Create(type, textures, assetMgr);
+    assert(texObj_);
+
+    std::vector<std::string> samplers;
+    std::vector<GLint> units;
+    texObj_->GetActiveSamplerInfo(samplers, units);
+    for(size_t idx = 0; idx < samplers.size(); idx++) {
+        GLint sampler = glGetUniformLocation(shader_param_.program_,
+                                             samplers[idx].c_str());
+        glUniform1i(sampler, units[idx]);
+    }
+
+    texObj_->Activate();
 }
 
 /**
@@ -149,12 +151,6 @@ void TexturedTeapotRender::Init(AAssetManager* assetMgr) {
  *   For Texture, simply inform GL to stream texture coord from _texVbo
  */
 void TexturedTeapotRender::Render() {
-    // Bind the VBO
-    glBindBuffer(GL_ARRAY_BUFFER, texVbo_);
-    glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
-                          kCoordElementCount * sizeof(float),
-                          BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(ATTRIB_UV);
     TeapotRenderer::Render();
 }
 
@@ -163,14 +159,13 @@ void TexturedTeapotRender::Render() {
  *    clean-up function. May get called from destructor too
  */
 void TexturedTeapotRender::Unload() {
-    if (texId_!= GL_INVALID_VALUE) {
-        glDeleteTextures(1, &texId_);
-        texId_ = GL_INVALID_VALUE;
-    }
+    TeapotRenderer::Unload();
     if(texVbo_ != GL_INVALID_VALUE) {
         glDeleteBuffers(1, &texVbo_);
         texVbo_ = GL_INVALID_VALUE;
     }
-
-    TeapotRenderer::Unload();
+    if(texObj_) {
+        Texture::Delete(texObj_);
+        texObj_ = nullptr;
+    }
 }

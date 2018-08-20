@@ -20,7 +20,7 @@
 
 #if 1
 #ifndef MODULE_NAME
-#define MODULE_NAME  "OpenGL-Wide-Color"
+#define MODULE_NAME  "NDK_Sample"
 #endif
 
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, MODULE_NAME, __VA_ARGS__)

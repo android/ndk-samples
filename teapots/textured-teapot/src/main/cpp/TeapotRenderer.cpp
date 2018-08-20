@@ -43,9 +43,17 @@ void TeapotRenderer::Init() {
   glFrontFace(GL_CCW);
 
   // Load shader
-  LoadShaders(&shader_param_, "Shaders/VS_ShaderPlain.vsh",
-              "Shaders/ShaderPlain.fsh");
-
+  GLint type = GetTextureType();
+  if(type == GL_TEXTURE_CUBE_MAP) {
+      LoadShaders(&shader_param_, "Shaders/Cubemap.vsh",
+                  "Shaders/Cubemap.fsh");
+  } else if(type == GL_TEXTURE_2D) {
+      LoadShaders(&shader_param_, "Shaders/2DTexture.vsh",
+                  "Shaders/2DTexture.fsh");
+  } else {
+      LoadShaders(&shader_param_, "Shaders/VS_ShaderPlain.vsh",
+                 "Shaders/ShaderPlain.fsh");
+  }
   // Create Index buffer
   num_indices_ = sizeof(teapotIndices) / sizeof(teapotIndices[0]);
   glGenBuffers(1, &ibo_);
@@ -203,6 +211,7 @@ bool TeapotRenderer::LoadShaders(SHADER_PARAMS* params, const char* strVsh,
                                          strVsh)) {
     LOGI("Failed to compile vertex shader");
     glDeleteProgram(program);
+    assert(false);
     return false;
   }
 
@@ -211,6 +220,7 @@ bool TeapotRenderer::LoadShaders(SHADER_PARAMS* params, const char* strVsh,
                                          strFsh)) {
     LOGI("Failed to compile fragment shader");
     glDeleteProgram(program);
+    assert(false);
     return false;
   }
 
