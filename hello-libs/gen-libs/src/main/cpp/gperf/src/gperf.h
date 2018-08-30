@@ -23,8 +23,13 @@
  * return current system ticks
  */
 #ifdef __cplusplus
-extern "C"
-#endif // __cplusplus
+extern "C" {
+#endif
+
 uint64_t GetTicks(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //__GPERF_HPP__
