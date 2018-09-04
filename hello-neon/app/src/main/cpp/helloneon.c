@@ -131,7 +131,7 @@ Java_com_example_helloneon_HelloNeon_stringFromJNI( JNIEnv* env,
         goto EXIT;
     }
 
-    /* HAVE_NEON is defined in Android.mk ! */
+    /* HAVE_NEON is defined in CMakeLists.txt ! */
 #ifdef HAVE_NEON
     if (((features & ANDROID_CPU_ARM_FEATURE_NEON) == 0) &&
         ((features & ANDROID_CPU_X86_FEATURE_SSSE3) == 0))
