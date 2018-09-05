@@ -29,11 +29,10 @@ if ((NOT EXISTS ${commonDir}/stb) OR
                     WORKING_DIRECTORY ${commonDir})
 endif()
 
-# build the ndk-helper library into a common directory
-# visible to all 3 projects avoiding duplicate builds.
-get_filename_component(ndkHelperSrc ${commonDir}/ndk_helper ABSOLUTE)
-get_filename_component(ndkHelperBin ${commonDir}/ndkHelperBin ABSOLUTE)
-add_subdirectory(${ndkHelperSrc} ${ndkHelperBin})
+# build the ndk-helper library
+get_filename_component(ndkHelperSrc ../../../../common/ndk_helper ABSOLUTE)
+add_subdirectory(${ndkHelperSrc}
+  ${CMAKE_BINARY_DIR}/ndkHelperBin)
 
 # now build app's shared lib
 add_library(${PROJECT_NAME}

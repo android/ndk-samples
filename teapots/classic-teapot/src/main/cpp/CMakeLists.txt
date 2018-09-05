@@ -20,11 +20,10 @@ project(TeapotNativeActivity LANGUAGES C CXX)
 # set up common compile options
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Werror -fno-exceptions -fno-rtti")
 
-# build the ndk-helper library into a common directory
-# visible to all 3 projects avoiding duplicate builds.
+# build the ndk-helper library
 get_filename_component(ndkHelperSrc ../../../../common/ndk_helper ABSOLUTE)
-get_filename_component(ndkHelperBin ${ndkHelperSrc}/../ndkHelperBin ABSOLUTE)
-add_subdirectory(${ndkHelperSrc} ${ndkHelperBin})
+add_subdirectory(${ndkHelperSrc}
+  ${CMAKE_BINARY_DIR}/ndkHelperBin)
 
 # now build app's shared lib
 add_library(${PROJECT_NAME}
