@@ -68,7 +68,7 @@ public class NativeMedia extends Activity {
         setContentView(R.layout.main);
 
         // get application's assetManager to avoid being garbage-collected.
-        assetMgr = getAssets();
+        assetMgr = getApplication().getAssets();
 
         mGLView1 = (MyGLSurfaceView) findViewById(R.id.glsurfaceview1);
         mGLView2 = (MyGLSurfaceView) findViewById(R.id.glsurfaceview2);

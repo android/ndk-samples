@@ -81,6 +81,7 @@ static char dataCache[BUFFER_SIZE * NB_BUFFERS];
 
 // handle of the file to play
 static FILE *file;
+static jobject android_java_asset_manager = NULL;
 
 // has the app reached the end of the file
 static jboolean reachedEof = JNI_FALSE;
@@ -332,7 +333,8 @@ jboolean Java_com_example_nativemedia_NativeMedia_createStreamingMediaPlayer(JNI
 {
     XAresult res;
 
-    android_fopen_set_asset_manager(AAssetManager_fromJava(env, assetMgr));
+    android_java_asset_manager = (*env)->NewGlobalRef(env, assetMgr);
+    android_fopen_set_asset_manager(AAssetManager_fromJava(env, android_java_asset_manager));
     // convert Java string to UTF-8
     const char *utf8 = (*env)->GetStringUTFChars(env, filename, NULL);
     assert(NULL != utf8);
@@ -486,6 +488,10 @@ void Java_com_example_nativemedia_NativeMedia_shutdown(JNIEnv* env, jclass clazz
         file = NULL;
     }
 
+    if (android_java_asset_manager) {
+        (*env)->DeleteGlobalRef(env, android_java_asset_manager);
+        android_java_asset_manager = NULL;
+    }
     // make sure we don't leak native windows
     if (theNativeWindow != NULL) {
         ANativeWindow_release(theNativeWindow);
