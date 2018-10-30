@@ -179,7 +179,9 @@ AudioPlayer::~AudioPlayer() {
   while (devShadowQueue_->front(&buf)) {
     buf->size_ = 0;
     devShadowQueue_->pop();
-    freeQueue_->push(buf);
+    if(buf != &silentBuf_) {
+      freeQueue_->push(buf);
+    }
   }
   delete devShadowQueue_;
 
