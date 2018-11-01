@@ -12,12 +12,12 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
                        project.getName() + '/src/main'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId 'com.android.gles3jni'
         minSdkVersion 18
-        targetSdkVersion 18
+        targetSdkVersion 28
     }
     sourceSets {
         main {

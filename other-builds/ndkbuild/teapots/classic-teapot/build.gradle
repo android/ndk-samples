@@ -5,12 +5,12 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
         project.getName() + '/src/main'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.sample.teapot"
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 28
 
     }
     sourceSets {

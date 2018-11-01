@@ -5,12 +5,12 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
         project.getName() + '/src/main'
 
 android {
-    compileSdkVersion = 23
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId = 'com.example.native_activity'
         minSdkVersion 14
-        targetSdkVersion  23
+        targetSdkVersion 28
     }
     sourceSets {
         main {
@@ -34,6 +34,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:23.4.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
