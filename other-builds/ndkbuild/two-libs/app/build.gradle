@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.example.twolibs"
         minSdkVersion 14
-        targetSdkVersion 14
+        targetSdkVersion 28
     }
 
     buildTypes {

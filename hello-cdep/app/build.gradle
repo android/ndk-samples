@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion = 25
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId = 'com.example.hellolibs'
         minSdkVersion 23
-        targetSdkVersion 23
+        targetSdkVersion 28
         versionCode = 1
         versionName = '1.0'
         externalNativeBuild {
@@ -38,6 +38,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:25.4.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

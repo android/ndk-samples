@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId 'com.example.nativecodec'
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 28
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'

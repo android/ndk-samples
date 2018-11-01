@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-     compileSdkVersion 25
+     compileSdkVersion 28
 
      defaultConfig {
         applicationId 'com.example.nativeaudio'
         minSdkVersion 23
-        targetSdkVersion 25
+        targetSdkVersion 28
     }
     buildTypes {
         release {
@@ -24,5 +24,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 }

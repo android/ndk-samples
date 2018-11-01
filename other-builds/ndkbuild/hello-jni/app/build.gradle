@@ -4,12 +4,12 @@ apply plugin: 'com.android.application'
 def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
                         project.getName() + '/src/main'
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.example.hellojni"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 28
     }
 
     externalNativeBuild {
@@ -35,7 +35,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:23.4.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
 

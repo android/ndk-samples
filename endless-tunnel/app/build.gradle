@@ -17,12 +17,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion = 25
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId 'com.google.sample.tunnel'
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode     1
         versionName    '1.0'
         externalNativeBuild {

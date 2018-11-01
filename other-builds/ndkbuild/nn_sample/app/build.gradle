@@ -5,12 +5,12 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
         project.getName() + '/src/main'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.example.android.nnapidemo"
         minSdkVersion 27
-        targetSdkVersion 27
+        targetSdkVersion 28
     }
     sourceSets {
         main {
@@ -34,6 +34,6 @@ android {
     }
 }
 dependencies {
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
 

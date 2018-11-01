@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 28
     defaultConfig {
         applicationId 'com.android.gl2jni'
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 28
         externalNativeBuild {
             cmake {
                 // Available argumetns are inside ${SDK}/cmake/.../android.toolchain.cmake file
