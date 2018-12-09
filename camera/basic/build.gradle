@@ -1,33 +1,33 @@
 apply plugin: 'com.android.application'
 
- android {
-     compileSdkVersion 28
+android {
+    compileSdkVersion 28
 
-     defaultConfig {
-         applicationId 'com.sample.camera.basic'
-         minSdkVersion  24
-         targetSdkVersion 28
-         ndk {
-             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-         }
-         externalNativeBuild {
-             cmake {
-                 arguments '-DANDROID_STL=c++_static'
-             }
-         }
-     }
-     buildTypes {
-         release {
-             minifyEnabled false
-             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules.pro'
-         }
-     }
-     externalNativeBuild {
-         cmake {
-             path 'src/main/cpp/CMakeLists.txt'
-         }
-     }
+    defaultConfig {
+        applicationId 'com.sample.camera.basic'
+        minSdkVersion  24
+        targetSdkVersion 28
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=c++_static'
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                        'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
 }
 
 dependencies {
