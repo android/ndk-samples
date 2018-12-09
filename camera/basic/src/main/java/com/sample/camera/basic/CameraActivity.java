@@ -40,8 +40,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import junit.framework.Assert;
-
 import static android.hardware.camera2.CameraMetadata.LENS_FACING_BACK;
 
 class CameraSeekBar {
@@ -225,7 +223,10 @@ public class CameraActivity extends NativeActivity
             return;
         }
 
-        Assert.assertEquals(grantResults.length, 2);
+        if(grantResults.length != 2) {
+            Log.e(DBG_TAG, "Runtime permission is not correct");
+            return;
+        }
         notifyCameraPermission(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                                grantResults[1] == PackageManager.PERMISSION_GRANTED);
     }

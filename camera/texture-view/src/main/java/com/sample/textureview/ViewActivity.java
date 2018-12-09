@@ -37,8 +37,6 @@ import android.view.View;
 import android.util.Size;
 import android.widget.FrameLayout;
 
-import junit.framework.Assert;
-
 import static android.hardware.camera2.CameraMetadata.LENS_FACING_BACK;
 
 public class ViewActivity extends Activity
@@ -215,7 +213,11 @@ public class ViewActivity extends Activity
             return;
         }
 
-        Assert.assertEquals(grantResults.length, 1);
+        if(grantResults.length != 2) {
+            Log.e("CameraSample", "Runtime permission is not correct");
+            return;
+        }
+
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Thread initCamera = new Thread(new Runnable() {
                 public void run() {
