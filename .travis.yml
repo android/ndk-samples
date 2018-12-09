@@ -17,6 +17,7 @@ before_install:
 install:
   - echo y | sdkmanager "ndk-bundle"
   - echo y | sdkmanager "cmake;3.6.4111459"
+  - echo y | sdkmanager --channel=3 --channel=1 "cmake;3.10.2.4988404"
   - echo y | sdkmanager "lldb;3.1"
     #  - sdkmanager --update
 before_script:
