@@ -1,31 +1,31 @@
 apply plugin: 'com.android.application'
 
- android {
-     compileSdkVersion 28
+android {
+    compileSdkVersion 28
 
-     defaultConfig {
-         applicationId 'com.example.webp_view'
-         minSdkVersion 14
-         targetSdkVersion 28
-         ndk.abiFilters 'armeabi-v7a'
+    defaultConfig {
+        applicationId 'com.example.webp_view'
+        minSdkVersion 14
+        targetSdkVersion 28
+        ndk.abiFilters 'armeabi-v7a'
 
-         externalNativeBuild {
-             cmake {
-                 arguments '-DANDROID_STL=c++_static'
-             }
-         }
-     }
-     buildTypes {
-         release {
-             minifyEnabled false
-             proguardFiles getDefaultProguardFile('proguard-android.txt'),
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=c++_static'
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
                           'proguard-rules.pro'
-         }
-     }
-     externalNativeBuild {
-         cmake {
-             path 'src/main/cpp/CMakeLists.txt'
-         }
-     }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
 }
 
