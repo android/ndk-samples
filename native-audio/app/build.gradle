@@ -18,6 +18,7 @@ android {
     externalNativeBuild {
         cmake {
             // todo: need to disable REVERT for fast audio recording
+            version '3.10.2'
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
