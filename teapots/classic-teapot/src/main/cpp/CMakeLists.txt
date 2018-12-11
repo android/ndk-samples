@@ -21,9 +21,10 @@ project(TeapotNativeActivity LANGUAGES C CXX)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Werror -fno-exceptions -fno-rtti")
 
 # build the ndk-helper library
-get_filename_component(ndkHelperSrc ../../../../common/ndk_helper ABSOLUTE)
+get_filename_component(commonDir ${CMAKE_CURRENT_SOURCE_DIR}/../../../../common ABSOLUTE)
+get_filename_component(ndkHelperSrc ${commonDir}/ndk_helper ABSOLUTE)
 add_subdirectory(${ndkHelperSrc}
-  ${CMAKE_BINARY_DIR}/ndkHelperBin)
+        ${commonDir}/ndkHelperBin/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
 
 # now build app's shared lib
 add_library(${PROJECT_NAME}

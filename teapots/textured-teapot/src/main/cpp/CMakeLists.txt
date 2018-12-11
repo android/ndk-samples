@@ -30,9 +30,9 @@ if ((NOT EXISTS ${commonDir}/stb) OR
 endif()
 
 # build the ndk-helper library
-get_filename_component(ndkHelperSrc ../../../../common/ndk_helper ABSOLUTE)
+get_filename_component(ndkHelperSrc ${commonDir}/ndk_helper ABSOLUTE)
 add_subdirectory(${ndkHelperSrc}
-  ${CMAKE_BINARY_DIR}/ndkHelperBin)
+  ${commonDir}/ndkHelperBin/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
 
 # now build app's shared lib
 add_library(${PROJECT_NAME}
