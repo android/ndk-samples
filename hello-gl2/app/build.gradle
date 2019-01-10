@@ -8,7 +8,7 @@ android {
         targetSdkVersion 28
         externalNativeBuild {
             cmake {
-                // Available argumetns are inside ${SDK}/cmake/.../android.toolchain.cmake file
+                // Available arguments are inside ${SDK}/cmake/.../android.toolchain.cmake file
                 arguments '-DANDROID_STL=c++_static'
             }
         }
