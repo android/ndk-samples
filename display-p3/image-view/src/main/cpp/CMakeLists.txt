@@ -17,7 +17,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 get_filename_component(THIRD_PARTY_LIB_DIR
-    ${CMAKE_SOURCE_DIR}/../../../../third_party
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../third_party
     ABSOLUTE)
 
 # now build app's shared lib
