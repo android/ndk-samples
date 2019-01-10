@@ -17,7 +17,7 @@
 package com.example.hellojnicallback;
 
 import android.os.Build;
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 import android.util.Log;
 
 /*
