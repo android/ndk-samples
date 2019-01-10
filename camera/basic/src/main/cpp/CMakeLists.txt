@@ -17,7 +17,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
-set(COMMON_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../../../common)
+set(COMMON_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../common)
 
 # build native_app_glue as a static lib
 include_directories(${ANDROID_NDK}/sources/android/native_app_glue

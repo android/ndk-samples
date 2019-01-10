@@ -18,7 +18,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 # configure import libs
-set(distribution_DIR ${CMAKE_SOURCE_DIR}/../../../../distribution)
+set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../distribution)
 
 add_library(lib_gmath STATIC IMPORTED)
 set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
