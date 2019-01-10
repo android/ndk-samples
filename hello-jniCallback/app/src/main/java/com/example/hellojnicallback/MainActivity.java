@@ -15,8 +15,8 @@
  */
 package com.example.hellojnicallback;
 
-import android.support.annotation.Keep;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Keep;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
