@@ -13,6 +13,7 @@ Pre-requisites
 
 Getting Started
 ---------------
+1. Enable "Natural" mode for "Color" configuration: Settings > Display > Colors 
 1. [Download Android Studio](https://developer.android.com/studio/index.html)
 1. [Download Android NDK-r15+](https://developer.android.com/ndk/downloads/index.html)
 1. [Download source code](http://www.github.com/googlesamples/android-ndk)
@@ -27,10 +28,14 @@ Screenshots
 Description
 -----------
 This sample creates [Display P3](https://developer.android.com/about/versions/oreo/android-8.0.html#cm)
-EGLContext_, then creates 2 textures for each PNG file under "assets" folder: the first is in Display P3 image mode,
-the second is in sRGB mode. The sRGB texture is created by transforming the 
+EGLContext_, then creates 2 textures for each PNG file under "assets" folder, and on Android devices support Display P3:
+- the first is in Display P3 image mode,
+- the second is in sRGB mode. The sRGB texture is created by transforming the 
 original Display P3 image into CIExyz 1931 color space, clamping colors in
 sRGB color space, then transforming it back to Display P3 color space to display.
+
+For Android Devices that does NOT support display P3, both textures will be in sRGB (identical view)
+ 
 
 The Display P3 mode is turned on when application requests a window surface of type
 `EGL_GL_COLORSPACE_DISPLAY_P3_EXT`:
@@ -48,9 +53,15 @@ space:
 - gamma value : 2.2
 - Display P3 color space with D65 as white reference point
 
-To add new images, simply drop the new file into this folder. 
+To add new images, simply drop the new file into this folder. Please noted that all decompressing
+is performed on CPU at the start up time: it takes time when there are lot of image files.
 
-Changing display_ mode:
+Some of the images are from [codelogic's wide-gamut-tests](https://github.com/codelogic/wide-gamut-tests)
+repo. On Display P3 capable devices, details inside red and green areas are noticeably different, blue area is
+almost the same, just as expected.
+
+
+Changing display mode:
 - Tap on image to show/hide (Display P3 mode or sRGB mode)
 - Swipe up/down to rotate through image files
 
