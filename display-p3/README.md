@@ -53,7 +53,7 @@ space:
 - gamma value : 2.2
 - Display P3 color space with D65 as white reference point
 
-To add new images, simply drop the new file into this folder. Please noted that all decompressing
+To add new images, simply drop the new file into this folder. Please note that all decompressing
 is performed on CPU at the start up time: it takes time when there are lot of image files.
 
 Some of the images are from [codelogic's wide-gamut-tests](https://github.com/codelogic/wide-gamut-tests)
