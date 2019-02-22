@@ -8,4 +8,4 @@ build
 libwebp
 .DS_Store
 **/ndkHelperBin
-
+**/.cxx
