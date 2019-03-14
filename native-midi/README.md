@@ -18,14 +18,16 @@ This sample requires an input and an output MIDI device connected to Android dev
 Getting Started
 ---------------
 1. [Download Android Studio 3.4 beta](http://developer.android.com/sdk/index.html)
-1. Launch Android Studio.
+1. Launch Android Studio, and install all updates that Studio prompts
 1. Open the sample directory.
-1. Open *Tools/SDK Manager/SDK Tools*
-  - "NDK": update to NDK-r20+.
+1. Open *Tools/SDK Manager/SDK Tools*, then "NDK"; and update it to NDK-r20+.
 1. Click *File/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
 
-Note: If you already have Android Studio installed you can switch to the beta update channel by going to Preferences->Check for updates->Configure automatic updates. Once you've changed to the beta channel you should see NDK r20 in the list of SDK Tools. 
+**Note for stable Android Studio**
+Stable Android Studio does not automatically download and install NDK beta versions; but you could still use it to build this sample with one of the following ways
+- switching to the beta update channel by going to Preferences->Check for updates->Configure automatic updates. Once you've changed to the beta channel you should see NDK r20 in the list of SDK Tools.
+- manually download [ndk-r20-beta or better](https://developer.android.com/ndk/downloads), then add `ndk.dir=$your-downloaded-ndk-r20-dir` to your `native-midi/local.properties` (this is studio generated file).
 
 Screenshots
 -----------
