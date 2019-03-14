@@ -24,12 +24,12 @@
 
 #include <pthread.h>
 
-#define LOG_TAG "TBMidiManager-JNI"
-#include "android_debug.h"
+#define LOG_TAG "AppMidiManager-JNI"
+#include "AndroidDebug.h"
 
 #include <amidi/AMidi.h>
 
-#include "midi_spec.h"
+#include "MidiSpec.h"
 
 static AMidiDevice* sNativeReceiveDevice = NULL;
 // The thread only reads this value, so no special protection is required.
