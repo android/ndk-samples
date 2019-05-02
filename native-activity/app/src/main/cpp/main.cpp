@@ -146,7 +146,6 @@ static int engine_init_display(struct engine* engine) {
         LOGI("OpenGL Info: %s", info);
     }
     // Initialize GL state.
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
     glDisable(GL_DEPTH_TEST);
