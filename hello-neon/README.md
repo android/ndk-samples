@@ -1,6 +1,6 @@
 Hello Neon
 ==========
-Hello Neon is an Android sample that uses ARM NEON for fir filter implementation:
+Hello Neon is an Android sample that uses ARM NEON for for filter implementation:
 - identify NEON files in source tree, they would be just normal c/c++ source files
 - append -mfpu=neon to CMake compile flag for neon source files.
 This is different from android.mk, in that:
