@@ -1,0 +1,56 @@
+#
+# Copyright 2017 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+cmake_minimum_required(VERSION 3.4.1)
+
+### INCLUDE OBOE LIBRARY ###
+get_filename_component(OBOE_SAMPLE_PROJ_HOME
+        ${CMAKE_CURRENT_SOURCE_DIR}/.. ABSOLUTE)
+set(OBOE_SRC_DIR ${OBOE_SAMPLE_PROJ_HOME}/oboe)
+
+# clone the dependency repo.
+# git submodule could also be used if this sample does not need
+#     Android Studio's "Import Android code sample" option
+if ((NOT EXISTS ${OBOE_SRC_DIR}) OR
+(NOT EXISTS ${OBOE_SRC_DIR}/CMakeLists.txt))
+    execute_process(COMMAND git clone
+            https://github.com/google/oboe.git
+            oboe
+            WORKING_DIRECTORY ${OBOE_SAMPLE_PROJ_HOME}/)
+endif()
+
+# Add the Oboe library as a subproject. Since Oboe is an out-of-tree source library we must also
+# specify a binary directory
+add_subdirectory(${OBOE_SRC_DIR} ./oboe-bin)
+
+# Include the Oboe headers
+include_directories(${OBOE_SRC_DIR}/include)
+
+### END OBOE INCLUDE SECTION ###
+
+# Build the libhello-oboe library
+add_library(hello-oboe SHARED
+        native-lib.cpp
+        )
+
+# Specify the libraries needed for hello-oboe
+target_link_libraries(hello-oboe android log oboe)
+
+# Enable optimization flags: if having problems with source level debugging,
+# disable -Ofast ( and debug ), re-enable after done debugging.
+target_compile_options(hello-oboe PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Ofast>")
+
+
