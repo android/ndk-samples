@@ -43,7 +43,7 @@ include_directories(${OBOE_SRC_DIR}/include)
 
 # Build the libhello-oboe library
 add_library(hello-oboe SHARED
-        native-lib.cpp
+        hello-oboe.cpp
         )
 
 # Specify the libraries needed for hello-oboe

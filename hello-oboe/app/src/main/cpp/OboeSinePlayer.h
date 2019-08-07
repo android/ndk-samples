@@ -61,13 +61,13 @@ public:
     }
 
     void enable(bool toEnable) {
-        isOn = toEnable;
+        isOn.store(toEnable);
     }
 
 private:
     oboe::ManagedStream outStream;
 
-    bool isOn;
+    std::atomic_bool isOn;
     int channelCount;
     double mPhaseIncrement;
 

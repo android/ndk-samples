@@ -32,9 +32,9 @@ class MainActivity : AppCompatActivity() {
         // Set up a touch listener which calls the native sound engine
         view.setOnTouchListener {_, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                enableStream(true)
+                enableSound(true)
             } else if (event.action == MotionEvent.ACTION_UP) {
-                enableStream(false)
+                enableSound(false)
             } else {
                 return@setOnTouchListener false
             }
@@ -52,20 +52,18 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
 
+    // Creates and starts Oboe stream to play audio
     private external fun createStream()
 
+    // Closes and destroys Oboe stream when app goes out of focus
     private external fun destroyStream()
 
-    private external fun enableStream(enable: Boolean)
+    // Enables sound on user tap
+    private external fun enableSound(enable: Boolean)
 
     companion object {
-
-        // Used to load the native code library on app startup.
+        // Used to load native code calling oboe on app startup.
         init {
             System.loadLibrary("hello-oboe")
         }
