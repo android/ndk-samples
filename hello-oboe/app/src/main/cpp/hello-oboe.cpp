@@ -19,7 +19,7 @@
 #include "OboeSinePlayer.h"
 
 
-static OboeSinePlayer *ptr = nullptr;
+static OboeSinePlayer *oboePlayer = nullptr;
 
 
 extern "C" {
@@ -27,15 +27,15 @@ extern "C" {
     Java_com_google_example_hellooboe_MainActivity_createStream(
             JNIEnv * /* env */,
             jobject /* this */) {
-        ptr = new OboeSinePlayer();
+        oboePlayer = new OboeSinePlayer();
     }
     JNIEXPORT void JNICALL
     Java_com_google_example_hellooboe_MainActivity_destroyStream(
             JNIEnv * /* env */,
             jobject /* this */) {
-        if (ptr) {
-            delete ptr;
-            ptr = nullptr;
+        if (oboePlayer) {
+            delete oboePlayer;
+            oboePlayer = nullptr;
         }
     }
     JNIEXPORT void JNICALL
@@ -43,8 +43,8 @@ extern "C" {
             JNIEnv * /* env */,
             jobject  /* this */,
             jboolean enable) {
-        if (ptr) {
-            ptr->enable(enable);
+        if (oboePlayer) {
+            oboePlayer->enable(enable);
         }
     }
 }
