@@ -39,7 +39,7 @@ extern "C" {
         }
     }
     JNIEXPORT void JNICALL
-    Java_com_google_example_hellooboe_MainActivity_enableSound(
+    Java_com_google_example_hellooboe_MainActivity_playSound(
             JNIEnv * /* env */,
             jobject  /* this */,
             jboolean enable) {

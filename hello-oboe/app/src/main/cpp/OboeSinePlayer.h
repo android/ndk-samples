@@ -79,7 +79,7 @@ private:
     // ManagedStream will release audio resources when destroyed.
     oboe::ManagedStream outStream;
 
-    std::atomic_bool isOn;
+    std::atomic_bool isOn {false};
     int channelCount;
     double mPhaseIncrement;
 
