@@ -21,6 +21,11 @@ Getting Started
 1. Click *Tools/Android/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
 
+Screenshot
+------------
+![screenshot](screenshot.png)
+
+
 Using the App
 --------------
 Tap and hold the screen to play audio. The app will render a 440Hz sine wave
