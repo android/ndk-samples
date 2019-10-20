@@ -13,7 +13,14 @@
 # limitations under the License.
 #
 
-abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+# workaround possible long file path issue on Windows host
+NDK_VER=$(firstword $(subst ., ,$(lastword $(file < $(NDK_ROOT)/source.properties))))
+ifeq ($(filter $(NDK_VER),21 22 23 24 25),)
+  # For NDK 21 and before, need to workaround make's abspath issue
+  abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+else
+  abspath_wa = $(abspath $1)
+endif
 
 LOCAL_PATH:= $(call my-dir)
 
