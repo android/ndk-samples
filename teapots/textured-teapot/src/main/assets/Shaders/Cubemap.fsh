@@ -35,7 +35,7 @@ void main()
     mediump float specular = pow(NdotH, fPower);
 
     lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
-    vec3 texCoord = normal;
+    mediump vec3 texCoord = normal;
     texCoord.y = -normal.y;
     gl_FragColor = colorDiffuse * textureCube(samplerObj, normalize(texCoord)) +
                       vec4(vMaterialAmbient.xyz, 1.0);
