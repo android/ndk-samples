@@ -92,8 +92,10 @@ class JNIHelper {
    */
   static void DetachCurrentThreadDtor(void* p) {
     LOGI("detached current thread");
-    ANativeActivity* activity = (ANativeActivity*)p;
-    activity->vm->DetachCurrentThread();
+    if (p != nullptr) {
+        ANativeActivity *activity = (ANativeActivity *) p;
+        activity->vm->DetachCurrentThread();
+    }
   }
 
  public:
@@ -295,7 +297,10 @@ class JNIHelper {
     if (activity_->vm->GetEnv((void**)&env, JNI_VERSION_1_4) == JNI_OK)
       return env;
     activity_->vm->AttachCurrentThread(&env, NULL);
-    pthread_key_create((int32_t*)activity_, DetachCurrentThreadDtor);
+    pthread_key_t key;
+    if (pthread_key_create(&key, DetachCurrentThreadDtor) == 0) {
+        pthread_setspecific(key, (void *)activity_);
+    }
     return env;
   }
 
