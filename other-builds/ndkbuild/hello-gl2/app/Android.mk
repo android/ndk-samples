@@ -1,4 +1,5 @@
-# Copyright (C) The Android Open Source Project
+#
+# Copyright (C) 2016 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +14,11 @@
 # limitations under the License.
 #
 
-abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+LOCAL_PATH := $(call my-dir)
 
-LOCAL_PATH:= $(call my-dir)
+include $(LOCAL_PATH)/../../common.mk
 
-JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../hello-gl2/app/src/main/cpp)
+JNI_SRC_PATH := $(SAMPLES_ROOT)/hello-gl2/app/src/main/cpp
 
 include $(CLEAR_VARS)
 

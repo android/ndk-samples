@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
 
 LOCAL_PATH := $(call my-dir)
-JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../hello-libs/app/src/main/cpp)
-include $(CLEAR_VARS)
 
-# config distributed lib path
-EXT_LIB_ROOT := $(call abspath_wa, $(LOCAL_PATH)/../../../../hello-libs/distribution)
+include $(LOCAL_PATH)/../../common.mk
+
+JNI_SRC_PATH := $(SAMPLES_ROOT)/hello-libs/app/src/main/cpp
+EXT_LIB_ROOT := $(SAMPLES_ROOT)/hello-libs/distribution
+
+include $(CLEAR_VARS)
 
 # import 2 libs: remember to generate them SEPARATELY in terminal/command line first!
 LOCAL_MODULE := local_gmath

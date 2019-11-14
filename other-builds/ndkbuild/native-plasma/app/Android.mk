@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
 
 LOCAL_PATH := $(call my-dir)
-JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../native-plasma/app/src/main/cpp)
+
+include $(LOCAL_PATH)/../../common.mk
+
+JNI_SRC_PATH := $(SAMPLES_ROOT)/native-plasma/app/src/main/cpp
+
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := native-plasma

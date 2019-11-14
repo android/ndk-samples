@@ -1,9 +1,25 @@
-abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
+#
+# Copyright (C) 2016 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 LOCAL_PATH := $(call my-dir)
 
-JNI_SRC_PATH := $(call abspath_wa, $(LOCAL_PATH)/../../../../teapots/classic-teapot/src/main/cpp)
-NDK_HELPER_SRC :=$(call abspath_wa, $(LOCAL_PATH)/../../../../teapots/common/ndk_helper)
+include $(LOCAL_PATH)/../../common.mk
+
+JNI_SRC_PATH := $(SAMPLES_ROOT)/teapots/classic-teapot/src/main/cpp
+NDK_HELPER_SRC :=$(SAMPLES_ROOT)/teapots/common/ndk_helper
 
 include $(CLEAR_VARS)
 
