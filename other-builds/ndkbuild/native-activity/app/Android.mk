@@ -13,10 +13,11 @@
 # limitations under the License.
 #
 
-abspath_wa = $(join $(filter %:,$(subst :,: ,$1)),$(abspath $(filter-out %:,$(subst :,: ,$1))))
-
 LOCAL_PATH := $(call my-dir)
-JNI_SRC_PATH := $(call abspath_wa,$(LOCAL_PATH)/../../../../native-activity/app/src/main/cpp)
+
+include $(LOCAL_PATH)/../../common.mk
+
+JNI_SRC_PATH := $(SAMPLES_ROOT)/native-activity/app/src/main/cpp
 
 include $(CLEAR_VARS)
 
