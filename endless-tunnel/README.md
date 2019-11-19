@@ -16,7 +16,7 @@ This sample uses the new [Android Studio CMake plugin](http://tools.android.com/
 
 Pre-requisites
 --------------
-- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/).
 
 Getting Started
 ---------------
@@ -53,8 +53,8 @@ Source code is under app, it only contains C++ code, which is
 sitting at its default location (same as for other samples) at
 app/jni.
 
-The game starts at the android_main function in 
-jni/engine/native-activity.app, like any standard NDK game.
+The game starts at the android_main function, 
+defined in android_main.cpp, like any standard NDK game.
 
 ### Scenes And The Scene Manager
 
@@ -72,20 +72,20 @@ a scene. So everything that has to do with graphics context (like
 shaders, textures, etc) has to be initialized in StartGraphics(), 
 and has to be torn down in KillGraphics().
 
-The engine_init_display function is where we set up OpenGL
+The NativeEngine::InitDisplay function is where we set up OpenGL
 for our game, and call StartGraphics() on the active scene.
-The engine_term_display is where we call KillGraphics() on the active
+The NativeEngine::KillGLObjects is where we call KillGraphics() on the active
 scene.
 
-Input arrives by way of the engine_handle_input function, which
+Input arrives by way of the NativeEngine::HandleInput function, which
 does some basic input classification and delivers the input to
 the scene manager. Incidentally, here we also synthesise DPAD events based
 on the joystick hat axes (many game controllers generate hat events
 when you press the directional pad), because that way we can use that
 directional pad to drive UI navigation in the main screen.
 
-While we're in jni/engine, take a look at scene_manager.cpp,
-scene.cpp, etc to familiarize yourself with them.
+Tke a look at scene_manager.cpp, scene.cpp, etc to familiarize yourself
+with them.
 
 ### Geometry And Rendering
 
@@ -165,14 +165,14 @@ This coordinate system is set up like this:
 
 ### The Main Menu
 
-The game's main menu scene is in jni/welcome_scene.cpp. It renders
+The game's main menu scene is in welcome_scene.cpp. It renders
 all the buttons on the interface and manages the navigation. It can
 also show popups ("About", "Story", "Play").
 
 ### Game Logic
 
-The whole game logic is contained in the PlayScene class. We won't dive
-into a full discussion of it, but start reading from the DoFrame() method
+The whole game logic is contained in play_scene.cpp. We won't dive into a
+full discussion of it, but start reading from the PlayScene::DoFrame() method
 and it should become clear. It's a standard game loop that handles
 input, updates the world, checks for collisions and renders.
 
@@ -184,7 +184,6 @@ Patches are encouraged, and may be submitted by [forking this project](https://g
 submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
-- [Google+ Community](https://plus.google.com/communities/105153134372062985968)
 - [Android Tools Feedbacks](http://tools.android.com/feedback)
 
 License
