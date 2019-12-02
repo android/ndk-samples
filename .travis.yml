@@ -13,7 +13,6 @@ addons:
 #    paths:
 #      - $(git ls-files -o | grep app/build/outputs | tr "\n" ":")
 before_install:
-  - sudo apt-get install ant
 install:
   - echo y | sdkmanager "ndk-bundle"
   - echo y | sdkmanager "cmake;3.6.4111459"
