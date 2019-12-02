@@ -1,12 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion "android-Q"
-    buildToolsVersion "29.0.0 rc1"
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.example.nativemidi"
-        minSdkVersion "Q"
-        targetSdkVersion "Q"
+        minSdkVersion 29
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
