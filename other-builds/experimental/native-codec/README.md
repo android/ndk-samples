@@ -41,7 +41,6 @@ Patches are encouraged, and may be submitted by [forking this project](https://g
 submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
-- [Google+ Community](https://plus.google.com/communities/105153134372062985968)
 - [Android Tools Feedbacks](http://tools.android.com/feedback)
 
 License
