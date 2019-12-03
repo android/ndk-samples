@@ -4,7 +4,7 @@ apply plugin: 'com.android.application'
 def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
                         project.getName() + '/src/main'
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.example.hellojni"
