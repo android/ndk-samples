@@ -4,7 +4,6 @@
 #  - pwd must be inside the repo's homed directory (android-ndk)
 #  - upon completion, we are still in the same directory ( no change )
 
-TMP_SETUP_FILENAME=versions_.txt
 
 # parse all build.gradle to find the specified tokens' version
 # usage:
@@ -69,17 +68,31 @@ comp_ver_string () {
     return 0
 }
 
+# prepare to install necessary packages
+if [ -f ~/.android/repositories.cfg ]; then
+  touch ~/.android/repositories.cfg
+fi
+
+TMP_SETUP_FILENAME=versions_.txt
+
 ## Retrieve all necessary Android Platforms and install them all
 retrieve_versions compileSdkVersion $TMP_SETUP_FILENAME
 
-# fixups
-touch ~/.android/repositories.cfg
-sed -i '/COMPILE_SDK_VERSION/d' $TMP_SETUP_FILENAME
 # Install platforms
 while read -r version_; do
-    $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-$version_";
+    echo y | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-$version_";
 done < $TMP_SETUP_FILENAME
-#echo "Android platforms:"; cat $TMP_SETUP_FILENAME;rm -f $TMP_SETUP_FILENAME
+# echo "Android platforms:"; cat $TMP_SETUP_FILENAME
 
-# echo "constraint-layout versions:"; cat $TMP_SETUP_FILENAME;
+# Install side by side ndks
+retrieve_versions ndkVersion $TMP_SETUP_FILENAME
+while read -r version_; do
+    echo y | $ANDROID_HOME/tools/bin/sdkmanager --install "ndk;$version_";
+done < $TMP_SETUP_FILENAME
+# echo "NDK versions:"; cat $TMP_SETUP_FILENAME
+
+# add cmake installation later
+ 
 rm -f $TMP_SETUP_FILENAME
+
+
