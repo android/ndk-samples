@@ -15,8 +15,13 @@
 #
 
 LOCAL_PATH := $(call my-dir)
-
 include $(CLEAR_VARS)
+
+include $(LOCAL_PATH)/../../common.mk
+
+PROJECT_DIR := hello-neon
+JNI_SRC_PATH := $(SAMPLES_ROOT)/$(PROJECT_DIR)/app/src/main/cpp
+
 
 LOCAL_MODULE := hello-neon
 
