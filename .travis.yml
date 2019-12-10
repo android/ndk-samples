@@ -29,5 +29,5 @@ script:
   - source .ci_tools/setup_env.sh
   - source .ci_tools/build_samples.sh
   - source .ci_tools/run_samples.sh
-  - source .ci_tools/misc_ci.sh
+  # - source .ci_tools/misc_ci.sh
   - eval "[[ $SAMPLE_CI_RESULT == 0 ]]"
