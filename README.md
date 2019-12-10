@@ -33,12 +33,12 @@ Build Steps
 Support
 -------
 
-- [Stack Overflow](http://stackoverflow.com/questions/tagged/android)
+For any issues you found in these samples, please
+- submit patches with pull requests, see [CONTRIBUTING.md](CONTRIBUTING.md) for more details, or
+- [create bugs](https://github.com/googlesamples/android-ndk/issues/new) here.
 
-If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+For Android NDK generic questions, please ask on [Stack Overflow](http://stackoverflow.com/questions/tagged/android), Android teams are periodically monitoring questions there.
 
-Patches and new samples are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 License
 -------
