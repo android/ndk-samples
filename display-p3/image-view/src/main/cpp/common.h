@@ -27,6 +27,7 @@
  * App Context Format
  */
 enum DISPLAY_COLORSPACE {
+  P3_PASSTHROUGH,
   P3,
   SRGB,
   COUNT,

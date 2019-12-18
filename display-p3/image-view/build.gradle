@@ -5,11 +5,12 @@ android {
 
     defaultConfig {
         applicationId = 'com.example.widecolor'
-        minSdkVersion   26
-        targetSdkVersion 28
+        minSdkVersion   29
+        targetSdkVersion 29  // p3_passthrough_ext starts from Android-29
+                             // it could be lowered to Android-26, from which p3_ext started
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_STL=c++_static'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-29'
             }
         }
     }

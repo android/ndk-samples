@@ -75,6 +75,9 @@ private:
   std::atomic<uint32_t>  textureIdx_;
 
   enum WIDECOLOR_MODE {
+    P3_PASSTHROUGH_R8G8B8A8_REV,
+    P3_PASSTHROUGH_R10G10B10A2_REV,
+    P3_PASSTHROUGH_FP16,
     P3_R8G8B8A8_REV,
     P3_R10G10B10A2_REV,
     P3_FP16,
