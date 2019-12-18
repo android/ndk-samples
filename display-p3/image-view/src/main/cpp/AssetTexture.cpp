@@ -116,8 +116,17 @@ bool AssetTexture::CreateGLTextures(AAssetManager *mgr) {
     TransformColorSpace(dst, src);
     imgBits = staging.data();
   }
+
+  // Our texture content is EOTF encoded, but depends on display P3 mode, app chooses to
+  // use or bypass EOTF & OETF hardware functionality. See detailed comments in WideColorCtx.cpp
+  // If OETF/EOTF needs bypassed on Android P and before, set flag for the texture to be in RGBA
+  // to fake GPU to bypass OETF/EOTF ( gamma alike thing ).
+  GLint textureInternalFormat = GL_SRGB8_ALPHA8;
+  if (dispColorSpace_ == DISPLAY_COLORSPACE::P3_PASSTHROUGH) {
+      textureInternalFormat = GL_RGBA;
+  }
   glTexImage2D(GL_TEXTURE_2D, 0,  // mip level
-               GL_RGBA,
+               textureInternalFormat,
                imgWidth, imgHeight,
                0,                // border color
                GL_RGBA, GL_UNSIGNED_BYTE, imgBits);
@@ -130,7 +139,7 @@ bool AssetTexture::CreateGLTextures(AAssetManager *mgr) {
   // Generate sRGB view texture
   glGenTextures(1, &sRGBId_);
   glBindTexture(GL_TEXTURE_2D, sRGBId_);
-  if(dispColorSpace_ == DISPLAY_COLORSPACE::P3) {
+  if(dispColorSpace_ == DISPLAY_COLORSPACE::P3 || dispColorSpace_ == DISPLAY_COLORSPACE::P3_PASSTHROUGH) {
     IMAGE_FORMAT src {
         .buf_ = imageData,
         .width_ = imgWidth,
@@ -162,7 +171,8 @@ bool AssetTexture::CreateGLTextures(AAssetManager *mgr) {
     imgBits = staging.data();
   }
   glTexImage2D(GL_TEXTURE_2D, 0,  // mip level
-               GL_RGBA,
+               textureInternalFormat, // GL_SRGB8_ALPHA8 for p3_ext mode,
+                                      // GL_RGBA for p3_passthrough_ext
                imgWidth, imgHeight,
                0,                // border color
                GL_RGBA, GL_UNSIGNED_BYTE, imgBits);

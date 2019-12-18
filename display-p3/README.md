@@ -8,8 +8,8 @@ Pre-requisites
 --------------
 - [Android Oreo](https://developer.android.com/about/versions/oreo/index.html) (API level >= 26) device that supports wide color gamut mode
   (Implemented on Android Oreo with Display P3 color space)
-- Android Studio 2.3+
-- Android [NDK-r15+](https://developer.android.com/ndk/downloads/index.html)
+- Android Studio 3.5.2+
+- Android [NDK-r20+](https://developer.android.com/ndk/downloads/index.html)
 
 Getting Started
 ---------------
@@ -35,7 +35,6 @@ original Display P3 image into CIExyz 1931 color space, clamping colors in
 sRGB color space, then transforming it back to Display P3 color space to display.
 
 For Android Devices that does NOT support display P3, both textures will be in sRGB (identical view)
- 
 
 The Display P3 mode is turned on when application requests a window surface of type
 `EGL_GL_COLORSPACE_DISPLAY_P3_EXT`:
@@ -48,6 +47,14 @@ The Display P3 mode is turned on when application requests a window surface of t
       engine->display_, config, engine->app->window, attributes.data());
 
 ```
+Android 10+ supports EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT, the sample detects the extension and enables it
+instead of EGL_GL_COLORSPACE_DISPLAY_P3_EXT. The difference between the two is on how to handle OETF/EOTF ( gamma like thing):
+- EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT tells hardware to bypass OETF/EOTF transfer functions
+- EGL_GL_COLORSPACE_DISPLAY_P3_EXT enables transfer functions when writing to framebuffers.
+Note that the implementation on Android 8 and Android 9 for EGL_GL_COLORSPACE_DISPLAY_P3_EXT may varies on your test devices,
+if you see the color washing out or too dark, you could change the code to alter OETF/EOTF functionality and texture's setting
+to get a correct setting fit your system.
+  
 All images under the assets folder are *assumed* to be already encoded in Display P3 color
 space:
 - gamma value : 2.2
@@ -73,8 +80,12 @@ More About Wide Color Gamut
 Version History
 ---------------
 | Version   |  Date    |    Note                          |
-| --------- | -------- | ---------------------------------|
+| --------- | -------- | -------------------------------- |
 |    1.0    | 07/2017  |    Initial Version               |
+| --------- | -------- | -------------------------------- |
+|    1.1    | 12/2019  |    Added P3_PASSTHROUGH_EXT      |
+
+
 
 Support
 -------

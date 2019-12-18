@@ -27,12 +27,27 @@ struct GL_WIDECOLOR_MODE_CFG {
 };
 
 static const APP_WIDECOLOR_MODE_CFG appWideColorCfg[] = {
+    { DISPLAY_COLORSPACE::P3_PASSTHROUGH, DISPLAY_FORMAT::R8G8B8A8_REV },
+    { DISPLAY_COLORSPACE::P3_PASSTHROUGH, DISPLAY_FORMAT::R10G10B10_A2_REV},
+    { DISPLAY_COLORSPACE::P3_PASSTHROUGH, DISPLAY_FORMAT::RGBA_FP16},
     { DISPLAY_COLORSPACE::P3, DISPLAY_FORMAT::R8G8B8A8_REV },
-    { DISPLAY_COLORSPACE::P3, DISPLAY_FORMAT::R10G10B10_A2_REV,},
+    { DISPLAY_COLORSPACE::P3, DISPLAY_FORMAT::R10G10B10_A2_REV},
     { DISPLAY_COLORSPACE::P3, DISPLAY_FORMAT::RGBA_FP16},
     { DISPLAY_COLORSPACE::SRGB,DISPLAY_FORMAT::R8G8B8A8_REV},
 };
 static GL_WIDECOLOR_MODE_CFG glWideColorCfg[] = {
+    {
+        EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT,
+        8, 8, 8, 8
+    },
+    {
+        EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT,
+        10, 10, 10, 2
+    },
+    {
+        EGL_GL_COLORSPACE_DISPLAY_P3_PASSTHROUGH_EXT,
+        16, 16, 16, 16
+    },
     {
         EGL_GL_COLORSPACE_DISPLAY_P3_EXT,
         8, 8, 8, 8
@@ -51,8 +66,7 @@ static GL_WIDECOLOR_MODE_CFG glWideColorCfg[] = {
     },
 };
 
-#define EGL_P3_EXT     "EGL_EXT_gl_colorspace_display_p3"
-#define EGL_COLORSPACE_EXT "EGL_KHR_gl_colorspace"
+
 static bool CheckRequiredEGLExt(EGLDisplay disp, std::vector<std::string>& exts) {
   std::string eglExt(eglQueryString(disp, EGL_EXTENSIONS)) ;
   for(auto& ext : exts) {
@@ -86,7 +100,7 @@ bool ImageViewEngine::CreateWideColorCtx(WIDECOLOR_MODE mode) {
       EGL_ALPHA_SIZE, glWideColorCfg[mode].a_,
   };
 
-  // for RGBA888, still set to EGL_COLOR_COMPONENT_TYPE_FIXED_EXT?
+  // for RGBA888, still set to EGL_COLOR_COMPONENT_TYPE_FIXED_EXT
   if (mode == WIDECOLOR_MODE::P3_FP16) {
     attributes.push_back(EGL_COLOR_COMPONENT_TYPE_EXT);
     attributes.push_back(EGL_COLOR_COMPONENT_TYPE_FLOAT_EXT);
@@ -158,30 +172,49 @@ bool ImageViewEngine::CreateWideColorCtx(void) {
   display_ = eglGetDisplay(EGL_DEFAULT_DISPLAY);
   eglInitialize(display_, &major, &minor);
 
+  /* check for GL_EXT_gl_colorspace_display_p3_passthrough supportability:
+   * implemented from Android 10+.
+   * In this sample, when p3_passthrough_ext is enabled, the texture content needs to
+   * be display ready (no EOTF transfer function will apply ), hence app needs to tell texture
+   * is in LINEAR mode so sampler will NOT apply OETF transfer;
+   * on the other hand, if p3_passthrough_ext is unavailable, app would use p3_ext;
+   * in this case, all hardware transfer function applies ( OETF & EOTF ), so app
+   * informs gl engine that the textures are in SRGBA format.
+   */
+  std::vector<std::string> passthruExt {
+      "EGL_KHR_gl_colorspace",
+      "GL_EXT_gl_colorspace_display_p3_passthrough"
+  };
+
   /*
    * Display-P3 needs EGL_EXT_gl_colorspace_display_p3 extension
    * which needs EGL 1.4. If not available, Display P3 is not supported
    * in that case, create legacy RGBA8888 eglContext_.
    */
-  std::vector<std::string> exts {
-      EGL_COLORSPACE_EXT,
-      EGL_P3_EXT
-  };
+  std::vector<std::string> p3Exts {
+        "EGL_KHR_gl_colorspace",
+        "EGL_EXT_gl_colorspace_display_p3"
+    };
 
-  if ((major <= 1 && minor < 4) ||
-      !CheckRequiredEGLExt(display_, exts)) {
-    LOGW("====Warning: Display P3 is not supported,"
+    // Default is P3 wide color gamut modes
+    WIDECOLOR_MODE modes[] = {
+            P3_R8G8B8A8_REV,
+            P3_R10G10B10A2_REV,
+            P3_FP16,
+            SRGBA_R8G8B8A8_REV,
+    };
+
+    if (CheckRequiredEGLExt(display_, passthruExt)) {
+        modes[0] = P3_PASSTHROUGH_R8G8B8A8_REV;
+        modes[1] = P3_PASSTHROUGH_R10G10B10A2_REV;
+        modes[2] = P3_PASSTHROUGH_FP16;
+    } else if (!CheckRequiredEGLExt(display_, p3Exts)) {
+        LOGW("====Warning: Display P3 is not supported,"
              "creating legacy mode GL Context");
-    return CreateWideColorCtx(SRGBA_R8G8B8A8_REV);
-  }
+        return CreateWideColorCtx(SRGBA_R8G8B8A8_REV);
+    }
 
-  // Proceed to the wide color gamut modes
-  WIDECOLOR_MODE modes[] = {
-      P3_R8G8B8A8_REV,
-      P3_R10G10B10A2_REV,
-      P3_FP16,
-      SRGBA_R8G8B8A8_REV,
-  };
+  // create the wide color gamut context
   for (auto mode : modes) {
     if (CreateWideColorCtx(mode))
       return true;
