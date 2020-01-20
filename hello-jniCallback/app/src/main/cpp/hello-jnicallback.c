@@ -201,6 +201,15 @@ void*  UpdateTicks(void* context) {
         }
     }
 
+    /******************测试在子线程获取Class*********************/
+    jclass clazz = (*env)->FindClass(env,"com/example/hellojnicallback/JniHandler");
+
+    jmethodID jmethodId = (*env)->GetStaticMethodID(env,clazz,"methodA","()V");
+
+    (*env)->CallStaticVoidMethod(env,clazz,jmethodId);
+    /***************************************/
+
+
     jmethodID statusId = (*env)->GetMethodID(env, pctx->jniHelperClz,
                                              "updateStatus",
                                              "(Ljava/lang/String;)V");

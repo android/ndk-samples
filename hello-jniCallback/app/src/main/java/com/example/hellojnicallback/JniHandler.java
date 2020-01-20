@@ -55,4 +55,9 @@ public class JniHandler {
     public long getRuntimeMemorySize() {
         return Runtime.getRuntime().freeMemory();
     }
+
+    @Keep
+    public static void methodA(){
+        Log.e("lhq", "methodA: ");
+    }
 }

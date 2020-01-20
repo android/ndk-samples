@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("hello-jnicallback");
     }
     public native  String stringFromJNI();
+
     public native void startTicks();
+
     public native void StopTicks();
 }
