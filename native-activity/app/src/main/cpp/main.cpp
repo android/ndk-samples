@@ -21,7 +21,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <jni.h>
-#include <errno.h>
+#include <cerrno>
 #include <cassert>
 
 #include <EGL/egl.h>
