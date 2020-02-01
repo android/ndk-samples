@@ -336,7 +336,7 @@ void android_main(struct android_app* state) {
 
     // loop waiting for stuff to do.
 
-    while (1) {
+    while (true) {
         // Read all pending events.
         int ident;
         int events;
