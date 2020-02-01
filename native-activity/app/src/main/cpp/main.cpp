@@ -88,7 +88,7 @@ static int engine_init_display(struct engine* engine) {
 
     EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
-    eglInitialize(display, 0, 0);
+    eglInitialize(display, nullptr, nullptr);
 
     /* Here, the application chooses the configuration it desires.
      * find the best match if possible, otherwise use the very first one
@@ -279,7 +279,7 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
     jstring packageName= (jstring)env->CallObjectMethod(app->activity->clazz,
                                                         midGetPackageName);
 
-    const char *nativePackageName = env->GetStringUTFChars(packageName, 0);
+    const char *nativePackageName = env->GetStringUTFChars(packageName, nullptr);
     ASensorManager* mgr = getInstanceForPackageFunc(nativePackageName);
     env->ReleaseStringUTFChars(packageName, nativePackageName);
     app->activity->vm->DetachCurrentThread();
