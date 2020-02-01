@@ -195,7 +195,7 @@ static void engine_term_display(struct engine* engine) {
  * Process the next input event.
  */
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
-    struct engine* engine = (struct engine*)app->userData;
+    auto* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         engine->animating = 1;
         engine->state.x = AMotionEvent_getX(event, 0);
@@ -209,7 +209,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
  * Process the next main command.
  */
 static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
-    struct engine* engine = (struct engine*)app->userData;
+    auto* engine = (struct engine*)app->userData;
     switch (cmd) {
         case APP_CMD_SAVE_STATE:
             // The system has asked us to save our current state.  Do so.
@@ -266,7 +266,7 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
 
   typedef ASensorManager *(*PF_GETINSTANCEFORPACKAGE)(const char *name);
   void* androidHandle = dlopen("libandroid.so", RTLD_NOW);
-  PF_GETINSTANCEFORPACKAGE getInstanceForPackageFunc = (PF_GETINSTANCEFORPACKAGE)
+  auto getInstanceForPackageFunc = (PF_GETINSTANCEFORPACKAGE)
       dlsym(androidHandle, "ASensorManager_getInstanceForPackage");
   if (getInstanceForPackageFunc) {
     JNIEnv* env = nullptr;
@@ -276,7 +276,7 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
     jmethodID midGetPackageName = env->GetMethodID(android_content_Context,
                                                    "getPackageName",
                                                    "()Ljava/lang/String;");
-    jstring packageName= (jstring)env->CallObjectMethod(app->activity->clazz,
+    auto packageName= (jstring)env->CallObjectMethod(app->activity->clazz,
                                                         midGetPackageName);
 
     const char *nativePackageName = env->GetStringUTFChars(packageName, nullptr);
@@ -290,7 +290,7 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
   }
 
   typedef ASensorManager *(*PF_GETINSTANCE)();
-  PF_GETINSTANCE getInstanceFunc = (PF_GETINSTANCE)
+  auto getInstanceFunc = (PF_GETINSTANCE)
       dlsym(androidHandle, "ASensorManager_getInstance");
   // by all means at this point, ASensorManager_getInstance should be available
   assert(getInstanceFunc);
