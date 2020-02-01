@@ -255,6 +255,8 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             engine->animating = 0;
             engine_draw_frame(engine);
             break;
+        default:
+            break;
     }
 }
 
