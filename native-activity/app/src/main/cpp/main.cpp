@@ -311,7 +311,7 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
  * event loop for receiving input events and doing other things.
  */
 void android_main(struct android_app* state) {
-    struct engine engine;
+    struct engine engine{};
 
     memset(&engine, 0, sizeof(engine));
     state->userData = &engine;
