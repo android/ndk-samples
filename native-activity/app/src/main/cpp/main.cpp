@@ -82,7 +82,7 @@ static int engine_init_display(struct engine* engine) {
     };
     EGLint w, h, format;
     EGLint numConfigs;
-    EGLConfig config;
+    EGLConfig config = nullptr;
     EGLSurface surface;
     EGLContext context;
 
@@ -114,6 +114,11 @@ static int engine_init_display(struct engine* engine) {
     }
     if (i == numConfigs) {
         config = supportedConfigs[0];
+    }
+
+    if (config == nullptr) {
+        LOGW("Unable to initialize EGLConfig");
+        return -1;
     }
 
     /* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
