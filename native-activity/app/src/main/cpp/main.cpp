@@ -121,8 +121,8 @@ static int engine_init_display(struct engine* engine) {
      * As soon as we picked a EGLConfig, we can safely reconfigure the
      * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
     eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
-    surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
-    context = eglCreateContext(display, config, NULL, NULL);
+    surface = eglCreateWindowSurface(display, config, engine->app->window, nullptr);
+    context = eglCreateContext(display, config, nullptr, nullptr);
 
     if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
         LOGW("Unable to eglMakeCurrent");
@@ -158,7 +158,7 @@ static int engine_init_display(struct engine* engine) {
  * Just the current frame in the display.
  */
 static void engine_draw_frame(struct engine* engine) {
-    if (engine->display == NULL) {
+    if (engine->display == nullptr) {
         // No display.
         return;
     }
@@ -219,7 +219,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_INIT_WINDOW:
             // The window is being shown, get it ready.
-            if (engine->app->window != NULL) {
+            if (engine->app->window != nullptr) {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
@@ -230,7 +230,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             break;
         case APP_CMD_GAINED_FOCUS:
             // When our app gains focus, we start monitoring the accelerometer.
-            if (engine->accelerometerSensor != NULL) {
+            if (engine->accelerometerSensor != nullptr) {
                 ASensorEventQueue_enableSensor(engine->sensorEventQueue,
                                                engine->accelerometerSensor);
                 // We'd like to get 60 events per second (in us).
@@ -242,7 +242,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
         case APP_CMD_LOST_FOCUS:
             // When our app loses focus, we stop monitoring the accelerometer.
             // This is to avoid consuming battery while not being used.
-            if (engine->accelerometerSensor != NULL) {
+            if (engine->accelerometerSensor != nullptr) {
                 ASensorEventQueue_disableSensor(engine->sensorEventQueue,
                                                 engine->accelerometerSensor);
             }
@@ -270,7 +270,7 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
       dlsym(androidHandle, "ASensorManager_getInstanceForPackage");
   if (getInstanceForPackageFunc) {
     JNIEnv* env = nullptr;
-    app->activity->vm->AttachCurrentThread(&env, NULL);
+    app->activity->vm->AttachCurrentThread(&env, nullptr);
 
     jclass android_content_Context = env->GetObjectClass(app->activity->clazz);
     jmethodID midGetPackageName = env->GetMethodID(android_content_Context,
@@ -322,9 +322,9 @@ void android_main(struct android_app* state) {
     engine.sensorEventQueue = ASensorManager_createEventQueue(
                                     engine.sensorManager,
                                     state->looper, LOOPER_ID_USER,
-                                    NULL, NULL);
+                                    nullptr, nullptr);
 
-    if (state->savedState != NULL) {
+    if (state->savedState != nullptr) {
         // We are starting with a previous saved state; restore from it.
         engine.state = *(struct saved_state*)state->savedState;
     }
@@ -340,17 +340,17 @@ void android_main(struct android_app* state) {
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((ident=ALooper_pollAll(engine.animating ? 0 : -1, NULL, &events,
+        while ((ident=ALooper_pollAll(engine.animating ? 0 : -1, nullptr, &events,
                                       (void**)&source)) >= 0) {
 
             // Process this event.
-            if (source != NULL) {
+            if (source != nullptr) {
                 source->process(state, source);
             }
 
             // If a sensor has data, process it now.
             if (ident == LOOPER_ID_USER) {
-                if (engine.accelerometerSensor != NULL) {
+                if (engine.accelerometerSensor != nullptr) {
                     ASensorEvent event;
                     while (ASensorEventQueue_getEvents(engine.sensorEventQueue,
                                                        &event, 1) > 0) {
