@@ -38,7 +38,7 @@ Dependencies
 
 This project uses the OpenGL Mathematics (GLM) library, available at:
 
-    http://glm.g-truc.net/
+    https://github.com/g-truc/glm
 
 For more information about this library and its license, please see
 [readme.md](https://github.com/g-truc/glm/blob/master/readme.md) and
