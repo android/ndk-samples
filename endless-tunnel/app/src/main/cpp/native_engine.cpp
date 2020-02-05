@@ -344,52 +344,46 @@ void NativeEngine::ConfigureOpenGL() {
 
 
 bool NativeEngine::PrepareToRender() {
-    do {
-        // if we're missing a surface, context, or display, create them
-        if (mEglDisplay == EGL_NO_DISPLAY || mEglSurface == EGL_NO_SURFACE ||
-                mEglContext == EGL_NO_CONTEXT) {
+    if (mEglDisplay == EGL_NO_DISPLAY || mEglSurface == EGL_NO_SURFACE ||
+        mEglContext == EGL_NO_CONTEXT) {
 
-            // create display if needed
-            if (!InitDisplay()) {
-                LOGE("NativeEngine: failed to create display.");
-                return false;
-            }
-
-            // create surface if needed
-            if (!InitSurface()) {
-                LOGE("NativeEngine: failed to create surface.");
-                return false;
-            }
-
-            // create context if needed
-            if (!InitContext()) {
-                LOGE("NativeEngine: failed to create context.");
-                return false;
-            }
-
-            LOGD("NativeEngine: binding surface and context (display %p, surface %p, context %p)",
-                    mEglDisplay, mEglSurface, mEglContext);
-
-            // bind them
-            if (EGL_FALSE == eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
-                LOGE("NativeEngine: eglMakeCurrent failed, EGL error %d", eglGetError());
-                HandleEglError(eglGetError());
-            }
-
-            // configure our global OpenGL settings
-            ConfigureOpenGL();
+        // create display if needed
+        if (!InitDisplay()) {
+            LOGE("NativeEngine: failed to create display.");
+            return false;
         }
 
-        // now that we're sure we have a context and all, if we don't have the OpenGL
-        // objects ready, create them.
-        if (!mHasGLObjects) {
-            LOGD("NativeEngine: creating OpenGL objects.");
-            if (!InitGLObjects()) {
-                LOGE("NativeEngine: unable to initialize OpenGL objects.");
-                return false;
-            }
+        // create surface if needed
+        if (!InitSurface()) {
+            LOGE("NativeEngine: failed to create surface.");
+            return false;
         }
-    } while(0);
+
+        // create context if needed
+        if (!InitContext()) {
+            LOGE("NativeEngine: failed to create context.");
+            return false;
+        }
+
+        LOGD("NativeEngine: binding surface and context (display %p, surface %p, context %p)",
+             mEglDisplay, mEglSurface, mEglContext);
+
+        // bind them
+        if (EGL_FALSE == eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
+            LOGE("NativeEngine: eglMakeCurrent failed, EGL error %d", eglGetError());
+            HandleEglError(eglGetError());
+        }
+
+        // configure our global OpenGL settings
+        ConfigureOpenGL();
+    }
+    if (!mHasGLObjects) {
+        LOGD("NativeEngine: creating OpenGL objects.");
+        if (!InitGLObjects()) {
+            LOGE("NativeEngine: unable to initialize OpenGL objects.");
+            return false;
+        }
+    }
 
     // ready to render
     return true;
