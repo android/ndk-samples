@@ -246,9 +246,9 @@ static bool _cooked_event_callback(struct CookedEvent *event) {
             return true;
         case COOKED_EVENT_TYPE_BACK:
             return mgr->OnBackKeyPressed();
+        default:
+            return false;
     }
-
-    return false;
 }
 
 bool NativeEngine::HandleInput(AInputEvent *event) {
