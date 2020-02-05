@@ -252,7 +252,7 @@ static bool _cooked_event_callback(struct CookedEvent *event) {
 }
 
 bool NativeEngine::HandleInput(AInputEvent *event) {
-    return CookEvent(event, _cooked_event_callback) ? 1 : 0;
+    return CookEvent(event, _cooked_event_callback);
 }
 
 bool NativeEngine::InitDisplay() {
@@ -280,9 +280,9 @@ bool NativeEngine::InitSurface() {
         LOGD("NativeEngine: no need to init surface (already had one).");
         return true;
     }
-        
+
     LOGD("NativeEngine: initializing surface.");
-    
+
     EGLint numConfigs;
 
     const EGLint attribs[] = {
@@ -321,7 +321,7 @@ bool NativeEngine::InitContext() {
         LOGD("NativeEngine: no need to init context (already had one).");
         return true;
     }
-        
+
     LOGD("NativeEngine: initializing context.");
 
     // create EGL context
@@ -346,7 +346,7 @@ void NativeEngine::ConfigureOpenGL() {
 bool NativeEngine::PrepareToRender() {
     do {
         // if we're missing a surface, context, or display, create them
-        if (mEglDisplay == EGL_NO_DISPLAY || mEglSurface == EGL_NO_SURFACE || 
+        if (mEglDisplay == EGL_NO_DISPLAY || mEglSurface == EGL_NO_SURFACE ||
                 mEglContext == EGL_NO_CONTEXT) {
 
             // create display if needed
@@ -367,7 +367,7 @@ bool NativeEngine::PrepareToRender() {
                 return false;
             }
 
-            LOGD("NativeEngine: binding surface and context (display %p, surface %p, context %p)", 
+            LOGD("NativeEngine: binding surface and context (display %p, surface %p, context %p)",
                     mEglDisplay, mEglSurface, mEglContext);
 
             // bind them
@@ -380,7 +380,7 @@ bool NativeEngine::PrepareToRender() {
             ConfigureOpenGL();
         }
 
-        // now that we're sure we have a context and all, if we don't have the OpenGL 
+        // now that we're sure we have a context and all, if we don't have the OpenGL
         // objects ready, create them.
         if (!mHasGLObjects) {
             LOGD("NativeEngine: creating OpenGL objects.");
@@ -514,7 +514,7 @@ void NativeEngine::DoFrame() {
 
     if (width != mSurfWidth || height != mSurfHeight) {
         // notify scene manager that the surface has changed size
-        LOGD("NativeEngine: surface changed size %dx%d --> %dx%d", mSurfWidth, mSurfHeight, 
+        LOGD("NativeEngine: surface changed size %dx%d --> %dx%d", mSurfWidth, mSurfHeight,
                 width, height);
         mSurfWidth = width;
         mSurfHeight = height;
@@ -527,7 +527,7 @@ void NativeEngine::DoFrame() {
         mIsFirstFrame = false;
         mgr->RequestNewScene(new WelcomeScene());
     }
-    
+
     // render!
     mgr->DoFrame();
 
