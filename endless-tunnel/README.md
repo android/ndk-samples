@@ -38,10 +38,11 @@ Dependencies
 
 This project uses the OpenGL Mathematics (GLM) library, available at:
 
-    http://glm.g-truc.net/
+    https://github.com/g-truc/glm
 
 For more information about this library and its license, please see
-Tunnel/jni/glm/readme.txt and Tunnel/jni/glm/copying.txt.
+[readme.md](https://github.com/g-truc/glm/blob/master/readme.md) and
+[copying](https://github.com/g-truc/glm/blob/master/copying.txt).
 
 Acknowledgements
 ----------------
@@ -51,7 +52,7 @@ Walkthrough
 -----------
 Source code is under app, it only contains C++ code, which is
 sitting at its default location (same as for other samples) at
-app/jni.
+app/cpp.
 
 The game starts at the android_main function, 
 defined in android_main.cpp, like any standard NDK game.
@@ -84,7 +85,7 @@ on the joystick hat axes (many game controllers generate hat events
 when you press the directional pad), because that way we can use that
 directional pad to drive UI navigation in the main screen.
 
-Tke a look at scene_manager.cpp, scene.cpp, etc to familiarize yourself
+Take a look at scene_manager.cpp, scene.cpp, etc to familiarize yourself
 with them.
 
 ### Geometry And Rendering
