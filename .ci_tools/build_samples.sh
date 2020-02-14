@@ -29,6 +29,7 @@ declare projects=(
     native-codec
     native-media
     native-plasma
+    prefab/curl-ssl
     san-angeles
     sensor-graph
 #    webp
@@ -75,6 +76,7 @@ declare apks=(
   native-codec/app/build/outputs/apk/debug/app-debug.apk
   native-media/app/build/outputs/apk/debug/app-debug.apk
   native-plasma/app/build/outputs/apk/debug/app-debug.apk
+  prefab/curl-ssl/app/build/outputs/apk/debug/app-debug.apk
   sensor-graph/accelerometer/build/outputs/apk/debug/accelerometer-debug.apk
   san-angeles/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
   san-angeles/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
