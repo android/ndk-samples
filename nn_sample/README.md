@@ -46,9 +46,9 @@ Screenshots
 
 Support
 -------
-If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+If you've found an error in these samples, please [file an issue](https://github.com/android/ndk-samples/issues/new).
 
-Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
+Patches are encouraged, and may be submitted by [forking this project](https://github.com/android/ndk-samples/fork) and
 submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
