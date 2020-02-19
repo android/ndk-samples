@@ -3,13 +3,16 @@ Teapots
 Teapots is an collection of Android C++ samples that uses a Teapot rendering to demostrate Android NDK platform features:
 - classic-teapot: Rendering classic teapot mesh using GLES 2.0 API and [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
 - more-teapots: Rendering multiple instances of Classic Teapot with GLES 3.0 Instance Rendering
-- Choreographer-30fps: demonstrates multiple frame rate throttoling techniques based on API level using Chreographer API and EGL Android presentation time extension.
+- choreographer-30fps: demonstrates multiple frame rate throttoling techniques based on API level using Chreographer API and EGL Android presentation time extension.
+- textured-teapot: Rendering classic teapot plus textures
+- image-decoder: Same as textured-teapot, except that texture decoding is done
+  with the ImageDecoder API introduced in Android 11 (Android NDK r21b)
 
 This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
 Pre-requisites
 --------------
-- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 3.5.3+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
@@ -27,9 +30,9 @@ Screenshots
 
 Support
 -------
-If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+If you've found an error in these samples, please [file an issue](https://github.com/android/ndk-samples/issues/new).
 
-Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
+Patches are encouraged, and may be submitted by [forking this project](https://github.com/android/ndk-samples/fork) and
 submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
@@ -37,7 +40,7 @@ submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRI
 
 License
 -------
-Copyright 2015 Google, Inc.
+Copyright 2020 Google LLC.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for
