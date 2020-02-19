@@ -4,9 +4,9 @@ android {
     compileSdkVersion 'android-R'
 
     defaultConfig {
-        applicationId = 'com.sample.teapot'
-        minSdkVersion 17
-        targetSdkVersion 28
+        applicationId = 'com.sample.imagedecoder'
+        minSdkVersion 'R'
+        targetSdkVersion 'R'
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
         }
@@ -34,6 +34,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }
