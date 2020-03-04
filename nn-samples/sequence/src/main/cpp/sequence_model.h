@@ -17,8 +17,8 @@
 #ifndef NNAPI_SIMPLE_MODEL_H
 #define NNAPI_SIMPLE_MODEL_H
 
-#include "neuralnetworks_wrapper.h"
-
+// #include "neuralnetworks_wrapper.h"
+#include <android/NeuralNetworks.h>
 #include <memory>
 
 /**
@@ -80,5 +80,7 @@ class SimpleSequenceModel {
   ANeuralNetworksMemory* memoryOpaqueSumIn_ = nullptr;
   ANeuralNetworksMemory* memoryOpaqueSumOut_ = nullptr;
 };
+
+#define LOG_TAG "NNAPI_SEQUENCE"
 
 #endif  // NNAPI_SIMPLE_MODEL_H

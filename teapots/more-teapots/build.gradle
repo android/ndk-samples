@@ -2,7 +2,9 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 'android-R'
+    buildToolsVersion '30.0.0 rc1'
+    ndkVersion '21.1.6210238'
 
     defaultConfig {
         applicationId  'com.sample.moreteapots'
@@ -34,6 +36,6 @@ android {
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }
