@@ -29,11 +29,6 @@
 
 extern "C" JNIEXPORT jlong JNICALL Java_com_example_android_sequence_MainActivity_initModel(
     JNIEnv* env, jobject /* this */, jfloat ratio) {
-  // Initialize the function pointers to the memory domain APIs.
-  if (InitNeuralNetworks() == 0) {
-    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "Failed to dlopen/dlsym.");
-    return 0;
-  }
 
   auto model = SimpleSequenceModel::Create(ratio);
   if (model == nullptr) {
