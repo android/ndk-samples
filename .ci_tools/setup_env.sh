@@ -80,14 +80,15 @@ retrieve_versions compileSdkVersion $TMP_SETUP_FILENAME
 
 # Install platforms
 while read -r version_; do
-    echo y | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-$version_";
+  version_=${version_//android-/}
+  echo y | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-$version_";
 done < $TMP_SETUP_FILENAME
 # echo "Android platforms:"; cat $TMP_SETUP_FILENAME
 
 # Install side by side ndks
 retrieve_versions ndkVersion $TMP_SETUP_FILENAME
 while read -r version_; do
-    echo y | $ANDROID_HOME/tools/bin/sdkmanager --install "ndk;$version_";
+    echo y | $ANDROID_HOME/tools/bin/sdkmanager "ndk;$version_" --channel=3;
 done < $TMP_SETUP_FILENAME
 # echo "NDK versions:"; cat $TMP_SETUP_FILENAME
 

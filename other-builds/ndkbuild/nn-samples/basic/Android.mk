@@ -18,11 +18,11 @@ LOCAL_PATH := $(call my-dir)
 
 include $(LOCAL_PATH)/../../common.mk
 
-JNI_SRC_PATH := $(SAMPLES_ROOT)/nn_sample/app/src/main/cpp
+JNI_SRC_PATH := $(SAMPLES_ROOT)/nn-samples/basic/src/main/cpp
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := nn_sample
+LOCAL_MODULE    := basic
 LOCAL_SRC_FILES := $(JNI_SRC_PATH)/nn_sample.cpp \
                    $(JNI_SRC_PATH)/simple_model.cpp
 

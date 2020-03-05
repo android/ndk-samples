@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.example.android.nnapidemo"
+        applicationId "com.example.android.basic"
         minSdkVersion 27
         targetSdkVersion 28
     }

@@ -46,7 +46,7 @@ declare projects=(
     other-builds/ndkbuild/native-codec
     other-builds/ndkbuild/native-media
     other-builds/ndkbuild/native-plasma
-    other-builds/ndkbuild/nn_sample
+    other-builds/ndkbuild/nn-samples
     other-builds/ndkbuild/san-angeles
     other-builds/ndkbuild/teapots
     )
@@ -98,7 +98,7 @@ declare apks=(
   other-builds/ndkbuild/native-codec/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/native-media/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/native-plasma/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/nn_sample/app/build/outputs/apk/debug/app-debug.apk
+  other-builds/ndkbuild/nn-samples/basic/build/outputs/apk/debug/basic-debug.apk
   other-builds/ndkbuild/san-angeles/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
   other-builds/ndkbuild/san-angeles/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
   other-builds/ndkbuild/san-angeles/app/build/outputs/apk/debug/app-x86-debug.apk
