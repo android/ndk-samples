@@ -34,6 +34,9 @@
 
 static NativeEngine *_singleton = NULL;
 
+// workaround for internal bug b/149866792
+static NativeEngineSavedState appState = {false};
+
 NativeEngine::NativeEngine(struct android_app *app) {
     LOGD("NativeEngine: initializing.");
     mApp = app;
@@ -136,7 +139,6 @@ JNIEnv* NativeEngine::GetJniEnv() {
     return mJniEnv;
 }
 
-
 void NativeEngine::HandleCommand(int32_t cmd) {
     SceneManager *mgr = SceneManager::GetInstance();
 
@@ -145,6 +147,7 @@ void NativeEngine::HandleCommand(int32_t cmd) {
         case APP_CMD_SAVE_STATE:
             // The system has asked us to save our current state.
             VLOGD("NativeEngine: APP_CMD_SAVE_STATE");
+            mState.mHasFocus = mHasFocus;
             mApp->savedState = malloc(sizeof(mState));
             *((NativeEngineSavedState*)mApp->savedState) = mState;
             mApp->savedStateSize = sizeof(mState);
@@ -154,7 +157,16 @@ void NativeEngine::HandleCommand(int32_t cmd) {
             VLOGD("NativeEngine: APP_CMD_INIT_WINDOW");
             if (mApp->window != NULL) {
                 mHasWindow = true;
+                if (mApp->savedStateSize == sizeof(mState) && mApp->savedState != nullptr) {
+                    mState = *((NativeEngineSavedState*)mApp->savedState);
+                    mHasFocus = mState.mHasFocus;
+                } else {
+                    // Workaround APP_CMD_GAINED_FOCUS issue where the focus state is not
+                    // passed down from NativeActivity when restarting Activity
+                    mHasFocus = appState.mHasFocus;
+                }
             }
+            VLOGD("HandleCommand(%d): hasWindow = %d, hasFocus = %d", cmd, mHasWindow?1:0, mHasFocus?1:0);
             break;
         case APP_CMD_TERM_WINDOW:
             // The window is going away -- kill the surface
@@ -165,10 +177,12 @@ void NativeEngine::HandleCommand(int32_t cmd) {
         case APP_CMD_GAINED_FOCUS:
             VLOGD("NativeEngine: APP_CMD_GAINED_FOCUS");
             mHasFocus = true;
+            mState.mHasFocus = appState.mHasFocus = mHasFocus;
             break;
         case APP_CMD_LOST_FOCUS:
             VLOGD("NativeEngine: APP_CMD_LOST_FOCUS");
             mHasFocus = false;
+            mState.mHasFocus = appState.mHasFocus = mHasFocus;
             break;
         case APP_CMD_PAUSE:
             VLOGD("NativeEngine: APP_CMD_PAUSE");
