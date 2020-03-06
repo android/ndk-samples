@@ -18,7 +18,9 @@
 
 #include "common.hpp"
 
-struct NativeEngineSavedState {};
+struct NativeEngineSavedState {
+    bool mHasFocus;
+};
 
 class NativeEngine {
     public:
