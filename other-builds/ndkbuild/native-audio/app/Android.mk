@@ -30,5 +30,5 @@ LOCAL_LDLIBS    += -lOpenSLES
 LOCAL_LDLIBS    += -llog
 # for native asset manager
 LOCAL_LDLIBS    += -landroid
-LOCL_CFLAGS     += -std=c99
+LOCAL_CFLAGS    += -std=c99
 include $(BUILD_SHARED_LIBRARY)
