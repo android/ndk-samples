@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 'android-R'
     buildToolsVersion '30.0.0 rc1'
-    ndkVersion '21.1.6210238'
+    ndkVersion '21.1.6273396'
 
     defaultConfig {
         applicationId "com.example.android.sequence"
