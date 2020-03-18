@@ -557,9 +557,9 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
 }
 
 /**
- * Compute a single step of accumulating the geometric progression.
+ * Dispatch a single computation step of accumulating the geometric progression.
  */
-static bool ComputeSingleStep(ANeuralNetworksCompilation* compilation,
+static bool DispatchSingleStep(ANeuralNetworksCompilation* compilation,
                               ANeuralNetworksMemory* sumIn,
                               uint32_t sumInLength,
                               ANeuralNetworksMemory* stateIn,
@@ -567,7 +567,9 @@ static bool ComputeSingleStep(ANeuralNetworksCompilation* compilation,
                               ANeuralNetworksMemory* sumOut,
                               uint32_t sumOutLength,
                               ANeuralNetworksMemory* stateOut,
-                              uint32_t stateOutLength) {
+                              uint32_t stateOutLength,
+                              const ANeuralNetworksEvent* waitFor,
+                              ANeuralNetworksEvent** event) {
   // Create an ANeuralNetworksExecution object from the compiled model.
   ANeuralNetworksExecution* execution;
   int32_t status = ANeuralNetworksExecution_create(compilation, &execution);
@@ -642,9 +644,20 @@ static bool ComputeSingleStep(ANeuralNetworksCompilation* compilation,
     return false;
   }
 
-  // Compute the execution of the model.
-  // Note that the execution here is synchronous.
-  status = ANeuralNetworksExecution_compute(execution);
+  // Dispatch the execution of the model.
+  // Note that the execution here is asynchronous with dependencies.
+  constexpr uint64_t kTimeOutDurationInNs = 100'000'000;  // 100 ms
+  const ANeuralNetworksEvent* const* dependencies = nullptr;
+  uint32_t numDependencies = 0;
+  if (waitFor != nullptr) {
+    dependencies = &waitFor;
+    numDependencies = 1;
+  }
+  status = ANeuralNetworksExecution_startComputeWithDependencies(execution,
+                                                                 dependencies,
+                                                                 numDependencies,
+                                                                 kTimeOutDurationInNs,
+                                                                 event);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksExecution_compute failed");
@@ -679,11 +692,14 @@ bool SimpleSequenceModel::Compute(float initialValue,
   fillMemory(sumInFd_, tensorSize_, 0);
   fillMemory(initialStateFd_, tensorSize_, initialValue);
 
+  // The event objects for all computation steps.
+  std::vector<ANeuralNetworksEvent*> events(steps, nullptr);
+
   for (uint32_t i = 0; i < steps; i++) {
     // We will only use ASharedMemory for boundary step executions, and use
     // opaque memories for intermediate results to minimize the data copying.
-    // Note that when setting an opaque memory as the input or output of an 
-    // execution, the offset and length must be set to 0 to indicate the 
+    // Note that when setting an opaque memory as the input or output of an
+    // execution, the offset and length must be set to 0 to indicate the
     // entire memory region is used.
     ANeuralNetworksMemory* sumInMemory;
     ANeuralNetworksMemory* sumOutMemory;
@@ -711,7 +727,10 @@ bool SimpleSequenceModel::Compute(float initialValue,
     stateOutMemory = memoryOpaqueStateOut_;
     stateOutLength = 0;
 
-    if (!ComputeSingleStep(compilation_,
+    // Dispatch a single computation step with a dependency on the previous step, if any.
+    // The actual computation will start once its dependency has finished.
+    const ANeuralNetworksEvent* waitFor = i == 0 ? nullptr : events[i - 1];
+    if (!DispatchSingleStep(compilation_,
                            sumInMemory,
                            sumInLength,
                            stateInMemory,
@@ -719,10 +738,12 @@ bool SimpleSequenceModel::Compute(float initialValue,
                            sumOutMemory,
                            sumOutLength,
                            stateOutMemory,
-                           stateOutLength)) {
+                           stateOutLength,
+                           waitFor,
+                           &events[i])) {
       __android_log_print(ANDROID_LOG_ERROR,
                           LOG_TAG,
-                          "ComputeSingleStep failed for step %d",
+                          "DispatchSingleStep failed for step %d",
                           i);
       return false;
     }
@@ -732,6 +753,9 @@ bool SimpleSequenceModel::Compute(float initialValue,
     std::swap(memoryOpaqueSumIn_, memoryOpaqueSumOut_);
     std::swap(memoryOpaqueStateIn_, memoryOpaqueStateOut_);
   }
+
+  // Since the events are chained, we only need to wait for the last one.
+  ANeuralNetworksEvent_wait(events.back());
 
   // Get the results.
   float* outputTensorPtr = reinterpret_cast<float*>(
@@ -743,6 +767,11 @@ bool SimpleSequenceModel::Compute(float initialValue,
            0));
   *result = outputTensorPtr[0];
   munmap(outputTensorPtr, tensorSize_ * sizeof(float));
+
+  // Cleanup event objects.
+  for (auto* event : events) {
+      ANeuralNetworksEvent_free(event);
+  }
   return true;
 }
 
