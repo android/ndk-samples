@@ -67,7 +67,7 @@ declare apks=(
   endless-tunnel/app/build/outputs/apk/debug/app-debug.apk
   gles3jni/app/build/outputs/apk/debug/app-debug.apk
   hello-gl2/app/build/outputs/apk/debug/app-debug.apk
-  hello-jni/app/build/outputs/apk/arm7/debug/app-arm7-debug.apk
+  hello-jni/app/build/outputs/apk/arm8/debug/app-arm8-debug.apk
   hello-jniCallback/app/build/outputs/apk/debug/app-debug.apk
   hello-libs/app/build/outputs/apk/debug/app-debug.apk
   hello-neon/app/build/outputs/apk/debug/app-debug.apk
