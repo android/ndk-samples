@@ -275,7 +275,7 @@ void Engine::UpdateFrameBuffer(ANativeWindow_Buffer* buf, uint8_t* src) {
     if (src) {
         for (auto height =0; height < buf->height; ++height) {
             memcpy(dst, src, width);
-            dst += stride, src += stride;
+            dst += stride, src += width;
         }
     } else {
         for (auto height =0; height < buf->height; ++height) {
