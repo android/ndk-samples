@@ -1,0 +1,3 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('./gen-libs-prefab-debug.aar'))
+//dependencies { project(':gen-libs') }
