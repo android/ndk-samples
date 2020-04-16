@@ -27,7 +27,7 @@
 
 # Introduction
 
-This document guides developers through NDK configuration in recent [Android Gradle Plugin (AGP)](https://google.github.io/android-gradle-dsl) versions. For Android Studio, this document assumes it uses the same version of Android Gradle Plugin (AGP).
+This document guides developers through NDK configuration in recent [Android Gradle Plugin (AGP)](https://developer.android.com/studio/releases/gradle-plugin) versions. For Android Studio, this document assumes it uses the same version of Android Gradle Plugin (AGP).
 
 The possible directories that AGP locates NDK are:
 
@@ -167,9 +167,7 @@ The related available features that could affect which version of NDK to use are
 </table>
 
 
-Out of the NDK path configuration channels, 
-
-[ndkVersion](#ndkversion) feature added in version 3.5 and above provides a major flexibility for applications: NDK dependency moves from project level to module level, and we strongly recommend developers to take full advantage of the feature.
+Out of the NDK path configuration channels, [ndkVersion](#ndkversion) feature added in version 3.5 and above provides a major flexibility for applications: NDK dependency moves from project level to module level, and we strongly recommend developers to take full advantage of the feature.
 
 With the addition of [android.ndkVersion](#ndkversion), Android Studio may work in 2 ways:
 
@@ -236,7 +234,7 @@ With the above, you could use any NDK locations to configure your local developm
 
 ## NDK with AGP 4.0 and 3.6
 
-The correct way is to use NDK is <code>[ndkVersion](#ndkversion)</code> way: 
+The correct way is to use NDK is <code>[ndkVersion](#ndkversion)</code> way:
 
 *   configure your NDK version to <code>[android.ndkVersion](#ndkversion)</code> in module’s <code>build.gradle;</code>
 *   if building from command line with gradle, you need to [install the NDK](#install-ndks)
@@ -248,7 +246,7 @@ The location for NDK is '''$SDK/ndk/$ndk-version'''.One noticeable difference is
 
 For the apps that do not use [ndkVersion](#ndkversion), AGP 3.6 and later versions embed a [default NDK version](#the-default-ndk-version), which is the NDK version used to test this AGP version at the release time. The purpose is to offer a “known good” NDK for applications that does not specify any particular NDK.
 
-Including the [default NDK version](#the-default-ndk-version), AGP 3.6+ searches NDK in the following locations for the needed version: 
+Including the [default NDK version](#the-default-ndk-version), AGP 3.6+ searches NDK in the following locations for the needed version:
 
 
 <table>
@@ -292,7 +290,7 @@ Refer to [ndkVersion](#ndkversion) for additional information about the feature.
 
 From AGP 3.5, developers are recommended to use the [ndkVersion](#ndkversion):
 *   configure your NDK version to `android.ndkVersion` in module’s `build.gradle`
-*   with Android Studio, the required NDK will be prompted to download automatically if not there 
+*   with Android Studio, the required NDK will be prompted to download automatically if not there
 *   if using command line environment or  CI, you need to [install the NDK](#install-ndks)
 
 and that is all to get NDK working with Android Gradle Plugin/Android Studio 3.5.
@@ -337,18 +335,18 @@ Refer to “[Install NDK](#install-ndks)” for NDK installation details.
 
 # NDK Version Specification
 
-There are 3 parts to NDK version number as `$major.$minor.$build-$suffix`, for example, NDK `21.0.6011959-beta2`:
+There are 4 parts to NDK version number as `$major.$minor.$build-$suffix`, for example, NDK `21.0.6011959-beta2`:
 
 *   major version, i.e. 21
 *   minor version, i.e. 0
 *   build number,  i.e. `6113669`
-*   suffix, i.e. “`beta2`”, 
+*   suffix, i.e. “`beta2`”
 
-The NDK version could be found in the ${ndk}/source.properties file; however when looking at the SDKManager or using sdkmanager command line tool, the suffix string, follows “rc”(release candidate) scheme, for example, **the above version** would become
+The NDK version could be found in the `${ndk}/source.properties` file; however when looking at the SDKManager or using sdkmanager command line tool, the suffix string, follows “rc”(release candidate) scheme, for example, **the above version** would become
 
       “`21.0.6011959 rc2"`
 
-The required NDK version format in <code> [android.ndkVersion](#ndkversion)</code> are AGP version dependent:
+The required NDK version format in <code>[android.ndkVersion](#ndkversion)</code> are AGP version dependent:
 
 <table>
   <tr>
@@ -446,11 +444,17 @@ the relevant options are
     *   1: beta NDK
     *   3: canary NDK, including Developer Preview NDKs
 
+Example:
+
+```
+${sdk}/tools/bin/sdkmanager --channel=3 --install "ndk;21.1.6273396"
+```
+
 To view how many NDK versions are available, use `"--list"` option:
 ```
-    ${sdk}/tools/bin/sdkmanager --channel=${channel} --list
+    ${sdk}/tools/bin/sdkmanager --list
 ```
-For additional sdkmanager usages, refer to[ the formal documentation](https://developer.android.com/studio/command-line/sdkmanager).
+For additional sdkmanager usages, refer to [the formal documentation](https://developer.android.com/studio/command-line/sdkmanager).
 
 
 ## Manually install NDK
@@ -476,10 +480,10 @@ Android Studio 3.5+ implemented the module level `android.ndkVersion` gradle DSL
         ndkVersion "21.1.6273396"
     }
 ```
-`ndkVersion `is the modern NDK SxS** (**side by side) way for Android Studio:
+`ndkVersion` is the modern NDK SxS** (**side by side) way for Android Studio:
 *   NDK SxS = `android.ndkVersion`: it is (still relatively new and) modern Studio way.
 
-Otherwise Studio works in the old fashioned legacy way. Please refer to 
+Otherwise Studio works in the old fashioned legacy way. Please refer to
 [NDK Version Specification](#ndk-version-specification) for specific AGP version’s requirement about version string format!
 
 
@@ -507,7 +511,7 @@ Android Studio creates file `local.properties` at the root of the project to sav
 
 The cached NDK path is called **<code>ndk.dir</code></strong>, normally it is the first place that AGP/Android Studio looks for NDK; on the other hand, <code>ndk.dir </code>is deprecated from AGP 4.1.
 
-The value of `ndk.dir `may come from 3 sources:
+The value of `ndk.dir` may come from 3 sources:
 *   **ANDROID\_NDK\_HOME** environment variable when Studio starts up
 *   **“Android NDK location” **within Android Studio IDE
 *   brutally editing `ndk.dir` in `local.properties` file
@@ -528,7 +532,7 @@ The ANDROID\_NDK\_HOME environment setting is the oldest of all NDK path configu
 *   $ANDROID\_NDK\_HOME → ndk.dir/Studio IDE
 *   ANDROID\_NDK\_HOME is old and deprecated
 
-The replacement for ANDROID\_NDK\_HOME is the modern_ 
+The replacement for ANDROID\_NDK\_HOME is the modern_
 [ndkVersion way](#ndkversion)_: configure NDK in your modules, and install NDK to `$SDK/ndk/$version`
 
 For CI purposes, the environmental variable ANDROID\_NDK\_HOME(deprecated) might be useful when building on the command line
@@ -540,7 +544,7 @@ For CI purposes, the environmental variable ANDROID\_NDK\_HOME(deprecated) might
 ## The default NDK version
 
 AGP 3.6+ embeds a default NDK version (_ANDROID\_GRADLE\_PLUGIN\_FIXED\_DEFAULT\_NDK\_VERSION_), the “known-good” version when a specific AGP was released for application to use if application does not specify a particular NDK version:
-*   the default version will not be used when application uses [ndkVersion](#ndkversion) feature, and 
+*   the default version will not be used when application uses [ndkVersion](#ndkversion) feature, and
 *   it will not be used if application uses `ndk.dir` inside` local.properties`
 
 Please be reminded that each AGP version has its own embedded default NDK version number.
