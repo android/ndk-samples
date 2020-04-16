@@ -380,8 +380,9 @@ The required NDK version format in <code> [android.ndkVersion](#ndkversion)</cod
 
 The recommendation is:
 *   $major.$minor.$build:  for AGP version 4.0/4.1, forget about the lengthy suffix format
-*   $major.$minor.$build$suffix:  AGP 3.5/3.6 need to use the full version, all legal suffixes string would work ( “beta”, “rc”)
-regex format is not supported!
+*   $major.$minor.$build$suffix:  AGP 3.5/3.6 need to use the full version, all legal suffixes string would work ( “beta”, “rc”).
+
+The regex format is not supported!
 
 
 # NDK Release Channels
@@ -407,10 +408,7 @@ Before using SDK Manager, if you need to install NDKs only available on canary c
 *   Preferences > Appearance & Behavior > System Settings > Updates \
 ![alt_text](images/Untitled-document0.png "image_tooltip")
 
-
 SDK Manager GUI is integrated into Android Studio IDE. You could start SDK Manager GUI within Android Studio IDE:
-
-
 
 1.  menu Tools > SDK Manager, or use “SDK Manager Toolkit”
 ![alt_text](images/Untitled-document1.png "image_tooltip")
@@ -435,8 +433,6 @@ SDK Manager GUI is integrated into Android Studio IDE. You could start SDK Manag
 ## The sdkmanager command line tool
 
 [The sdkmanager command line tool](https://developer.android.com/studio/command-line/sdkmanager) shipped inside SDK could also be used to install all NDKs; for some scenarios like CI environment, the command line tool might be more helpful.  The generic syntax for NDK purpose is:
-
-
 ```
 ${sdk}/tools/bin/sdkmanager --install "ndk-selection"  --channel=${channel}
 ```
@@ -449,6 +445,7 @@ the relevant options are
     *   0: Stable NDK
     *   1: beta NDK
     *   3: canary NDK, including Developer Preview NDKs
+
 To view how many NDK versions are available, use `"--list"` option:
 ```
     ${sdk}/tools/bin/sdkmanager --channel=${channel} --list
@@ -460,6 +457,7 @@ For additional sdkmanager usages, refer to[ the formal documentation](https://de
 For some reason you need to install NDK manually, you could do that:
 *   download NDK from [official NDK site](https://developer.android.com/ndk/downloads)
 *   unzip it to `$SDK/ndk/`
+
 There might be differences comparing to the SDK Manager way to install, for example
 *   currently you may not manually download canary NDKs
 
@@ -471,6 +469,7 @@ There might be differences comparing to the SDK Manager way to install, for exam
 In order to support multiple NDKs co-existing:
 *   different NDKs to build different modules in one project
 *   different NDKs to build different projects inside Studio IDE
+
 Android Studio 3.5+ implemented the module level `android.ndkVersion` gradle DSL, for example in app/build.gradle :
 ```
     android {
@@ -479,6 +478,7 @@ Android Studio 3.5+ implemented the module level `android.ndkVersion` gradle DSL
 ```
 `ndkVersion `is the modern NDK SxS** (**side by side) way for Android Studio:
 *   NDK SxS = `android.ndkVersion`: it is (still relatively new and) modern Studio way.
+
 Otherwise Studio works in the old fashioned legacy way. Please refer to 
 [NDK Version Specification](#ndk-version-specification) for specific AGP version’s requirement about version string format!
 
@@ -486,6 +486,7 @@ Otherwise Studio works in the old fashioned legacy way. Please refer to
 ## non-ndkVersion
 If application does not use the new <code>[ndkVersion](#ndkversion)</code> feature, Studio is working in the <strong>legacy mode</strong>:
 *   legacy mode = !android.ndkVersion
+
 We strongly recommend developers to use the modern [ndkVersion](#ndkversion) way!
 
 Android Studio 4.1+ added a new way to customize NDK location with `android.ndkPath`, for example, in module` build.gradle`, you could simply do:
@@ -516,8 +517,8 @@ The value of `ndk.dir `may come from 3 sources:
 
 Cautions for ndk.dir:
 1.  `ndk.dir`’s setting is local to your system: file `local.properties` is Studio generated file; as the name implies, it is local to your development machine , and should not be distributed with source code.
-1.  `ndk.di`r is being deprecated from AGP 4.1+.
-1.  The **ANDROID\_NDK\_HOME** environment variable is deprecated from AGP 3.6+.
+1.  `ndk.dir` is being deprecated from AGP 4.1+.
+1.  The **ANDROID\_NDK\_HOME** environment variable is **deprecated** from AGP 3.6+.
 
 
 ## ANDROID\_NDK\_HOME
@@ -562,4 +563,6 @@ The exact default NDK location depends on AGP version:
     *   <code>SDK/ndk/version2</code>
 The subdirectory names under 'SDK/ndk' could be anything, <code>sdkmanager</code> tool by default chooses to use the <code>${version number}</code>'s as sub-directory names, but you could name them freely: AGP finds the version string in <code>source.properties</code> packed inside NDK.
 
-*   $SDK/ndk-bundle: existed before <code>[ndkVersion](#ndkversion)</code> was added. It could only host one NDK version and is deprecated now but still part of the AGP’s NDK search path. Refer to the specific AGP version section for the deprecation status.
+*   $SDK/ndk-bundle: existed before <code>[ndkVersion](#ndkversion)</code> was added. It could only host one NDK version and is **deprecated** now but still part of the AGP’s NDK search path.
+
+Refer to the specific AGP version section for the deprecation status.
