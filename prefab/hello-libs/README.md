@@ -35,7 +35,7 @@ Getting Started
 1. Open *File/Project Structure...*
   - Click *Download* or *Select NDK location*.
 1. Click *Tools/Android/Sync Project with Gradle Files*.
-1. Click *Run/Run 'app'*.include ':gen-libs'
+1. Click *Run/Run*.
 
 
 Screenshots
