@@ -848,21 +848,9 @@ From here, all <code>
 Unless Android Studio/Android Gradle Plugin(AGP) is purposely configured to go to a specific local directory for NDK, the default NDK locations will be used; in that sense, the default NDK locations are behind the customized NDK location(s).
 
 The exact default NDK location depends on AGP version:
+*   $SDK/ndk/: This is the new location for [ndkVersion](#ndkversion)</code> way. Multiple NDKs could be installed under this default NDK location, like:
+    *   <code>SDK/ndk/version1</code>
+    *   <code>SDK/ndk/version2</code>
+The subdirectory names under 'SDK/ndk' could be anything, <code>sdkmanager</code> tool by default chooses to use the <code>${version number}</code>'s as sub-directory names, but you could name them freely: AGP finds the version string in <code>source.properties</code> packed inside NDK.
 
-
-
-*   $SDK/ndk/: This is the new location for <code>
-
-<p id="gdcalert56" ><span style="color: red; font-weight: bold">>>>>  GDC alert: undefined internal link (link text: "ndkVersion"). Did you generate a TOC? </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert57">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>> </span></p>
-
-[ndkVersion](#heading=h.it7m4v14uo8v)</code> way. Multiple NDKs could be installed under this default NDK location, like:
-    *   <code>$SDK/ndk/$version1</code>
-    *   <code>$SDK/ndk/$version2</code>
-
-    The subdirectory names under <code>$SDK/ndk</code> could be anything, <code>sdkmanager</code> tool by default chooses to use the <code>${version number}</code>s as sub-directory names, but you could name them freely: AGP finds the version string in <code>source.properties</code> packed inside NDK.
-
-*   $SDK/ndk-bundle: existed before <code>
-
-<p id="gdcalert57" ><span style="color: red; font-weight: bold">>>>>  GDC alert: undefined internal link (link text: "ndkVersion"). Did you generate a TOC? </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert58">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>> </span></p>
-
-[ndkVersion](#heading=h.it7m4v14uo8v)</code> was added. It could only host one NDK version and is deprecated now but still part of the AGP’s NDK search path. Refer to the specific AGP version section for the deprecation status.
+*   $SDK/ndk-bundle: existed before <code>[ndkVersion](#ndkversion)</code> was added. It could only host one NDK version and is deprecated now but still part of the AGP’s NDK search path. Refer to the specific AGP version section for the deprecation status.
