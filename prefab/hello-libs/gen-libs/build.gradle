@@ -32,7 +32,7 @@ android {
     }
 }
 
-["Debug", "Release"].forEach { variant ->
+for (variant in ["Debug", "Release"]) {
     task "bundle${variant}PrefabAar"(type: Zip) {
         archiveFileName = "gen-libs-prefab-${variant.toLowerCase()}.aar"
         destinationDirectory = file('../distribution')
