@@ -30,8 +30,8 @@ SimpleModel::SimpleModel(size_t size, int protect, int fd, size_t offset) :
         model_(nullptr),
         compilation_(nullptr),
         dimLength_(TENSOR_SIZE),
-        modelDataFd_(fd),
-        offset_(offset) {
+        offset_(offset),
+        modelDataFd_(fd) {
     tensorSize_ = dimLength_;
     inputTensor1_.resize(tensorSize_);
 
