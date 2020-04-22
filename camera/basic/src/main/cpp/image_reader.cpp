@@ -55,7 +55,7 @@ void OnImageCallback(void *ctx, AImageReader *reader) {
  * Constructor
  */
 ImageReader::ImageReader(ImageFormat *res, enum AIMAGE_FORMATS format)
-    : reader_(nullptr), presentRotation_(0) {
+    : presentRotation_(0), reader_(nullptr) {
   callback_ = nullptr;
   callbackCtx_ = nullptr;
 

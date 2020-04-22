@@ -32,9 +32,9 @@ CameraEngine::CameraEngine(android_app* app)
       cameraGranted_(false),
       rotation_(0),
       cameraReady_(false),
+      camera_(nullptr),
       yuvReader_(nullptr),
-      jpgReader_(nullptr),
-      camera_(nullptr) {
+      jpgReader_(nullptr) {
   memset(&savedNativeWinRes_, 0, sizeof(savedNativeWinRes_));
 }
 
