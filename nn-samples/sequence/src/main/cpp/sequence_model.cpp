@@ -646,7 +646,6 @@ static bool DispatchSingleStep(ANeuralNetworksCompilation* compilation,
 
   // Dispatch the execution of the model.
   // Note that the execution here is asynchronous with dependencies.
-  constexpr uint64_t kTimeOutDurationInNs = 100'000'000;  // 100 ms
   const ANeuralNetworksEvent* const* dependencies = nullptr;
   uint32_t numDependencies = 0;
   if (waitFor != nullptr) {
@@ -656,7 +655,7 @@ static bool DispatchSingleStep(ANeuralNetworksCompilation* compilation,
   status = ANeuralNetworksExecution_startComputeWithDependencies(execution,
                                                                  dependencies,
                                                                  numDependencies,
-                                                                 kTimeOutDurationInNs,
+                                                                 0,  // infinite timeout duration
                                                                  event);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
