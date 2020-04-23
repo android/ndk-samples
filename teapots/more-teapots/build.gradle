@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 'android-R'
-    buildToolsVersion '30.0.0 rc1'
-    ndkVersion '21.1.6210238'
+    buildToolsVersion '30.0.0 rc2'
+    ndkVersion '21.0.6113669'
 
     defaultConfig {
         applicationId  'com.sample.moreteapots'
