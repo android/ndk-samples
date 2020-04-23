@@ -34,7 +34,6 @@ add_library(${PROJECT_NAME}
     TeapotRenderer.cpp
     ImageDecoderRender.cpp
     Texture.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/image_wrapper/imagedecoder_wrapper.c
 )
 set_target_properties(${PROJECT_NAME}
   PROPERTIES
@@ -54,4 +53,4 @@ set_target_properties(${PROJECT_NAME}
   PROPERTIES  LINK_FLAGS "-u ANativeActivity_onCreate")
 
 # add lib dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE NdkHelper)
+target_link_libraries(${PROJECT_NAME} PRIVATE NdkHelper jnigraphics)

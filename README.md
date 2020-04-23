@@ -17,11 +17,12 @@ Additional Android Studio samples:
 
 Documentation
 - [Add Native Code to Your Project](https://developer.android.com/studio/projects/add-native-code.html)
+- [configure NDK for Android Studio/Gradle Plugin](https://github.com/android/ndk-samples/wiki/Configure-NDK-Path)
 - [CMake for NDK](https://developer.android.com/ndk/guides/cmake.html)
-- [Hello-CMake Codelab](https://codelabs.developers.google.com/codelabs/android-studio-cmake/index.html)
 
 Known Issues
-- Some are documented at [Android Studio](http://tools.android.com/knownissues) page
+- For Studio related issues, refer to [Android Studio known issues](http://tools.android.com/knownissues) page
+- For NDK issues, refer to [ndk issues](https://github.com/android/ndk/issues)
 
 For samples using `Android.mk` build system with `ndk-build` see the [android-mk](https://github.com/googlesamples/android-ndk/tree/android-mk) branch.
 

@@ -18,7 +18,7 @@
 #include <android/data_space.h>
 
 #include "Texture.h"
-#include "imagedecoder_wrapper.h"
+#include <android/imagedecoder.h>
 
 #define MODULE_NAME "Teapot::Texture"
 #include "android_debug.h"
@@ -29,10 +29,6 @@
  */
 static bool Load2DTextureFromAsset(std::string& assetFile, AAssetManager* mgr,
                                    GLenum target) {
-  // One time initialization to workaround Android Gradle Plugin issue for DP1
-  // to be removed after the issue is fixed before DP2.
-  InitImageDecoder();
-
   int32_t imgWidth, imgHeight;
   std::vector<uint8_t> imgBits;
 
