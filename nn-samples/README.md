@@ -10,7 +10,7 @@ Check each module's README.md for additional descriptions and additional require
 
 Pre-requisites
 --------------
-- Android Studio 3.0+.
+- Android Studio 4.0+.
 - NDK r16+.
 - Android API 27+.
 
