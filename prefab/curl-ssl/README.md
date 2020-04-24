@@ -1,18 +1,18 @@
 # curl-ssl
 
-The curl-ssl sample shows how to use [Prefab] to import native dependencies from [Google Maven]. This  
-sample uses [curl], [OpenSSL], and [JsonCpp] to display a list of the most  
-recent 10 reviews submitted to AOSP's code review system.  
-To use [Prefab] with Android Studio 4.0+, simply follow the 3 steps:
+The curl-ssl sample shows how to import native dependencies from Maven. This
+sample uses [curl], [OpenSSL], and [JsonCpp] to display a list of the most
+recent 10 reviews submitted to AOSP's code review system.
 
-* turn on prefab feature in [gradle.properties] 
-* declare the dependencies in app's [build.gradle]
-* add the dependencies into native module's [android.mk] or [CMakeLists.txt]
+To use [Prefab] with Android Gradle Plugin 4.0+, simply follow these 3 steps:
+
+* Enable the prefab feature in [gradle.properties]
+* Declare the dependencies in the app module's [build.gradle]
+* Add the dependencies into the native module's [android.mk] or [CMakeLists.txt]
 
 From here on, the headers and native libs in the dependencies are [ready to use]!
 
-[Google Maven]:https://maven.google.com/web/index.html
-[Prefab]:https://github.com/google/prefab
+[Prefab]:https://google.github.io/prefab/
 [curl]: https://curl.haxx.se/  
 [OpenSSL]: https://www.openssl.org/  
 [JsonCpp]: https://github.com/open-source-parsers/jsoncpp
