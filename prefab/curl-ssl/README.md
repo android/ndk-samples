@@ -1,12 +1,27 @@
 # curl-ssl
 
-The curl-ssl sample shows how to import native dependencies from Maven. This
-sample uses [curl], [OpenSSL], and [JsonCpp] to display a list of the most
-recent 10 reviews submitted to AOSP's code review system.
+The curl-ssl sample shows how to use [Prefab] to import native dependencies from [Google Maven]. This  
+sample uses [curl], [OpenSSL], and [JsonCpp] to display a list of the most  
+recent 10 reviews submitted to AOSP's code review system.  
+To use [Prefab] with Android Studio 4.0+, simply follow the 3 steps:
 
-[curl]: https://curl.haxx.se/
-[OpenSSL]: https://www.openssl.org/
+* turn on prefab feature in [gradle.properties] 
+* declare the dependencies in app's [build.gradle]
+* add the dependencies into native module's [android.mk] or [CMakeLists.txt]
+
+From here on, the headers and native libs in the dependencies are [ready to use]!
+
+[Google Maven]:https://maven.google.com/web/index.html
+[Prefab]:https://github.com/google/prefab
+[curl]: https://curl.haxx.se/  
+[OpenSSL]: https://www.openssl.org/  
 [JsonCpp]: https://github.com/open-source-parsers/jsoncpp
+[gradle.properties]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/gradle.properties#L22
+[build.gradle]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/build.gradle#L64
+[android.mk]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/src/main/cpp/Android.mk#L32
+[CMakeLists.txt]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/src/main/cpp/CMakeLists.txt#L20
+[ready to use]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/src/main/cpp/CMakeLists.txt#L26
+
 
 ## Pre-requisites
 
