@@ -86,7 +86,6 @@ Java_com_example_helloneon_HelloNeon_stringFromJNI( JNIEnv* env,
     AndroidCpuFamily family;
     uint64_t features;
     char buffer[512];
-    char tryNeon = 0;
     double  t0, t1, time_c, time_neon;
 
     /* setup FIR input - whatever */
