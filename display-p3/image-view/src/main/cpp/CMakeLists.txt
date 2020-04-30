@@ -21,7 +21,7 @@ get_filename_component(THIRD_PARTY_LIB_DIR
     ABSOLUTE)
 
 # now build app's shared lib
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Werror -Wall -Wno-unused-function")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Werror -Wall -Wno-unused-function")
 
 add_library(native-activity SHARED
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
