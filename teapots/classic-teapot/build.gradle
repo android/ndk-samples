@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 'android-R'
     buildToolsVersion '30.0.0 rc2'
-    ndkVersion '21.0.6113669'
+    ndkVersion '21.1.6352462'
 
     defaultConfig {
         applicationId = 'com.sample.teapot'
