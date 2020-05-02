@@ -381,17 +381,19 @@ For AGP versions that could not auto-download NDK, there are at least 3 common w
 Before using SDK Manager, if you need to install NDKs available only on canary channel, you would need to turn it on. Canary Channel could be enabled inside Android Studio IDE:
 
 *   Preferences > Appearance & Behavior > System Settings > Updates \
-![alt_text](images/Untitled-document0.png "image_tooltip")
+![](https://github.com/android/ndk-samples/blob/documentation/images/ndk-path/studio-canary-channel.png)
 
 SDK Manager GUI is integrated into Android Studio IDE. You could start SDK Manager GUI within Android Studio IDE:
 
-1.  menu Tools > SDK Manager, or use “SDK Manager Toolkit”
-![alt_text](images/Untitled-document1.png "image_tooltip")
+1.  menu "Tools" > "SDK Manager", or use the “SDK Manager Toolkit”
+![](https://github.com/android/ndk-samples/blob/documentation/images/ndk-path/studio-sdkmanager-toolkit.png)
 
 1.  left hand pane, “Appearance & Behaviour” > “System Settings” > “Android SDK”
-1.  tab “SDK Tools”
+1.  tab “SDK Tools” \
+![](https://github.com/android/ndk-samples/blob/documentation/images/ndk-path/studio-sdktools.png)
+
 1.  enable “Show Package Details” at the lower right corner \
-![alt_text](images/Untitled-document2.png "image_tooltip")
+![](https://github.com/android/ndk-samples/blob/documentation/images/ndk-path/studio-sxs-ndk.png)
 
 1.  Select NDK
     1.  for Android Studio 3.5.0+, install “Side by Side NDK”
@@ -488,7 +490,7 @@ The value of `ndk.dir` may come from 3 sources:
 *   brutally editing `ndk.dir` in `local.properties` file
 
 “**Android NDK location**” in Android Studio IDE would always be in sync with `ndk.dir`: one gets changed, the other will be mirrored automatically; you could find “Android NDK location” under *“File” > “Project Structure” > “Android NDK location”*:
-![alt_text](images/Untitled-document3.png "image_tooltip")
+![](https://github.com/android/ndk-samples/blob/documentation/images/ndk-path/studio-ndk-location.png)
 
 Cautions for ndk.dir:
 1.  `ndk.dir`’s setting is local to your system: file `local.properties` is Studio generated file; as the name implies, it is local to your development machine , and should not be distributed with source code.
