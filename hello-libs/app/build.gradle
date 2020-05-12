@@ -22,12 +22,6 @@ android {
                           'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main {
-            // let gradle pack the shared library into apk
-            jniLibs.srcDirs = ['../distribution/gperf/lib']
-        }
-    }
     externalNativeBuild {
         cmake {
             version '3.10.2'

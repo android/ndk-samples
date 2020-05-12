@@ -24,8 +24,8 @@ add_library(lib_gmath STATIC IMPORTED)
 set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
     ${distribution_DIR}/gmath/lib/${ANDROID_ABI}/libgmath.a)
 
-# shared lib will also be tucked into APK and sent to target
-# refer to app/build.gradle, jniLibs section for that purpose.
+# Since this library is a dependency of hello-libs, it is automatically packed
+# into the APK.
 # ${ANDROID_ABI} is handy for our purpose here. Probably this ${ANDROID_ABI} is
 # the most valuable thing of this sample, the rest are pretty much normal cmake
 add_library(lib_gperf SHARED IMPORTED)
