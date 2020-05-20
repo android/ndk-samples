@@ -1,3 +1,2 @@
 include ':classic-teapot', ':more-teapots',
-        ':choreographer-30fps', ':textured-teapot',
-	':image-decoder'
+        ':choreographer-30fps', ':textured-teapot'

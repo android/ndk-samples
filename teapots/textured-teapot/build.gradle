@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'android-R'
-    buildToolsVersion '30.0.0 rc2'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
     ndkVersion '21.1.6352462'
 
     defaultConfig {
