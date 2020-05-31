@@ -18,7 +18,7 @@ repository.
 
 Pre-requisites
 --------------
-- Android Studio 4.0 beta4+ with [NDK](https://developer.android.com/ndk/).
+- Android Studio 4.0+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
