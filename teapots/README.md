@@ -12,7 +12,7 @@ This sample uses the new [Android Studio CMake plugin](http://tools.android.com/
 
 Pre-requisites
 --------------
-- Android Studio 4.0.0-beta04+ with [NDK](https://developer.android.com/ndk/)
+- Android Studio 4.0.0 with [NDK](https://developer.android.com/ndk/)
 - Android [NDK 21.1+ installed](https://github.com/android/ndk-samples/wiki/Configure-NDK-Path)
 
 Getting Started
