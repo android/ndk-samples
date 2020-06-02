@@ -130,12 +130,17 @@ PNGHeader::PNGHeader(std::string& name, uint8_t *buf, uint64_t len) :
       default:
         LOGV("====Unprocessed CHUNK %c%c%c%c",
              type.bytes[3], type.bytes[2], type.bytes[1], type.bytes[0]);
-        // on purpose: pass through
+        [[fallthrough]];
       case PNG_CHUNCK('I', 'D', 'A', 'T'):
+        [[fallthrough]];
       case PNG_CHUNCK('i', 'T', 'X','t'):
+        [[fallthrough]];
       case PNG_CHUNCK('t', 'T', 'X', 't'):
+        [[fallthrough]];
       case PNG_CHUNCK('z', 'T', 'X', 't'):
+        [[fallthrough]];
       case PNG_CHUNCK('t', 'I', 'M', 'E'):
+        [[fallthrough]];
       case PNG_CHUNCK('I', 'E', 'N', 'D'):
         offset_ += sizeof(uint32_t) + len.value;  // CRC + data_size
         break;

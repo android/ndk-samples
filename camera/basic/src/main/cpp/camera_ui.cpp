@@ -91,7 +91,6 @@ void CameraEngine::OnTakePhoto() {
 }
 
 void CameraEngine::OnPhotoTaken(const char* fileName) {
-  int32_t nameLen = strlen(fileName);
   JNIEnv *jni;
   app_->activity->vm->AttachCurrentThread(&jni, NULL);
 
