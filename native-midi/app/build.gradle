@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
+    ndkVersion '21.1.6352462'
+    
     defaultConfig {
         applicationId "com.example.nativemidi"
         minSdkVersion 29
