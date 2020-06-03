@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
+    ndkVersion '21.2.6472646'
+    
     defaultConfig {
         applicationId "com.example.android.nnapidemo"
         minSdkVersion 27

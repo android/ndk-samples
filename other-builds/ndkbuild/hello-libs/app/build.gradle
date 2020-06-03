@@ -10,6 +10,7 @@ def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
 
 android {
     compileSdkVersion 29
+    ndkVersion '21.2.6472646'
 
     defaultConfig {
         applicationId = 'com.example.hellolibs'
