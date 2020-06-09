@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'android-R'
-    buildToolsVersion '30.0.0 rc4'
-    ndkVersion '21.1.6363665'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.0'
+    ndkVersion '21.3.6528147'
 
     defaultConfig {
         applicationId = 'com.sample.imagedecoder'
-        minSdkVersion 'R'
-        targetSdkVersion 'R'
+        minSdkVersion 30
+        targetSdkVersion 30
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
         }

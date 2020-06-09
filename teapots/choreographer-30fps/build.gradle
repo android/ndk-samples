@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'android-R'
-    buildToolsVersion '30.0.0 rc2'
-    ndkVersion '21.1.6352462'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.0'
+    ndkVersion '21.3.6528147'
 
     defaultConfig {
         applicationId 'com.sample.choreographer'
