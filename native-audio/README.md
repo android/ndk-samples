@@ -4,6 +4,8 @@ Native Audio is an Android sample that plays and records sounds with the C++ Ope
 
 This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
+***Note that OpenSL ES is [deprecated from Android 11](https://developer.android.com/preview/features#deprecate-opensl), developers are recommended to use [Oboe](https://github.com/google/oboe) library instead.***
+
 Pre-requisites
 --------------
 - Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
