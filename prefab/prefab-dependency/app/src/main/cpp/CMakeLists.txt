@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.10.2)
 
 # Declares and names the project.
 
-project("prefab_dependency")
+project(prefab_dependency VERSION 1.0.0 LANGUAGES CXX)
 
 # find the natve library provided by milibrary-debug / prefab
 # What do I have to do here ?
