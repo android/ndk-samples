@@ -50,5 +50,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
+    implementation "com.android.ndk.thirdparty:curl:7.69.1-alpha-1"
     implementation project(path: ':mylibrary-debug')
 }
