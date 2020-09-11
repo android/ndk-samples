@@ -67,4 +67,6 @@ Java_com_example_curlssl_MainActivity_getGerritChanges(JNIEnv* env,
                                                    get_change_titles(cacert));
 }
 
+
+
 }  // namespace curlssl

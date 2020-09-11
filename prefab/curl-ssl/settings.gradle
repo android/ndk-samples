@@ -1,2 +1,3 @@
 rootProject.name='curl-ssl'
 include ':app'
+include ':mylibrary-debug'
