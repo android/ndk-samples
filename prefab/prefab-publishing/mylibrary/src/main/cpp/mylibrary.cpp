@@ -16,5 +16,7 @@
 
 #include "mylibrary/mylibrary.h"
 
-void my_api() {}
+std::string my_api() {
+    return "Lorem ipsum dolor sit amet";
+}
 

@@ -16,5 +16,7 @@
 
 #pragma once
 
-void my_api();
+#include <string>
+
+std::string my_api();
 
