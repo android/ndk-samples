@@ -19,7 +19,7 @@ project(app VERSION 1.0.0 LANGUAGES CXX)
 
 find_package(curl REQUIRED CONFIG)
 find_package(jsoncpp REQUIRED CONFIG)
-#
+# add 'mlibrary' which comes from the prefab-publishing example
 find_package(mylibrary REQUIRED CONFIG)
 
 add_library(app SHARED app.cpp http.cpp logging.cpp)
