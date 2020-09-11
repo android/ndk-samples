@@ -23,6 +23,7 @@
 #include "java_interop.h"
 #include "json/json.h"
 #include "logging.h"
+#include "mylibrary/mylibrary.h"
 
 namespace curlssl {
 namespace {
@@ -60,11 +61,18 @@ Java_com_example_curlssl_MainActivity_getGerritChanges(JNIEnv* env,
   if (cacert_java == nullptr) {
     logging::FatalError(env, "cacert argument cannot be null");
   }
+  const std::string stringFromMyLibrary=my_api();
+  std::vector<std::string> tmp{stringFromMyLibrary};
 
   const std::string cacert =
       curlssl::jni::Convert<std::string>::from(env, cacert_java);
-  return jni::Convert<jobjectArray, jstring>::from(env,
-                                                   get_change_titles(cacert));
+  const bool testMylibrary=true;
+  if(testMylibrary){
+    return jni::Convert<jobjectArray, jstring>::from(env,tmp);
+  }else{
+    return jni::Convert<jobjectArray, jstring>::from(env,
+                                                     get_change_titles(cacert));
+  }
 }
 
 
