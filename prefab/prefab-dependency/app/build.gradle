@@ -5,7 +5,7 @@ plugins {
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.2"
-
+    ndkVersion '21.2.6472646'
     defaultConfig {
         applicationId "constantin.prefab_dependency"
         minSdkVersion 22
@@ -17,6 +17,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags '-std=c++17'
+                arguments "-DANDROID_STL=c++_shared"
             }
         }
     }
