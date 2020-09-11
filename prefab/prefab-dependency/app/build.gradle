@@ -31,6 +31,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        // Do not forget to enable prefab for this module !
         prefab = true
     }
     compileOptions {
@@ -43,7 +44,6 @@ android {
             version '3.10.2'
         }
     }
-
 }
 
 dependencies {
