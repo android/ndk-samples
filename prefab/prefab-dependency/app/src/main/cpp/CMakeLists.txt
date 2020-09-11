@@ -11,7 +11,7 @@ project(prefab_dependency VERSION 1.0.0 LANGUAGES CXX)
 
 # find the natve library provided by milibrary-debug / prefab
 # What do I have to do here ?
-#find_package(mylibrary REQUIRED CONFIG)
+find_package(mylibrary REQUIRED CONFIG)
 #find_package(curl REQUIRED CONFIG)
 
 # Creates and names a library, sets it as either STATIC
@@ -50,4 +50,6 @@ target_link_libraries( # Specifies the target library.
 
                        # Links the target library to the log library
                        # included in the NDK.
-                       ${log-lib} )
+                       ${log-lib}
+                       mylibrary::mylibrary
+        )
