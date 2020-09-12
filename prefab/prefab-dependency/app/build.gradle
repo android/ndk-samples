@@ -53,4 +53,5 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
     implementation project(path: ':mylibrary')
+    //implementation project(path: ':TelemetryCore')
 }

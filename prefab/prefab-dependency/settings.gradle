@@ -1,3 +1,4 @@
 rootProject.name = "prefab-dependency"
 include ':app'
 include ':mylibrary'
+include ':TelemetryCore'
