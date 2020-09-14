@@ -11,7 +11,6 @@ project(prefab_dependency VERSION 1.0.0 LANGUAGES CXX)
 
 # find the natve library provided by milibrary / prefab
 find_package(mylibrary REQUIRED CONFIG)
-find_package(TelemetryCore REQUIRED CONFIG)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -51,6 +50,5 @@ target_link_libraries( # Specifies the target library.
                        # included in the NDK.
                        ${log-lib}
                         # Links to the library provided by prefab-publishing
-                       #mylibrary::mylibrary
-                       #TelemetryCore::TelemetryReceiver
+                       mylibrary::mylibrary
         )
