@@ -12,7 +12,7 @@ Java_constantin_prefab_1dependency_MainActivity_stringFromJNI(
     //std::string hello = "Hello from C++";
     //const std::string stringFromMyLibrary=my_api();
     //BaseTelemetryReceiver* t;
-    const std::string stringFromMyLibrary="";
+    const std::string stringFromMyLibrary="empty";
     //TelemetryReceiver* telemetryReceiver;
     return env->NewStringUTF(stringFromMyLibrary.c_str());
 }
