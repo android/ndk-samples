@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.10.2)
 project(prefab_dependency VERSION 1.0.0 LANGUAGES CXX)
 
 # find the natve library provided by milibrary / prefab
-#find_package(mylibrary REQUIRED CONFIG)
+find_package(mylibrary REQUIRED CONFIG)
 find_package(TelemetryCore REQUIRED CONFIG)
 
 # Creates and names a library, sets it as either STATIC
