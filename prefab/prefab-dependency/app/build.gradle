@@ -32,7 +32,7 @@ android {
     buildFeatures {
         viewBinding = true
         // Do not forget to enable prefab for this module !
-        // But it is only needed to enable prefab and not prefabPublishing
+        // But you only have to enable prefab and not prefabPublishing
         prefab = true
     }
     compileOptions {
