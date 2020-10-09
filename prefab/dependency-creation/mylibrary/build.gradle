@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'com.android.library'
-}
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
@@ -39,14 +37,24 @@ android {
         }
     }
 
+    // Enable prefab intergrated inside AGP 4.1+
     buildFeatures {
         prefabPublishing true
     }
 
+    // Configure prefab for module headers
     prefab {
         mylibrary {
             headers "src/main/cpp/include"
         }
     }
+
+    // Avoid packing the unnecessary libraries into final AAR, for details
+    // refer to https://issuetracker.google.com/issues/168777344#comment5
+    packagingOptions {
+//        exclude("**/libmylibrary.so")
+//        exclude("**/libc++_shared.so")
+    }
+
 }
 

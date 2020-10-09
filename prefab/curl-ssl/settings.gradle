@@ -1,2 +1,0 @@
-rootProject.name='curl-ssl'
-include ':app'
