@@ -3,45 +3,51 @@ Prefab Samples
 
 The samples here are to demontrate how to use [the Prefab feature] in Android Gradle Plugin.
 Generally speaking, Prefab is a mechanism to make C/C++ libraries available to the gradle's
-C/C++ build system, and the requirement is that the C/C++ libraries be organized in the
-pre-defined format and packed inside AARs. Prefab's flow in Android Gradle Plugin, at high level,
-could be viewed as:
+C/C++ build system, with the requirement that the C/C++ libraries are organized in the
+[Prefab format] and packed inside AARs. Conceptually, Prefab's flow in Android Gradle Plugin,
+at high level, could be viewed as:
 
-1. Use Prefab to package C/C++ libraries (including the header files), called modules, into AAR
+1. Use AGP to pack C/C++ libraries (including the header files), called modules, into AAR
 1. Distribute AARs with maven center or other mechanisms, but this is not Prefab specific
-1. Add AAR dependency to your application, now you have access to the AAR ( but not prefab modules yet);
-   but this is not Prefab specific either
+1. Add AAR dependency to your application, now you have access to the AAR (but not prefab modules yet);
+   again this is not Prefab specific either
 1. Enable Prefab in the gradle scripts to access prefab module(s) inside AAR
-1. Now you could use the Prefab modules in your app (in the source files and C/C++ build system)
+1. Use Prefab modules in your native build system such as CMake or ndk-build
+
+As the author of AAR, you need go through the full cycle described above; as AAR users, you just need
+to do step 3 and step 4, which is the huge benefit for your application development.
 
 Note again that the step 2 and 3 above are not C/C++ or prefab specific, please refer to
-[the formal AAR documentations] for details. The rest of the steps are covered in the Prefab samples here:
+[the AAR documentation] for details.
 
-* dependency-creation is for how to create Prefab dependency into an AAR
-* dependency-integration is for how to use Prefab AARs hosted in Google Maven Center
+With that in mind, the samples here collectively demonstrate prefab usage with:
 
-curl-ssl and prefab-publishing directories are migrated into the samples named above.
+* prefab-publishing: shows how to create Prefab dependency into an AAR
+* prefab-dependency: shows how to import native dependencies form [GMaven]
+* curl-ssl: for shows to use 2 very specific and important AARs (curl and ssl)
 
 
 [the Prefab feature]: https://developer.android.com/studio/build/native-dependencies?buildsystem=cmake&agpversion=4.0
+[Prefab format]: https://google.github.io/prefab
 [the formal AAR documentations]: https://developer.android.com/studio/projects/android-library
+[GMaven]:(https://maven.google.com/web/index.html?q=ndk#com.android.ndk.thirdparty)
 
 Prefab Availability
 -------------------
 
-Prefab has been added into Android Gradle Plugin since version 4:
-* Using Prefab AARs: AGP 4.0+ (with update in 4.1+)
-* Generating Prefab AARs: AGP 4.1+
+Support for Prefab packages has been added available Android Gradle Plugin since version 4.0:
+* Using Prefab AARs requires AGP 4.0+ (with some update in 4.1+)
+* Generating AARs that export native dependencies requires AGP 4.1+
 
-The prefab AARs used by the samples here are hosted at [Google Maven], but you could
-hosting your prefab AARs in anywhere accessible to gradle.
+The prefab AARs used by the samples here are hosted at [Google Maven], but you can
+host your prefab AARs anywhere accessible to gradle.
 
 [Google Maven]: https://maven.google.com/web/index.html#com.android.ndk.thirdparty
 
 Pre-requisites
 --------------
 
-* Android Gradle Plugin 4.0+/4.1+
+* Android Gradle Plugin 4.0+
 * The [Android NDK](https://developer.android.com/ndk/)
 
 Please check for the individial sample's README.md for anything specific to that sample.

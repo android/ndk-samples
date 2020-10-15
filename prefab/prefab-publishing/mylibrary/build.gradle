@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
+plugins {
+   id  'com.android.library'
+}
 
 android {
-    compileSdkVersion 29
-    ndkVersion '21.2.6472646'
+    compileSdkVersion 30
+    ndkVersion '21.3.6528147'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
 
         externalNativeBuild {
             cmake {
@@ -37,23 +39,26 @@ android {
         }
     }
 
-    // Enable prefab intergrated inside AGP 4.1+
+    // Enable creation of Prefab packages and integration into AAR.
     buildFeatures {
         prefabPublishing true
     }
 
-    // Configure prefab for module headers
+    // Configure prefab to include the "mylibrary" module from the native build system,
+    // and export the headers in src/main/cpp/include.
     prefab {
         mylibrary {
             headers "src/main/cpp/include"
         }
     }
 
-    // Avoid packing the unnecessary libraries into final AAR, for details
+    // Avoid packing the unnecessary libraries into final AAR. For details
     // refer to https://issuetracker.google.com/issues/168777344#comment5
+    // Note that if your AAR's Java code uses any C/C++ code support in the same AAR,
+    //      the workaround could not be used.
     packagingOptions {
-//        exclude("**/libmylibrary.so")
-//        exclude("**/libc++_shared.so")
+        exclude("**/libmylibrary.so")
+        exclude("**/libc++_shared.so")
     }
 
 }
