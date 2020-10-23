@@ -25,7 +25,7 @@
 namespace jsonparse {
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_jsonparse_MainActivity_getJsonValue(JNIEnv *env,
+Java_com_example_prefabdependency_MainActivity_getJsonValue(JNIEnv *env,
                                                      jobject /* this */,
                                                      jstring jsonFromJava,
                                                      jstring keyFromJava) {
@@ -47,4 +47,4 @@ Java_com_example_jsonparse_MainActivity_getJsonValue(JNIEnv *env,
   return jni::Convert<jstring>::from(env, root[key].asString());
 }
 
-}  // namespace jsonparse
+}  // namespace com.example.prefabdependency

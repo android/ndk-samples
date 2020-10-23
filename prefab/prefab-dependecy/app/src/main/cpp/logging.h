@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-#include "logging.h"
+#pragma once
 
 #include <jni.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 namespace jsonparse::logging {
 
 [[noreturn, gnu::format(printf, 2, 3)]] void FatalError(JNIEnv* env,
-                                                        const char* fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  char* msg = nullptr;
-  vasprintf(&msg, fmt, ap);
-  va_end(ap);
+                                                        const char* fmt, ...);
 
-  env->FatalError(msg);
-  // env->FatalError() is specified to not return, but the function is not
-  // annotated with the noreturn attribute. abort() just in case.
-  abort();
-}
-
-}  // namespace jsonparse::logging
+}  // namespace com.example.prefabdependency::logging

@@ -21,7 +21,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.example.jsonparse"
+        applicationId "com.example.com.example.prefabdependency"
         minSdkVersion 21
         targetSdkVersion 29
         ndkVersion "21.3.6528147"

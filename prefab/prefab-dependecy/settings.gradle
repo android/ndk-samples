@@ -1,0 +1,2 @@
+rootProject.name='prefab-dependency'
+include ':app'

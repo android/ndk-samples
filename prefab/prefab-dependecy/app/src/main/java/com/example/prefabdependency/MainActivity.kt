@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jsonparse
+package com.example.prefabdependency
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

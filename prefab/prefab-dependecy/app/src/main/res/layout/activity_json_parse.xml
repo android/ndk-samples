@@ -5,7 +5,7 @@
     android:id="@+id/activity_json_parse"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.jsonparse.MainActivity">
+    tools:context="com.example.prefabdependency.MainActivity">
 
     <TextView
         android:id="@+id/result_textview"
