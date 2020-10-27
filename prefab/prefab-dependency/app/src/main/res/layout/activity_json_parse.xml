@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_json_parse"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.prefabdependency.MainActivity">
+
+    <TextView
+        android:id="@+id/result_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_json_parse"
+        app:layout_constraintLeft_toLeftOf="@+id/activity_json_parse"
+        app:layout_constraintRight_toRightOf="@+id/activity_json_parse"
+        app:layout_constraintTop_toTopOf="@+id/activity_json_parse" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
