@@ -4,10 +4,10 @@ prefab-dependency
 C/C++ dependencies are C/C++ libraries packed with [Prefab] format into an AAR.
 This sample shows how to import [JsonCPP] AAR, one example of [C/C++ dependencies], from Google Maven to an Android project.
 
-[Prefab] could be enabled from Android Gradle Plugin 4.0+. In roder to use the feature, follow these 3 steps:
+[Prefab] could be enabled from Android Gradle Plugin 4.0+. In order to use the feature, follow these 3 steps:
 
 * Enable the prefab feature in [gradle.properties]. **Note** that in 4.1+, this needs to be
-  done with `android.buildFeatures.prefab=true` in the application's build.gradle file.
+  done with `android.buildFeatures.prefab=true` in the module's `build.gradle` file, for example `app/build.gradle`.
 * Declare the dependencies in the app module's [build.gradle] in the same way you as would do with Kotlin/Java
   dependencies.
 * Add the dependencies into the native module's [Android.mk] or [CMakeLists.txt]
@@ -51,22 +51,13 @@ either in your `local.properties` file or on the command line by passing the
 To build with [Android Studio](http://developer.android.com/sdk/index.html):
 
 1. Open this project in Android Studio.
-2. Click *Run/Run 'app'*.  If you want to debug/trace code, due to [the SSL lib's known issue with lldb](https://github.com/android/ndk-samples/issues/740), make sure to apply the recommendations there for a smooth debugging experience.
+2. Click *Run/Run 'app'*.
 
 To build from the command line:
 
 1. Navigate to this directory in your terminal.
 2. Run `./gradlew installDebug` (or `gradlew.bat installDebug` on Windows).
 
-CA Certificates
-----------------
-
-As explained by [this Stack Overflow
-post](https://stackoverflow.com/a/30430033/632035), the root certificates
-presented by Android since ICS are not in the format OpenSSL expects, so we need
-to provide our own certificate file. We do this by downloading curl's cacert.pem
-and storing that in our assets directory, as described in [this Stack Overflow
-post](https://stackoverflow.com/a/31521185/632035).
 
 Screenshots
 ------------

@@ -19,11 +19,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.example.com.example.prefabdependency"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         ndkVersion "21.3.6528147"
         versionCode 1
         versionName "1.0"
