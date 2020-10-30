@@ -1,9 +1,13 @@
 prefab-publishing
 =================
 
-This sample shows how to export native libraries to an AAR
-using the [Prefab] format. Generally speaking, to export native libraries in an AAR 
-with Android Gradle Plugin 4.1+, make the following changes to your Android Library project's [build.gradle]:
+This sample shows how to export native libraries to an AAR using the [Prefab] format.
+It builds a trivial library called `mylibrary` (libmylibrary.so), and packs the library
+into mylibrary.aar. From here you could distribute the AAR via Maven or however
+you distribute AARs.
+
+In order to export native libraries in an AAR with Android Gradle Plugin 4.1+,
+make the following changes to your Android Library project's [build.gradle]:
 
 * Enable the `prefabPublishing` build feature
 ```
@@ -25,11 +29,10 @@ with Android Gradle Plugin 4.1+, make the following changes to your Android Libr
         exclude("**/libc++_shared.so")
     }
 ```
-This sample builds a trivial library called `mylibrary` (libmylibrary.so), and packs it into 
-mylibrary.aar. From here you could distribute the AAR via Maven or however you distribute AARs.
-To learn how to use the generated dependency AAR, refer to [the prefab-dependency sample] in this repo;
-for the detailed documentation about Prefab in AGP, go to [C/C++ dependencies] webpage.
 
+
+To learn how to use the generated AAR, refer to [the prefab-dependency sample] in this repo;
+for the detailed documentation about Prefab in AGP, go to [C/C++ dependencies] webpage.
 
 [Prefab]:https://google.github.io/prefab/
 [build.gradle]:https://github.com/android/ndk-samples/blob/master/prefab/prefab-publishing/mylibrary/build.gradle#L64

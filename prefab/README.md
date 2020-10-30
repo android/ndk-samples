@@ -22,8 +22,8 @@ Note again that the step 2 and 3 above are not C/C++ or prefab specific, please 
 
 With that in mind, the samples here collectively demonstrate prefab usage with:
 
-* prefab-publishing: shows how to create Prefab dependency into an AAR
-* prefab-dependency: shows how to import native dependencies form [GMaven]
+* prefab-publishing shows how to create an AAR for distributing native libraries
+* prefab-dependency shows how to import native dependencies from [GMaven]
 * curl-ssl: for shows to use 2 very specific and important AARs (curl and ssl)
 
 
@@ -35,12 +35,12 @@ With that in mind, the samples here collectively demonstrate prefab usage with:
 Prefab Availability
 -------------------
 
-Support for Prefab packages has been added available Android Gradle Plugin since version 4.0:
-* Using Prefab AARs requires AGP 4.0+ (with some update in 4.1+)
+Support for Prefab packages has been available Android Gradle Plugin since version 4.0:
+* Consuming native dependencies requires AGP 4.0+
 * Generating AARs that export native dependencies requires AGP 4.1+
 
-The prefab AARs used by the samples here are hosted at [Google Maven], but you can
-host your prefab AARs anywhere accessible to gradle.
+The AARs used by the samples here are hosted at [Google Maven], but you can
+host your AARs anywhere accessible to gradle.
 
 [Google Maven]: https://maven.google.com/web/index.html#com.android.ndk.thirdparty
 

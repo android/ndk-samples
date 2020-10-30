@@ -39,13 +39,13 @@ android {
         }
     }
 
-    // Enable creation of Prefab packages and integration into AAR.
+    // Enable generation of Prefab packages and include them in the library's AAR.
     buildFeatures {
         prefabPublishing true
     }
 
-    // Configure prefab to include the "mylibrary" module from the native build system,
-    // and export the headers in src/main/cpp/include.
+    // Include the "mylibrary" module from the native build system in the AAR,
+    // and export the headers in src/main/cpp/include to its consumers
     prefab {
         mylibrary {
             headers "src/main/cpp/include"
@@ -54,8 +54,8 @@ android {
 
     // Avoid packing the unnecessary libraries into final AAR. For details
     // refer to https://issuetracker.google.com/issues/168777344#comment5
-    // Note that if your AAR's Java code uses any C/C++ code support in the same AAR,
-    //      the workaround could not be used.
+    // Note that if your AAR also contains Java/Kotlin APIs, you should not
+    // exclude libraries that are used by those APIs.
     packagingOptions {
         exclude("**/libmylibrary.so")
         exclude("**/libc++_shared.so")

@@ -1,10 +1,10 @@
 curl-ssl
 ========
 
-This sample shows how to import [curl] and [OpenSSL] C/C++ dependencies from Google Maven to your Android project
+This sample shows how to import [curl] and [OpenSSL] C/C++ dependencies from Google Maven
 to display a list of the most recent 10 reviews submitted to AOSP's code review system.
 
-One of the goals is demonstrate how to handle HHTPS certificate correctly as explained by [this Stack Overflow
+One of the goals is demonstrate how to handle HHTPS certificates correctly as explained by [this Stack Overflow
 post](https://stackoverflow.com/a/30430033/632035): the root certificates
 presented by Android since ICS are not in the format OpenSSL expects, so we need
 to provide our own certificate file. We do this by downloading curl's cacert.pem
