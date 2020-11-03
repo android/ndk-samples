@@ -4,20 +4,23 @@ Prefab Samples
 The samples here are to demontrate how to use [the Prefab feature] in Android Gradle Plugin.
 Generally speaking, Prefab is a mechanism to make C/C++ libraries available to the gradle's
 C/C++ build system, with the requirement that the C/C++ libraries are organized in the
-[Prefab format] and packed inside AARs. Conceptually, Prefab's flow in Android Gradle Plugin,
-at high level, could be viewed as:
+[Prefab format] and packed inside AARs. In order to use the C/C++ dependency AAR, as AAR authors,
+you need to do the following:
 
 1. Use AGP to pack C/C++ libraries (including the header files), called modules, into AAR
-1. Distribute AARs with maven center or other mechanisms, but this is not Prefab specific
+1. Distribute AARs with [Google Maven] or other mechanisms, but this is not Prefab specific
 1. Add AAR dependency to your application, now you have access to the AAR (but not prefab modules yet);
    again this is not Prefab specific either
 1. Enable Prefab in the gradle scripts to access prefab module(s) inside AAR
 1. Use Prefab modules in your native build system such as CMake or ndk-build
 
-As the author of AAR, you need go through the full cycle described above; as AAR users, you just need
-to do step 3 and step 4, which is the huge benefit for your application development.
+However as AAR users, you just need to do step 3 through step 5 above, i.e:
+1. Add AAR dependency to your application, now you have access to the AAR (but not prefab modules yet);
+   again this is not Prefab specific either
+1. Enable Prefab in the gradle scripts to access prefab module(s) inside AAR
+1. Use Prefab modules in your native build system such as CMake or ndk-build
 
-Note again that the step 2 and 3 above are not C/C++ or prefab specific, please refer to
+Note that the step 2 and 3 above are not C/C++ or prefab specific, please refer to
 [the AAR documentation] for details.
 
 With that in mind, the samples here collectively demonstrate prefab usage with:
