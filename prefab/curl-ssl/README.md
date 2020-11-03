@@ -1,7 +1,7 @@
 curl-ssl
 ========
 
-This sample shows how to import [curl] and [OpenSSL] C/C++ dependencies from Google Maven
+This sample shows how to import [curl] and [OpenSSL] from Google Maven
 to display a list of the most recent 10 reviews submitted to AOSP's code review system.
 
 One of the goals is demonstrate how to handle HTTPS certificates correctly as explained by [this Stack Overflow
