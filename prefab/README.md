@@ -1,7 +1,7 @@
 Prefab Samples
 ==============
-The samples in this directory demonstrate how to create and consume C/C++
-dependencies with the Android Gradle Plugin. Dependencies are packaged within
+The samples in this directory demonstrate how to create and consume [C/C++
+dependencies] with the Android Gradle Plugin. Dependencies are packaged within
 AARs using the [Prefab] package format. The Android Gradle Plugin natively
 supports producing and consuming these, so you do not need to worry about the
 details of the packaging format.
@@ -9,19 +9,19 @@ details of the packaging format.
 The individual samples will explain in more detail, but the typical workflow for
 a consumer of a native dependency is:
 
-1. Enable the prefab build feature in your build.gradle file.
-1. Add the dependency to the dependencies block of your build.gradle file.
-1. Import the package in your CMakeLists.txt or Android.mk file.
+1. Enable the prefab build feature in your `build.gradle` file.
+1. Add the dependency to the dependencies block of your `build.gradle` file.
+1. Import the package in your `CMakeLists.txt` or `Android.mk` file.
 1. Link the dependencies to your libraries.
 
 Linking the dependency to your library will automatically make the headers
-available, link the required libraries, and include the dependencies you use in
-your APK or AAR.
+available, link the required libraries, and pack the dependencies you use into
+your application.
 
 To produce an AAR that exposes C/C++ APIs:
 
-1. Enable the prefabPublishing build feature in your build.gradle file.
-1. Use android.prefab in your build.gradle file to declare the names of the
+1. Enable the `prefabPublishing` build feature in your `build.gradle` file.
+1. Use `android.prefab` in your `build.gradle` file to declare the names of the
 libraries you wish to export and the headers that define their interface.
 
 To test your packages, follow the steps for package consumers. Note that until
@@ -31,14 +31,14 @@ project when using Android Studio. Instead, test in a separate project. You can
 import the AAR into your test project either [directly](https://developer.android.com/studio/projects/android-library#AddDependency)
 or by publishing it to a Maven repository.
 
-With that in mind, the samples here collectively demonstrate prefab usage with:
+With that in mind, the samples here collectively demonstrate prefab usage:
 
 * prefab-publishing shows how to create an AAR for distributing native libraries
 * prefab-dependency shows how to import native dependencies from [GMaven]
 * curl-ssl: for shows to use 2 very specific and important AARs (curl and ssl)
 
 
-[the Prefab feature]: https://developer.android.com/studio/build/native-dependencies?buildsystem=cmake&agpversion=4.0
+[C/C++ dependencies]: https://developer.android.com/studio/build/native-dependencies?buildsystem=cmake&agpversion=4.0
 [Prefab]: https://google.github.io/prefab
 [the formal AAR documentations]: https://developer.android.com/studio/projects/android-library
 [GMaven]:(https://maven.google.com/web/index.html?q=ndk#com.android.ndk.thirdparty)
