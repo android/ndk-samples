@@ -15,8 +15,8 @@ a consumer of a native dependency is:
 1. Link the dependencies to your libraries.
 
 Linking the dependency to your library will automatically make the headers
-available, link the required libraries, and pack the dependencies you use into
-your application.
+available, link the required libraries, and include the dependencies you use in
+your application or library.
 
 To produce an AAR that exposes C/C++ APIs:
 
