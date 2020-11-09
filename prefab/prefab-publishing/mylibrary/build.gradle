@@ -15,16 +15,16 @@
  */
 
 plugins {
-    id 'com.android.library'
+   id  'com.android.library'
 }
 
 android {
-    compileSdkVersion 29
-    ndkVersion '21.2.6472646'
+    compileSdkVersion 30
+    ndkVersion '21.3.6528147'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
 
         externalNativeBuild {
             cmake {
@@ -39,14 +39,27 @@ android {
         }
     }
 
+    // Enable generation of Prefab packages and include them in the library's AAR.
     buildFeatures {
         prefabPublishing true
     }
 
+    // Include the "mylibrary" module from the native build system in the AAR,
+    // and export the headers in src/main/cpp/include to its consumers
     prefab {
         mylibrary {
             headers "src/main/cpp/include"
         }
     }
+
+    // Avoid packing the unnecessary libraries into final AAR. For details
+    // refer to https://issuetracker.google.com/issues/168777344#comment5
+    // Note that if your AAR also contains Java/Kotlin APIs, you should not
+    // exclude libraries that are used by those APIs.
+    packagingOptions {
+        exclude("**/libmylibrary.so")
+        exclude("**/libc++_shared.so")
+    }
+
 }
 

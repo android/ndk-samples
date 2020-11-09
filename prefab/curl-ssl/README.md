@@ -1,34 +1,38 @@
-# curl-ssl
+curl-ssl
+========
 
-The curl-ssl sample shows how to import native dependencies from Maven. This
-sample uses [curl], [OpenSSL], and [JsonCpp] to display a list of the most
-recent 10 reviews submitted to AOSP's code review system.
+This sample shows how to import [curl] and [OpenSSL] from Google Maven
+to display a list of the most recent 10 reviews submitted to AOSP's code review system.
 
-To use [Prefab] with Android Gradle Plugin 4.0+, simply follow these 3 steps:
+One of the goals is demonstrate how to handle HTTPS certificates correctly as explained by [this Stack Overflow
+post](https://stackoverflow.com/a/30430033/632035): the root certificates
+presented by Android since ICS are not in the format OpenSSL expects, so we need
+to provide our own certificate file. We do this by downloading curl's cacert.pem
+and storing that in our assets directory, as described in [this Stack Overflow
+post](https://stackoverflow.com/a/31521185/632035).
 
-* Enable the prefab feature in [gradle.properties]
-* Declare the dependencies in the app module's [build.gradle]
-* Add the dependencies into the native module's [android.mk] or [CMakeLists.txt]
+If you want to understand how to use C/C++ dependencies with AGP, refer to:
+* [prefab-dependency] and [prefab-publishing] samples in the same directory as this one
+* [C/C++ dependencies] page for Android documentation for C/C++ dependencies
 
-From here on, the headers and native libs in the dependencies are [ready to use]!
 
 [Prefab]:https://google.github.io/prefab/
+[prefab-dependency]:https://github.com/android/ndk-samples/blob/main/prefab/prefab-dependency
+[prefab-publishing]:https://github.com/android/ndk-samples/blob/main/prefab/prefab-publishing
 [curl]: https://curl.haxx.se/  
 [OpenSSL]: https://www.openssl.org/  
 [JsonCpp]: https://github.com/open-source-parsers/jsoncpp
-[gradle.properties]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/gradle.properties#L22
-[build.gradle]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/build.gradle#L64
-[android.mk]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/src/main/cpp/Android.mk#L32
-[CMakeLists.txt]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/src/main/cpp/CMakeLists.txt#L20
-[ready to use]:https://github.com/android/ndk-samples/blob/master/prefab/curl-ssl/app/src/main/cpp/CMakeLists.txt#L26
+[C/C++ dependencies]:https://developer.android.com/studio/build/native-dependencies?buildsystem=cmake&agpversion=4.0
 
 
-## Pre-requisites
+Pre-requisites
+--------------
 
 * Android Gradle Plugin 4.0+
 * The [Android NDK](https://developer.android.com/ndk/).
 
-## Getting Started
+Getting Started
+---------------
 
 The C++ code in this sample can be built with either CMake (the default for this
 project) or ndk-build. To use ndk-build set the `ndkBuild` project property
@@ -45,20 +49,14 @@ To build from the command line:
 1. Navigate to this directory in your terminal.
 2. Run `./gradlew installDebug` (or `gradlew.bat installDebug` on Windows).
 
-## CA Certificates
 
-As explained by [this Stack Overflow
-post](https://stackoverflow.com/a/30430033/632035), the root certificates
-presented by Android since ICS are not in the format OpenSSL expects, so we need
-to provide our own certificate file. We do this by downloading curl's cacert.pem
-and storing that in our assets directory, as described in [this Stack Overflow
-post](https://stackoverflow.com/a/31521185/632035).
-
-## Screenshots
+Screenshots
+------------
 
 ![screenshot](screenshot.png)
 
-## Support
+Support
+--------
 
 If you've found an error in these samples, please [file an
 issue](https://github.com/android/ndk-samples/issues/new).
