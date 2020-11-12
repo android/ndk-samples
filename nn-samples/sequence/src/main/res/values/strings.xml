@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">NN API Demo: sequence</string>
+    <string name="compute">Compute</string>
+    <string name="reset">Reset</string>
+    <string name="result">Result: </string>
+    <string name="initial_value">Initial Value: </string>
+    <string name="ratio">Ratio: </string>
+    <string name="steps">Steps: </string>
+    <string name="none">None</string>
+</resources>
