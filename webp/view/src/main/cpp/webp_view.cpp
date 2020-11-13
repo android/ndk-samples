@@ -189,6 +189,7 @@ bool Engine::PrepareDrawing(void) {
             break;
         case WINDOW_FORMAT_RGBA_8888:
             descriptor.format_ = SurfaceFormat::SURFACE_FORMAT_RGBA_8888;
+            break;
         default:
             return false;
     }

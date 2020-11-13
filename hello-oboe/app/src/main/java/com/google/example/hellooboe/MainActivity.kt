@@ -29,19 +29,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val view = findViewById<View>(R.id.container)
+    }
 
-        // Set up a touch listener which calls the native sound engine
-        view.setOnTouchListener {_, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                playSound(true)
-            } else if (event.action == MotionEvent.ACTION_UP) {
-                playSound(false)
-            } else {
-                return@setOnTouchListener false
-            }
-            true
+    /*
+    * Hook to user control to start / stop audio playback:
+    *    touch-down: start, and keeps on playing
+    *    touch-up: stop.
+    * simply pass the events to native side.
+    */
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> playSound(true)
+            MotionEvent.ACTION_UP -> playSound(false)
         }
+        return super.onTouchEvent(event)
     }
 
     override fun onResume() {
@@ -57,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         destroyStream()
         super.onPause()
     }
-
 
     // Creates and starts Oboe stream to play audio
     private external fun createStream() : Int

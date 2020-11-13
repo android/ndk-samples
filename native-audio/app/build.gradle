@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
      compileSdkVersion 29
+    ndkVersion '21.2.6472646'
 
      defaultConfig {
         applicationId 'com.example.nativeaudio'

@@ -1,4 +1,0 @@
-builders: [cmake]
-
-dependencies:
-- compile: com.github.ggfan:hello-cdep:1.0.0

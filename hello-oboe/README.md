@@ -7,9 +7,18 @@ performance sensitive contexts across Android versions. The Oboe
 repository has more information about how to fully take advantage of the Oboe API,
 as well as more in-depth examples and documentation.
 
+This sample uses the Studio Prefab feature to download pre-built Oboe library from [Google Maven](https://maven.google.com/web/index.html),
+feel free to checkout Prefab steps in
+- gradle.properties
+- app/build.gradle
+- app/src/main/cpp/CMakeLists.txt
+ 
+If you like to build your app with the Oboe library source code, refer to the examples in the Oboe
+repository.
+
 Pre-requisites
 --------------
-- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 4.0+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------

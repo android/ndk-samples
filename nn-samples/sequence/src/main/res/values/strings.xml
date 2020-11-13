@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NN API Demo</string>
+    <string name="app_name">NN API Demo: sequence</string>
     <string name="compute">Compute</string>
     <string name="reset">Reset</string>
     <string name="result">Result: </string>
