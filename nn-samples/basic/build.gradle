@@ -3,14 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
-    ndkVersion '21.2.6472646'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.0'
+    ndkVersion '21.3.6528147'
 
     defaultConfig {
         applicationId "com.example.android.basic"
         minSdkVersion 27
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
