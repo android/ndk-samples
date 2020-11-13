@@ -371,7 +371,7 @@ bool SimpleModel::CreateCompiledModel() {
 /**
  * Compute with the given input data.
  * @param modelInputs:
- *    augend0:   The values to fill tensor1
+ *    inputValue1:   The values to fill tensor1
  *    inputValue2:   The values to fill tensor3
  * @return  computed result, or 0.0f if there is error.
  */
@@ -394,7 +394,7 @@ bool SimpleModel::Compute(float inputValue1, float inputValue2,
         return false;
     }
 
-    // Set all the elements of the first input tensor (tensor1) to the same value as augend0.
+    // Set all the elements of the first input tensor (tensor1) to the same value as inputValue1.
     // It's not a realistic example but it shows how to pass a small tensor
     // to an execution.
     std::fill(inputTensor1_.data(), inputTensor1_.data() + tensorSize_,

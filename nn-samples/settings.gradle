@@ -1,1 +1,1 @@
-include ':basic'
+include ':basic', ':sequence'
