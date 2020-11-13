@@ -29,7 +29,9 @@ declare projects=(
     native-codec
     native-media
     native-plasma
+    nn-samples
     prefab/curl-ssl
+    prefab/prefab-publishing
     san-angeles
     sensor-graph
 #    webp
@@ -76,15 +78,19 @@ declare apks=(
   native-codec/app/build/outputs/apk/debug/app-debug.apk
   native-media/app/build/outputs/apk/debug/app-debug.apk
   native-plasma/app/build/outputs/apk/debug/app-debug.apk
+  nn-samples/basic/build/outputs/apk/debug/basic-debug.apk
+  nn-samples/sequence/build/outputs/apk/debug/sequence-debug.apk
   prefab/curl-ssl/app/build/outputs/apk/debug/app-debug.apk
+  prefab/prefab-publishing/mylibrary/build/outputs/aar/mylibrary-debug.aar
   sensor-graph/accelerometer/build/outputs/apk/debug/accelerometer-debug.apk
   san-angeles/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
   san-angeles/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
   san-angeles/app/build/outputs/apk/debug/app-x86-debug.apk
   teapots/classic-teapot/build/outputs/apk/debug/classic-teapot-debug.apk
   teapots/more-teapots/build/outputs/apk/debug/more-teapots-debug.apk
-#    webp/view/build/outputs/apk/debug/view-arm7-debug.apk
   teapots/choreographer-30fps/build/outputs/apk/debug/choreographer-30fps-debug.apk
+  teapots/image-decoder/build/outputs/apk/debug/image-decoder-debug.apk
+#    webp/view/build/outputs/apk/debug/view-arm7-debug.apk
 
 ## other-builds
   other-builds/ndkbuild/bitmap-plasma/app/build/outputs/apk/debug/app-debug.apk

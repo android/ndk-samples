@@ -6,12 +6,17 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
+    ndkVersion '21.2.6472646'
+    
     defaultConfig {
         applicationId "com.google.example.hellooboe"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        externalNativeBuild.cmake {
+            arguments  "-DANDROID_STL=c++_shared"
+        }
     }
     buildTypes {
         release {
@@ -29,7 +34,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    // Kotlin
+    implementation"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // AndroidX
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "com.google.oboe:oboe:1.4.2"
 }
