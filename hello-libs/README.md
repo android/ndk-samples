@@ -23,7 +23,7 @@ When importing libraries into your app, include the following in your app's `CMa
 *    configure each library binary location(using `set_target_properties`)
 *    configure each library headers location (using `target_include_directories`)
 
-If you are using Android Gradle Plugin than version 4.0.0,
+If you are using Android Gradle Plugin earlier than version 4.0.0,
 for shared libraries, you need to explicitly notify gradle to pack them into APK.
 One simple way is to include the shared lib directory into application's jniLibs directory:
 *    jniLibs.srcDirs = ['../distribution/gperf/lib']
@@ -41,6 +41,13 @@ Getting Started
   - Click *Download* or *Select NDK location*.
 1. Click *Tools/Android/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
+
+Note that if you do want to regenerate the two libraries, follow these steps:
+1. in settings.gradle file, enable the line `include :gen-libs`
+1. in app/build.gradle file, enable the line `api project(':gen-libs')`
+1. build the project
+1. undo the first 2 steps
+1. clean up temprorary build files with `rm -fr app/build app/.cxx`
 
 Screenshots
 -----------
