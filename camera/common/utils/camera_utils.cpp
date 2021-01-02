@@ -326,7 +326,7 @@ void PrintTagVal(const char* printLabel, ACameraMetadata_const_entry& val) {
     return;
   }
   const char* name = GetTagStr(static_cast<acamera_metadata_tag_t>(val.tag));
-  for (int i = 0; i < val.count; ++i) {
+  for (uint32_t i = 0; i < val.count; ++i) {
     switch (val.type) {
       case ACAMERA_TYPE_INT32:
         LOGI("%s %s: %08d", printLabel, name, val.data.i32[i]);
@@ -409,7 +409,7 @@ void PrintRequestMetadata(ACaptureRequest* req) {
     const char* name =
         GetTagStr(static_cast<acamera_metadata_tag_t>(tags[idx]));
 
-    for (int i = 0; i < val.count; ++i) {
+    for (uint32_t i = 0; i < val.count; ++i) {
       switch (val.type) {
         case ACAMERA_TYPE_INT32:
           LOGI("Capture Tag %s: %08d", name, val.data.i32[i]);
