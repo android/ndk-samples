@@ -91,7 +91,7 @@ class NDKCamera {
 
   // set up exposure control
   int64_t exposureTime_;
-  RangeValue<int64_t> exposureRange_;
+  RangeValue<uint64_t> exposureRange_;
   int32_t sensitivity_;
   RangeValue<int32_t> sensitivityRange_;
   volatile bool valid_;

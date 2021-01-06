@@ -191,7 +191,7 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
   DisplayDimension foundRes(4000, 4000);
   DisplayDimension maxJPG(0, 0);
 
-  for (int i = 0; i < entry.count; i += 4) {
+  for (uint32_t i = 0; i < entry.count; i += 4) {
     int32_t input = entry.data.i32[i + 3];
     int32_t format = entry.data.i32[i + 0];
     if (input) continue;
