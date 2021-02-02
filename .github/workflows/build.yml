@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [ main github-build-ci ]
+    branches: [ main develop ]
   pull_request:
     branches: [ main ]
 
