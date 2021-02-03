@@ -1,6 +1,6 @@
 NDK Samples [![build](https://github.com/android/ndk-samples/workflows/build/badge.svg)](https://github.com/android/ndk-samples/actions) 
 ===========
-
+(test)
 This repository contains [Android NDK][0] samples with Android Studio [C++ integration](https://www.youtube.com/watch?v=f7ihSQ44WO0&feature=youtu.be).
 
 These samples use the new [CMake Android plugin](https://developer.android.com/studio/projects/add-native-code.html) with C++ support.
