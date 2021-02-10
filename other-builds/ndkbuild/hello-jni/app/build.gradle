@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 // pointing to cmake's source code for the same project
 def REMOTE_PROJ_ROOT = '../../../../' + rootProject.getName() + '/' +
@@ -9,10 +11,14 @@ android {
 
     defaultConfig {
         applicationId "com.example.hellojni"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
     }
-
+    buildFeatures {
+        viewBinding true
+    }
     externalNativeBuild {
         ndkBuild {
             path 'Android.mk'
@@ -38,5 +44,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
