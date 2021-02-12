@@ -138,9 +138,9 @@ void OnSessionActive(void* ctx, ACameraCaptureSession* ses) {
 ACameraCaptureSession_stateCallbacks* NDKCamera::GetSessionListener() {
   static ACameraCaptureSession_stateCallbacks sessionListener = {
       .context = this,
-      .onActive = ::OnSessionActive,
-      .onReady = ::OnSessionReady,
       .onClosed = ::OnSessionClosed,
+      .onReady = ::OnSessionReady,
+      .onActive = ::OnSessionActive,
   };
   return &sessionListener;
 }
