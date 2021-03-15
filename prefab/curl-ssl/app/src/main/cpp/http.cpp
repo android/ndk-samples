@@ -19,6 +19,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <cassert>
 
 #include "curl/curl.h"
 
