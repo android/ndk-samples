@@ -16,6 +16,7 @@
 
 #include <GLES3/gl32.h>
 #include <android/data_space.h>
+#include <assert.h>
 
 #include "Texture.h"
 #include <android/imagedecoder.h>
