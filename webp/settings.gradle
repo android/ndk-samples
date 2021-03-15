@@ -1,1 +1,1 @@
-include ':view'
+include ':image-decoder'
