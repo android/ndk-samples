@@ -1,9 +1,10 @@
 WEBP Samples
 =============
-Webp is an Android sample including a small app to demo usage of webp in [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html)    
-view:
-- rotate decoding 3 webp images and load them into on-screen buffer. Decoding is in its own thread
+Sample in this directory is to demonstrate image decoding
+- view: demonstrate how to use webp in [Native Activity](http://developer.android.com/reference/android/app/NativeActivity.html)    
+- image-decoder: demonstrate AImageDecoder usage integrated in Android 12
 
+Note that the directory names will be changed in DP2
 
 This sample uses the new [Android Studio CMake plugin](https://developer.android.com/ndk/guides/cmake.html).
 
