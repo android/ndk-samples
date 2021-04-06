@@ -17,7 +17,7 @@ Additional Android Studio samples:
 
 Documentation
 - [Add Native Code to Your Project](https://developer.android.com/studio/projects/add-native-code.html)
-- [configure NDK for Android Studio/Gradle Plugin](https://github.com/android/ndk-samples/wiki/Configure-NDK-Path)
+- [Configure NDK for Android Studio/Gradle Plugin](https://github.com/android/ndk-samples/wiki/Configure-NDK-Path)
 - [CMake for NDK](https://developer.android.com/ndk/guides/cmake.html)
 
 Known Issues
