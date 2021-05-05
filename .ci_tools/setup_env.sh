@@ -92,8 +92,9 @@ while read -r version_; do
 done < $TMP_SETUP_FILENAME
 # echo "NDK versions:"; cat $TMP_SETUP_FILENAME
 
-# add cmake installation later
- 
+# add customized cmake installation
+echo y | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "cmake;3.18.1"
+
 rm -f $TMP_SETUP_FILENAME
 
 

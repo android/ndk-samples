@@ -22,6 +22,9 @@ plugins {
 
 android {
     compileSdkVersion 30
+
+    buildFeatures.prefab = true
+
     defaultConfig {
         applicationId "com.example.com.example.prefabdependency"
         minSdkVersion 21
