@@ -22,7 +22,7 @@ plugins {
 
 android {
     compileSdkVersion 30
-    ndkVersion '21.3.6528147'
+    ndkVersion '22.1.7171670'
     defaultConfig {
         applicationId "com.example.curlssl"
         minSdkVersion 21
