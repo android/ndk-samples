@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    ndkVersion '21.2.6472646'
+    ndkVersion '22.1.7171670'
 
     defaultConfig {
         applicationId "com.sample.textureview"
