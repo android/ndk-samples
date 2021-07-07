@@ -44,15 +44,8 @@ Java_com_example_android_basic_MainActivity_initModel(
         return 0;
     }
     env->ReleaseStringUTFChars(_assetName, assetName);
-    off_t offset, length;
-    int fd = AAsset_openFileDescriptor(asset, &offset, &length);
+    SimpleModel* nn_model = new SimpleModel(asset);
     AAsset_close(asset);
-    if (fd < 0) {
-        __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
-                            "Failed to open the model_data file descriptor.");
-        return 0;
-    }
-    SimpleModel* nn_model = new SimpleModel(length, PROT_READ, fd, offset);
     if (!nn_model->CreateCompiledModel()) {
         __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                             "Failed to prepare the model.");
