@@ -15,44 +15,84 @@
  */
 #include "simple_model.h"
 
+#include <android/asset_manager_jni.h>
 #include <android/log.h>
 #include <android/sharedmem.h>
 #include <sys/mman.h>
 #include <string>
 #include <unistd.h>
 
+namespace {
+
+// Create ANeuralNetworksMemory from an asset file.
+//
+// Note that, at API level 30 or earlier, the NNAPI drivers may not have the permission to
+// access the asset file. To work around this issue, here we will:
+// 1. Allocate a large-enough shared memory to hold the model data;
+// 2. Copy the asset file to the shared memory;
+// 3. Create the NNAPI memory with the file descriptor of the shared memory.
+ANeuralNetworksMemory *createMemoryFromAsset(AAsset *asset) {
+    // Allocate a large-enough shared memory to hold the model data.
+    off_t length = AAsset_getLength(asset);
+    int fd = ASharedMemory_create("model_data", length);
+    if (fd < 0) {
+        __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
+                            "ASharedMemory_create failed with size %d", length);
+        return nullptr;
+    }
+
+    // Copy the asset file to the shared memory.
+    void *data = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (data == nullptr) {
+        __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "Failed to map a shared memory");
+        close(fd);
+        return nullptr;
+    }
+    AAsset_read(asset, data, length);
+    munmap(data, length);
+
+    // Create the NNAPI memory with the file descriptor of the shared memory.
+    ANeuralNetworksMemory *memory;
+    int status = ANeuralNetworksMemory_createFromFd(length, PROT_READ | PROT_WRITE, fd, 0,
+                                                    &memory);
+
+    // It is safe to close the file descriptor here because ANeuralNetworksMemory_createFromFd
+    // will create a dup.
+    close(fd);
+    if (status != ANEURALNETWORKS_NO_ERROR) {
+        __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
+                            "ANeuralNetworksMemory_createFromFd failed for trained weights");
+        return nullptr;
+    }
+    return memory;
+}
+
+}  // namespace
+
 /**
  * SimpleModel Constructor.
  *
  * Initialize the member variables, including the shared memory objects.
  */
-SimpleModel::SimpleModel(size_t size, int protect, int fd, size_t offset) :
+SimpleModel::SimpleModel(AAsset *asset) :
         model_(nullptr),
         compilation_(nullptr),
-        dimLength_(TENSOR_SIZE),
-        offset_(offset),
-        modelDataFd_(fd) {
+        dimLength_(TENSOR_SIZE) {
     tensorSize_ = dimLength_;
     inputTensor1_.resize(tensorSize_);
 
     // Create ANeuralNetworksMemory from a file containing the trained data.
-    int32_t status = ANeuralNetworksMemory_createFromFd(size + offset, protect, fd, 0,
-                                                        &memoryModel_);
-    if (status != ANEURALNETWORKS_NO_ERROR) {
-        __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
-                            "ANeuralNetworksMemory_createFromFd failed for trained weights");
-        return;
-    }
+    memoryModel_ = createMemoryFromAsset(asset);
 
     // Create ASharedMemory to hold the data for the second input tensor and output output tensor.
     inputTensor2Fd_ = ASharedMemory_create("input2", tensorSize_ * sizeof(float));
     outputTensorFd_ = ASharedMemory_create("output", tensorSize_ * sizeof(float));
 
     // Create ANeuralNetworksMemory objects from the corresponding ASharedMemory objects.
-    status = ANeuralNetworksMemory_createFromFd(tensorSize_ * sizeof(float),
-                                                PROT_READ,
-                                                inputTensor2Fd_, 0,
-                                                &memoryInput2_);
+    int status = ANeuralNetworksMemory_createFromFd(tensorSize_ * sizeof(float),
+                                                    PROT_READ,
+                                                    inputTensor2Fd_, 0,
+                                                    &memoryInput2_);
     if (status != ANEURALNETWORKS_NO_ERROR) {
         __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                             "ANeuralNetworksMemory_createFromFd failed for Input2");
@@ -179,7 +219,7 @@ bool SimpleModel::CreateCompiledModel() {
     status = ANeuralNetworksModel_setOperandValueFromMemory(model_,
                                                             tensor0,
                                                             memoryModel_,
-                                                            offset_,
+                                                            0,
                                                             tensorSize_ * sizeof(float));
     if (status != ANEURALNETWORKS_NO_ERROR) {
         __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
@@ -210,7 +250,7 @@ bool SimpleModel::CreateCompiledModel() {
         return false;
     }
     status = ANeuralNetworksModel_setOperandValueFromMemory(
-            model_, tensor2, memoryModel_, offset_ + tensorSize_ * sizeof(float),
+            model_, tensor2, memoryModel_, tensorSize_ * sizeof(float),
             tensorSize_ * sizeof(float));
     if (status != ANEURALNETWORKS_NO_ERROR) {
         __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
@@ -504,5 +544,4 @@ SimpleModel::~SimpleModel() {
     ANeuralNetworksMemory_free(memoryOutput_);
     close(inputTensor2Fd_);
     close(outputTensorFd_);
-    close(modelDataFd_);
 }
