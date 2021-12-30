@@ -26,6 +26,8 @@ import android.media.AudioRecord;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -278,6 +280,18 @@ public class MainActivity extends Activity
 
         // The callback runs on app's thread, so we are safe to resume the action
         startEcho();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        boolean consumed = false;
+
+        // Controller Support: A button -> activate focused button
+        if(keyCode == KeyEvent.KEYCODE_BUTTON_A) {
+            consumed = getCurrentFocus().performClick();
+        }
+
+        return consumed || super.onKeyDown(keyCode, event);
     }
 
     /*
