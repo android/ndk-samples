@@ -26,7 +26,6 @@ import android.media.AudioRecord;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
