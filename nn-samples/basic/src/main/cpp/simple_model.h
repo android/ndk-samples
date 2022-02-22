@@ -17,6 +17,7 @@
 #ifndef NNAPI_SIMPLE_MODEL_H
 #define NNAPI_SIMPLE_MODEL_H
 
+#include <android/asset_manager_jni.h>
 #include <android/NeuralNetworks.h>
 #include <vector>
 
@@ -38,7 +39,7 @@
  */
 class SimpleModel {
 public:
-    explicit SimpleModel(size_t size, int protect, int fd, size_t offset);
+    explicit SimpleModel(AAsset* asset);
     ~SimpleModel();
 
     bool CreateCompiledModel();
@@ -53,10 +54,8 @@ private:
 
     uint32_t dimLength_;
     uint32_t tensorSize_;
-    size_t offset_;
 
     std::vector<float> inputTensor1_;
-    int modelDataFd_;
     int inputTensor2Fd_;
     int outputTensorFd_;
 };
