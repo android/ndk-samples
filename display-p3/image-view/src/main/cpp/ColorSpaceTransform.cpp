@@ -50,7 +50,7 @@ static void CreateGammaEncodeTable(float gamma, std::vector<uint8_t>& table) {
   }
 }
 /*
- * CreateGammaEncodeTable()
+ * CreateGammaDecodeTable()
  *    Retrieve linear RGB data
  *    Linear =  sRGB / 12.92    0 <= sRGB < 0.04045
  *              pow((sRGB + 0.055)/1.055, gamma)
@@ -228,26 +228,26 @@ static mathfu::mat3 defaultNPMs[] =  {
      *         Algorithms and Interfaces
      *      Charles Poynton
      */
-    mathfu::mat3(0.412453f, 0.212671f, 0.019334f,
-                 0.357580f, 0.715160f, 0.119193f,
-                 0.180423f, 0.072169f, 0.950227f),
+    mathfu::mat3(0.4123908281f, 0.2126390338f, 0.0193308201f,
+                 0.3575843275f, 0.7151686549f, 0.1191947237f,
+                 0.1804807931f, 0.0721923113f, 0.9505321383f),
     // XYZ --> SRGB white reference point D65
-    mathfu::mat3( 3.240479f, -0.969256f, 0.055648f,
-                  -1.537150f, 1.875992f, -0.204043f,
-                  -0.498535f, 0.041556f, 1.057311f),
+    mathfu::mat3( 3.2409696579f, -0.9692436457f,  0.0556300320f,
+                 -1.5373830795f,  1.8759675026f, -0.2039768547f,
+                 -0.4986107349f,  0.0415550880f,  1.0569714308f),
     /* P3 --> XYZ, white reference point D65
-    *     SMTP EG 432-1:2010, p23
-    */
-    mathfu::mat3(0.4551698156f, 0.2094916779f, 0.000000000f,
-                 0.2771344092f, 0.7215952542f, 0.0470605601f,
-                 0.1722826698f, 0.0689130679f, 0.9073553944f),
+     *     SMTP EG 432-1:2010, p23
+     */
+    mathfu::mat3(0.4865709245f, 0.2289745510f, 0.0000000000f,
+                 0.2656676769f, 0.6917385459f, 0.0451133996f,
+                 0.1982172877f, 0.0792869106f, 1.0439443588f),
     /*
      * CIE XYZ --> Display P3, white reference point D65. Source
      *     SMTP EG 432-1:2010, p24
      */
-    mathfu::mat3(2.7253940305f, -0.7951680258f, 0.0412418914f,
-                -1.0180030062f, 1.6897320548f, -0.0876390192f,
-                -0.4401631952f, 0.0226471906f, 1.1009293786f),
+    mathfu::mat3( 2.4934973717f, -0.8294889927f,  0.0358458459f,
+                 -0.9313836098f,  1.7626641989f, -0.0761724263f,
+                 -0.4027108550f,  0.0236246940f,  0.9568846226f),
 };
 const mathfu::mat3* GetTransformNPM(NPM_TYPE type) {
   ASSERT(type < NPM_TYPE::TYPE_COUNT, "NPM_TYPE (%d) out of bounds", type);
