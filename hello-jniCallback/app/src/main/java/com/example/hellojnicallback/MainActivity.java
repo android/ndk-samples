@@ -17,33 +17,86 @@ package com.example.hellojnicallback;
 
 import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
+
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    int hour = 0;
-    int minute = 0;
-    int second = 0;
+    MainViewModel model;
     TextView tickView;
+    TextView helloJniMsg;
+    Button pauseBtn;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tickView = (TextView) findViewById(R.id.tickView);
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        hour = minute = second = 0;
-        ((TextView)findViewById(R.id.hellojniMsg)).setText(stringFromJNI());
-        startTicks();
+        tickView = findViewById(R.id.tickView);
+        helloJniMsg = findViewById(R.id.hellojniMsg);
+        pauseBtn = findViewById(R.id.pauseBtn);
+
+        // Fetch the ViewModel, or have one instantiated
+        model = new ViewModelProvider(this,
+                AndroidViewModelFactory.getInstance(this.getApplication())
+        ).get(MainViewModel.class);
+
+        // if the timer has yet to be started, toggle it's state to trigger it's first run
+        // otherwise, and only if it was previously running, start the jni thread for tick callbacks
+        if(!model.started) {
+            model.started = true;
+            toggleTimerState();
+        } else {
+            if(model.running) {
+                startTicks();
+            }
+        }
+
+        setText();
     }
 
+    /*
+     * onDestroy gets called for configuration changes.
+     * We make sure that the jni context cleans up so we don't lose track of threads.
+     */
     @Override
-    public void onPause () {
-        super.onPause();
-        StopTicks();
+    protected void onDestroy(){
+        super.onDestroy();
+        if(model.running) {
+            stopTicks();
+        }
+    }
+
+    private void toggleTimerState() {
+        model.running = !model.running;
+        setText();
+        if(model.running){
+            model.resetTimer();
+            startTicks();
+        } else {
+            stopTicks();
+        }
+    }
+
+    private void setText() {
+        helloJniMsg.setText(stringFromJNI());
+        tickView.setText(model.time());
+
+        if(model.running) {
+            pauseBtn.setText(R.string.pause);
+        } else {
+            pauseBtn.setText(R.string.resume);
+        }
+
+
+    }
+
+    public void onPauseBtn(View v){
+        toggleTimerState();
     }
 
     /*
@@ -51,22 +104,11 @@ public class MainActivity extends AppCompatActivity {
      */
     @Keep
     private void updateTimer() {
-        ++second;
-        if(second >= 60) {
-            ++minute;
-            second -= 60;
-            if(minute >= 60) {
-                ++hour;
-                minute -= 60;
-            }
-        }
+        model.updateTimer();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String ticks = "" + MainActivity.this.hour + ":" +
-                        MainActivity.this.minute + ":" +
-                        MainActivity.this.second;
-                MainActivity.this.tickView.setText(ticks);
+                MainActivity.this.tickView.setText(model.time());
             }
         });
     }
@@ -75,5 +117,5 @@ public class MainActivity extends AppCompatActivity {
     }
     public native  String stringFromJNI();
     public native void startTicks();
-    public native void StopTicks();
+    public native void stopTicks();
 }
