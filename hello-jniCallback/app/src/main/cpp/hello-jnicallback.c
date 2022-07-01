@@ -284,7 +284,7 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env, jobject i
  *    for a clean shutdown. The caller is from onPause
  */
 JNIEXPORT void JNICALL
-Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv *env, jobject instance) {
+Java_com_example_hellojnicallback_MainActivity_stopTicks(JNIEnv *env, jobject instance) {
     pthread_mutex_lock(&g_ctx.lock);
     g_ctx.done = 1;
     pthread_mutex_unlock(&g_ctx.lock);
