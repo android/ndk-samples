@@ -7,7 +7,7 @@ For how to use Android Studio, refer to [Hello-CMake codelab](https://codelabs.d
 
 Pre-requisites
 --------------
-- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Android Studio 4.2+ with [NDK](https://developer.android.com/ndk/) bundle.
 
 Getting Started
 ---------------
@@ -16,7 +16,7 @@ Getting Started
 1. Open the sample directory.
 1. Open *File/Project Structure...*
   - Click *Download* or *Select NDK location*.
-1. Click *Tools/Android/Sync Project with Gradle Files*.
+1. Click *File/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
 
 Screenshots
@@ -35,7 +35,7 @@ submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRI
 
 License
 -------
-Copyright 2015 Google, Inc.
+Copyright 2022 Google, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for
