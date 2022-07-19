@@ -1,13 +1,13 @@
 # Teapots
 
 Teapots is an collection of Android C++ samples that uses a Teapot rendering to
-demostrate Android NDK platform features:
+demonstrate Android NDK platform features:
 
 - classic-teapot: Rendering classic teapot mesh using GLES 2.0 API and
   [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
 - more-teapots: Rendering multiple instances of Classic Teapot with GLES 3.0
   Instance Rendering
-- choreographer-30fps: demonstrates multiple frame rate throttoling techniques
+- choreographer-30fps: demonstrates multiple frame rate throttling techniques
   based on API level using Choreographer API and EGL Android presentation time
   extension.
 - textured-teapot: Rendering classic teapot plus textures
@@ -18,7 +18,7 @@ This sample uses the new
 [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds)
 with C++ support.
 
-## Pre-requisites
+## Prerequisites
 
 - Android Studio 4.0.0 with [NDK](https://developer.android.com/ndk/)
 - Android
@@ -51,7 +51,7 @@ submitting a pull request through GitHub. Please see
 [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
-- [Android Tools Feedbacks](http://tools.android.com/feedback)
+- [Android Tools Feedback](http://tools.android.com/feedback)
 
 ## License
 
