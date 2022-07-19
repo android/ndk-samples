@@ -1,17 +1,17 @@
 Teapots
 ======
-Teapots is an collection of Android C++ samples that uses a Teapot rendering to demostrate Android NDK platform features:
+Teapots is a collection of Android C++ samples that uses a Teapot rendering to demonstrate Android NDK platform features:
 - classic-teapot: Rendering classic teapot mesh using GLES 2.0 API and [NativeActivity](http://developer.android.com/reference/android/app/NativeActivity.html).
 - more-teapots: Rendering multiple instances of Classic Teapot with GLES 3.0 Instance Rendering
-- choreographer-30fps: demonstrates multiple frame rate throttoling techniques based on API level using Choreographer API and EGL Android presentation time extension.
+- choreographer-30fps: demonstrates multiple frame rate throttling techniques based on API level using Choreographer API and EGL Android presentation time extension.
 - textured-teapot: Rendering classic teapot plus textures
 - image-decoder: Same as textured-teapot, except that texture decoding is done
   with the ImageDecoder API introduced in Android 11 (Android NDK r21b)
 
 This sample uses the new [Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds) with C++ support.
 
-Pre-requisites
---------------
+Prerequisites
+-------------
 - Android Studio 4.0.0 with [NDK](https://developer.android.com/ndk/)
 - Android [NDK 21.1+ installed](https://github.com/android/ndk-samples/wiki/Configure-NDK-Path)
 
@@ -25,6 +25,8 @@ Getting Started
 1. Click *Tools/Android/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
 
+To select which app to run (classic-teapot, more-teapots, etc...), click *Run/Run...*.
+
 Screenshots
 -----------
 ![screenshot](screenshot.png)
@@ -37,7 +39,7 @@ Patches are encouraged, and may be submitted by [forking this project](https://g
 submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
-- [Android Tools Feedbacks](http://tools.android.com/feedback)
+- [Android Tools Feedback](http://tools.android.com/feedback)
 
 License
 -------
