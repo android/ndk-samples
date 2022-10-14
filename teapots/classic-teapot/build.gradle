@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId = 'com.sample.teapot'
         minSdkVersion 17
-        targetSdkVersion 28
+        targetSdkVersion 30
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
         }
