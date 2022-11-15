@@ -32,7 +32,7 @@ android {
              path 'Android.mk'
          }
      }
-     aaptOptions {
-         noCompress 'ts'
-     }
+    androidResources {
+        noCompress 'ts'
+    }
 }

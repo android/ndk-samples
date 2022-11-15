@@ -30,6 +30,7 @@ android {
             version "3.18.1"
         }
     }
+    buildFeatures.prefab = true
 }
 
 dependencies {
