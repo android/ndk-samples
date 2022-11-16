@@ -22,7 +22,7 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
-    aaptOptions {
+    androidResources {
         noCompress 'ts'
     }
 }
