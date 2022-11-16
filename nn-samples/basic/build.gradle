@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion '30.0.0'
     ndkVersion '22.1.7171670'
 
     defaultConfig {
@@ -34,7 +33,7 @@ android {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
-    aaptOptions {
+    androidResources {
         noCompress 'bin'
     }
 

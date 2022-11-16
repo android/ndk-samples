@@ -5,6 +5,10 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    testCompile
+}
+
 dependencies {
     implementation 'org.gradle:gradle-tooling-api:+'
     implementation 'org.slf4j:slf4j-api:1.7.7'

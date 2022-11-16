@@ -45,8 +45,8 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
-}
-android.lintOptions {
-        abortOnError  = false
+    lint {
+        abortOnError false
+    }
 }
 

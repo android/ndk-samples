@@ -35,7 +35,7 @@ android {
     externalNativeBuild {
         ndkBuild.path 'Android.mk'
     }
-    aaptOptions {
+    androidResources {
         noCompress 'bin'
     }
 }
