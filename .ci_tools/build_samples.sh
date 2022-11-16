@@ -55,7 +55,7 @@ declare projects=(
 
 VERBOSITY=--quiet
 if [[ -v RUNNER_DEBUG ]] ; then
-    VERBOSITY=--debug
+    VERBOSITY=--info
 fi
 for d in "${projects[@]}"; do 
     pushd ${NDK_SAMPLE_REPO}/${d} >/dev/null
