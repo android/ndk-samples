@@ -53,9 +53,13 @@ declare projects=(
     other-builds/ndkbuild/teapots
     )
 
+VERBOSITY=--quiet
+if [[ -v RUNNER_DEBUG ]] ; then
+    VERBOSITY=--debug
+fi
 for d in "${projects[@]}"; do 
     pushd ${NDK_SAMPLE_REPO}/${d} >/dev/null
-    TERM=dumb ./gradlew  -q clean assembleDebug
+    TERM=dumb ./gradlew ${VERBOSITY} clean assembleDebug
     popd >/dev/null
 done
 
