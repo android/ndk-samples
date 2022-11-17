@@ -64,7 +64,7 @@ fi
 for d in "${projects[@]}"; do
     pushd ${NDK_SAMPLE_REPO}/${d} >/dev/null
     echo "Building ${d}"
-    TERM=dumb ./gradlew ${VERBOSITY} assembleDebug
+    TERM=dumb ./gradlew ${VERBOSITY} clean assembleDebug
     popd >/dev/null
 done
 
