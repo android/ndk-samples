@@ -405,7 +405,7 @@ void HelloVK::render() {
   presentInfo.swapchainCount = 1;
   presentInfo.pSwapchains = swapChains;
   presentInfo.pImageIndices = &imageIndex;
-  presentInfo.pResults = nullptr;  // Optional
+  presentInfo.pResults = nullptr;  
 
   result = vkQueuePresentKHR(presentQueue, &presentInfo);
   if (result == VK_SUBOPTIMAL_KHR) {
@@ -505,8 +505,8 @@ void HelloVK::recordCommandBuffer(VkCommandBuffer commandBuffer,
                                   uint32_t imageIndex) {
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-  beginInfo.flags = 0;                   // Optional
-  beginInfo.pInheritanceInfo = nullptr;  // Optional
+  beginInfo.flags = 0;                   
+  beginInfo.pInheritanceInfo = nullptr;  
 
   if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
     throw std::runtime_error("failed to begin recording command buffer!");
@@ -968,8 +968,8 @@ void HelloVK::createSwapChain() {
     createInfo.pQueueFamilyIndices = queueFamilyIndices;
   } else {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    createInfo.queueFamilyIndexCount = 0;      // Optional
-    createInfo.pQueueFamilyIndices = nullptr;  // Optional
+    createInfo.queueFamilyIndexCount = 0;      
+    createInfo.pQueueFamilyIndices = nullptr;  
   }
   createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
   createInfo.presentMode = presentMode;
@@ -1089,7 +1089,7 @@ void HelloVK::createGraphicsPipeline() {
   vertexInputInfo.sType =
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
   vertexInputInfo.vertexBindingDescriptionCount = 0;
-  vertexInputInfo.pVertexBindingDescriptions = nullptr;  // Optional
+  vertexInputInfo.pVertexBindingDescriptions = nullptr;  
   vertexInputInfo.vertexAttributeDescriptionCount = 0;
   vertexInputInfo.pVertexAttributeDescriptions = nullptr;  // Option
 
@@ -1115,19 +1115,19 @@ void HelloVK::createGraphicsPipeline() {
   rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
   rasterizer.depthBiasEnable = VK_FALSE;
-  rasterizer.depthBiasConstantFactor = 0.0f;  // Optional
-  rasterizer.depthBiasClamp = 0.0f;           // Optional
-  rasterizer.depthBiasSlopeFactor = 0.0f;     // Optional
+  rasterizer.depthBiasConstantFactor = 0.0f;  
+  rasterizer.depthBiasClamp = 0.0f;           
+  rasterizer.depthBiasSlopeFactor = 0.0f;     
 
   VkPipelineMultisampleStateCreateInfo multisampling{};
   multisampling.sType =
       VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
   multisampling.sampleShadingEnable = VK_FALSE;
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-  multisampling.minSampleShading = 1.0f;           // Optional
-  multisampling.pSampleMask = nullptr;             // Optional
-  multisampling.alphaToCoverageEnable = VK_FALSE;  // Optional
-  multisampling.alphaToOneEnable = VK_FALSE;       // Optional
+  multisampling.minSampleShading = 1.0f;           
+  multisampling.pSampleMask = nullptr;             
+  multisampling.alphaToCoverageEnable = VK_FALSE;  
+  multisampling.alphaToOneEnable = VK_FALSE;       
 
   VkPipelineColorBlendAttachmentState colorBlendAttachment{};
   colorBlendAttachment.colorWriteMask =
@@ -1175,14 +1175,14 @@ void HelloVK::createGraphicsPipeline() {
   pipelineInfo.pViewportState = &viewportState;
   pipelineInfo.pRasterizationState = &rasterizer;
   pipelineInfo.pMultisampleState = &multisampling;
-  pipelineInfo.pDepthStencilState = nullptr;  // Optional
+  pipelineInfo.pDepthStencilState = nullptr;  
   pipelineInfo.pColorBlendState = &colorBlending;
   pipelineInfo.pDynamicState = &dynamicStateCI;
   pipelineInfo.layout = pipelineLayout;
   pipelineInfo.renderPass = renderPass;
   pipelineInfo.subpass = 0;
-  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;  // Optional
-  pipelineInfo.basePipelineIndex = -1;               // Optional
+  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;  
+  pipelineInfo.basePipelineIndex = -1;               
 
   if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo,
                                 nullptr, &graphicsPipeline) != VK_SUCCESS) {
