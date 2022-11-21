@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- TODO: figure out how to request vulkan version properly. Currently copied from:
+        https://developer.android.com/reference/android/content/pm/PackageManager#FEATURE_VULKAN_HARDWARE_VERSION
+
+        which is 1.0.0
+  -->
+
+  <application
+      android:allowBackup="false"
+      android:fullBackupContent="false"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/hellovk_activity">
+    <activity android:name="VulkanActivity"
+              android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+              android:launchMode="singleTask"
+              android:exported="true"
+              android:configChanges="orientation|screenSize|keyboardHidden">
+      <meta-data android:name="android.app.lib_name"
+                 android:value="hellovkjni"/>
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

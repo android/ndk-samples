@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+
+android {
+    compileSdkVersion 33
+    ndkVersion '25.1.8937393'
+    
+    defaultConfig {
+        shaders {
+            glslcArgs.addAll(['-c'])
+        }
+        applicationId 'com.android.hellovk'
+        minSdkVersion 30
+        targetSdkVersion 33
+        externalNativeBuild {
+            cmake {
+                // Available arguments are inside ${SDK}/cmake/.../android.toolchain.cmake file
+                arguments "-DANDROID_STL=c++_static", "-DANDROID_NDK_HOME=$System.env.ANDROID_NDK_HOME"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            version '3.22.1'
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+    namespace 'com.android.hellovk'
+}
+
