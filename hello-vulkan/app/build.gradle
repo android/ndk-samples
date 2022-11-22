@@ -16,7 +16,7 @@ android {
         externalNativeBuild {
             cmake {
                 // Available arguments are inside ${SDK}/cmake/.../android.toolchain.cmake file
-                arguments "-DANDROID_STL=c++_static", "-DANDROID_NDK_HOME=$System.env.ANDROID_NDK_HOME"
+                arguments "-DANDROID_STL=c++_static"
             }
         }
     }
