@@ -40,8 +40,8 @@
  *
  */
 struct Engine {
-  struct android_app* app;
-  vkt::HelloVK* app_backend;
+  struct android_app *app;
+  vkt::HelloVK *app_backend;
   bool canRender = false;
 };
 
@@ -49,8 +49,8 @@ struct Engine {
  * Called by the Android runtime whenever events happen so the
  * app can react to it.
  */
-static void handlecmd(struct android_app* app, int32_t cmd) {
-  auto* engine = (Engine*)app->userData;
+static void handlecmd(struct android_app *app, int32_t cmd) {
+  auto *engine = (Engine *)app->userData;
   switch (cmd) {
     case APP_CMD_START:
       if (engine->app->window != nullptr) {
@@ -89,8 +89,7 @@ static void handlecmd(struct android_app* app, int32_t cmd) {
  * This can also be achieved more verbosely by manually declaring JNI functions
  * and calling them from the Android application layer.
  */
-void android_main(struct android_app* state) {
-  LOGI("I started");
+void android_main(struct android_app *state) {
   Engine engine{};
   vkt::HelloVK vulkanBackend{};
 
@@ -102,9 +101,9 @@ void android_main(struct android_app* state) {
   while (true) {
     int ident;
     int events;
-    android_poll_source* source;
+    android_poll_source *source;
     while ((ident = ALooper_pollAll(engine.canRender ? 0 : -1, nullptr, &events,
-                                    (void**)&source)) >= 0) {
+                                    (void **)&source)) >= 0) {
       if (source != nullptr) {
         source->process(state, source);
       }

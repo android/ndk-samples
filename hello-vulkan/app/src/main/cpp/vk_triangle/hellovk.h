@@ -405,7 +405,7 @@ void HelloVK::render() {
   presentInfo.swapchainCount = 1;
   presentInfo.pSwapchains = swapChains;
   presentInfo.pImageIndices = &imageIndex;
-  presentInfo.pResults = nullptr;  
+  presentInfo.pResults = nullptr;
 
   result = vkQueuePresentKHR(presentQueue, &presentInfo);
   if (result == VK_SUBOPTIMAL_KHR) {
@@ -505,8 +505,8 @@ void HelloVK::recordCommandBuffer(VkCommandBuffer commandBuffer,
                                   uint32_t imageIndex) {
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-  beginInfo.flags = 0;                   
-  beginInfo.pInheritanceInfo = nullptr;  
+  beginInfo.flags = 0;
+  beginInfo.pInheritanceInfo = nullptr;
 
   if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
     throw std::runtime_error("failed to begin recording command buffer!");
@@ -608,7 +608,7 @@ void HelloVK::setupDebugMessenger() {
                                    &debugMessenger) != VK_SUCCESS) {
     throw std::runtime_error("failed to set up debug messenger!");
   }
-};
+}
 
 bool HelloVK::checkValidationLayerSupport() {
   uint32_t layerCount;
@@ -710,12 +710,10 @@ void HelloVK::createSurface() {
 }
 
 // BEGIN DEVICE SUITABILITY
-// Might be overkill for Android currently since they generally only have one
-// GPU which is suitable for drawing a triangle
+// Functions to find a suitable physical device to execute Vulkan commands.
 
 QueueFamilyIndices HelloVK::findQueueFamilies(VkPhysicalDevice device) {
   QueueFamilyIndices indices;
-  // Logic to find queue family indices to populate struct with
 
   uint32_t queueFamilyCount = 0;
   vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -815,7 +813,6 @@ void HelloVK::pickPhysicalDevice() {
   std::vector<VkPhysicalDevice> devices(deviceCount);
   vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
-  std::multimap<int, VkPhysicalDevice> candidates;
   for (const auto &device : devices) {
     if (isDeviceSuitable(device)) {
       physicalDevice = device;
@@ -870,7 +867,7 @@ void HelloVK::createLogicalDeviceAndQueue() {
 
   vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
   vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
-};
+}
 
 VkSurfaceFormatKHR chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR> &availableFormats) {
@@ -888,9 +885,9 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(
  * https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkPresentModeKHR.html
  * for a discourse on different present modes.
  */
-VkPresentModeKHR chooseSwapPresentMode(
-    const std::vector<VkPresentModeKHR> &availablePresentModes) {
+VkPresentModeKHR chooseSwapPresentMode() {
   // VK_PRESENT_MODE_FIFO_KHR = Hard Vsync
+  // This is always supported on Android phones
   return VK_PRESENT_MODE_FIFO_KHR;
 }
 
@@ -937,8 +934,7 @@ void HelloVK::createSwapChain() {
       querySwapChainSupport(physicalDevice);
   VkSurfaceFormatKHR surfaceFormat =
       chooseSwapSurfaceFormat(swapChainSupport.formats);
-  VkPresentModeKHR presentMode =
-      chooseSwapPresentMode(swapChainSupport.presentModes);
+  VkPresentModeKHR presentMode = chooseSwapPresentMode();
 
   uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
   if (swapChainSupport.capabilities.maxImageCount > 0 &&
@@ -968,8 +964,8 @@ void HelloVK::createSwapChain() {
     createInfo.pQueueFamilyIndices = queueFamilyIndices;
   } else {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    createInfo.queueFamilyIndexCount = 0;      
-    createInfo.pQueueFamilyIndices = nullptr;  
+    createInfo.queueFamilyIndexCount = 0;
+    createInfo.pQueueFamilyIndices = nullptr;
   }
   createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
   createInfo.presentMode = presentMode;
@@ -988,7 +984,7 @@ void HelloVK::createSwapChain() {
 
   swapChainImageFormat = surfaceFormat.format;
   swapChainExtent = displaySizeIdentity;
-};
+}
 
 void HelloVK::createImageViews() {
   swapChainImageViews.resize(swapChainImages.size());
@@ -1012,7 +1008,7 @@ void HelloVK::createImageViews() {
       throw std::runtime_error("failed to create image views!");
     }
   }
-};
+}
 
 void HelloVK::createRenderPass() {
   VkAttachmentDescription colorAttachment{};
@@ -1058,7 +1054,8 @@ void HelloVK::createRenderPass() {
       VK_SUCCESS) {
     throw std::runtime_error("failed to create render pass!");
   }
-};
+}
+
 void HelloVK::createGraphicsPipeline() {
   auto vertShaderCode =
       LoadBinaryFileToVector("shaders/shader.vert.spv", assetManager);
@@ -1089,7 +1086,7 @@ void HelloVK::createGraphicsPipeline() {
   vertexInputInfo.sType =
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
   vertexInputInfo.vertexBindingDescriptionCount = 0;
-  vertexInputInfo.pVertexBindingDescriptions = nullptr;  
+  vertexInputInfo.pVertexBindingDescriptions = nullptr;
   vertexInputInfo.vertexAttributeDescriptionCount = 0;
   vertexInputInfo.pVertexAttributeDescriptions = nullptr;  // Option
 
@@ -1115,19 +1112,19 @@ void HelloVK::createGraphicsPipeline() {
   rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
   rasterizer.depthBiasEnable = VK_FALSE;
-  rasterizer.depthBiasConstantFactor = 0.0f;  
-  rasterizer.depthBiasClamp = 0.0f;           
-  rasterizer.depthBiasSlopeFactor = 0.0f;     
+  rasterizer.depthBiasConstantFactor = 0.0f;
+  rasterizer.depthBiasClamp = 0.0f;
+  rasterizer.depthBiasSlopeFactor = 0.0f;
 
   VkPipelineMultisampleStateCreateInfo multisampling{};
   multisampling.sType =
       VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
   multisampling.sampleShadingEnable = VK_FALSE;
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-  multisampling.minSampleShading = 1.0f;           
-  multisampling.pSampleMask = nullptr;             
-  multisampling.alphaToCoverageEnable = VK_FALSE;  
-  multisampling.alphaToOneEnable = VK_FALSE;       
+  multisampling.minSampleShading = 1.0f;
+  multisampling.pSampleMask = nullptr;
+  multisampling.alphaToCoverageEnable = VK_FALSE;
+  multisampling.alphaToOneEnable = VK_FALSE;
 
   VkPipelineColorBlendAttachmentState colorBlendAttachment{};
   colorBlendAttachment.colorWriteMask =
@@ -1175,14 +1172,14 @@ void HelloVK::createGraphicsPipeline() {
   pipelineInfo.pViewportState = &viewportState;
   pipelineInfo.pRasterizationState = &rasterizer;
   pipelineInfo.pMultisampleState = &multisampling;
-  pipelineInfo.pDepthStencilState = nullptr;  
+  pipelineInfo.pDepthStencilState = nullptr;
   pipelineInfo.pColorBlendState = &colorBlending;
   pipelineInfo.pDynamicState = &dynamicStateCI;
   pipelineInfo.layout = pipelineLayout;
   pipelineInfo.renderPass = renderPass;
   pipelineInfo.subpass = 0;
-  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;  
-  pipelineInfo.basePipelineIndex = -1;               
+  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+  pipelineInfo.basePipelineIndex = -1;
 
   if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo,
                                 nullptr, &graphicsPipeline) != VK_SUCCESS) {
@@ -1190,7 +1187,7 @@ void HelloVK::createGraphicsPipeline() {
   }
   vkDestroyShaderModule(device, fragShaderModule, nullptr);
   vkDestroyShaderModule(device, vertShaderModule, nullptr);
-};
+}
 
 VkShaderModule HelloVK::createShaderModule(const std::vector<uint8_t> &code) {
   VkShaderModuleCreateInfo createInfo{};
@@ -1226,7 +1223,7 @@ void HelloVK::createFramebuffers() {
       throw std::runtime_error("failed to create framebuffer!");
     }
   }
-};
+}
 
 void HelloVK::createCommandPool() {
   QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
@@ -1238,7 +1235,8 @@ void HelloVK::createCommandPool() {
       VK_SUCCESS) {
     throw std::runtime_error("failed to create command pool!");
   }
-};
+}
+
 void HelloVK::createCommandBuffer() {
   commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
   VkCommandBufferAllocateInfo allocInfo{};
@@ -1251,7 +1249,7 @@ void HelloVK::createCommandBuffer() {
       VK_SUCCESS) {
     throw std::runtime_error("failed to allocate command buffers!");
   }
-};
+}
 
 void HelloVK::createSyncObjects() {
   imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
