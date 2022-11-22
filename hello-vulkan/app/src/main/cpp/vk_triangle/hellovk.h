@@ -880,17 +880,6 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(
   return availableFormats[0];
 }
 
-/*
- * Please check
- * https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkPresentModeKHR.html
- * for a discourse on different present modes.
- */
-VkPresentModeKHR chooseSwapPresentMode() {
-  // VK_PRESENT_MODE_FIFO_KHR = Hard Vsync
-  // This is always supported on Android phones
-  return VK_PRESENT_MODE_FIFO_KHR;
-}
-
 VkExtent2D HelloVK::chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR &capabilities) {
   if (capabilities.currentExtent.width !=
@@ -934,7 +923,14 @@ void HelloVK::createSwapChain() {
       querySwapChainSupport(physicalDevice);
   VkSurfaceFormatKHR surfaceFormat =
       chooseSwapSurfaceFormat(swapChainSupport.formats);
-  VkPresentModeKHR presentMode = chooseSwapPresentMode();
+
+  // Please check
+  // https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkPresentModeKHR.html
+  // for a discourse on different present modes.
+  //
+  // VK_PRESENT_MODE_FIFO_KHR = Hard Vsync
+  // This is always supported on Android phones
+  VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
 
   uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
   if (swapChainSupport.capabilities.maxImageCount > 0 &&
