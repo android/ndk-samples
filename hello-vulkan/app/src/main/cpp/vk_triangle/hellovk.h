@@ -34,7 +34,7 @@
  * HelloVK contains the core of Vulkan pipeline setup. It includes recording
  * draw commands as well as screen clearing during the render pass.
  *
- * Please refer to: https://vulkan-tutorial.com/Overview for a gentle Vulkan
+ * Please refer to: https://vulkan-tutorial.com/ for a gentle Vulkan
  * introduction.
  */
 

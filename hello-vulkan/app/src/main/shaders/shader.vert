@@ -1,6 +1,11 @@
 #version 450
 
+// Colour passed to the fragment shader
 layout(location = 0) out vec3 fragColor;
+
+// Uniform buffer containing an MVP matrix.
+// Currently the vulkan backend only sets the rotation matix
+// required to handle device rotation.
 layout(binding = 0) uniform UniformBufferObject {
     mat4 MVP;
 } ubo;

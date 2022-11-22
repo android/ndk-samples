@@ -29,7 +29,7 @@ As Vulkan is well documented we will not provide detailed instructions regarding
 https://developer.android.com/reference/games/game-activity/group/android-native-app-glue
 
 These vulkan tutorials should hopefully cover everything needed to understand the workings of the Vulkan app:
-https://vulkan-tutorial.com/Overview
+https://vulkan-tutorial.com
 https://vkguide.dev/docs/chapter-1/vulkan_init_flow/
 
 Lastly, you will notice that the Kotlin file is somewhat redundant. Luckily, if you do not require any additional/custom application behaviour, the Android(Kotlin) source files can be completely removed and the AndroidManifest.xml tweaked as specified here:
