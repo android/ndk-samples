@@ -531,7 +531,7 @@ void HelloVK::recordCommandBuffer(VkCommandBuffer commandBuffer,
   vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
   static float grey;
-  grey += 0.001f;
+  grey += 0.005f;
   if (grey > 1.0f) {
     grey = 0.0f;
   }
