@@ -731,7 +731,7 @@ void HelloVK::createInstance() {
   for (const auto &extension : extensions) {
     LOGI("\t %s", extension.extensionName);
   }
-};
+}
 
 void HelloVK::createSurface() {
   const VkAndroidSurfaceCreateInfoKHR create_info{
