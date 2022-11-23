@@ -39,7 +39,7 @@
  * rendering logic
  *
  */
-struct Engine {
+struct VulkanEngine {
   struct android_app *app;
   vkt::HelloVK *app_backend;
   bool canRender = false;
@@ -50,7 +50,7 @@ struct Engine {
  * app can react to it.
  */
 static void HandleCmd(struct android_app *app, int32_t cmd) {
-  auto *engine = (Engine *)app->userData;
+  auto *engine = (VulkanEngine *)app->userData;
   switch (cmd) {
   case APP_CMD_START:
     if (engine->app->window != nullptr) {
@@ -90,7 +90,7 @@ static void HandleCmd(struct android_app *app, int32_t cmd) {
  * and calling them from the Android application layer.
  */
 void android_main(struct android_app *state) {
-  Engine engine{};
+  VulkanEngine engine{};
   vkt::HelloVK vulkanBackend{};
 
   engine.app = state;
