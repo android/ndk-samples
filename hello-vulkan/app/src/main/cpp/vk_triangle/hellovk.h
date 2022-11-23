@@ -82,8 +82,7 @@ std::vector<uint8_t> LoadBinaryFileToVector(const char *file_path,
   return file_content;
 }
 
-const char *
-to_string_message_severity(VkDebugUtilsMessageSeverityFlagBitsEXT s) {
+const char *toStringMessageSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT s) {
   switch (s) {
   case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
     return "VERBOSE";
@@ -97,7 +96,7 @@ to_string_message_severity(VkDebugUtilsMessageSeverityFlagBitsEXT s) {
     return "UNKNOWN";
   }
 }
-const char *to_string_message_type(VkDebugUtilsMessageTypeFlagsEXT s) {
+const char *toStringMessageType(VkDebugUtilsMessageTypeFlagsEXT s) {
   if (s == 7)
     return "General | Validation | Performance";
   if (s == 6)
@@ -121,8 +120,8 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
               const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
               void * /* pUserData */) {
 
-  auto ms = to_string_message_severity(messageSeverity);
-  auto mt = to_string_message_type(messageType);
+  auto ms = toStringMessageSeverity(messageSeverity);
+  auto mt = toStringMessageType(messageType);
   printf("[%s: %s]\n%s\n", ms, mt, pCallbackData->pMessage);
 
   return VK_FALSE;
@@ -212,8 +211,6 @@ private:
   void createDescriptorSets();
   void establishDisplaySizeIdentity();
 
-  // Init
-
   /*
    * In order to enable validation layer toggle this to true and
    * follow the README.md instructions concerning the validation
@@ -232,7 +229,6 @@ private:
   std::unique_ptr<ANativeWindow, ANativeWindowDeleter> window;
   AAssetManager *assetManager;
 
-  // VK
   VkInstance instance;
   VkDebugUtilsMessengerEXT debugMessenger;
 
@@ -460,13 +456,16 @@ void HelloVK::render() {
 void getPrerotationMatrix(const VkSurfaceCapabilitiesKHR &capabilities,
                           const VkSurfaceTransformFlagBitsKHR &pretransformFlag,
                           std::array<float, 16> &mat) {
-  // Identity Matrix
+
+  // mat is initialized to the identity matrix
   mat = {1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.};
   if (pretransformFlag & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) {
+    // mat is set to a 90 deg rotation matrix
     mat = {0., 1., 0., 0., -1., 0, 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.};
   }
 
   else if (pretransformFlag & VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) {
+    // mat is set to 270 deg rotation matrix
     mat = {0., -1., 0., 0., 1., 0, 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.};
   }
 }
@@ -700,7 +699,6 @@ void HelloVK::createInstance() {
   VkInstanceCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfo.pApplicationInfo = &appInfo;
-  //   createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
   createInfo.enabledExtensionCount = (uint32_t)requiredExtensions.size();
   createInfo.ppEnabledExtensionNames = requiredExtensions.data();
   createInfo.pApplicationInfo = &appInfo;
@@ -733,7 +731,16 @@ void HelloVK::createInstance() {
   }
 }
 
+/*
+ * createSurface can only be called after the android ecosystem has had the
+ * chance to provide a native window. This happens after the APP_CMD_START event
+ * has had a chance to be called.
+ *
+ * Notice the window.get() call which is only valid after window has been set to
+ * a non null value
+ */
 void HelloVK::createSurface() {
+  assert(window != nullptr);
   const VkAndroidSurfaceCreateInfoKHR create_info{
       .sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
       .pNext = nullptr,
@@ -1120,7 +1127,7 @@ void HelloVK::createGraphicsPipeline() {
   vertexInputInfo.vertexBindingDescriptionCount = 0;
   vertexInputInfo.pVertexBindingDescriptions = nullptr;
   vertexInputInfo.vertexAttributeDescriptionCount = 0;
-  vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Option
+  vertexInputInfo.pVertexAttributeDescriptions = nullptr;
 
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType =
@@ -1225,9 +1232,10 @@ VkShaderModule HelloVK::createShaderModule(const std::vector<uint8_t> &code) {
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
-  createInfo.pCode = reinterpret_cast<const uint32_t *>(
-      code.data()); // Satisifies alignment requirements since the allocator
-                    // in vector ensures worst case requirements
+
+  // Satisifies alignment requirements since the allocator
+  // in vector ensures worst case requirements
+  createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
   VkShaderModule shaderModule;
   if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) !=
       VK_SUCCESS) {

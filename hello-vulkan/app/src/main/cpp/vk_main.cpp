@@ -49,38 +49,38 @@ struct Engine {
  * Called by the Android runtime whenever events happen so the
  * app can react to it.
  */
-static void handlecmd(struct android_app *app, int32_t cmd) {
+static void HandleCmd(struct android_app *app, int32_t cmd) {
   auto *engine = (Engine *)app->userData;
   switch (cmd) {
-    case APP_CMD_START:
-      if (engine->app->window != nullptr) {
-        engine->app_backend->reset(app->window, app->activity->assetManager);
+  case APP_CMD_START:
+    if (engine->app->window != nullptr) {
+      engine->app_backend->reset(app->window, app->activity->assetManager);
+      engine->app_backend->initVulkan();
+      engine->canRender = true;
+    }
+  case APP_CMD_INIT_WINDOW:
+    // The window is being shown, get it ready.
+    LOGI("Called - APP_CMD_INIT_WINDOW");
+    if (engine->app->window != nullptr) {
+      LOGI("Setting a new surface");
+      engine->app_backend->reset(app->window, app->activity->assetManager);
+      if (!engine->app_backend->initialized) {
+        LOGI("Starting application");
         engine->app_backend->initVulkan();
-        engine->canRender = true;
       }
-    case APP_CMD_INIT_WINDOW:
-      // The window is being shown, get it ready.
-      LOGI("Called - APP_CMD_INIT_WINDOW");
-      if (engine->app->window != nullptr) {
-        LOGI("Setting a new surface");
-        engine->app_backend->reset(app->window, app->activity->assetManager);
-        if (!engine->app_backend->initialized) {
-          LOGI("Starting application");
-          engine->app_backend->initVulkan();
-        }
-        engine->canRender = true;
-      }
-      break;
-    case APP_CMD_TERM_WINDOW:
-      // The window is being hidden or closed, clean it up.
-      engine->canRender = false;
-      break;
-    case APP_CMD_DESTROY:
-      // The window is being hidden or closed, clean it up.
-      LOGI("Destroying");
-      engine->app_backend->cleanup();
-    default:
-      break;
+      engine->canRender = true;
+    }
+    break;
+  case APP_CMD_TERM_WINDOW:
+    // The window is being hidden or closed, clean it up.
+    engine->canRender = false;
+    break;
+  case APP_CMD_DESTROY:
+    // The window is being hidden or closed, clean it up.
+    LOGI("Destroying");
+    engine->app_backend->cleanup();
+  default:
+    break;
   }
 }
 
@@ -96,7 +96,7 @@ void android_main(struct android_app *state) {
   engine.app = state;
   engine.app_backend = &vulkanBackend;
   state->userData = &engine;
-  state->onAppCmd = handlecmd;
+  state->onAppCmd = HandleCmd;
 
   while (true) {
     int ident;
