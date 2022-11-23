@@ -82,11 +82,49 @@ std::vector<uint8_t> LoadBinaryFileToVector(const char *file_path,
   return file_content;
 }
 
+const char *
+to_string_message_severity(VkDebugUtilsMessageSeverityFlagBitsEXT s) {
+  switch (s) {
+  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+    return "VERBOSE";
+  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+    return "ERROR";
+  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+    return "WARNING";
+  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+    return "INFO";
+  default:
+    return "UNKNOWN";
+  }
+}
+const char *to_string_message_type(VkDebugUtilsMessageTypeFlagsEXT s) {
+  if (s == 7)
+    return "General | Validation | Performance";
+  if (s == 6)
+    return "Validation | Performance";
+  if (s == 5)
+    return "General | Performance";
+  if (s == 4 /*VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT*/)
+    return "Performance";
+  if (s == 3)
+    return "General | Validation";
+  if (s == 2 /*VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT*/)
+    return "Validation";
+  if (s == 1 /*VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT*/)
+    return "General";
+  return "Unknown";
+}
+
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
               VkDebugUtilsMessageTypeFlagsEXT messageType,
               const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-              void *pUserData) {
+              void * /* pUserData */) {
+
+  auto ms = to_string_message_severity(messageSeverity);
+  auto mt = to_string_message_type(messageType);
+  printf("[%s: %s]\n%s\n", ms, mt, pCallbackData->pMessage);
+
   return VK_FALSE;
 }
 
@@ -116,9 +154,10 @@ static VkResult CreateDebugUtilsMessengerEXT(
   }
 }
 
-static void DestroyDebugUtilsMessengerEXT(
-    VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
-    const VkAllocationCallbacks *pAllocator) {
+static void
+DestroyDebugUtilsMessengerEXT(VkInstance instance,
+                              VkDebugUtilsMessengerEXT debugMessenger,
+                              const VkAllocationCallbacks *pAllocator) {
   auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
       instance, "vkDestroyDebugUtilsMessengerEXT");
   if (func != nullptr) {
@@ -127,7 +166,7 @@ static void DestroyDebugUtilsMessengerEXT(
 }
 
 class HelloVK {
- public:
+public:
   void initVulkan();
   void render();
   void cleanup();
@@ -135,7 +174,7 @@ class HelloVK {
   void reset(ANativeWindow *newWindow, AAssetManager *newManager);
   bool initialized = false;
 
- private:
+private:
   void createDevice();
   void createInstance();
   void createSurface();
@@ -633,8 +672,8 @@ bool HelloVK::checkValidationLayerSupport() {
   return true;
 }
 
-std::vector<const char *> HelloVK::getRequiredExtensions(
-    bool enableValidationLayers) {
+std::vector<const char *>
+HelloVK::getRequiredExtensions(bool enableValidationLayers) {
   std::vector<const char *> extensions;
   extensions.push_back("VK_KHR_surface");
   extensions.push_back("VK_KHR_android_surface");
@@ -759,8 +798,8 @@ bool HelloVK::checkDeviceExtensionSupport(VkPhysicalDevice device) {
   return requiredExtensions.empty();
 }
 
-SwapChainSupportDetails HelloVK::querySwapChainSupport(
-    VkPhysicalDevice device) {
+SwapChainSupportDetails
+HelloVK::querySwapChainSupport(VkPhysicalDevice device) {
   SwapChainSupportDetails details;
 
   vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface,
@@ -877,8 +916,8 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(
   return availableFormats[0];
 }
 
-VkExtent2D HelloVK::chooseSwapExtent(
-    const VkSurfaceCapabilitiesKHR &capabilities) {
+VkExtent2D
+HelloVK::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
   if (capabilities.currentExtent.width !=
       std::numeric_limits<uint32_t>::max()) {
     return capabilities.currentExtent;
@@ -1081,7 +1120,7 @@ void HelloVK::createGraphicsPipeline() {
   vertexInputInfo.vertexBindingDescriptionCount = 0;
   vertexInputInfo.pVertexBindingDescriptions = nullptr;
   vertexInputInfo.vertexAttributeDescriptionCount = 0;
-  vertexInputInfo.pVertexAttributeDescriptions = nullptr;  // Option
+  vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Option
 
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType =
@@ -1187,8 +1226,8 @@ VkShaderModule HelloVK::createShaderModule(const std::vector<uint8_t> &code) {
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
   createInfo.pCode = reinterpret_cast<const uint32_t *>(
-      code.data());  // Satisifies alignment requirements since the allocator
-                     // in vector ensures worst case requirements
+      code.data()); // Satisifies alignment requirements since the allocator
+                    // in vector ensures worst case requirements
   VkShaderModule shaderModule;
   if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) !=
       VK_SUCCESS) {
@@ -1267,4 +1306,4 @@ void HelloVK::createSyncObjects() {
   }
 }
 
-}  // namespace vkt
+} // namespace vkt
