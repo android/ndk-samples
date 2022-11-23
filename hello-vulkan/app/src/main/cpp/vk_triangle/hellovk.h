@@ -703,10 +703,7 @@ void HelloVK::createSurface() {
 
   VkResult result = vkCreateAndroidSurfaceKHR(
       instance, &create_info, nullptr /* pAllocator */, &surface);
-  if (result != VK_SUCCESS) {
-    throw std::runtime_error("failed to create surface with err " +
-                             std::to_string(result) + " !");
-  }
+  assert(result == VK_SUCCESS);
 }
 
 // BEGIN DEVICE SUITABILITY
