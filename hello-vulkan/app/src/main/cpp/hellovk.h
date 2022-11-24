@@ -499,6 +499,10 @@ void HelloVK::render()
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
+/*
+ * getPrerotationMatrix handles screen rotation with 3 hardcoded rotation matrices (detailed below).
+ * We skip the 180 degrees rotation.
+ */
 void getPrerotationMatrix(const VkSurfaceCapabilitiesKHR      &capabilities,
                           const VkSurfaceTransformFlagBitsKHR &pretransformFlag,
                           std::array<float, 16>               &mat)
