@@ -127,7 +127,7 @@ const char *toStringMessageType(VkDebugUtilsMessageTypeFlagsEXT s)
 	return "Unknown";
 }
 
-static VKAPI_ATTR VkBool32 VKAPI_CALL
+VKAPI_ATTR VkBool32 VKAPI_CALL
     debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
                   VkDebugUtilsMessageTypeFlagsEXT             messageType,
                   const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
@@ -140,7 +140,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL
 	return VK_FALSE;
 }
 
-static void populateDebugMessengerCreateInfo(
+void populateDebugMessengerCreateInfo(
     VkDebugUtilsMessengerCreateInfoEXT &createInfo)
 {
 	createInfo                 = {};
@@ -154,7 +154,7 @@ static void populateDebugMessengerCreateInfo(
 	createInfo.pfnUserCallback = debugCallback;
 }
 
-static VkResult CreateDebugUtilsMessengerEXT(
+VkResult CreateDebugUtilsMessengerEXT(
     VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks *pAllocator,
     VkDebugUtilsMessengerEXT    *pDebugMessenger)
@@ -171,10 +171,9 @@ static VkResult CreateDebugUtilsMessengerEXT(
 	}
 }
 
-static void
-    DestroyDebugUtilsMessengerEXT(VkInstance                   instance,
-                                  VkDebugUtilsMessengerEXT     debugMessenger,
-                                  const VkAllocationCallbacks *pAllocator)
+void DestroyDebugUtilsMessengerEXT(VkInstance                   instance,
+                                   VkDebugUtilsMessengerEXT     debugMessenger,
+                                   const VkAllocationCallbacks *pAllocator)
 {
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(
 	    instance, "vkDestroyDebugUtilsMessengerEXT");
@@ -245,8 +244,7 @@ class HelloVK
 	const std::vector<const char *> validationLayers = {
 	    "VK_LAYER_KHRONOS_validation"};
 	const std::vector<const char *> deviceExtensions = {
-	    VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-	};
+	    VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 	std::unique_ptr<ANativeWindow, ANativeWindowDeleter> window;
 	AAssetManager	                                   *assetManager;
 
