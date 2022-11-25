@@ -129,7 +129,7 @@ const char *toStringMessageType(VkDebugUtilsMessageTypeFlagsEXT s)
 	return "Unknown";
 }
 
-VKAPI_ATTR VkBool32 VKAPI_CALL
+static VKAPI_ATTR VkBool32 VKAPI_CALL
     debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
                   VkDebugUtilsMessageTypeFlagsEXT             messageType,
                   const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
@@ -142,7 +142,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL
 	return VK_FALSE;
 }
 
-void populateDebugMessengerCreateInfo(
+static void populateDebugMessengerCreateInfo(
     VkDebugUtilsMessengerCreateInfoEXT &createInfo)
 {
 	createInfo                 = {};
@@ -156,7 +156,7 @@ void populateDebugMessengerCreateInfo(
 	createInfo.pfnUserCallback = debugCallback;
 }
 
-VkResult CreateDebugUtilsMessengerEXT(
+static VkResult CreateDebugUtilsMessengerEXT(
     VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks *pAllocator,
     VkDebugUtilsMessengerEXT    *pDebugMessenger)
@@ -173,9 +173,9 @@ VkResult CreateDebugUtilsMessengerEXT(
 	}
 }
 
-void DestroyDebugUtilsMessengerEXT(VkInstance                   instance,
-                                   VkDebugUtilsMessengerEXT     debugMessenger,
-                                   const VkAllocationCallbacks *pAllocator)
+static void DestroyDebugUtilsMessengerEXT(VkInstance                   instance,
+                                          VkDebugUtilsMessengerEXT     debugMessenger,
+                                          const VkAllocationCallbacks *pAllocator)
 {
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(
 	    instance, "vkDestroyDebugUtilsMessengerEXT");
