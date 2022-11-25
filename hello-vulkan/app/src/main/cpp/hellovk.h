@@ -110,19 +110,21 @@ const char *toStringMessageSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT s)
 }
 const char *toStringMessageType(VkDebugUtilsMessageTypeFlagsEXT s)
 {
-	if (s == 7)
+	if (s == VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+	    VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+	    VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
 		return "General | Validation | Performance";
-	if (s == 6)
+	if (s == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
 		return "Validation | Performance";
-	if (s == 5)
+	if (s == VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
 		return "General | Performance";
-	if (s == 4 /*VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT*/)
+	if (s == VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
 		return "Performance";
-	if (s == 3)
+	if (s == VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
 		return "General | Validation";
-	if (s == 2 /*VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT*/)
+	if (s == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
 		return "Validation";
-	if (s == 1 /*VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT*/)
+	if (s == VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)
 		return "General";
 	return "Unknown";
 }
