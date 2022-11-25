@@ -39,10 +39,6 @@ https://github.com/KhronosGroup/Vulkan-ValidationLayers/releases
 
 Extra information:
 -------
-You will notice the application uses VK_PRESENT_MODE_FIFO_KHR which is equivalent to VSYNC. This is done to simplify the presentation logic, 
-but Vulkan allows you to choose different present modes depending on the properties of your mobile GPU. For a comprehensive reference, please check
-https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkPresentModeKHR.html
-
 As Vulkan is well documented we will not provide detailed instructions regarding the innerworkings of Vulkan. You should however, find useful comments and references regarding the android to vulkan bridge. We chose to use Android Glue for a seamless experience. More details here:
 https://developer.android.com/reference/games/game-activity/group/android-native-app-glue
 
