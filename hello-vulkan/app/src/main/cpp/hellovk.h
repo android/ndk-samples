@@ -43,17 +43,16 @@ namespace vkt
 #define LOG_TAG "hellovkjni"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-#define VK_CHECK(x)                                                     \
-	do                                                                  \
-	{                                                                   \
-		VkResult err = x;                                               \
-		if (err)                                                        \
-		{                                                               \
-			LOGE("Detected Vulkan error: %d",  err);				    \
-			abort();                                                    \
-		}                                                               \
+#define VK_CHECK(x)                                 \
+	do                                              \
+	{                                               \
+		VkResult err = x;                           \
+		if (err)                                    \
+		{                                           \
+			LOGE("Detected Vulkan error: %d", err); \
+			abort();                                \
+		}                                           \
 	} while (0)
-
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -324,6 +323,12 @@ void HelloVK::initVulkan()
 	initialized = true;
 }
 
+/*
+ *	Create a buffer with specified usage and memory properties
+ *	i.e a uniform buffer which uses HOST_COHERENT memory
+ *  Upon creation, these buffers will list memory requirements which need to be
+ *  satisfied by the device in use in order to be created.
+ */
 void HelloVK::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                            VkMemoryPropertyFlags properties, VkBuffer &buffer,
                            VkDeviceMemory &bufferMemory)
@@ -350,6 +355,10 @@ void HelloVK::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
+/*
+ * Finds the index of the memory heap which matches a particular buffer's memory requirements.
+ * Vulkan manages these requirements as a bitset, in this case expressed through a uint32_t.
+ */
 uint32_t HelloVK::findMemoryType(uint32_t              typeFilter,
                                  VkMemoryPropertyFlags properties)
 {
@@ -366,6 +375,7 @@ uint32_t HelloVK::findMemoryType(uint32_t              typeFilter,
 	}
 
 	assert(false);        // failed to find suitable memory type!
+	return -1;
 }
 
 void HelloVK::createUniformBuffers()
@@ -487,7 +497,8 @@ void HelloVK::render()
 	{
 		recreateSwapChain();
 	}
-	else {
+	else
+	{
 		assert(result == VK_SUCCESS);        // failed to present swap chain image!
 	}
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
