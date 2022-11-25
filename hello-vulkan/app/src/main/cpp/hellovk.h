@@ -1224,6 +1224,24 @@ void HelloVK::createRenderPass()
 	}
 }
 
+/*
+ * Creates a graphics pipeline loading a simple vertex and fragment shader, both with 'main' set as entrypoint
+ * A list of standard parameters are provided:
+ * 	- The vertex input coming from the application is set to empty - we are hardcoding the triangle in the vertex shader.
+ * 	- The input assembly is configured to draw triangle lists
+ *  - We intend to draw onto the whole screen, so the scissoring extent is specified as being the whole swapchain extent.
+ * 	- The rasterizer is set to discard fragmets beyond the near and far planes (depthClampEnable=false)
+ * 		as well as sending geometry to the frame buffer and generate fragments for the whole area of the geometry.
+ * 		We consider geometry in terms of the clockwise order of their respective vertex input.
+ *  - Multisampling is disabled
+ *  - Depth and stencil testing are disabled
+ * 	- ColorBlending is set to opaque mode, meaning any new fragments will overwrite the ones already existing in the framebuffer
+ *  - We utilise Vulkan's concept of dynamic state for viewport and scissoring.
+ * 		The other option is to hardcode the viewport/scissor options, however this means needing to recreate
+ * 		the whole graphics pipeline object when the screen is rotated.
+ *  - The pipeline layout sends 1 uniform buffer object to the shader containing a 4x4 rotation matrix specified by the descriptorSetLayout.
+ * 		This is required in order to render a rotated scene when the device has been rotated.
+ */
 void HelloVK::createGraphicsPipeline()
 {
 	auto vertShaderCode =
