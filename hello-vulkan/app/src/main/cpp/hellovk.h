@@ -1023,20 +1023,6 @@ void HelloVK::createLogicalDeviceAndQueue()
 	vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
-VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-    const std::vector<VkSurfaceFormatKHR> &availableFormats)
-{
-	for (const auto &availableFormat : availableFormats)
-	{
-		if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
-		    availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-		{
-			return availableFormat;
-		}
-	}
-	return availableFormats[0];
-}
-
 VkExtent2D
     HelloVK::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
 {
@@ -1085,8 +1071,20 @@ void HelloVK::createSwapChain()
 {
 	SwapChainSupportDetails swapChainSupport =
 	    querySwapChainSupport(physicalDevice);
-	VkSurfaceFormatKHR surfaceFormat =
-	    chooseSwapSurfaceFormat(swapChainSupport.formats);
+
+	auto chooseSwapSurfaceFormat = [](const std::vector<VkSurfaceFormatKHR> &availableFormats) {
+		for (const auto &availableFormat : availableFormats)
+		{
+			if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
+			    availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			{
+				return availableFormat;
+			}
+		}
+		return availableFormats[0];
+	};
+
+	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 
 	// Please check
 	// https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkPresentModeKHR.html
