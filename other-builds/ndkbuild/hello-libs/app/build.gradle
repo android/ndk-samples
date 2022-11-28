@@ -2,15 +2,17 @@
 //  generate 2 libs on terminal ( or command line )
 //  please refer to ${project}/gen-libs/gen_lib.sh for details
 
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 // pointing to cmake's source code for the same project
 def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
         project.getName() + '/src/main'
 
 android {
-    compileSdkVersion 29
-    ndkVersion '22.1.7171670'
+    compileSdk 33
+    ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId = 'com.example.hellolibs'

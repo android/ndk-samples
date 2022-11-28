@@ -17,6 +17,7 @@ declare projects=(
     audio-echo
     bitmap-plasma
     camera
+    display-p3
     endless-tunnel
     gles3jni
     hello-gl2
@@ -24,18 +25,21 @@ declare projects=(
     hello-jniCallback
     hello-libs
     hello-neon
+    hello-oboe
     native-activity
     native-audio
     native-codec
     native-media
+    native-midi
     native-plasma
     nn-samples
     prefab/curl-ssl
+    prefab/prefab-dependency
     prefab/prefab-publishing
     san-angeles
     sensor-graph
-#    webp
     teapots
+    webp
 ##   ndk-build samples
     other-builds/ndkbuild/bitmap-plasma
     other-builds/ndkbuild/gles3jni
@@ -54,7 +58,7 @@ declare projects=(
     )
 
 VERBOSITY=--quiet
-if [[ -v RUNNER_DEBUG ]] ; then
+if [ -n "${RUNNER_DEBUG+1}" ] ; then
     VERBOSITY=--info
 fi
 for d in "${projects[@]}"; do
@@ -71,6 +75,7 @@ declare apks=(
   bitmap-plasma/app/build/outputs/apk/debug/app-debug.apk
   camera/basic/build/outputs/apk/debug/basic-debug.apk
   camera/texture-view/build/outputs/apk/debug/texture-view-debug.apk
+  display-p3/image-view/build/outputs/apk/debug/image-view-debug.apk
   endless-tunnel/app/build/outputs/apk/debug/app-debug.apk
   gles3jni/app/build/outputs/apk/debug/app-debug.apk
   hello-gl2/app/build/outputs/apk/debug/app-debug.apk
@@ -78,15 +83,18 @@ declare apks=(
   hello-jniCallback/app/build/outputs/apk/debug/app-debug.apk
   hello-libs/app/build/outputs/apk/debug/app-debug.apk
   hello-neon/app/build/outputs/apk/debug/app-debug.apk
+  hello-oboe/app/build/outputs/apk/debug/app-debug.apk
   native-activity/app/build/outputs/apk/debug/app-debug.apk
   native-audio/app/build/outputs/apk/debug/app-debug.apk
   native-codec/app/build/outputs/apk/debug/app-debug.apk
   native-media/app/build/outputs/apk/debug/app-debug.apk
+  native-midi/app/build/outputs/apk/debug/app-debug.apk
   native-plasma/app/build/outputs/apk/debug/app-debug.apk
   nn-samples/basic/build/outputs/apk/debug/basic-debug.apk
   nn-samples/sequence/build/outputs/apk/debug/sequence-debug.apk
   prefab/curl-ssl/app/build/outputs/apk/debug/app-debug.apk
   prefab/prefab-publishing/mylibrary/build/outputs/aar/mylibrary-debug.aar
+  prefab/prefab-dependency/app/build/outputs/apk/debug/app-debug.apk
   sensor-graph/accelerometer/build/outputs/apk/debug/accelerometer-debug.apk
   san-angeles/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
   san-angeles/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
@@ -95,7 +103,7 @@ declare apks=(
   teapots/more-teapots/build/outputs/apk/debug/more-teapots-debug.apk
   teapots/choreographer-30fps/build/outputs/apk/debug/choreographer-30fps-debug.apk
   teapots/image-decoder/build/outputs/apk/debug/image-decoder-debug.apk
-#    webp/view/build/outputs/apk/debug/view-arm7-debug.apk
+  webp/view/build/outputs/apk/debug/view-debug.apk
 
 ## other-builds
   other-builds/ndkbuild/bitmap-plasma/app/build/outputs/apk/debug/app-debug.apk
