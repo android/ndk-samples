@@ -20,6 +20,7 @@ declare projects=(
     endless-tunnel
     gles3jni
     hello-gl2
+    hello-vulkan
     hello-jni
     hello-jniCallback
     hello-libs
