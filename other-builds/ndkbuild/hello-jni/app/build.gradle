@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId "com.example.hellojni"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -39,6 +39,7 @@ android {
                           'proguard-rules.txt'
         }
     }
+    namespace 'com.example.hellojni'
 }
 
 dependencies {
