@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId 'com.example.nativecodec'
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 33
     }
     sourceSets {
         main {
@@ -36,4 +36,5 @@ android {
             path 'Android.mk'
         }
     }
+    namespace 'com.example.nativecodec'
 }

@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId 'com.example.nativecodec'
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 33
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
@@ -29,4 +29,5 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.example.nativecodec'
 }
