@@ -76,7 +76,7 @@ fi
 TMP_SETUP_FILENAME=versions_.txt
 
 ## Retrieve all necessary Android Platforms and install them all
-retrieve_versions compileSdkVersion $TMP_SETUP_FILENAME
+retrieve_versions compileSdk $TMP_SETUP_FILENAME
 
 # Install platforms
 while read -r version_; do

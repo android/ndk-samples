@@ -1,12 +1,11 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
-    compileSdkVersion 29
-    ndkVersion '22.1.7171670'
+    compileSdk 33
+    ndkVersion '25.1.8937393'
     
     defaultConfig {
         applicationId "com.google.example.hellooboe"
@@ -30,13 +29,16 @@ android {
             version "3.18.1"
         }
     }
-    buildFeatures.prefab = true
+    buildFeatures {
+        prefab = true
+        viewBinding = true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Kotlin
-    implementation"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation"org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
 
     // AndroidX
     implementation 'androidx.appcompat:appcompat:1.1.0'
