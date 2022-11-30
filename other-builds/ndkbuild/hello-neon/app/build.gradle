@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId "com.example.helloneon"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -36,17 +36,7 @@ android {
             path 'Android.mk'
         }
     }
-    flavorDimensions "abi"
-    productFlavors {
-        arm7 {
-            dimension "abi"
-            ndk.abiFilters 'armeabi-v7a'
-        }
-        x86 {
-            dimension "abi"
-            ndk.abiFilters 'x86'
-        }
-    }
+    namespace 'com.example.helloneon'
 }
 
 dependencies {
