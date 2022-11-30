@@ -13,8 +13,7 @@ android {
     defaultConfig {
         applicationId "com.sample.teapot"
         minSdkVersion 14
-        targetSdkVersion 28
-
+        targetSdkVersion 33
     }
     sourceSets {
         main {
@@ -36,4 +35,5 @@ android {
             path 'Android.mk'
         }
     }
+    namespace 'com.sample.teapot'
 }

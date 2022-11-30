@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = 'com.sample.imagedecoder'
         minSdkVersion 30
-        targetSdkVersion 30
+        targetSdkVersion 33
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
         }
@@ -33,6 +33,7 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.sample.imagedecoder'
 }
 
 dependencies {
