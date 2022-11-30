@@ -14,7 +14,7 @@ android {
              *) set ANDROID_STL to c++_static for some very earlier version android.
          */
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 33
         versionCode 1
         versionName '1.0'
         externalNativeBuild {
@@ -36,6 +36,7 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.google.sample.echo'
 }
 
 dependencies {
