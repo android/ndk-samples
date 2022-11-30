@@ -4,6 +4,7 @@
 #  - pwd must be inside the repo's homed directory (android-ndk)
 #  - upon completion, we are still in the same directory ( no change )
 
+COMPILE_SDK_VERSION_TAG=compileSdk
 
 # parse all build.gradle to find the specified tokens' version
 # usage:
@@ -21,8 +22,8 @@ retrieve_versions() {
     fi
 
     find . -type f -name 'build.gradle' -exec grep $1 {} +  | \
-    sed "s/^.*$1//" | sed 's/[=+]//g' |   \
-    sed 's/"//g' | sed "s/'//g" |     \
+    sed "s/^.*$1//" | sed 's/^Version//' | sed 's/[=+]//g'  | \
+    sed 's/"//g' | sed "s/'//g" | \
     sed 's/[[:space:]]//g' | \
     awk '!seen[$0]++' > $2
  
@@ -76,24 +77,32 @@ fi
 TMP_SETUP_FILENAME=versions_.txt
 
 ## Retrieve all necessary Android Platforms and install them all
-retrieve_versions compileSdk $TMP_SETUP_FILENAME
+retrieve_versions $COMPILE_SDK_VERSION_TAG $TMP_SETUP_FILENAME
 
 # Install platforms
+SDK_MANAGER_CMD=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
+if [ ! -f "$SDK_MANAGER_CMD" ]
+then
+    SDK_MANAGER_CMD=$ANDROID_HOME/tools/bin/sdkmanager
+fi
+
 while read -r version_; do
   version_=${version_//android-/}
-  echo y | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-$version_";
+  echo y | $SDK_MANAGER_CMD "platforms;android-$version_";
 done < $TMP_SETUP_FILENAME
 # echo "Android platforms:"; cat $TMP_SETUP_FILENAME
 
 # Install side by side ndks
 retrieve_versions ndkVersion $TMP_SETUP_FILENAME
 while read -r version_; do
-    echo y | $ANDROID_HOME/tools/bin/sdkmanager "ndk;$version_" --channel=3;
+    echo y | $SDK_MANAGER_CMD "ndk;$version_" --channel=3;
 done < $TMP_SETUP_FILENAME
 # echo "NDK versions:"; cat $TMP_SETUP_FILENAME
 
 # add customized cmake installation
-echo y | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "cmake;3.18.1"
+echo y | $SDK_MANAGER_CMD "cmake;3.18.1"
+echo y | $SDK_MANAGER_CMD "cmake;3.22.1"
+
 
 rm -f $TMP_SETUP_FILENAME
 
