@@ -18,7 +18,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
     ndkVersion '25.1.8937393'
     
     defaultConfig {
