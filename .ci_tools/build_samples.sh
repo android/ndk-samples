@@ -111,7 +111,7 @@ declare apks=(
   other-builds/ndkbuild/hello-gl2/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/hello-jni/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/hello-libs/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/hello-neon/app/build/outputs/apk/arm7/debug/app-arm7-debug.apk
+  other-builds/ndkbuild/hello-neon/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/native-activity/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/native-audio/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/native-codec/app/build/outputs/apk/debug/app-debug.apk
