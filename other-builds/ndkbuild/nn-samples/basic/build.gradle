@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "com.example.android.basic"
         minSdkVersion 27
-        targetSdkVersion 29
+        targetSdkVersion 33
     }
     buildFeatures {
         viewBinding true
@@ -39,6 +39,7 @@ android {
     androidResources {
         noCompress 'bin'
     }
+    namespace 'com.example.android.basic'
 }
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
