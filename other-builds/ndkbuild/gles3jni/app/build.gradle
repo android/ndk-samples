@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId 'com.android.gles3jni'
         minSdkVersion 18
-        targetSdkVersion 28
+        targetSdkVersion 33
     }
     sourceSets {
         main {
@@ -41,6 +41,7 @@ android {
             path 'Android.mk'
         }
     }
+    namespace 'com.android.gles3jni'
 }
 
 

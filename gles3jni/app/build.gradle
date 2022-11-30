@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId 'com.android.gles3jni'
         minSdkVersion "${platformVersion}"
-        targetSdkVersion 28
+        targetSdkVersion 33
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
@@ -33,4 +33,5 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.android.gles3jni'
 }

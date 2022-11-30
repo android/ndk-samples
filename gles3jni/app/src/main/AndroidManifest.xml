@@ -14,8 +14,7 @@
      limitations under the License.
 -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.android.gles3jni">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-feature android:glEsVersion="0x00030000"/>
   <application
       android:allowBackup="false"
@@ -25,7 +24,8 @@
     <activity android:name="GLES3JNIActivity"
               android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
               android:launchMode="singleTask"
-              android:configChanges="orientation|keyboardHidden">
+              android:configChanges="orientation|keyboardHidden"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
