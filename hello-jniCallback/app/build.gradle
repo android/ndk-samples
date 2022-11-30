@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId 'com.example.hellojnicallback'
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -26,6 +26,7 @@ android {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
+    namespace 'com.example.hellojnicallback'
 }
 
 dependencies {
