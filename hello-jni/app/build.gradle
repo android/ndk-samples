@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId 'com.example.hellojni'
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -50,6 +50,7 @@ android {
             //   armeabi-v7a, arm64-v8a, x86, x86_64
         }
     }
+    namespace 'com.example.hellojni'
 }
 
 dependencies {
