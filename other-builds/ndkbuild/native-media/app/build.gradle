@@ -13,7 +13,7 @@ android {
      defaultConfig {
         applicationId 'com.example.nativemedia'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
      }
      sourceSets {
         main {
@@ -38,4 +38,5 @@ android {
     androidResources {
         noCompress 'ts'
     }
+    namespace 'com.example.nativemedia'
 }
