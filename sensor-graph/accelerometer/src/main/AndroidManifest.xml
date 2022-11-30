@@ -18,8 +18,7 @@
 */
 -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.accelerometergraph">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
     <application
         android:allowBackup="false"
@@ -29,7 +28,8 @@
       <activity android:name=".AccelerometerGraphActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                 android:launchMode="singleTask"
-                android:configChanges="orientation|keyboardHidden">
+                android:configChanges="orientation|keyboardHidden"
+          android:exported="true">
         <intent-filter>
           <action android:name="android.intent.action.MAIN" />
           <category android:name="android.intent.category.LAUNCHER" />

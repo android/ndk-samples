@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId 'com.android.accelerometergraph'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
@@ -29,5 +29,6 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.android.accelerometergraph'
 }
 
