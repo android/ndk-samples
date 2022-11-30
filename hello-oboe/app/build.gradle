@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.google.example.hellooboe"
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         externalNativeBuild.cmake {
@@ -33,6 +33,7 @@ android {
         prefab = true
         viewBinding = true
     }
+    namespace 'com.google.example.hellooboe'
 }
 
 dependencies {
