@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.example.android.basic"
         minSdkVersion 27
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
@@ -37,6 +37,7 @@ android {
     androidResources {
         noCompress 'bin'
     }
+    namespace 'com.example.android.basic'
 
 }
 
