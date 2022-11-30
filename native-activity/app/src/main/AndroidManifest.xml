@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.native_activity"
-          android:versionCode="1"
+    android:versionCode="1"
           android:versionName="1.0">
 
   <!-- This .apk has no Java code itself, so set hasCode to false. -->
@@ -17,7 +16,8 @@
          This will take care of integrating with our NDK code. -->
     <activity android:name="android.app.NativeActivity"
               android:label="@string/app_name"
-              android:configChanges="orientation|keyboardHidden">
+              android:configChanges="orientation|keyboardHidden"
+        android:exported="true">
       <!-- Tell NativeActivity the name of our .so -->
       <meta-data android:name="android.app.lib_name"
                  android:value="native-activity" />
