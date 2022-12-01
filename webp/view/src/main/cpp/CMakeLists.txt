@@ -19,7 +19,7 @@ cmake_minimum_required(VERSION 3.4.1)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 get_filename_component(WEBP_SAMPLE_PROJ_DIR
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../.. ABSOLUTE)
+                       ${CMAKE_CURRENT_BINARY_DIR} ABSOLUTE)
 set(WEBP_SRC_DIR ${WEBP_SAMPLE_PROJ_DIR}/libwebp)
 # clone the dependency repo.
 # git submodule could also be used if this sample does not need
