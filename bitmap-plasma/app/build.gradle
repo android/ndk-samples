@@ -9,7 +9,7 @@ android {
     defaultConfig.with {
         applicationId 'com.example.plasma'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
     }
     buildTypes {
         release {
@@ -24,4 +24,5 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.example.plasma'
 }
