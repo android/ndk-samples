@@ -34,7 +34,7 @@ As the validation layer is a sizeable download, we chose to not ship them within
 
 1. Download the latest android binaries from:
 https://github.com/KhronosGroup/Vulkan-ValidationLayers/releases
-2. Place them in their respective ABI folders located in: hellovk/app/src/main/jniLibs
+2. Place them in their respective ABI folders located in: app/src/main/jniLibs
 3. Go to hellovk.h, search for 'bool enableValidationLayers = false' and toggle that to true. 
 
 Extra information:
