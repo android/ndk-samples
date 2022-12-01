@@ -9,8 +9,7 @@ android {
     defaultConfig {
         applicationId 'com.example.webp_view'
         minSdkVersion 14
-        targetSdkVersion 28
-        ndk.abiFilters 'armeabi-v7a'
+        targetSdkVersion 33
 
         externalNativeBuild {
             cmake {
@@ -31,5 +30,6 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.example.webp_view'
 }
 
