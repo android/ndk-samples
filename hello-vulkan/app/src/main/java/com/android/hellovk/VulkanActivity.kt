@@ -16,6 +16,7 @@
 
 package com.android.hellovk
 
+import android.annotation.SuppressLint
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -36,6 +37,10 @@ class VulkanActivity : GameActivity() {
     private fun hideSystemUI() {
         // This will put the game behind any cutouts and waterfalls on devices which have
         // them, so the corresponding insets will be non-zero.
+
+        // We cannot guarantee that AndroidManifest won't be tweaked
+        // and we don't want to crash if that happens so we suppress warning.
+        @SuppressLint("ObsoleteSdkInt")
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
             window.attributes.layoutInDisplayCutoutMode =
                 LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
