@@ -5,14 +5,6 @@
 #   - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
 # - executing in repo root directory
 
-# Configurations:
-#  temp file name to hold build result
-BUILD_RESULT_FILE=build_result.txt
-
-# Repo root directory
-NDK_SAMPLE_REPO=.
-
-
 declare projects=(
     audio-echo
     bitmap-plasma
@@ -57,15 +49,26 @@ declare projects=(
     other-builds/ndkbuild/teapots
     )
 
+LINT_FAILURES=$(mktemp)
+BUILD_FAILURES=$(mktemp)
+APK_FAILURES=$(mktemp)
+
 VERBOSITY=--quiet
 if [ -n "${RUNNER_DEBUG+1}" ] ; then
     VERBOSITY=--info
 fi
 for d in "${projects[@]}"; do
-    pushd ${NDK_SAMPLE_REPO}/${d} >/dev/null
-    echo "Building ${d}"
-    TERM=dumb ./gradlew ${VERBOSITY} clean assembleDebug
-    popd >/dev/null
+  pushd ${d} >/dev/null
+  echo "Building ${d}"
+  if ! TERM=dumb ./gradlew ${VERBOSITY} clean lint ; then
+    export SAMPLE_CI_RESULT=1
+    echo ${d} >> ${LINT_FAILURES}
+  fi
+  if ! TERM=dumb ./gradlew ${VERBOSITY} assembleDebug ; then
+    export SAMPLE_CI_RESULT=1
+    echo ${d} >> ${BUILD_FAILURES}
+  fi
+  popd >/dev/null
 done
 
 
@@ -125,20 +128,35 @@ declare apks=(
   other-builds/ndkbuild/teapots/classic-teapot/build/outputs/apk/debug/classic-teapot-debug.apk
 )
 
-rm -fr ${BUILD_RESULT_FILE}
 for apk in "${apks[@]}"; do
-  if [ ! -f ${NDK_SAMPLE_REPO}/${apk} ]; then
+  if [ ! -f ${apk} ]; then
     export SAMPLE_CI_RESULT=1
-    echo ${apk} does not build >> ${BUILD_RESULT_FILE}
+    echo ${apk} >> ${APK_FAILURES}
   fi
 done
 
-if [ -f ${BUILD_RESULT_FILE} ]; then
-   echo  "******* Failed Builds ********:"
-   cat  ${BUILD_RESULT_FILE}
-else
+if [ -s ${LINT_FAILURES} ]; then
+  echo
+  echo  "******* Lint failures ********"
+  cat  ${LINT_FAILURES}
+fi
+
+if [ -s ${BUILD_FAILURES} ]; then
+  echo
+  echo  "******* Build failures ********"
+  cat  ${BUILD_FAILURES}
+fi
+
+if [ -s ${APK_FAILURES} ]; then
+  echo
+  echo  "******* Missing APKs ********"
+  cat  ${APK_FAILURES}
+fi
+
+if [ ! -s ${LINT_FAILURES} ] && [ ! -s ${BUILD_FAILURES} ] && [ ! -s ${APK_FAILURES} ]; then
+  echo
   echo "======= BUILD SUCCESS ======="
 fi
 
-rm -fr ${BUILD_RESULT_FILE}
+rm -f ${LINT_FAILURES} ${BUILD_FAILURES} ${APK_FAILURES}
 
