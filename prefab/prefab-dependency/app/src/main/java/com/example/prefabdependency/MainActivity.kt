@@ -18,18 +18,18 @@ package com.example.prefabdependency
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_json_parse.*
+import com.example.prefabdependency.databinding.ActivityJsonParseBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityJsonParseBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /* Retrieve our TextView and set its content.
-         * the text is retrieved by calling a native
-         * function.
-         */
-        setContentView(R.layout.activity_json_parse)
-        result_textview.text = getJsonValue(
+        binding = ActivityJsonParseBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        binding.resultTextview.text = getJsonValue(
             """
             {
                 "cpp": "clang",

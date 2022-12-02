@@ -1,13 +1,15 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 29
-    ndkVersion '22.1.7171670'
+    compileSdk 33
+    ndkVersion '25.1.8937393'
     
     defaultConfig {
         applicationId "com.example.helloneon"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         ndk.abiFilters 'x86', 'x86_64', 'armeabi-v7a'
@@ -25,6 +27,7 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.example.helloneon'
 }
 
 dependencies {

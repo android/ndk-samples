@@ -148,13 +148,12 @@ extern "C" {
 void Java_com_example_nativemidi_AppMidiManager_startReadingMidi(
         JNIEnv* env, jobject, jobject midiDeviceObj, jint portNumber) {
 
-    media_status_t status;
-    status = AMidiDevice_fromJava(env, midiDeviceObj, &sNativeReceiveDevice);
+    AMidiDevice_fromJava(env, midiDeviceObj, &sNativeReceiveDevice);
     // int32_t deviceType = AMidiDevice_getType(sNativeReceiveDevice);
     // ssize_t numPorts = AMidiDevice_getNumOutputPorts(sNativeReceiveDevice);
 
     AMidiOutputPort *outputPort;
-    status = AMidiOutputPort_open(sNativeReceiveDevice, portNumber, &outputPort);
+    AMidiOutputPort_open(sNativeReceiveDevice, portNumber, &outputPort);
 
     // sMidiOutputPort.store(outputPort);
     sMidiOutputPort = outputPort;
@@ -192,13 +191,12 @@ void Java_com_example_nativemidi_AppMidiManager_stopReadingMidi(JNIEnv*, jobject
 void Java_com_example_nativemidi_AppMidiManager_startWritingMidi(
         JNIEnv* env, jobject, jobject midiDeviceObj, jint portNumber) {
 
-    media_status_t status;
-    status = AMidiDevice_fromJava(env, midiDeviceObj, &sNativeSendDevice);
+    AMidiDevice_fromJava(env, midiDeviceObj, &sNativeSendDevice);
     // int32_t deviceType = AMidiDevice_getType(sNativeReceiveDevice);
     // ssize_t numPorts = AMidiDevice_getNumInputPorts(sNativeSendDevice);
 
     AMidiInputPort *inputPort;
-    status = AMidiInputPort_open(sNativeSendDevice, portNumber, &inputPort);
+    AMidiInputPort_open(sNativeSendDevice, portNumber, &inputPort);
     // sMidiInputPort.store(inputPort);
     sMidiInputPort = inputPort;
 }

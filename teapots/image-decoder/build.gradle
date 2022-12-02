@@ -1,13 +1,15 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 30
-    ndkVersion '22.1.7171670'
+    compileSdk 33
+    ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId = 'com.sample.imagedecoder'
         minSdkVersion 30
-        targetSdkVersion 30
+        targetSdkVersion 33
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
         }
@@ -31,6 +33,7 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.sample.imagedecoder'
 }
 
 dependencies {

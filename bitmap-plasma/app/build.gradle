@@ -1,13 +1,15 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 29
-    ndkVersion '22.1.7171670'
+    compileSdk 33
+    ndkVersion '25.1.8937393'
 
     defaultConfig.with {
         applicationId 'com.example.plasma'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
     }
     buildTypes {
         release {
@@ -22,4 +24,5 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.example.plasma'
 }

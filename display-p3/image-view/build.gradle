@@ -1,13 +1,15 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 29
-    ndkVersion '22.1.7171670'
+    compileSdk 33
+    ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId = 'com.example.widecolor'
         minSdkVersion   29
-        targetSdkVersion 29  // p3_passthrough_ext starts from Android-29
+        targetSdkVersion 33  // p3_passthrough_ext starts from Android-29
                              // it could be lowered to Android-26, from which p3_ext started
         externalNativeBuild {
             cmake {
@@ -28,6 +30,7 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'com.example.widecolor'
 }
 
 // download third_party libs: mathfu, stb

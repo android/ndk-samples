@@ -1,16 +1,19 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
+
 // pointing to cmake's source code for the same project
 def REMOTE_SRC_ROOT = '../../../../' + rootProject.getName() + '/' +
         project.getName() + '/src/main'
 
 android {
-     compileSdkVersion 29
-    ndkVersion '22.1.7171670'
+    compileSdk 33
+    ndkVersion '25.1.8937393'
 
-     defaultConfig {
+    defaultConfig {
         applicationId 'com.example.nativeaudio'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
     }
     sourceSets {
         main {
@@ -33,8 +36,9 @@ android {
             path 'Android.mk'
         }
     }
+    namespace 'com.example.nativeaudio'
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
 }

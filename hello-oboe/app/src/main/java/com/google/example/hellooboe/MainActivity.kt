@@ -22,13 +22,17 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.sample_text
+import com.google.example.hellooboe.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
     }
 
     /*
@@ -50,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         if (createStream() != 0) {
             val errorString : String = getString(R.string.error_msg)
             Toast.makeText(applicationContext, errorString,Toast.LENGTH_LONG).show()
-            sample_text.text = errorString
+            binding.sampleText.text = errorString
         }
     }
 
