@@ -18,7 +18,7 @@ android {
     defaultConfig {
         applicationId 'com.example.SanAngeles'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
         versionCode  1
         versionName  "1.0"
     }
@@ -58,5 +58,6 @@ android {
                             defaultConfig.versionCode
         }
     }
+    namespace 'com.example.SanAngeles'
 }
 

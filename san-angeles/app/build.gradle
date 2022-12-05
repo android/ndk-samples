@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId 'com.example.SanAngeles'
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
         versionCode  1
         versionName  "1.0"
     }
@@ -39,6 +39,7 @@ android {
             universalApk false
         }
     }
+    namespace 'com.example.SanAngeles'
 
     applicationVariants.all { variant ->
         // assign different version code for each output

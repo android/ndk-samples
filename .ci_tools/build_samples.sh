@@ -48,6 +48,7 @@ declare projects=(
     other-builds/ndkbuild/nn-samples
     other-builds/ndkbuild/san-angeles
     other-builds/ndkbuild/teapots
+    other-builds/ndkbuild/two-libs
     )
 
 LINT_FAILURES=$(mktemp)
@@ -128,6 +129,7 @@ declare apks=(
   other-builds/ndkbuild/san-angeles/app/build/outputs/apk/debug/app-x86-debug.apk
   other-builds/ndkbuild/teapots/more-teapots/build/outputs/apk/debug/more-teapots-debug.apk
   other-builds/ndkbuild/teapots/classic-teapot/build/outputs/apk/debug/classic-teapot-debug.apk
+  other-builds/ndkbuild/two-libs/app/build/outputs/apk/debug/app-debug.apk
 )
 
 for apk in "${apks[@]}"; do
