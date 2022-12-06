@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Installs Android SDK, NDK, and CMake required to build the samples.
+
 if [ -f ~/.android/repositories.cfg ]; then
   touch ~/.android/repositories.cfg
 fi
