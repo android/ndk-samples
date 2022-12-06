@@ -5,3 +5,4 @@ repos:
     -   id: clang-format
         args: ["-style=Google"]
         entry: .ci_tools/clang-format.sh -i
+        'types_or': [c++, c]
