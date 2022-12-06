@@ -18,6 +18,10 @@ jobs:
       with:
         java-version: 11
 
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.x
+    - uses: pre-commit/action@v3.0.0
     - name: setup env
       run:
         source .ci_tools/setup_env.sh
