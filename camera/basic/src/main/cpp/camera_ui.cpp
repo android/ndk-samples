@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-#include "camera_engine.h"
 #include <utils/native_debug.h>
+
+#include "camera_engine.h"
 
 /**
  * Retrieve current rotation from Java side
@@ -90,13 +91,14 @@ void CameraEngine::OnTakePhoto() {
   }
 }
 
-void CameraEngine::OnPhotoTaken(const char* fileName) {
+void CameraEngine::OnPhotoTaken(const char *fileName) {
   JNIEnv *jni;
   app_->activity->vm->AttachCurrentThread(&jni, NULL);
 
   // Default class retrieval
   jclass clazz = jni->GetObjectClass(app_->activity->clazz);
-  jmethodID methodID = jni->GetMethodID(clazz, "OnPhotoTaken", "(Ljava/lang/String;)V");
+  jmethodID methodID =
+      jni->GetMethodID(clazz, "OnPhotoTaken", "(Ljava/lang/String;)V");
   jstring javaName = jni->NewStringUTF(fileName);
 
   jni->CallVoidMethod(app_->activity->clazz, methodID, javaName);

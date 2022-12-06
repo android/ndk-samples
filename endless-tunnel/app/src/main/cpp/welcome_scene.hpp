@@ -24,27 +24,26 @@
 
 /* The "welcome scene" (main menu) */
 class WelcomeScene : public UiScene {
-    protected:
-        // IDs for our buttons:
-        int mPlayButtonId;
-        int mStoryButtonId;
-        int mAboutButtonId;
+ protected:
+  // IDs for our buttons:
+  int mPlayButtonId;
+  int mStoryButtonId;
+  int mAboutButtonId;
 
-        virtual void RenderBackground();
-        virtual void OnButtonClicked(int id);
+  virtual void RenderBackground();
+  virtual void OnButtonClicked(int id);
 
-        void UpdateWidgetStates();
+  void UpdateWidgetStates();
 
-    public:
-        WelcomeScene();
-        ~WelcomeScene();
+ public:
+  WelcomeScene();
+  ~WelcomeScene();
 
-        virtual void OnCreateWidgets();
-        virtual void OnStartGraphics();
-        virtual void OnKillGraphics();
+  virtual void OnCreateWidgets();
+  virtual void OnStartGraphics();
+  virtual void OnKillGraphics();
 
-        virtual void DoFrame();
+  virtual void DoFrame();
 };
 
 #endif
-

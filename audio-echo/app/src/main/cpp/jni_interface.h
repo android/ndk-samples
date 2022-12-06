@@ -51,4 +51,4 @@ Java_com_google_sample_echo_MainActivity_configureEcho(JNIEnv *env, jclass type,
 }
 #endif
 
-#endif // JNI_INTERFACE_H
+#endif  // JNI_INTERFACE_H

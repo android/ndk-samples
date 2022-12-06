@@ -17,15 +17,16 @@
 //--------------------------------------------------------------------------------
 // Include files
 //--------------------------------------------------------------------------------
+#include <EGL/egl.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
-#include <condition_variable>
 #include <dlfcn.h>
-#include <EGL/egl.h>
+
+#include <condition_variable>
 #include <thread>
 
-#include "TeapotRenderer.h"
 #include "NDKHelper.h"
+#include "TeapotRenderer.h"
 //-------------------------------------------------------------------------
 // Preprocessor
 //-------------------------------------------------------------------------
@@ -41,8 +42,10 @@ enum APIMode {
 };
 
 const int32_t kFPSThrottleInterval = 2;
-const int64_t kFPSThrottlePresentationInterval = (kFPSThrottleInterval / 60.0f) * 1000000000;
-#define COULD_RENDER(now, last) (((now) - (last)) >= kFPSThrottlePresentationInterval)
+const int64_t kFPSThrottlePresentationInterval =
+    (kFPSThrottleInterval / 60.0f) * 1000000000;
+#define COULD_RENDER(now, last) \
+  (((now) - (last)) >= kFPSThrottlePresentationInterval)
 
 // Declaration for native chreographer API.
 struct AChoreographer;
@@ -114,8 +117,8 @@ class Engine {
 
   Engine();
   ~Engine();
-  void SetState(android_app *app);
-  int InitDisplay(android_app *app);
+  void SetState(android_app* app);
+  int InitDisplay(android_app* app);
   void LoadResources();
   void UnloadResources();
   void DrawFrame();
@@ -133,13 +136,13 @@ class Engine {
 Engine g_engine;
 
 Engine::Engine()
-    :app_(NULL),
-     initialized_resources_(false),
-     has_focus_(false),
-     fps_throttle_(true),
-     api_mode_(kAPINone),
-     prevFrameTimeNanos_(static_cast<int64_t>(0)),
-     should_render_(true) {
+    : app_(NULL),
+      initialized_resources_(false),
+      has_focus_(false),
+      fps_throttle_(true),
+      api_mode_(kAPINone),
+      prevFrameTimeNanos_(static_cast<int64_t>(0)),
+      should_render_(true) {
   gl_context_ = ndk_helper::GLContext::GetInstance();
 }
 
@@ -175,8 +178,8 @@ void Engine::CheckAPISupport() {
     api_mode_ = kAPIEGLExtension;
 
     // Retrieve the EGL extension's function pointer.
-    eglPresentationTimeANDROID_ = reinterpret_cast<
-        bool (*)(EGLDisplay, EGLSurface, khronos_stime_nanoseconds_t)>(
+    eglPresentationTimeANDROID_ = reinterpret_cast<bool (*)(
+        EGLDisplay, EGLSurface, khronos_stime_nanoseconds_t)>(
         eglGetProcAddress("eglPresentationTimeANDROID"));
     assert(eglPresentationTimeANDROID_);
     presentation_time_ = GetCurrentTime();
@@ -337,12 +340,12 @@ void Engine::UnloadResources() { renderer_.Unload(); }
 /**
  * Initialize an EGL context for the current display.
  */
-int Engine::InitDisplay(android_app *app) {
+int Engine::InitDisplay(android_app* app) {
   if (!initialized_resources_) {
     gl_context_->Init(app_->window);
     LoadResources();
     initialized_resources_ = true;
-  } else if(app->window != gl_context_->GetANativeWindow()) {
+  } else if (app->window != gl_context_->GetANativeWindow()) {
     // Re-initialize ANativeWindow.
     // On some devices, ANativeWindow is re-created when the app is resumed
     assert(gl_context_->GetANativeWindow());
@@ -575,7 +578,6 @@ void Engine::UpdateFPS(float fFPS) {
  * event loop for receiving input events and doing other things.
  */
 void android_main(android_app* state) {
-
   g_engine.SetState(state);
 
   // Init helper functions

@@ -18,27 +18,27 @@
 #ifndef __APP_ENGINE_H__
 #define __APP_ENGINE_H__
 
-#include <atomic>
-#include <mutex>
-#include <condition_variable>
-#include <string>
-
-#include <initializer_list>
-#include <memory>
-#include <vector>
-#include <cstdlib>
-#include <cassert>
 #include <android/sensor.h>
 #include <android_native_app_glue.h>
 
-#include "common.h"
-#include "android_debug.h"
-#include "gldebug.h"
-#include "ShaderProgram.h"
+#include <atomic>
+#include <cassert>
+#include <condition_variable>
+#include <cstdlib>
+#include <initializer_list>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <vector>
+
 #include "AssetTexture.h"
+#include "ShaderProgram.h"
+#include "android_debug.h"
+#include "common.h"
+#include "gldebug.h"
 
 class ImageViewEngine {
-public:
+ public:
   ImageViewEngine(struct android_app* app);
 
   bool InitializeDisplay(void);
@@ -55,7 +55,7 @@ public:
   const ASensor* accelerometerSensor;
   ASensorEventQueue* sensorEventQueue;
 
-private:
+ private:
   struct android_app* app_;
 
   int animating_;
@@ -72,7 +72,7 @@ private:
 
   // Image file texture store
   std::vector<AssetTexture*> textures_;
-  std::atomic<uint32_t>  textureIdx_;
+  std::atomic<uint32_t> textureIdx_;
 
   enum WIDECOLOR_MODE {
     P3_PASSTHROUGH_R8G8B8A8_REV,
@@ -103,8 +103,6 @@ private:
   void EnableWelcomeUI(void);
   void EnableRenderUI(void);
   void UpdateUI(void);
-
 };
 
-
-#endif // __APP_ENGINE_H__
+#endif  // __APP_ENGINE_H__

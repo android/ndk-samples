@@ -17,16 +17,15 @@
 //--------------------------------------------------------------------------------
 // Include files
 //--------------------------------------------------------------------------------
-#include <jni.h>
-#include <errno.h>
-
-#include <android/sensor.h>
 #include <android/log.h>
-#include <android_native_app_glue.h>
 #include <android/native_window_jni.h>
+#include <android/sensor.h>
+#include <android_native_app_glue.h>
+#include <errno.h>
+#include <jni.h>
 
-#include "TeapotRenderer.h"
 #include "NDKHelper.h"
+#include "TeapotRenderer.h"
 
 //-------------------------------------------------------------------------
 // Preprocessor
@@ -124,7 +123,7 @@ int Engine::InitDisplay(android_app* app) {
     gl_context_->Init(app_->window);
     LoadResources();
     initialized_resources_ = true;
-  } else if(app->window != gl_context_->GetANativeWindow()) {
+  } else if (app->window != gl_context_->GetANativeWindow()) {
     // Re-initialize ANativeWindow.
     // On some devices, ANativeWindow is re-created when the app is resumed
     assert(gl_context_->GetANativeWindow());
@@ -140,7 +139,7 @@ int Engine::InitDisplay(android_app* app) {
       UnloadResources();
       LoadResources();
     } else {
-        assert(0);
+      assert(0);
     }
   }
 
@@ -388,7 +387,6 @@ Engine g_engine;
  * event loop for receiving input events and doing other things.
  */
 void android_main(android_app* state) {
-
   g_engine.SetState(state);
 
   // Init helper functions

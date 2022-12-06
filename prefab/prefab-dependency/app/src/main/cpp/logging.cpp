@@ -37,4 +37,4 @@ namespace jsonparse::logging {
   abort();
 }
 
-}  // namespace com.example.prefabdependency::logging
+}  // namespace jsonparse::logging

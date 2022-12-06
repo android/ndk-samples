@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include <math.h>
 #include "sensorManager.h"
+
+#include <math.h>
 
 //--------------------------------------------------------------------------------
 // sensorManager.cpp
@@ -36,7 +37,7 @@ SensorManager::SensorManager()
 
 SensorManager::~SensorManager() {}
 
-void SensorManager::Init(android_app *app) {
+void SensorManager::Init(android_app* app) {
   sensorManager_ = AcquireASensorManagerInstance(app);
   accelerometerSensor_ = ASensorManager_getDefaultSensor(
       sensorManager_, ASENSOR_TYPE_ACCELEROMETER);
@@ -64,26 +65,24 @@ void SensorManager::Suspend() {
 
 #include <dlfcn.h>
 ASensorManager* AcquireASensorManagerInstance(android_app* app) {
+  if (!app) return nullptr;
 
-  if(!app)
-    return nullptr;
-
-  typedef ASensorManager *(*PF_GETINSTANCEFORPACKAGE)(const char *name);
+  typedef ASensorManager* (*PF_GETINSTANCEFORPACKAGE)(const char* name);
   void* androidHandle = dlopen("libandroid.so", RTLD_NOW);
-  PF_GETINSTANCEFORPACKAGE getInstanceForPackageFunc = (PF_GETINSTANCEFORPACKAGE)
-      dlsym(androidHandle, "ASensorManager_getInstanceForPackage");
+  PF_GETINSTANCEFORPACKAGE getInstanceForPackageFunc =
+      (PF_GETINSTANCEFORPACKAGE)dlsym(androidHandle,
+                                      "ASensorManager_getInstanceForPackage");
   if (getInstanceForPackageFunc) {
     JNIEnv* env = nullptr;
     app->activity->vm->AttachCurrentThread(&env, NULL);
 
     jclass android_content_Context = env->GetObjectClass(app->activity->clazz);
-    jmethodID midGetPackageName = env->GetMethodID(android_content_Context,
-                                                   "getPackageName",
-                                                   "()Ljava/lang/String;");
-    jstring packageName= (jstring)env->CallObjectMethod(app->activity->clazz,
-                                                        midGetPackageName);
+    jmethodID midGetPackageName = env->GetMethodID(
+        android_content_Context, "getPackageName", "()Ljava/lang/String;");
+    jstring packageName =
+        (jstring)env->CallObjectMethod(app->activity->clazz, midGetPackageName);
 
-    const char *nativePackageName = env->GetStringUTFChars(packageName, 0);
+    const char* nativePackageName = env->GetStringUTFChars(packageName, 0);
     ASensorManager* mgr = getInstanceForPackageFunc(nativePackageName);
     env->ReleaseStringUTFChars(packageName, nativePackageName);
     app->activity->vm->DetachCurrentThread();
@@ -93,9 +92,9 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
     }
   }
 
-  typedef ASensorManager *(*PF_GETINSTANCE)();
-  PF_GETINSTANCE getInstanceFunc = (PF_GETINSTANCE)
-      dlsym(androidHandle, "ASensorManager_getInstance");
+  typedef ASensorManager* (*PF_GETINSTANCE)();
+  PF_GETINSTANCE getInstanceFunc =
+      (PF_GETINSTANCE)dlsym(androidHandle, "ASensorManager_getInstance");
   // by all means at this point, ASensorManager_getInstance should be available
   assert(getInstanceFunc);
   dlclose(androidHandle);
@@ -103,4 +102,4 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
   return getInstanceFunc();
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

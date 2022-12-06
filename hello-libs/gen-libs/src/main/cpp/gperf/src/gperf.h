@@ -32,4 +32,4 @@ uint64_t GetTicks(void);
 }
 #endif
 
-#endif //__GPERF_HPP__
+#endif  //__GPERF_HPP__

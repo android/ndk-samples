@@ -16,8 +16,8 @@
 #ifndef __CAMERA_CAMERA_UTILS_H__
 #define __CAMERA_CAMERA_UTILS_H__
 
-#include <camera/NdkCameraManager.h>
 #include <camera/NdkCameraError.h>
+#include <camera/NdkCameraManager.h>
 
 /*
  * A set of macros to call into Camera APIs. The API is grouped with a few

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 #include "audio_effect.h"
-#include "audio_common.h"
+
 #include <climits>
 #include <cstring>
+
+#include "audio_common.h"
 
 /*
  * Mixing Audio in integer domain to avoid FP calculation
@@ -32,8 +34,7 @@ static const uint32_t kMsPerSec = 1000;
  * @param delayTimeInMs
  */
 AudioDelay::AudioDelay(int32_t sampleRate, int32_t channelCount,
-                       SLuint32 format, size_t delayTimeInMs,
-                       float decayWeight)
+                       SLuint32 format, size_t delayTimeInMs, float decayWeight)
     : AudioFormat(sampleRate, channelCount, format),
       delayTime_(delayTimeInMs),
       decayWeight_(decayWeight) {
@@ -154,7 +155,7 @@ void AudioDelay::process(int16_t* liveAudio, int32_t numFrames) {
       curSample = SHRT_MAX;
     else if (curSample < SHRT_MIN)
       curSample = SHRT_MIN;
- 
+
     liveAudio[idx] = samples[idx];
     samples[idx] = static_cast<int16_t>(curSample);
 #else

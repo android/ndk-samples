@@ -16,10 +16,10 @@
 
 #include "http.h"
 
+#include <cassert>
 #include <memory>
 #include <optional>
 #include <string>
-#include <cassert>
 
 #include "curl/curl.h"
 

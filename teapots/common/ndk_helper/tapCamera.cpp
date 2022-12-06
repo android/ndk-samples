@@ -19,8 +19,9 @@
 //  Camera control with tap
 //
 //----------------------------------------------------------
-#include <fstream>
 #include "tapCamera.h"
+
+#include <fstream>
 
 namespace ndk_helper {
 
@@ -321,4 +322,4 @@ Vec3 TapCamera::PointOnSphere(Vec2& point) {
   return ball_mouse;
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

@@ -43,11 +43,11 @@ enum DISPLAY_FORMAT {
 };
 
 // Rendering Mode BitMask
-#define RENDERING_P3   0x01
+#define RENDERING_P3 0x01
 #define RENDERING_SRGB 0x02
 
-#define DEFAULT_DISPLAY_GAMMA  (1.0f/2.2f)
-#define DEFAULT_P3_IMAGE_GAMMA (1.0f/2.2f)
+#define DEFAULT_DISPLAY_GAMMA (1.0f / 2.2f)
+#define DEFAULT_P3_IMAGE_GAMMA (1.0f / 2.2f)
 
 // EGL Bits
 #ifndef EGL_OPENGL_ES3_BITS
@@ -57,4 +57,4 @@ enum DISPLAY_FORMAT {
 #define EGL_GL_COLORSPACE_DISPLAY_P3_EXT 0x3363
 #endif
 
-#endif // __COMMON_H__
+#endif  // __COMMON_H__

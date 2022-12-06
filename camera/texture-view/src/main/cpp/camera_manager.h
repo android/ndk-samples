@@ -16,13 +16,14 @@
 
 #ifndef CAMERA_NATIVE_CAMERA_H
 #define CAMERA_NATIVE_CAMERA_H
+#include <camera/NdkCameraDevice.h>
+#include <camera/NdkCameraError.h>
+#include <camera/NdkCameraManager.h>
+#include <camera/NdkCameraMetadataTags.h>
+
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <camera/NdkCameraManager.h>
-#include <camera/NdkCameraError.h>
-#include <camera/NdkCameraDevice.h>
-#include <camera/NdkCameraMetadataTags.h>
 
 enum class CaptureSessionState : int32_t {
   READY = 0,  // session is ready

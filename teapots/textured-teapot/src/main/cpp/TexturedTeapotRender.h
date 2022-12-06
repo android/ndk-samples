@@ -25,22 +25,23 @@
  *     - enable texture units
  *     - enable texturing inside shaders
  */
-class TexturedTeapotRender :public TeapotRenderer {
-    GLuint texVbo_ = GL_INVALID_VALUE;
-    Texture* texObj_  = nullptr;
-  public:
-    TexturedTeapotRender();
-    virtual ~TexturedTeapotRender();
-    // This is to decide which teapot type to render:
-    //   plain teapot
-    //   2D textured teapot
-    //   Cubemap textured teapot
-    // the rest of the code looks this function to decide
-    // what to render.
-    virtual GLint GetTextureType(void);
-    virtual void Init(AAssetManager* amgr);
-    virtual void Render();
-    virtual void Unload();
+class TexturedTeapotRender : public TeapotRenderer {
+  GLuint texVbo_ = GL_INVALID_VALUE;
+  Texture* texObj_ = nullptr;
+
+ public:
+  TexturedTeapotRender();
+  virtual ~TexturedTeapotRender();
+  // This is to decide which teapot type to render:
+  //   plain teapot
+  //   2D textured teapot
+  //   Cubemap textured teapot
+  // the rest of the code looks this function to decide
+  // what to render.
+  virtual GLint GetTextureType(void);
+  virtual void Init(AAssetManager* amgr);
+  virtual void Render();
+  virtual void Unload();
 };
 
-#endif //TEAPOTS_TEXTUREDTEAPOTRENDER_H
+#endif  // TEAPOTS_TEXTUREDTEAPOTRENDER_H

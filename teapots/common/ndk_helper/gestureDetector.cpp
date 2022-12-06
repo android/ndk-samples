@@ -298,4 +298,4 @@ bool DragDetector::GetPointer(Vec2& v) {
   return true;
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <vector>
-#include <string>
-#include <utility>
-#include <typeinfo>
-#include <cinttypes>
-#include <media/NdkImage.h>
-#include <camera/NdkCameraManager.h>
-#include "utils/native_debug.h"
 #include "camera_utils.h"
+
+#include <camera/NdkCameraManager.h>
+#include <media/NdkImage.h>
+
+#include <cinttypes>
+#include <string>
+#include <typeinfo>
+#include <utility>
+#include <vector>
+
+#include "utils/native_debug.h"
 
 #define UKNOWN_TAG "UNKNOW_TAG"
 #define MAKE_PAIR(val) std::make_pair(val, #val)

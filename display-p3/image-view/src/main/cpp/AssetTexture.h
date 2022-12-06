@@ -15,25 +15,27 @@
  *
  */
 
-#ifndef  __ASSET_TEXTURE_H__
-#define  __ASSET_TEXTURE_H__
-#include "common.h"
-#include <string>
+#ifndef __ASSET_TEXTURE_H__
+#define __ASSET_TEXTURE_H__
 #include <GLES3/gl32.h>
 #include <android/asset_manager.h>
 
+#include <string>
+
+#include "common.h"
+
 class AssetTexture {
-private:
+ private:
   std::string name_;
   GLuint p3Id_;
   GLuint sRGBId_;
-  bool  valid_;
+  bool valid_;
   enum DISPLAY_COLORSPACE dispColorSpace_;
 
-public:
+ public:
   explicit AssetTexture(const std::string& name);
   ~AssetTexture();
-  void ColorSpace(enum DISPLAY_COLORSPACE  clrSpace);
+  void ColorSpace(enum DISPLAY_COLORSPACE clrSpace);
   DISPLAY_COLORSPACE ColorSpace(void);
   bool CreateGLTextures(AAssetManager* mgr);
   bool IsValid(void);

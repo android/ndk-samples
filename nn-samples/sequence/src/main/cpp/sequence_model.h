@@ -19,6 +19,7 @@
 
 // #include "neuralnetworks_wrapper.h"
 #include <android/NeuralNetworks.h>
+
 #include <memory>
 
 /**

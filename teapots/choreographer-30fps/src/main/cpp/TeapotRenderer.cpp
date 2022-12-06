@@ -162,7 +162,10 @@ void TeapotRenderer::Render(float r, float g, float b) {
   glUseProgram(shader_param_.program_);
 
   TEAPOT_MATERIALS material = {
-      {r, g, b}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
+      {r, g, b},
+      {1.0f, 1.0f, 1.0f, 10.f},
+      {0.1f, 0.1f, 0.1f},
+  };
 
   // Update uniforms
   glUniform4f(shader_param_.material_diffuse_, material.diffuse_color[0],

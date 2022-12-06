@@ -21,6 +21,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GLES3/gl32.h>
+
 #include "android_debug.h"
 #include "mathfu/glsl_mappings.h"
 void PrintEGLInfo(EGLDisplay disp);
@@ -30,12 +31,12 @@ const char* GetGLErrorStr(uint32_t errorCode);
 void PrintGLInfo(void);
 
 inline void CheckGlError(const char* op) {
-  for (GLint error = glGetError(); error; error
-                                              = glGetError()) {
-    LOGI("===== after %s() glError (%#x): %s\n", op, error, GetGLErrorStr(error));
+  for (GLint error = glGetError(); error; error = glGetError()) {
+    LOGI("===== after %s() glError (%#x): %s\n", op, error,
+         GetGLErrorStr(error));
   }
 }
 
 void PrintMatrix(mathfu::mat3& matrix);
 
-#endif //ANDROID_GL_DEBUG
+#endif  // ANDROID_GL_DEBUG

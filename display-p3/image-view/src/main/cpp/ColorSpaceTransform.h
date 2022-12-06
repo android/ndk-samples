@@ -15,21 +15,22 @@
  *
  */
 
-#ifndef  __COLOR_TRANSFORM_H__
+#ifndef __COLOR_TRANSFORM_H__
 #define __COLOR_TRANSFORM_H__
 
-#include <cstdint>
 #include <mathfu/glsl_mappings.h>
 
+#include <cstdint>
+
 struct IMAGE_FORMAT {
-  void*       buf_;  // packed image pointer
-  uint32_t    width_, height_;
-  float       gamma_;
+  void* buf_;  // packed image pointer
+  uint32_t width_, height_;
+  float gamma_;
   const mathfu::mat3* npm_;
 };
 
-#define DEFAULT_DISPLAY_GAMMA (1.0f/2.2f)
-#define DEFAULT_P3_IMAGE_GAMMA (1.0f/2.2f)
+#define DEFAULT_DISPLAY_GAMMA (1.0f / 2.2f)
+#define DEFAULT_P3_IMAGE_GAMMA (1.0f / 2.2f)
 
 /*
  * TransformColorSpace(IMAGE_FORMAT& dst, IMAGE_FORMAT& src)
@@ -37,24 +38,16 @@ struct IMAGE_FORMAT {
  *     Dst.buf_ = dst.npm * src.npm * de-gamma(src.buf_)
  *     dst.buf_ = en-gamma(dst.buf_)
  * dst.buf_:
- *     transformed image buf pointer; user must allocate enough space for the image
- * src.buf_:
- *     source of the image bits to transform.
- * Both src and dst must be in:
- *     R8G8B8A8 4 channels packed format
+ *     transformed image buf pointer; user must allocate enough space for the
+ * image src.buf_: source of the image bits to transform. Both src and dst must
+ * be in: R8G8B8A8 4 channels packed format
  */
-bool TransformColorSpace(IMAGE_FORMAT &dst, IMAGE_FORMAT& src);
+bool TransformColorSpace(IMAGE_FORMAT& dst, IMAGE_FORMAT& src);
 
 /*
  * GetTransformNPM
  */
-enum NPM_TYPE {
-  SRGB_D65 = 0,
-  SRGB_D65_INV,
-  P3_D65,
-  P3_D65_INV,
-  TYPE_COUNT
-};
+enum NPM_TYPE { SRGB_D65 = 0, SRGB_D65_INV, P3_D65, P3_D65_INV, TYPE_COUNT };
 const mathfu::mat3* GetTransformNPM(NPM_TYPE type);
 
-#endif // __COLOR_TRANSFORM_H__
+#endif  // __COLOR_TRANSFORM_H__

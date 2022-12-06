@@ -110,15 +110,15 @@ void MoreTeapotsRenderer::Init(const int32_t numX, const int32_t numY,
     for (int32_t y = 0; y < teapot_y_; ++y)
       for (int32_t z = 0; z < teapot_z_; ++z) {
         vec_mat_models_.push_back(ndk_helper::Mat4::Translation(
-            x * gap_x + offset_x, y * gap_y + offset_y,
-            z * gap_z + offset_z));
+            x * gap_x + offset_x, y * gap_y + offset_y, z * gap_z + offset_z));
         vec_colors_.push_back(ndk_helper::Vec3(
             random() / float(RAND_MAX * 1.1), random() / float(RAND_MAX * 1.1),
             random() / float(RAND_MAX * 1.1)));
 
         float rotation_x = random() / float(RAND_MAX) - 0.5f;
         float rotation_y = random() / float(RAND_MAX) - 0.5f;
-        vec_rotations_.push_back(ndk_helper::Vec2(rotation_x * 0.05f, rotation_y * 0.05f));
+        vec_rotations_.push_back(
+            ndk_helper::Vec2(rotation_x * 0.05f, rotation_y * 0.05f));
         vec_current_rotations_.push_back(
             ndk_helper::Vec2(rotation_x * M_PI, rotation_y * M_PI));
       }
@@ -168,8 +168,8 @@ void MoreTeapotsRenderer::Init(const int32_t numX, const int32_t numY,
 
       // Store color value which wouldn't be updated every frame
       int32_t size = teapot_x_ * teapot_y_ * teapot_z_ *
-                      (ubo_matrix_stride_ + ubo_matrix_stride_ +
-                       ubo_vector_stride_);  // Mat4 + Mat4 + Vec3 + 1 stride
+                     (ubo_matrix_stride_ + ubo_matrix_stride_ +
+                      ubo_vector_stride_);  // Mat4 + Mat4 + Vec3 + 1 stride
       float* pBuffer = new float[size];
       float* pColor =
           pBuffer + teapot_x_ * teapot_y_ * teapot_z_ * ubo_matrix_stride_ * 2;
@@ -205,14 +205,14 @@ void MoreTeapotsRenderer::UpdateViewport() {
   const float CAM_FAR = 10000.f;
   if (viewport[2] < viewport[3]) {
     float aspect =
-            static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]);
+        static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]);
     mat_projection_ =
-            ndk_helper::Mat4::Perspective(aspect, 1.0f, CAM_NEAR, CAM_FAR);
+        ndk_helper::Mat4::Perspective(aspect, 1.0f, CAM_NEAR, CAM_FAR);
   } else {
     float aspect =
-            static_cast<float>(viewport[3]) / static_cast<float>(viewport[2]);
+        static_cast<float>(viewport[3]) / static_cast<float>(viewport[2]);
     mat_projection_ =
-            ndk_helper::Mat4::Perspective(1.0f, aspect, CAM_NEAR, CAM_FAR);
+        ndk_helper::Mat4::Perspective(1.0f, aspect, CAM_NEAR, CAM_FAR);
   }
 }
 
@@ -279,7 +279,10 @@ void MoreTeapotsRenderer::Render() {
 
   glUseProgram(shader_param_.program_);
 
-  TEAPOT_MATERIALS material = {{1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
+  TEAPOT_MATERIALS material = {
+      {1.0f, 1.0f, 1.0f, 10.f},
+      {0.1f, 0.1f, 0.1f},
+  };
 
   // Update uniforms
   //
@@ -301,8 +304,9 @@ void MoreTeapotsRenderer::Render() {
     // Update UBO
     glBindBuffer(GL_UNIFORM_BUFFER, ubo_);
     float* p = (float*)glMapBufferRange(
-        GL_UNIFORM_BUFFER, 0, teapot_x_ * teapot_y_ * teapot_z_ *
-                                  (ubo_matrix_stride_ * 2) * sizeof(float),
+        GL_UNIFORM_BUFFER, 0,
+        teapot_x_ * teapot_y_ * teapot_z_ * (ubo_matrix_stride_ * 2) *
+            sizeof(float),
         GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
     float* mat_mvp = p;
     float* mat_mv = p + teapot_x_ * teapot_y_ * teapot_z_ * ubo_matrix_stride_;

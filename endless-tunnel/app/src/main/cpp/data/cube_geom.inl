@@ -28,65 +28,46 @@
  A+-------+B
 
 */
-#define V_A  -0.5f, -0.5f,  0.5f
-#define V_B   0.5f, -0.5f,  0.5f
-#define V_C   0.5f,  0.5f,  0.5f
-#define V_D  -0.5f,  0.5f,  0.5f
-#define V_E  -0.5f, -0.5f, -0.5f
-#define V_F   0.5f, -0.5f, -0.5f
-#define V_G   0.5f,  0.5f, -0.5f
-#define V_H  -0.5f,  0.5f, -0.5f
-#define COLOR_1  1.0f, 1.0f, 1.0f, 1.0f
-#define COLOR_2  0.8f, 0.8f, 0.8f, 1.0f
-#define COLOR_3  0.6f, 0.6f, 0.6f, 1.0f
+#define V_A -0.5f, -0.5f, 0.5f
+#define V_B 0.5f, -0.5f, 0.5f
+#define V_C 0.5f, 0.5f, 0.5f
+#define V_D -0.5f, 0.5f, 0.5f
+#define V_E -0.5f, -0.5f, -0.5f
+#define V_F 0.5f, -0.5f, -0.5f
+#define V_G 0.5f, 0.5f, -0.5f
+#define V_H -0.5f, 0.5f, -0.5f
+#define COLOR_1 1.0f, 1.0f, 1.0f, 1.0f
+#define COLOR_2 0.8f, 0.8f, 0.8f, 1.0f
+#define COLOR_3 0.6f, 0.6f, 0.6f, 1.0f
 
 // max tex coordinate (i.e. texture repeats across cube)
 #define TC_R 3.0f
 
 static GLfloat CUBE_GEOM[] = {
-   // front face of cube:
-   V_A, COLOR_2, 0.0f, 0.0f,
-   V_B, COLOR_2, TC_R, 0.0f,
-   V_D, COLOR_2, 0.0f, TC_R,
-   V_D, COLOR_2, 0.0f, TC_R,
-   V_B, COLOR_2, TC_R, 0.0f,
-   V_C, COLOR_2, TC_R, TC_R,
-   // right face of cube:
-   V_B, COLOR_3, 0.0f, 0.0f,
-   V_F, COLOR_3, TC_R, 0.0f,
-   V_C, COLOR_3, 0.0f, TC_R,
-   V_C, COLOR_3, 0.0f, TC_R,
-   V_F, COLOR_3, TC_R, 0.0f,
-   V_G, COLOR_3, TC_R, TC_R,
-   // left face of cube
-   V_A, COLOR_3, 0.0f, TC_R,
-   V_D, COLOR_3, TC_R, TC_R,
-   V_E, COLOR_3, 0.0f, 0.0f,
-   V_E, COLOR_3, 0.0f, 0.0f,
-   V_D, COLOR_3, TC_R, TC_R,
-   V_H, COLOR_3, 0.0f, TC_R,
-   // back face of cube
-   V_E, COLOR_2, TC_R, 0.0f,
-   V_H, COLOR_2, TC_R, TC_R,
-   V_F, COLOR_2, 0.0f, 0.0f,
-   V_F, COLOR_2, 0.0f, 0.0f,
-   V_H, COLOR_2, TC_R, TC_R,
-   V_G, COLOR_2, 0.0f, TC_R,
-   // bottom of cube
-   V_A, COLOR_1, 0.0f, TC_R,
-   V_E, COLOR_1, 0.0f, 0.0f,
-   V_B, COLOR_1, TC_R, TC_R,
-   V_B, COLOR_1, TC_R, TC_R,
-   V_E, COLOR_1, 0.0f, 0.0f,
-   V_F, COLOR_1, TC_R, 0.0f,
-   // top of cube
-   V_D, COLOR_1, 0.0f, 0.0f,
-   V_C, COLOR_1, TC_R, 0.0f,
-   V_H, COLOR_1, 0.0f, TC_R,
-   V_H, COLOR_1, 0.0f, TC_R,
-   V_C, COLOR_1, TC_R, 0.0f,
-   V_G, COLOR_1, TC_R, TC_R
-};
+    // front face of cube:
+    V_A, COLOR_2, 0.0f, 0.0f, V_B, COLOR_2, TC_R, 0.0f, V_D, COLOR_2, 0.0f,
+    TC_R, V_D, COLOR_2, 0.0f, TC_R, V_B, COLOR_2, TC_R, 0.0f, V_C, COLOR_2,
+    TC_R, TC_R,
+    // right face of cube:
+    V_B, COLOR_3, 0.0f, 0.0f, V_F, COLOR_3, TC_R, 0.0f, V_C, COLOR_3, 0.0f,
+    TC_R, V_C, COLOR_3, 0.0f, TC_R, V_F, COLOR_3, TC_R, 0.0f, V_G, COLOR_3,
+    TC_R, TC_R,
+    // left face of cube
+    V_A, COLOR_3, 0.0f, TC_R, V_D, COLOR_3, TC_R, TC_R, V_E, COLOR_3, 0.0f,
+    0.0f, V_E, COLOR_3, 0.0f, 0.0f, V_D, COLOR_3, TC_R, TC_R, V_H, COLOR_3,
+    0.0f, TC_R,
+    // back face of cube
+    V_E, COLOR_2, TC_R, 0.0f, V_H, COLOR_2, TC_R, TC_R, V_F, COLOR_2, 0.0f,
+    0.0f, V_F, COLOR_2, 0.0f, 0.0f, V_H, COLOR_2, TC_R, TC_R, V_G, COLOR_2,
+    0.0f, TC_R,
+    // bottom of cube
+    V_A, COLOR_1, 0.0f, TC_R, V_E, COLOR_1, 0.0f, 0.0f, V_B, COLOR_1, TC_R,
+    TC_R, V_B, COLOR_1, TC_R, TC_R, V_E, COLOR_1, 0.0f, 0.0f, V_F, COLOR_1,
+    TC_R, 0.0f,
+    // top of cube
+    V_D, COLOR_1, 0.0f, 0.0f, V_C, COLOR_1, TC_R, 0.0f, V_H, COLOR_1, 0.0f,
+    TC_R, V_H, COLOR_1, 0.0f, TC_R, V_C, COLOR_1, TC_R, 0.0f, V_G, COLOR_1,
+    TC_R, TC_R};
 static const int CUBE_GEOM_COLOR_OFFSET = 3 * sizeof(GLfloat);
 static const int CUBE_GEOM_TEXCOORD_OFFSET = 7 * sizeof(GLfloat);
 static const int CUBE_GEOM_STRIDE = 9 * sizeof(GLfloat);

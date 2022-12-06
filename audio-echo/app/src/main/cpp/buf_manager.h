@@ -15,12 +15,13 @@
  */
 #ifndef NATIVE_AUDIO_BUF_MANAGER_H
 #define NATIVE_AUDIO_BUF_MANAGER_H
-#include <sys/types.h>
 #include <SLES/OpenSLES.h>
+#include <sys/types.h>
+
 #include <atomic>
 #include <cassert>
-#include <memory>
 #include <limits>
+#include <memory>
 
 #ifndef CACHE_ALIGN
 #define CACHE_ALIGN 64

@@ -25,17 +25,14 @@
 #ifndef APP_H_INCLUDED
 #define APP_H_INCLUDED
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#define WINDOW_DEFAULT_WIDTH 640
+#define WINDOW_DEFAULT_HEIGHT 480
 
-#define WINDOW_DEFAULT_WIDTH    640
-#define WINDOW_DEFAULT_HEIGHT   480
-
-#define WINDOW_BPP              16
-
+#define WINDOW_BPP 16
 
 // The simple framework expects the application code to define these functions.
 extern void appInit();
@@ -47,10 +44,8 @@ extern void appRender(long tick, int width, int height);
  */
 extern int gAppAlive;
 
-
 #ifdef __cplusplus
 }
 #endif
 
-
-#endif // !APP_H_INCLUDED
+#endif  // !APP_H_INCLUDED

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cstdlib>
+#include "shader.h"
+
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
-#include "shader.h"
+#include <cstdlib>
+
 #include "JNIHelper.h"
 
 namespace ndk_helper {
@@ -163,4 +165,4 @@ bool shader::ValidateProgram(const GLuint prog) {
   return true;
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

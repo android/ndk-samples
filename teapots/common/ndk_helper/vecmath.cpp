@@ -403,4 +403,4 @@ Mat4 Mat4::LookAt(const Vec3& vec_eye, const Vec3& vec_at, const Vec3& vec_up) {
   return result;
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

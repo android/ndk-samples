@@ -17,13 +17,14 @@
 #ifndef __ASSET__UTIL_H__
 #define __ASSET__UTIL_H__
 
-#include <string>
-#include <vector>
 #include <android/asset_manager.h>
 
-bool AssetEnumerateFileType(AAssetManager * assetManager,
-                        const char* type, std::vector<std::string> & files);
-bool AssetReadFile(AAssetManager* assetManager,
-              std::string& name, std::vector<uint8_t>& buf);
+#include <string>
+#include <vector>
 
-#endif // __ASSET__UTIL_H__
+bool AssetEnumerateFileType(AAssetManager* assetManager, const char* type,
+                            std::vector<std::string>& files);
+bool AssetReadFile(AAssetManager* assetManager, std::string& name,
+                   std::vector<uint8_t>& buf);
+
+#endif  // __ASSET__UTIL_H__

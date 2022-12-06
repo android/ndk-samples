@@ -17,17 +17,16 @@
 //--------------------------------------------------------------------------------
 // Include files
 //--------------------------------------------------------------------------------
-#include <jni.h>
-#include <errno.h>
-
-#include <vector>
 #include <EGL/egl.h>
 #include <GLES/gl.h>
-
-#include <android/sensor.h>
 #include <android/log.h>
-#include <android_native_app_glue.h>
 #include <android/native_window_jni.h>
+#include <android/sensor.h>
+#include <android_native_app_glue.h>
+#include <errno.h>
+#include <jni.h>
+
+#include <vector>
 
 #include "MoreTeapotsRenderer.h"
 
@@ -129,12 +128,12 @@ void Engine::UnloadResources() { renderer_.Unload(); }
 /**
  * Initialize an EGL context for the current display.
  */
-int Engine::InitDisplay(android_app *app) {
+int Engine::InitDisplay(android_app* app) {
   if (!initialized_resources_) {
     gl_context_->Init(app_->window);
     LoadResources();
     initialized_resources_ = true;
-  } else if(app->window != gl_context_->GetANativeWindow()) {
+  } else if (app->window != gl_context_->GetANativeWindow()) {
     // Re-initialize ANativeWindow.
     // On some devices, ANativeWindow is re-created when the app is resumed
     assert(gl_context_->GetANativeWindow());
@@ -162,7 +161,8 @@ int Engine::InitDisplay(android_app *app) {
   glDepthFunc(GL_LEQUAL);
 
   // Note that screen size might have been changed
-  glViewport(0, 0, gl_context_->GetScreenWidth(), gl_context_->GetScreenHeight());
+  glViewport(0, 0, gl_context_->GetScreenWidth(),
+             gl_context_->GetScreenHeight());
   renderer_.UpdateViewport();
 
   tap_camera_.SetFlip(1.f, -1.f, -1.f);
@@ -398,7 +398,6 @@ Engine g_engine;
  * event loop for receiving input events and doing other things.
  */
 void android_main(android_app* state) {
-
   g_engine.SetState(state);
 
   // Init helper functions

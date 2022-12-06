@@ -15,20 +15,21 @@
  */
 #ifndef __WEBP_DECODE_H__
 #define __WEBP_DECODE_H__
-#include <queue>
 #include <android/asset_manager.h>
 
-enum DecodeState { state_idle, state_decoding, state_ready};
+#include <queue>
+
+enum DecodeState { state_idle, state_decoding, state_ready };
 enum class SurfaceFormat : unsigned int {
-    SURFACE_FORMAT_RGBA_8888,
-    SURFACE_FORMAT_RGBX_8888,
-    SURFACE_FORMAT_RGB_565,
-    SURFACE_FORMAT_YUV_420 // Not implemented yet
+  SURFACE_FORMAT_RGBA_8888,
+  SURFACE_FORMAT_RGBX_8888,
+  SURFACE_FORMAT_RGB_565,
+  SURFACE_FORMAT_YUV_420  // Not implemented yet
 };
 struct DecodeSurfaceDescriptor {
-    // surface size in pixels
-    int32_t width_, height_, stride_;
-    SurfaceFormat format_;
+  // surface size in pixels
+  int32_t width_, height_, stride_;
+  SurfaceFormat format_;
 };
 
 /*
@@ -42,35 +43,35 @@ struct DecodeSurfaceDescriptor {
  *    and allocate a new deocder object.
  */
 class WebpDecoder {
-  public:
-    explicit WebpDecoder(const char** files, uint32_t count,
-                         DecodeSurfaceDescriptor* surfDesc,
-                         AAssetManager* assetMgr);
-    // Start decode a picture
-    bool     DecodeFrame(void);
+ public:
+  explicit WebpDecoder(const char** files, uint32_t count,
+                       DecodeSurfaceDescriptor* surfDesc,
+                       AAssetManager* assetMgr);
+  // Start decode a picture
+  bool DecodeFrame(void);
 
-    // Poll to see if a picture is decoded and ready to be used/displayed
-    uint8_t *GetDecodedFrame(void);
+  // Poll to see if a picture is decoded and ready to be used/displayed
+  uint8_t* GetDecodedFrame(void);
 
-    // WebpDecoder internal decoding function, no called from user
-    void     DecodeFrameInternal(void);
+  // WebpDecoder internal decoding function, no called from user
+  void DecodeFrameInternal(void);
 
-    // Release this decoder after usage
-    bool     DestroyDecoder(void);
+  // Release this decoder after usage
+  bool DestroyDecoder(void);
 
-  private:
-    DecodeSurfaceDescriptor bufInfo_;
-    AAssetManager*          assetMgr_;
-    std::queue<const char*> files_;
-    uint8_t*  buf_;
-    bool      stopPending_;
-    DecodeState state_;
+ private:
+  DecodeSurfaceDescriptor bufInfo_;
+  AAssetManager* assetMgr_;
+  std::queue<const char*> files_;
+  uint8_t* buf_;
+  bool stopPending_;
+  DecodeState state_;
 
-    uint32_t   bytePerPix_;
-    pthread_t* worker_;
-    /*
-     * private destructor prevent object directly call delete
-     */
-    ~WebpDecoder();
+  uint32_t bytePerPix_;
+  pthread_t* worker_;
+  /*
+   * private destructor prevent object directly call delete
+   */
+  ~WebpDecoder();
 };
-#endif // __WEBP_DECODE_H__
+#endif  // __WEBP_DECODE_H__

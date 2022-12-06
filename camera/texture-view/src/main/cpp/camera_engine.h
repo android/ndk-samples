@@ -17,10 +17,11 @@
 
 #ifndef __CAMERA_ENGINE_H__
 #define __CAMERA_ENGINE_H__
-#include <jni.h>
 #include <android/native_activity.h>
-#include <android/native_window_jni.h>
 #include <android/native_window.h>
+#include <android/native_window_jni.h>
+#include <jni.h>
+
 #include <functional>
 #include <thread>
 

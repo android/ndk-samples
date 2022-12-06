@@ -15,16 +15,18 @@
  *
  */
 
-#include <vector>
-#include <cassert>
-#include <memory>
-#include <map>
-#include <android/log.h>
+#include "gldebug.h"
+
 #include <GLES3/gl32.h>
 #include <GLES3/gl3ext.h>
+#include <android/log.h>
+
+#include <cassert>
+#include <map>
+#include <memory>
+#include <vector>
 
 #include "android_debug.h"
-#include "gldebug.h"
 
 /*
  * eglConfig ( swapchain ) capability
@@ -43,11 +45,11 @@ void PrintEglConfig(void) {
   }
 }
 
-#define UKNOWN_TAG  "UNKNOW_TAG"
+#define UKNOWN_TAG "UNKNOW_TAG"
 #define MAKE_PAIR(val) std::make_pair(val, #val)
 template <typename T>
 const char* GetPairStr(T key, std::vector<std::pair<T, const char*>>& store) {
-  typedef typename std::vector<std::pair<T, const char*> >::iterator iterator;
+  typedef typename std::vector<std::pair<T, const char*>>::iterator iterator;
   for (iterator it = store.begin(); it != store.end(); ++it) {
     if (it->first == key) {
       return it->second;
@@ -65,8 +67,7 @@ std::vector<UINT32_PAIR> eglSurfaceTypeInfo{
     MAKE_PAIR(EGL_VG_COLORSPACE_LINEAR_BIT),
     MAKE_PAIR(EGL_VG_ALPHA_FORMAT_PRE_BIT),
     MAKE_PAIR(EGL_MULTISAMPLE_RESOLVE_BOX_BIT),
-    MAKE_PAIR(EGL_SWAP_BEHAVIOR_PRESERVED_BIT)
-};
+    MAKE_PAIR(EGL_SWAP_BEHAVIOR_PRESERVED_BIT)};
 const char* GetEGLSurfaceTypeStr(uint32_t mask) {
   return GetPairStr<uint32_t>(mask, eglSurfaceTypeInfo);
 }
@@ -81,20 +82,18 @@ void PrintEglConfig(EGLDisplay display, EGLConfig cfg) {
   eglGetConfigAttrib(display, cfg, EGL_SURFACE_TYPE, &s);
   LOGI("(%d, %d, %d, %d) and (%d) (%08x)", r, g, b, a, d, s);
   for (auto& pair : eglSurfaceTypeInfo) {
-     if (pair.first & s ) {
-       LOGI("SURFACE_TYPE: %s", GetEGLSurfaceTypeStr(pair.first));
-     }
+    if (pair.first & s) {
+      LOGI("SURFACE_TYPE: %s", GetEGLSurfaceTypeStr(pair.first));
+    }
   }
 }
 
 /*
  * OpenGL Implementation Info
  */
-std::vector<UINT32_PAIR> OpenGLInfo {
-    MAKE_PAIR(GL_VENDOR),
-    MAKE_PAIR(GL_RENDERER),
-    MAKE_PAIR(GL_VERSION),
-    MAKE_PAIR(GL_SHADING_LANGUAGE_VERSION),
+std::vector<UINT32_PAIR> OpenGLInfo{
+    MAKE_PAIR(GL_VENDOR),     MAKE_PAIR(GL_RENDERER),
+    MAKE_PAIR(GL_VERSION),    MAKE_PAIR(GL_SHADING_LANGUAGE_VERSION),
     MAKE_PAIR(GL_EXTENSIONS),
 };
 void PrintGLInfo(void) {
@@ -103,7 +102,7 @@ void PrintGLInfo(void) {
   }
 }
 
-static std::vector<UINT32_PAIR> EGLInfo {
+static std::vector<UINT32_PAIR> EGLInfo{
     MAKE_PAIR(EGL_CLIENT_APIS),
     MAKE_PAIR(EGL_VENDOR),
     MAKE_PAIR(EGL_VERSION),
@@ -115,31 +114,29 @@ void PrintEGLInfo(EGLDisplay disp) {
   }
 }
 
-std::vector<UINT32_PAIR> glErrorInfo {
-    MAKE_PAIR(GL_NO_ERROR),
-    MAKE_PAIR(GL_INVALID_ENUM),
-    MAKE_PAIR(GL_INVALID_VALUE),
-    MAKE_PAIR(GL_INVALID_OPERATION),
+std::vector<UINT32_PAIR> glErrorInfo{
+    MAKE_PAIR(GL_NO_ERROR),      MAKE_PAIR(GL_INVALID_ENUM),
+    MAKE_PAIR(GL_INVALID_VALUE), MAKE_PAIR(GL_INVALID_OPERATION),
     MAKE_PAIR(GL_OUT_OF_MEMORY),
 };
 const char* GetGLErrorStr(uint32_t errorCode) {
   return GetPairStr(errorCode, glErrorInfo);
 }
 
-
 /*
  * Matrix helping functions
  */
 void PrintMatrix(mathfu::mat3& matrix) {
-  char buf[64] = {0,};
+  char buf[64] = {
+      0,
+  };
   int index;
   for (int r = 0; r < matrix.kRows; r++) {
     index = 0;
     index += snprintf(&buf[index], 64 - index, "Matrix: ");
-    for (int c= 0; c < matrix.kColumns; c++)
+    for (int c = 0; c < matrix.kColumns; c++)
       index += snprintf(&buf[index], 64 - index, "%f  ", matrix(r, c));
 
     LOGI("%s", buf);
   }
 }
-

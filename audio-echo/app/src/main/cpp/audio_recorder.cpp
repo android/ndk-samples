@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-#include <cstring>
-#include <cstdlib>
 #include "audio_recorder.h"
+
+#include <cstdlib>
+#include <cstring>
 /*
  * bqRecorderCallback(): called for every buffer is full;
  *                       pass directly to handler

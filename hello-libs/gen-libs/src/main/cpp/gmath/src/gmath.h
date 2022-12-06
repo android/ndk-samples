@@ -29,4 +29,4 @@ unsigned gpower(unsigned n);
 }
 #endif
 
-#endif //__POWER_HPP__
+#endif  //__POWER_HPP__

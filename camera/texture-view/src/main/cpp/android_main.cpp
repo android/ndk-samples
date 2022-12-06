@@ -23,10 +23,12 @@
  *         Google Pixel and Nexus 6 phones
  */
 #include <jni.h>
-#include <cstring>
 #include <utils/native_debug.h>
-#include "camera_manager.h"
+
+#include <cstring>
+
 #include "camera_engine.h"
+#include "camera_manager.h"
 
 /**
  * Application object:

@@ -15,7 +15,9 @@
  */
 
 #include "interpolator.h"
+
 #include <math.h>
+
 #include "interpolator.h"
 
 namespace ndk_helper {
@@ -150,4 +152,4 @@ float Interpolator::GetFormula(const INTERPOLATOR_TYPE type, const float t,
   }
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

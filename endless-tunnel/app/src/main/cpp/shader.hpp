@@ -22,95 +22,98 @@
 class VertexBuf;
 class IndexBuf;
 
-/* Represents an OpenGL shader. This class is not meant to be used directly, but, rather
- * to be subclassed to represent specific shaders. To use any shader that's a subclass
- * of this class, first construct it, then call Compile(). After that, you can render
- * geometry by calling BeginRender(), then calling Render() as many times as you want,
- * and then EndRender(). This allows you to render the same geometry in multiple
- * places efficiently. If you just want to render a geometry once (simple use case),
- * you can call RenderSimpleGeom(). */
+/* Represents an OpenGL shader. This class is not meant to be used directly,
+ * but, rather to be subclassed to represent specific shaders. To use any shader
+ * that's a subclass of this class, first construct it, then call Compile().
+ * After that, you can render geometry by calling BeginRender(), then calling
+ * Render() as many times as you want, and then EndRender(). This allows you to
+ * render the same geometry in multiple places efficiently. If you just want to
+ * render a geometry once (simple use case), you can call RenderSimpleGeom(). */
 class Shader {
-    protected:
-        // OpenGL handles
-        int mVertShaderH, mFragShaderH;
-        GLuint mProgramH;
-        int mMVPMatrixLoc;
-        int mPositionAttribLoc;
+ protected:
+  // OpenGL handles
+  int mVertShaderH, mFragShaderH;
+  GLuint mProgramH;
+  int mMVPMatrixLoc;
+  int mPositionAttribLoc;
 
-        // Geometry we are rendering (this is only valid between BeginRender and EndRender)
-        VertexBuf *mPreparedVertexBuf;
-    public:
-        Shader();
-        virtual ~Shader();
+  // Geometry we are rendering (this is only valid between BeginRender and
+  // EndRender)
+  VertexBuf* mPreparedVertexBuf;
 
-        // compile shader
-        virtual void Compile();
+ public:
+  Shader();
+  virtual ~Shader();
 
-        // rendering:
-        void BindShader();
-        void UnbindShader();
+  // compile shader
+  virtual void Compile();
 
-        // Prepares to render the given geometry.
-        virtual void BeginRender(VertexBuf *vbuf);
+  // rendering:
+  void BindShader();
+  void UnbindShader();
 
-        // Renders one copy of the prepared geometry, given a model-view-projection matrix.
-        void Render(glm::mat4 *mvpMat) {
-            Render(NULL, mvpMat);
-        }
+  // Prepares to render the given geometry.
+  virtual void BeginRender(VertexBuf* vbuf);
 
-        // Renders a subset (given by the index buffer) of the prepared geometry, using
-        // the given model-view-projection matrix.
-        virtual void Render(IndexBuf *ibuf, glm::mat4* mvpMat);
+  // Renders one copy of the prepared geometry, given a model-view-projection
+  // matrix.
+  void Render(glm::mat4* mvpMat) { Render(NULL, mvpMat); }
 
-        // Finishes rendering (call this after you're done making calls to Render())
-        virtual void EndRender();
+  // Renders a subset (given by the index buffer) of the prepared geometry,
+  // using the given model-view-projection matrix.
+  virtual void Render(IndexBuf* ibuf, glm::mat4* mvpMat);
 
-        // Convenience method to render a single copy of a geometry.
-        void RenderSimpleGeom(glm::mat4* mvpMat, SimpleGeom *sg) {
-            BeginRender(sg->vbuf);
-            Render(sg->ibuf, mvpMat);
-            EndRender();
-        }
-    protected:
-        // Push MVP matrix to the shader
-        void PushMVPMatrix(glm::mat4 *mat);
+  // Finishes rendering (call this after you're done making calls to Render())
+  virtual void EndRender();
 
-        // Push the vertex positions to the shader
-        void PushPositions(int vbo_offset, int stride);
+  // Convenience method to render a single copy of a geometry.
+  void RenderSimpleGeom(glm::mat4* mvpMat, SimpleGeom* sg) {
+    BeginRender(sg->vbuf);
+    Render(sg->ibuf, mvpMat);
+    EndRender();
+  }
 
-        // Must return the vertex shader's GLSL source
-        virtual const char* GetVertShaderSource() = 0;
+ protected:
+  // Push MVP matrix to the shader
+  void PushMVPMatrix(glm::mat4* mat);
 
-        // Must return the fragment shader's GLSL source
-        virtual const char* GetFragShaderSource() = 0;
+  // Push the vertex positions to the shader
+  void PushPositions(int vbo_offset, int stride);
 
-        // Must return the shader's name (used for debug/logging purposes)
-        virtual const char* GetShaderName() = 0;
+  // Must return the vertex shader's GLSL source
+  virtual const char* GetVertShaderSource() = 0;
+
+  // Must return the fragment shader's GLSL source
+  virtual const char* GetFragShaderSource() = 0;
+
+  // Must return the shader's name (used for debug/logging purposes)
+  virtual const char* GetShaderName() = 0;
 };
 
-
-/* A trivial shader that knows how to render geometry and colors, but no lighting
- * or texturing. Compatible with geometry that contains color data. You can also specify
- * a tint color, which will get multiplied by the geometry's built-in color. */
+/* A trivial shader that knows how to render geometry and colors, but no
+ * lighting or texturing. Compatible with geometry that contains color data. You
+ * can also specify a tint color, which will get multiplied by the geometry's
+ * built-in color. */
 class TrivialShader : public Shader {
-    protected:
-        int mColorLoc;
-        int mTintLoc;
-        float mTint[3];
-    public:
-        TrivialShader();
-        ~TrivialShader();
-        int GetColorAttribLoc();
-        void PushColors(int vbo_offset, int stride);
-        void SetTintColor(float r, float g, float b);
-        void ResetTintColor();
-        virtual void Compile();
-        virtual void BeginRender(VertexBuf *geom);
-    protected:
-        virtual const char* GetVertShaderSource();
-        virtual const char* GetFragShaderSource();
-        virtual const char* GetShaderName();
+ protected:
+  int mColorLoc;
+  int mTintLoc;
+  float mTint[3];
+
+ public:
+  TrivialShader();
+  ~TrivialShader();
+  int GetColorAttribLoc();
+  void PushColors(int vbo_offset, int stride);
+  void SetTintColor(float r, float g, float b);
+  void ResetTintColor();
+  virtual void Compile();
+  virtual void BeginRender(VertexBuf* geom);
+
+ protected:
+  virtual const char* GetVertShaderSource();
+  virtual const char* GetFragShaderSource();
+  virtual const char* GetShaderName();
 };
 
 #endif
-

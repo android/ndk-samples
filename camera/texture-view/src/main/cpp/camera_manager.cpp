@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <utility>
-#include <queue>
-#include <unistd.h>
-#include <cinttypes>
-#include <cstring>
+#include "camera_manager.h"
+
 #include <camera/NdkCameraManager.h>
 #include <media/NdkImage.h>
-#include "camera_manager.h"
-#include "utils/native_debug.h"
+#include <unistd.h>
+
+#include <cinttypes>
+#include <cstring>
+#include <queue>
+#include <utility>
+
 #include "utils/camera_utils.h"
+#include "utils/native_debug.h"
 
 /**
  * Range of Camera Exposure Time:
@@ -86,7 +89,7 @@ NDKCamera::NDKCamera()
   status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE, &val);
 
-  if (status == ACAMERA_OK){
+  if (status == ACAMERA_OK) {
     sensitivityRange_.min_ = val.data.i32[0];
     sensitivityRange_.max_ = val.data.i32[1];
 
@@ -171,7 +174,6 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
   return MatchCaptureSizeRequest(requestWidth, requestHeight, view, nullptr);
 }
 
-
 bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
                                         int32_t requestHeight,
                                         ImageFormat* resView,
@@ -197,8 +199,7 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
     if (input) continue;
 
     if (format == AIMAGE_FORMAT_YUV_420_888 || format == AIMAGE_FORMAT_JPEG) {
-      DisplayDimension res(entry.data.i32[i + 1],
-                           entry.data.i32[i + 2]);
+      DisplayDimension res(entry.data.i32[i + 1], entry.data.i32[i + 2]);
       if (!disp.IsSameRatio(res)) continue;
       if (format == AIMAGE_FORMAT_YUV_420_888 && foundRes > res) {
         foundIt = true;
@@ -225,8 +226,7 @@ bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth,
       resView->width = 640;
       resView->height = 480;
     }
-    if (resCap)
-      *resCap = *resView;
+    if (resCap) *resCap = *resView;
   }
   resView->format = AIMAGE_FORMAT_YUV_420_888;
   if (resCap) resCap->format = AIMAGE_FORMAT_JPEG;

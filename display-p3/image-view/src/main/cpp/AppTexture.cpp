@@ -42,7 +42,7 @@ bool ImageViewEngine::CreateTextures(void) {
   }
   DeleteTextures();
 
-  for(auto& f : files) {
+  for (auto& f : files) {
     AssetTexture* tex = new AssetTexture(f);
     ASSERT(tex, "OUT OF MEMORY");
     tex->ColorSpace(dispColorSpace_);

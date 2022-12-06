@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+#include "Texture.h"
+
 #include <GLES3/gl32.h>
 #include <android/data_space.h>
-#include <assert.h>
-
-#include "Texture.h"
 #include <android/imagedecoder.h>
+#include <assert.h>
 
 #define MODULE_NAME "Teapot::Texture"
 #include "android_debug.h"
