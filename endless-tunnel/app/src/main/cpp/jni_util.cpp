@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// clang-format off
+#include "common.hpp"
+// clang-format on
 #include "jni_util.hpp"
 
-#include "common.hpp"
 #include "native_engine.hpp"
 
 static struct JniSetup _jni_setup = {0};
