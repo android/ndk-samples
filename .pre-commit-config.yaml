@@ -6,3 +6,8 @@ repos:
         args: ["-style=Google"]
         entry: .ci_tools/clang-format.sh -i
         'types_or': [c++, c]
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: check-xml
+    -   id: check-yaml
