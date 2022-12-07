@@ -23,7 +23,6 @@
 #define OURKEY_LEFT 3
 #define OURKEY_ENTER 4
 #define OURKEY_ESCAPE 5
-#define OURKEY_COUNT 6 // how many keycodes there are
+#define OURKEY_COUNT 6  // how many keycodes there are
 
 #endif
-

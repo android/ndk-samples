@@ -16,16 +16,16 @@
 
 #pragma once
 
-#include <jni.h>
-#include <vector>
-#include <string>
-#include <functional>
-#include <assert.h>
-#include <mutex>
-#include <pthread.h>
-
 #include <android/log.h>
 #include <android_native_app_glue.h>
+#include <assert.h>
+#include <jni.h>
+#include <pthread.h>
+
+#include <functional>
+#include <mutex>
+#include <string>
+#include <vector>
 
 #define LOGI(...)                                                           \
   ((void)__android_log_print(                                               \
@@ -93,8 +93,8 @@ class JNIHelper {
   static void DetachCurrentThreadDtor(void* p) {
     LOGI("detached current thread");
     if (p != nullptr) {
-        ANativeActivity *activity = (ANativeActivity *) p;
-        activity->vm->DetachCurrentThread();
+      ANativeActivity* activity = (ANativeActivity*)p;
+      activity->vm->DetachCurrentThread();
     }
   }
 
@@ -299,7 +299,7 @@ class JNIHelper {
     activity_->vm->AttachCurrentThread(&env, NULL);
     pthread_key_t key;
     if (pthread_key_create(&key, DetachCurrentThreadDtor) == 0) {
-        pthread_setspecific(key, (void *)activity_);
+      pthread_setspecific(key, (void*)activity_);
     }
     return env;
   }
@@ -332,4 +332,4 @@ class JNIHelper {
                          const char* strSignature, ...);
 };
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

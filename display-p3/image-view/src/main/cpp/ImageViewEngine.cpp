@@ -14,14 +14,14 @@
  * limitations under the License.
  *
  */
-#include <memory>
 #include "ImageViewEngine.h"
+
+#include <memory>
 
 /*
  * Create Rendering Context
  */
 bool ImageViewEngine::InitializeDisplay(void) {
-
   EnableWelcomeUI();
 
   bool status = CreateWideColorCtx();
@@ -45,12 +45,8 @@ bool ImageViewEngine::InitializeDisplay(void) {
   return true;
 }
 
-bool ImageViewEngine::GetAnimationStatus(void) {
-  return animating_;
-}
-void ImageViewEngine::EnableAnimation(bool enable) {
-  animating_ = enable;
-}
+bool ImageViewEngine::GetAnimationStatus(void) { return animating_; }
+void ImageViewEngine::EnableAnimation(bool enable) { animating_ = enable; }
 
 /*
  * Draw quad(s) to view texture
@@ -60,16 +56,12 @@ void ImageViewEngine::DrawFrame(void) {
     return;
   }
 
-  const GLfloat leftQuadVertices[] = {
-      -1.f, -1.0f,  0.0f, 1.0f,
-      0.0f, -1.0f,  1.0f, 1.0f,
-      0.0f,  1.0f,  1.0f, 0.0f,
-      -1.0f, 1.0f,  0.0f, 0.0f };
-  const GLfloat rightQuadVertices[] = {
-      0.0f, -1.0f,  0.0f, 1.0f,
-      1.0f, -1.0f,  1.0f, 1.0f,
-      1.0f,  1.0f,  1.0f, 0.0f,
-      0.0f, 1.0f,  0.0f, 0.0f };
+  const GLfloat leftQuadVertices[] = {-1.f,  -1.0f, 0.0f, 1.0f, 0.0f, -1.0f,
+                                      1.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+                                      -1.0f, 1.0f,  0.0f, 0.0f};
+  const GLfloat rightQuadVertices[] = {0.0f, -1.0f, 0.0f, 1.0f, 1.0f, -1.0f,
+                                       1.0f, 1.0f,  1.0f, 1.0f, 1.0f, 0.0f,
+                                       0.0f, 1.0f,  0.0f, 0.0f};
 
   // Just fill the screen with a color.
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -77,27 +69,25 @@ void ImageViewEngine::DrawFrame(void) {
 
   glUseProgram(program_.getProgram());
 
-  glVertexAttribPointer(program_.getAttribLocation(),
-                        2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, leftQuadVertices);
+  glVertexAttribPointer(program_.getAttribLocation(), 2, GL_FLOAT, GL_FALSE,
+                        sizeof(GLfloat) * 4, leftQuadVertices);
   glEnableVertexAttribArray(program_.getAttribLocation());
 
-  glVertexAttribPointer(program_.getAttribLocationTex(),
-                        2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, leftQuadVertices + 2);
+  glVertexAttribPointer(program_.getAttribLocationTex(), 2, GL_FLOAT, GL_FALSE,
+                        sizeof(GLfloat) * 4, leftQuadVertices + 2);
   glEnableVertexAttribArray(program_.getAttribLocationTex());
   int32_t texIdx = textureIdx_;
-  if(renderModeBits_ & RENDERING_P3) {
+  if (renderModeBits_ & RENDERING_P3) {
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_2D, textures_[texIdx]->P3TexId());
     glUniform1i(program_.getSamplerLoc(), 0);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
   }
   if (renderModeBits_ & RENDERING_SRGB) {
-    glVertexAttribPointer(program_.getAttribLocation(),
-                          2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4,
-                          rightQuadVertices);
-    glVertexAttribPointer(program_.getAttribLocationTex(),
-                          2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4,
-                          rightQuadVertices + 2);
+    glVertexAttribPointer(program_.getAttribLocation(), 2, GL_FLOAT, GL_FALSE,
+                          sizeof(GLfloat) * 4, rightQuadVertices);
+    glVertexAttribPointer(program_.getAttribLocationTex(), 2, GL_FLOAT,
+                          GL_FALSE, sizeof(GLfloat) * 4, rightQuadVertices + 2);
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, textures_[texIdx]->SRGBATexId());
     glUniform1i(program_.getSamplerLoc(), 1);
@@ -111,11 +101,9 @@ void ImageViewEngine::DrawFrame(void) {
  * Tear down the EGL context currently associated with the display.
  */
 void ImageViewEngine::TerminateDisplay(void) {
-
   animating_ = 0;
 
-  if(display_ == EGL_NO_DISPLAY)
-    return;
+  if (display_ == EGL_NO_DISPLAY) return;
 
   DestroyWideColorCtx();
 
@@ -126,10 +114,8 @@ void ImageViewEngine::TerminateDisplay(void) {
 /*
  * Initialize the application engine
  */
-ImageViewEngine::ImageViewEngine(struct android_app* app) :
-    app_(app),
-    animating_(0),
-    textureIdx_(0) {
+ImageViewEngine::ImageViewEngine(struct android_app* app)
+    : app_(app), animating_(0), textureIdx_(0) {
   textures_.resize(0);
   renderModeBits_ = RENDERING_P3 | RENDERING_SRGB;
   eglContext_ = EGL_NO_CONTEXT;

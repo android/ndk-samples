@@ -21,6 +21,7 @@
 #define SENSORMANAGER_H_
 
 #include <android/sensor.h>
+
 #include "JNIHelper.h"
 
 namespace ndk_helper {
@@ -59,6 +60,6 @@ class SensorManager {
  *    Workaround ASensorManager_getInstance() deprecation false alarm
  *    for Android-N and before, when compiling with NDK-r15
  */
-ASensorManager* AcquireASensorManagerInstance(android_app* app);
-}  // namespace ndkHelper
+ASensorManager *AcquireASensorManagerInstance(android_app *app);
+}  // namespace ndk_helper
 #endif /* SENSORMANAGER_H_ */

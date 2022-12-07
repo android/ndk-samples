@@ -110,6 +110,6 @@ class GLContext {
   EGLSurface GetSurface() const { return surface_; }
 };
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper
 
 #endif /* GLCONTEXT_H_ */

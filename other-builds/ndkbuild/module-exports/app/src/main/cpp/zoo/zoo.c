@@ -15,7 +15,4 @@
  */
 #include "bar.h"
 
-int something(void)
-{
-    return bar(42);
-}
+int something(void) { return bar(42); }

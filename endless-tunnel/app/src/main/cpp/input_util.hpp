@@ -29,24 +29,23 @@
 #define COOKED_EVENT_TYPE_BACK 6
 
 struct CookedEvent {
-    int type;
+  int type;
 
-    // for joystick events:
-    float joyX, joyY;
+  // for joystick events:
+  float joyX, joyY;
 
-    // for pointer events
-    int motionPointerId;
-    bool motionIsOnScreen;
-    float motionX, motionY;
-    float motionMinX, motionMaxX;
-    float motionMinY, motionMaxY;
+  // for pointer events
+  int motionPointerId;
+  bool motionIsOnScreen;
+  float motionX, motionY;
+  float motionMinX, motionMaxX;
+  float motionMinY, motionMaxY;
 
-    // for key events
-    int keyCode;
+  // for key events
+  int keyCode;
 };
 
 typedef bool (*CookedEventCallback)(struct CookedEvent *event);
 bool CookEvent(AInputEvent *event, CookedEventCallback callback);
 
 #endif
-

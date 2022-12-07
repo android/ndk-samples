@@ -58,4 +58,4 @@ bool PerfMonitor::Update(float &fFPS) {
   }
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

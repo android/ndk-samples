@@ -266,4 +266,4 @@ bool GLContext::CheckExtension(const char* extension) {
   return false;
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

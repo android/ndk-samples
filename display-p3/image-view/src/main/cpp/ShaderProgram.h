@@ -20,18 +20,19 @@
 #include <GLES3/gl32.h>
 
 class ShaderProgram {
-public:
-  ShaderProgram() {};
+ public:
+  ShaderProgram(){};
   GLuint createProgram(void);
   GLuint createProgram(const char* pVertexSource, const char* pFragmentSource);
   GLuint getAttribLocation() const { return gvPositionHandle_; }
   GLuint getAttribLocationTex() const { return gvTxtHandle_; }
   GLuint getProgram() const { return gProgram_; }
-  GLint  getSamplerLoc(void);
-private:
+  GLint getSamplerLoc(void);
+
+ private:
   GLuint gProgram_;
   GLuint gvPositionHandle_;
   GLuint gvTxtHandle_;
 };
 
-#endif // __SHADER_PROGRAM_H__
+#endif  // __SHADER_PROGRAM_H__

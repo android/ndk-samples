@@ -17,9 +17,10 @@
 #ifndef PERFMONITOR_H_
 #define PERFMONITOR_H_
 
-#include <jni.h>
 #include <errno.h>
+#include <jni.h>
 #include <time.h>
+
 #include "JNIHelper.h"
 
 namespace ndk_helper {
@@ -55,5 +56,5 @@ class PerfMonitor {
   }
 };
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper
 #endif /* PERFMONITOR_H_ */

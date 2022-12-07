@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cstdio>
+#include "debug_utils.h"
+
+#include <inttypes.h>
 #include <sys/stat.h>
 
-#include "debug_utils.h"
+#include <cstdio>
+
 #include "android_debug.h"
-#include <inttypes.h>
 
 static const char* FILE_PREFIX = "/sdcard/data/audio";
 

@@ -15,13 +15,14 @@
  */
 
 #pragma once
-#include <vector>
-#include <string>
 #include <GLES2/gl2.h>
 
+#include <string>
+#include <vector>
+
 #include "JNIHelper.h"
-#include "vecmath.h"
 #include "interpolator.h"
+#include "vecmath.h"
 
 namespace ndk_helper {
 
@@ -107,4 +108,4 @@ class TapCamera {
   void Reset(const bool bAnimate);
 };
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

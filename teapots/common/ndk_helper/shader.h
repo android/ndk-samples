@@ -17,16 +17,14 @@
 #ifndef SHADER_H_
 #define SHADER_H_
 
-#include <jni.h>
-
-#include <vector>
-#include <map>
-#include <string>
-
 #include <EGL/egl.h>
 #include <GLES/gl.h>
-
 #include <android/log.h>
+#include <jni.h>
+
+#include <map>
+#include <string>
+#include <vector>
 
 #include "JNIHelper.h"
 
@@ -116,5 +114,5 @@ bool LinkProgram(const GLuint prog);
 bool ValidateProgram(const GLuint prog);
 }  // namespace shader
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper
 #endif /* SHADER_H_ */

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 #include "bar.h"
+
 #include "foo.h"
 
-int  bar(int  x)
-{
-    return foo(x)-1;
-}
+int bar(int x) { return foo(x) - 1; }

@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
-#include <android/log.h>
 #include "gmath.h"
+
+#include <android/log.h>
 
 #if defined(__GNUC__) && __GNUC__ >= 4
 #define GMATH_EXPORT __attribute__((visibility("default")))
@@ -32,15 +33,12 @@
  * return 2 ^ n with multiplication implementation
  */
 GMATH_EXPORT unsigned gpower(unsigned n) {
-    if (n == 0)
-        return 1;
-    if (n > 31) {
-        LOGE("error from power(%d): integer overflow", n);
-        return 0;
-    }
-    unsigned val = gpower(n>>1) * gpower (n>>1);
-    if (n & 1)
-      val *= 2;
-    return val;
+  if (n == 0) return 1;
+  if (n > 31) {
+    LOGE("error from power(%d): integer overflow", n);
+    return 0;
+  }
+  unsigned val = gpower(n >> 1) * gpower(n >> 1);
+  if (n & 1) val *= 2;
+  return val;
 }
-

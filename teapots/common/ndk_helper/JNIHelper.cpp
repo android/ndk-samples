@@ -16,13 +16,12 @@
 
 #include "JNIHelper.h"
 
+#include <EGL/egl.h>
+#include <GLES2/gl2.h>
 #include <string.h>
 
 #include <fstream>
 #include <iostream>
-
-#include <EGL/egl.h>
-#include <GLES2/gl2.h>
 
 namespace ndk_helper {
 
@@ -147,7 +146,7 @@ bool JNIHelper::ReadFile(const char* fileName,
   jstring str_path = GetExternalFilesDirJString(env);
 
   std::string s;
-  if(str_path) {
+  if (str_path) {
     const char* path = env->GetStringUTFChars(str_path, NULL);
     s = std::string(path);
     if (fileName[0] != '/') {
@@ -767,4 +766,4 @@ JNIEXPORT void Java_com_sample_helper_NDKHelper_RunOnUiThreadHandler(
 }
 }
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper

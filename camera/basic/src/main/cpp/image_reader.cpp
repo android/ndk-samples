@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <string>
-#include <functional>
-#include <thread>
-#include <cstdlib>
-#include <dirent.h>
-#include <ctime>
 #include "image_reader.h"
+
+#include <dirent.h>
+
+#include <cstdlib>
+#include <ctime>
+#include <functional>
+#include <string>
+#include <thread>
+
 #include "utils/native_debug.h"
 
 /*
@@ -64,7 +67,8 @@ ImageReader::ImageReader(ImageFormat *res, enum AIMAGE_FORMATS format)
   ASSERT(reader_ && status == AMEDIA_OK, "Failed to create AImageReader");
 
   AImageReader_ImageListener listener{
-      .context = this, .onImageAvailable = OnImageCallback,
+      .context = this,
+      .onImageAvailable = OnImageCallback,
   };
   AImageReader_setImageListener(reader_, &listener);
 }
@@ -74,8 +78,8 @@ ImageReader::~ImageReader() {
   AImageReader_delete(reader_);
 }
 
-void ImageReader::RegisterCallback(void* ctx,
-                      std::function<void(void* ctx, const char*fileName)> func) {
+void ImageReader::RegisterCallback(
+    void *ctx, std::function<void(void *ctx, const char *fileName)> func) {
   callbackCtx_ = ctx;
   callback_ = func;
 }
@@ -124,12 +128,12 @@ AImage *ImageReader::GetNextImage(void) {
  * in front of it on the queue. Recommended for real-time processing.
  */
 AImage *ImageReader::GetLatestImage(void) {
-    AImage *image;
-    media_status_t status = AImageReader_acquireLatestImage(reader_, &image);
-    if (status != AMEDIA_OK) {
-        return nullptr;
-    }
-    return image;
+  AImage *image;
+  media_status_t status = AImageReader_acquireLatestImage(reader_, &image);
+  if (status != AMEDIA_OK) {
+    return nullptr;
+  }
+  return image;
 }
 
 /**
@@ -244,7 +248,7 @@ bool ImageReader::DisplayImage(ANativeWindow_Buffer *buf, AImage *image) {
  *   Refer to:
  * https://mathbits.com/MathBits/TISection/Geometry/Transformations2.htm
  */
-void ImageReader::PresentImage(ANativeWindow_Buffer *buf, AImage *image) {  
+void ImageReader::PresentImage(ANativeWindow_Buffer *buf, AImage *image) {
   AImageCropRect srcRect;
   AImage_getCropRect(image, &srcRect);
 
@@ -408,8 +412,7 @@ void ImageReader::SetPresentRotation(int32_t angle) {
  * Write out jpeg files to kDirName directory
  * @param image point capture jpg image
  */
-void ImageReader::WriteFile(AImage* image) {
-
+void ImageReader::WriteFile(AImage *image) {
   int planeCount;
   media_status_t status = AImage_getNumberOfPlanes(image, &planeCount);
   ASSERT(status == AMEDIA_OK && planeCount == 1,
@@ -428,7 +431,7 @@ void ImageReader::WriteFile(AImage* image) {
   }
 
   struct timespec ts {
-      0, 0
+    0, 0
   };
   clock_gettime(CLOCK_REALTIME, &ts);
   struct tm localTime;
@@ -450,8 +453,7 @@ void ImageReader::WriteFile(AImage* image) {
       callback_(callbackCtx_, fileName.c_str());
     }
   } else {
-    if (file)
-      fclose(file);
+    if (file) fclose(file);
   }
   AImage_delete(image);
 }

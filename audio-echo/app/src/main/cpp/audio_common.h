@@ -21,8 +21,8 @@
 #include <SLES/OpenSLES_Android.h>
 
 #include "android_debug.h"
-#include "debug_utils.h"
 #include "buf_manager.h"
+#include "debug_utils.h"
 
 /*
  * Audio Sample Controls...
@@ -41,7 +41,7 @@ struct SampleFormat {
   uint32_t sampleRate_;
   uint32_t framesPerBuf_;
   uint16_t channels_;
-  uint16_t pcmFormat_;  // 8 bit, 16 bit, 24 bit ...
+  uint16_t pcmFormat_;       // 8 bit, 16 bit, 24 bit ...
   uint32_t representation_;  // android extensions
 };
 extern void ConvertToSLSampleFormat(SLAndroidDataFormat_PCM_EX* pFormat,

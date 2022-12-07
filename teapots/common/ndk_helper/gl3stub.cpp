@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include <EGL/egl.h>
 #include "gl3stub.h"
+
+#include <EGL/egl.h>
 
 GLboolean gl3stubInit() {
 #define FIND_PROC(s) s = (decltype(s))eglGetProcAddress(#s);

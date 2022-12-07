@@ -44,15 +44,14 @@ void TeapotRenderer::Init() {
 
   // Load shader
   GLint type = GetTextureType();
-  if(type == GL_TEXTURE_CUBE_MAP) {
-      LoadShaders(&shader_param_, "Shaders/Cubemap.vsh",
-                  "Shaders/Cubemap.fsh");
-  } else if(type == GL_TEXTURE_2D) {
-      LoadShaders(&shader_param_, "Shaders/2DTexture.vsh",
-                  "Shaders/2DTexture.fsh");
+  if (type == GL_TEXTURE_CUBE_MAP) {
+    LoadShaders(&shader_param_, "Shaders/Cubemap.vsh", "Shaders/Cubemap.fsh");
+  } else if (type == GL_TEXTURE_2D) {
+    LoadShaders(&shader_param_, "Shaders/2DTexture.vsh",
+                "Shaders/2DTexture.fsh");
   } else {
-      LoadShaders(&shader_param_, "Shaders/VS_ShaderPlain.vsh",
-                 "Shaders/ShaderPlain.fsh");
+    LoadShaders(&shader_param_, "Shaders/VS_ShaderPlain.vsh",
+                "Shaders/ShaderPlain.fsh");
   }
   // Create Index buffer
   num_indices_ = sizeof(teapotIndices) / sizeof(teapotIndices[0]);
@@ -170,7 +169,10 @@ void TeapotRenderer::Render() {
   glUseProgram(shader_param_.program_);
 
   TEAPOT_MATERIALS material = {
-      {1.0f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
+      {1.0f, 0.5f, 0.5f},
+      {1.0f, 1.0f, 1.0f, 10.f},
+      {0.1f, 0.1f, 0.1f},
+  };
 
   // Update uniforms
   glUniform4f(shader_param_.material_diffuse_, material.diffuse_color[0],

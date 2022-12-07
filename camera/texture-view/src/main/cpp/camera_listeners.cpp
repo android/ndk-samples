@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <utility>
-#include <queue>
-#include <cinttypes>
-#include <thread>
-
 #include <camera/NdkCameraManager.h>
+
+#include <cinttypes>
+#include <queue>
+#include <thread>
+#include <utility>
+
 #include "camera_manager.h"
-#include "utils/native_debug.h"
 #include "utils/camera_utils.h"
+#include "utils/native_debug.h"
 
 /*
  * Camera Manager Listener object
@@ -121,18 +122,18 @@ void NDKCamera::OnDeviceError(ACameraDevice* dev, int err) {
 // CaptureSession state callbacks
 void OnSessionClosed(void* ctx, ACameraCaptureSession* ses) {
   LOGW("session %p closed", ses);
-  reinterpret_cast<NDKCamera*>(ctx)
-      ->OnSessionState(ses, CaptureSessionState::CLOSED);
+  reinterpret_cast<NDKCamera*>(ctx)->OnSessionState(
+      ses, CaptureSessionState::CLOSED);
 }
 void OnSessionReady(void* ctx, ACameraCaptureSession* ses) {
   LOGW("session %p ready", ses);
-  reinterpret_cast<NDKCamera*>(ctx)
-      ->OnSessionState(ses, CaptureSessionState::READY);
+  reinterpret_cast<NDKCamera*>(ctx)->OnSessionState(ses,
+                                                    CaptureSessionState::READY);
 }
 void OnSessionActive(void* ctx, ACameraCaptureSession* ses) {
   LOGW("session %p active", ses);
-  reinterpret_cast<NDKCamera*>(ctx)
-      ->OnSessionState(ses, CaptureSessionState::ACTIVE);
+  reinterpret_cast<NDKCamera*>(ctx)->OnSessionState(
+      ses, CaptureSessionState::ACTIVE);
 }
 
 ACameraCaptureSession_stateCallbacks* NDKCamera::GetSessionListener() {

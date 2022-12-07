@@ -29,9 +29,9 @@ static const uint8_t kMIDIChanCmd_ProgramChange = 12;
 static const uint8_t kMIDIChanCmd_ChannelPress = 13;
 static const uint8_t kMIDIChanCmd_PitchWheel = 14;
 // System Commands
-static const uint8_t kMIDISysCmdChan    = 0xF0;
+static const uint8_t kMIDISysCmdChan = 0xF0;
 static const uint8_t kMIDISysCmd_SysEx = 0xF0;
-static const uint8_t kMIDISysCmd_EndOfSysEx =  0xF7;
+static const uint8_t kMIDISysCmd_EndOfSysEx = 0xF7;
 static const uint8_t kMIDISysCmd_ActiveSensing = 0xFE;
 static const uint8_t kMIDISysCmd_Reset = 0xFF;
 

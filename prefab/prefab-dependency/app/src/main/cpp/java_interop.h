@@ -54,4 +54,4 @@ struct Convert<jstring> {
   }
 };
 
-}  // namespace com.example.prefabdependency::jni
+}  // namespace jsonparse::jni

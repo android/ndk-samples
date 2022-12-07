@@ -17,6 +17,7 @@
 #ifndef CAMERA_IMAGE_READER_H
 #define CAMERA_IMAGE_READER_H
 #include <media/NdkImageReader.h>
+
 #include <functional>
 /*
  * ImageFormat:
@@ -51,8 +52,8 @@ class ImageReader {
   AImage* GetNextImage(void);
 
   /**
-  * Retrieve Image on the back of Reader's queue, dropping older images
-  */
+   * Retrieve Image on the back of Reader's queue, dropping older images
+   */
   AImage* GetLatestImage(void);
 
   /**
@@ -95,13 +96,15 @@ class ImageReader {
    * @param ctx is client context when callback is invoked
    * @param callback is the actual callback function
    */
-  void RegisterCallback(void* ctx, std::function<void(void* ctx, const char* fileName)>);
+  void RegisterCallback(void* ctx,
+                        std::function<void(void* ctx, const char* fileName)>);
+
  private:
   int32_t presentRotation_;
   AImageReader* reader_;
 
-  std::function<void(void *ctx, const char* fileName)> callback_;
-  void *callbackCtx_;
+  std::function<void(void* ctx, const char* fileName)> callback_;
+  void* callbackCtx_;
 
   void PresentImage(ANativeWindow_Buffer* buf, AImage* image);
   void PresentImage90(ANativeWindow_Buffer* buf, AImage* image);

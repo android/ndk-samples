@@ -29,22 +29,17 @@
  * A helper method to allocate an ASharedMemory region and create an
  * ANeuralNetworksMemory object.
  */
-static std::pair<int,
-                 ANeuralNetworksMemory*> CreateASharedMemory(const char* name,
-                                                             uint32_t size,
-                                                             int prot) {
+static std::pair<int, ANeuralNetworksMemory*> CreateASharedMemory(
+    const char* name, uint32_t size, int prot) {
   int fd = ASharedMemory_create(name, size * sizeof(float));
 
-  // Create an ANeuralNetworksMemory object from the corresponding ASharedMemory objects.
+  // Create an ANeuralNetworksMemory object from the corresponding ASharedMemory
+  // objects.
   ANeuralNetworksMemory* memory = nullptr;
   int32_t status = ANeuralNetworksMemory_createFromFd(size * sizeof(float),
-                                                      prot,
-                                                      fd,
-                                                      0,
-                                                      &memory);
+                                                      prot, fd, 0, &memory);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksMemory_createFromFd failed for %s",
                         name);
     close(fd);
@@ -61,13 +56,9 @@ static void fillMemory(int fd, uint32_t size, float value) {
   // Set the values of the memory.
   // In reality, the values in the shared memory region will be manipulated by
   // other modules or processes.
-  float* data = reinterpret_cast<float*>(
-      mmap(nullptr,
-           size * sizeof(float),
-           PROT_READ | PROT_WRITE,
-           MAP_SHARED,
-           fd,
-           0));
+  float* data =
+      reinterpret_cast<float*>(mmap(nullptr, size * sizeof(float),
+                                    PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0));
   std::fill(data, data + size, value);
   munmap(data, size * sizeof(float));
 }
@@ -82,8 +73,8 @@ static void fillMemory(int fd, uint32_t size, float value) {
  */
 std::unique_ptr<SimpleSequenceModel> SimpleSequenceModel::Create(float ratio) {
   auto model = std::make_unique<SimpleSequenceModel>(ratio);
-  if (model->CreateSharedMemories() && model->CreateModel()
-      && model->CreateCompilation() && model->CreateOpaqueMemories()) {
+  if (model->CreateSharedMemories() && model->CreateModel() &&
+      model->CreateCompilation() && model->CreateOpaqueMemories()) {
     return model;
   }
   return nullptr;
@@ -150,8 +141,7 @@ bool SimpleSequenceModel::CreateModel() {
   // Create the ANeuralNetworksModel handle.
   status = ANeuralNetworksModel_create(&model_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksModel_create failed");
     return false;
   }
@@ -175,11 +165,12 @@ bool SimpleSequenceModel::CreateModel() {
   /**
    * Add operands and operations to construct the model.
    *
-   * Operands are implicitly identified by the order in which they are added to the model,
-   * starting from 0.
+   * Operands are implicitly identified by the order in which they are added to
+   * the model, starting from 0.
    *
-   * These indexes are not returned by the model_addOperand call. The application must
-   * manage these values. Here, we use opIdx to do the bookkeeping.
+   * These indexes are not returned by the model_addOperand call. The
+   * application must manage these values. Here, we use opIdx to do the
+   * bookkeeping.
    */
   uint32_t opIdx = 0;
 
@@ -189,21 +180,21 @@ bool SimpleSequenceModel::CreateModel() {
   status = ANeuralNetworksModel_addOperand(model_, &scalarInt32Type);
   uint32_t fusedActivationFuncNone = opIdx++;
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksModel_addOperand failed for operand (%d)",
-                        fusedActivationFuncNone);
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksModel_addOperand failed for operand (%d)",
+        fusedActivationFuncNone);
     return false;
   }
   FuseCode fusedActivationCodeValue = ANEURALNETWORKS_FUSED_NONE;
-  status = ANeuralNetworksModel_setOperandValue(model_, fusedActivationFuncNone,
-                                                &fusedActivationCodeValue,
-                                                sizeof(fusedActivationCodeValue));
+  status = ANeuralNetworksModel_setOperandValue(
+      model_, fusedActivationFuncNone, &fusedActivationCodeValue,
+      sizeof(fusedActivationCodeValue));
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksModel_setOperandValue failed for operand (%d)",
-                        fusedActivationFuncNone);
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksModel_setOperandValue failed for operand (%d)",
+        fusedActivationFuncNone);
     return false;
   }
 
@@ -212,10 +203,9 @@ bool SimpleSequenceModel::CreateModel() {
   status = ANeuralNetworksModel_addOperand(model_, &float32TensorType);
   uint32_t sumIn = opIdx++;
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksModel_addOperand failed for operand (%d)",
-                        sumIn);
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksModel_addOperand failed for operand (%d)", sumIn);
     return false;
   }
 
@@ -224,10 +214,9 @@ bool SimpleSequenceModel::CreateModel() {
   status = ANeuralNetworksModel_addOperand(model_, &float32TensorType);
   uint32_t stateIn = opIdx++;
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksModel_addOperand failed for operand (%d)",
-                        stateIn);
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksModel_addOperand failed for operand (%d)", stateIn);
     return false;
   }
 
@@ -236,24 +225,18 @@ bool SimpleSequenceModel::CreateModel() {
   status = ANeuralNetworksModel_addOperand(model_, &float32TensorType);
   uint32_t ratio = opIdx++;
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksModel_addOperand failed for operand (%d)",
-                        ratio);
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksModel_addOperand failed for operand (%d)", ratio);
     return false;
   }
-  status = ANeuralNetworksModel_setOperandValueFromMemory(model_,
-                                                          ratio,
-                                                          memoryRatio_,
-                                                          0,
-                                                          tensorSize_
-                                                              * sizeof(float));
+  status = ANeuralNetworksModel_setOperandValueFromMemory(
+      model_, ratio, memoryRatio_, 0, tensorSize_ * sizeof(float));
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(
-        ANDROID_LOG_ERROR,
-        LOG_TAG,
-        "ANeuralNetworksModel_setOperandValueFromMemory failed for operand (%d)",
-        ratio);
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
+                        "ANeuralNetworksModel_setOperandValueFromMemory failed "
+                        "for operand (%d)",
+                        ratio);
     return false;
   }
 
@@ -262,10 +245,9 @@ bool SimpleSequenceModel::CreateModel() {
   status = ANeuralNetworksModel_addOperand(model_, &float32TensorType);
   uint32_t sumOut = opIdx++;
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksModel_addOperand failed for operand (%d)",
-                        sumOut);
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksModel_addOperand failed for operand (%d)", sumOut);
     return false;
   }
 
@@ -274,10 +256,9 @@ bool SimpleSequenceModel::CreateModel() {
   status = ANeuralNetworksModel_addOperand(model_, &float32TensorType);
   uint32_t stateOut = opIdx++;
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksModel_addOperand failed for operand (%d)",
-                        stateOut);
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksModel_addOperand failed for operand (%d)", stateOut);
     return false;
   }
 
@@ -287,12 +268,9 @@ bool SimpleSequenceModel::CreateModel() {
       stateIn,
       fusedActivationFuncNone,
   };
-  status = ANeuralNetworksModel_addOperation(model_,
-                                             ANEURALNETWORKS_ADD,
-                                             addInputOperands.size(),
-                                             addInputOperands.data(),
-                                             1,
-                                             &sumOut);
+  status = ANeuralNetworksModel_addOperation(
+      model_, ANEURALNETWORKS_ADD, addInputOperands.size(),
+      addInputOperands.data(), 1, &sumOut);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksModel_addOperation failed for ADD");
@@ -305,12 +283,9 @@ bool SimpleSequenceModel::CreateModel() {
       ratio,
       fusedActivationFuncNone,
   };
-  status = ANeuralNetworksModel_addOperation(model_,
-                                             ANEURALNETWORKS_MUL,
-                                             mulInputOperands.size(),
-                                             mulInputOperands.data(),
-                                             1,
-                                             &stateOut);
+  status = ANeuralNetworksModel_addOperation(
+      model_, ANEURALNETWORKS_MUL, mulInputOperands.size(),
+      mulInputOperands.data(), 1, &stateOut);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksModel_addOperation failed for MUL");
@@ -328,15 +303,11 @@ bool SimpleSequenceModel::CreateModel() {
       sumOut,
       stateOut,
   };
-  status =
-      ANeuralNetworksModel_identifyInputsAndOutputs(model_,
-                                                    modelInputs.size(),
-                                                    modelInputs.data(),
-                                                    modelOutputs.size(),
-                                                    modelOutputs.data());
+  status = ANeuralNetworksModel_identifyInputsAndOutputs(
+      model_, modelInputs.size(), modelInputs.data(), modelOutputs.size(),
+      modelOutputs.data());
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksModel_identifyInputsAndOutputs failed");
     return false;
   }
@@ -346,8 +317,7 @@ bool SimpleSequenceModel::CreateModel() {
   // the finish function is called.
   status = ANeuralNetworksModel_finish(model_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksModel_finish failed");
     return false;
   }
@@ -365,8 +335,7 @@ bool SimpleSequenceModel::CreateCompilation() {
   // Create the ANeuralNetworksCompilation object for the constructed model.
   status = ANeuralNetworksCompilation_create(model_, &compilation_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksCompilation_create failed");
     return false;
   }
@@ -375,8 +344,8 @@ bool SimpleSequenceModel::CreateCompilation() {
   // can make better decisions.
   // Here we prefer to get the answer quickly, so we choose
   // ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER.
-  status = ANeuralNetworksCompilation_setPreference(compilation_,
-                                                    ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER);
+  status = ANeuralNetworksCompilation_setPreference(
+      compilation_, ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksCompilation_setPreference failed");
@@ -386,8 +355,7 @@ bool SimpleSequenceModel::CreateCompilation() {
   // Finish the compilation.
   status = ANeuralNetworksCompilation_finish(compilation_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksCompilation_finish failed");
     return false;
   }
@@ -416,8 +384,7 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
   ANeuralNetworksMemoryDesc* sumDesc = nullptr;
   status = ANeuralNetworksMemoryDesc_create(&sumDesc);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksMemoryDesc_create failed");
     return false;
   }
@@ -450,8 +417,7 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
   // Finish the memory descriptor.
   status = ANeuralNetworksMemoryDesc_finish(sumDesc);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksMemoryDesc_finish failed");
     ANeuralNetworksMemoryDesc_free(sumDesc);
     return false;
@@ -462,17 +428,17 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
   // execution step.
   status = ANeuralNetworksMemory_createFromDesc(sumDesc, &memoryOpaqueSumIn_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksMemory_createFromDesc failed for sum memory #1");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksMemory_createFromDesc failed for sum memory #1");
     ANeuralNetworksMemoryDesc_free(sumDesc);
     return false;
   }
   status = ANeuralNetworksMemory_createFromDesc(sumDesc, &memoryOpaqueSumOut_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksMemory_createFromDesc failed for sum memory #2");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksMemory_createFromDesc failed for sum memory #2");
     ANeuralNetworksMemoryDesc_free(sumDesc);
     return false;
   }
@@ -487,8 +453,7 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
   ANeuralNetworksMemoryDesc* stateDesc = nullptr;
   status = ANeuralNetworksMemoryDesc_create(&stateDesc);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksMemoryDesc_create failed");
     return false;
   }
@@ -521,8 +486,7 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
   // Finish the memory descriptor.
   status = ANeuralNetworksMemoryDesc_finish(stateDesc);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksMemoryDesc_finish failed");
     ANeuralNetworksMemoryDesc_free(stateDesc);
     return false;
@@ -534,18 +498,18 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
   status =
       ANeuralNetworksMemory_createFromDesc(stateDesc, &memoryOpaqueStateIn_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksMemory_createFromDesc failed for state memory #1");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksMemory_createFromDesc failed for state memory #1");
     ANeuralNetworksMemoryDesc_free(stateDesc);
     return false;
   }
   status =
       ANeuralNetworksMemory_createFromDesc(stateDesc, &memoryOpaqueStateOut_);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksMemory_createFromDesc failed for state memory #2");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksMemory_createFromDesc failed for state memory #2");
     ANeuralNetworksMemoryDesc_free(stateDesc);
     return false;
   }
@@ -559,23 +523,18 @@ bool SimpleSequenceModel::CreateOpaqueMemories() {
 /**
  * Dispatch a single computation step of accumulating the geometric progression.
  */
-static bool DispatchSingleStep(ANeuralNetworksCompilation* compilation,
-                              ANeuralNetworksMemory* sumIn,
-                              uint32_t sumInLength,
-                              ANeuralNetworksMemory* stateIn,
-                              uint32_t stateInLength,
-                              ANeuralNetworksMemory* sumOut,
-                              uint32_t sumOutLength,
-                              ANeuralNetworksMemory* stateOut,
-                              uint32_t stateOutLength,
-                              const ANeuralNetworksEvent* waitFor,
-                              ANeuralNetworksEvent** event) {
+static bool DispatchSingleStep(
+    ANeuralNetworksCompilation* compilation, ANeuralNetworksMemory* sumIn,
+    uint32_t sumInLength, ANeuralNetworksMemory* stateIn,
+    uint32_t stateInLength, ANeuralNetworksMemory* sumOut,
+    uint32_t sumOutLength, ANeuralNetworksMemory* stateOut,
+    uint32_t stateOutLength, const ANeuralNetworksEvent* waitFor,
+    ANeuralNetworksEvent** event) {
   // Create an ANeuralNetworksExecution object from the compiled model.
   ANeuralNetworksExecution* execution;
   int32_t status = ANeuralNetworksExecution_create(compilation, &execution);
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksExecution_create failed");
     return false;
   }
@@ -583,64 +542,44 @@ static bool DispatchSingleStep(ANeuralNetworksCompilation* compilation,
   // Set the memory for the sumIn tensor.
   // Note that the index "0" here means the first operand of the modelInputs
   // list {sumIn, stateIn}, which means sumIn.
-  status = ANeuralNetworksExecution_setInputFromMemory(execution,
-                                                       0,
-                                                       nullptr,
-                                                       sumIn,
-                                                       0,
-                                                       sumInLength
-                                                           * sizeof(float));
+  status = ANeuralNetworksExecution_setInputFromMemory(
+      execution, 0, nullptr, sumIn, 0, sumInLength * sizeof(float));
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksExecution_setInputFromMemory failed for sumIn");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksExecution_setInputFromMemory failed for sumIn");
     return false;
   }
 
   // Set the memory for the stateIn tensor.
   // Note that the index "1" here means the first operand of the modelInputs
   // list {sumIn, stateIn}, which means stateIn.
-  status = ANeuralNetworksExecution_setInputFromMemory(execution,
-                                                       1,
-                                                       nullptr,
-                                                       stateIn,
-                                                       0,
-                                                       stateInLength
-                                                           * sizeof(float));
+  status = ANeuralNetworksExecution_setInputFromMemory(
+      execution, 1, nullptr, stateIn, 0, stateInLength * sizeof(float));
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksExecution_setInputFromMemory failed for stateIn");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksExecution_setInputFromMemory failed for stateIn");
     return false;
   }
 
   // Set the sumOut tensor that will be filled by executing the model.
-  status = ANeuralNetworksExecution_setOutputFromMemory(execution,
-                                                        0,
-                                                        nullptr,
-                                                        sumOut,
-                                                        0,
-                                                        sumOutLength
-                                                            * sizeof(float));
+  status = ANeuralNetworksExecution_setOutputFromMemory(
+      execution, 0, nullptr, sumOut, 0, sumOutLength * sizeof(float));
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksExecution_setOutputFromMemory failed for sumOut");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksExecution_setOutputFromMemory failed for sumOut");
     return false;
   }
 
   // Set the stateOut tensor that will be filled by executing the model.
-  status = ANeuralNetworksExecution_setOutputFromMemory(execution,
-                                                        1,
-                                                        nullptr,
-                                                        stateOut,
-                                                        0,
-                                                        stateOutLength
-                                                            * sizeof(float));
+  status = ANeuralNetworksExecution_setOutputFromMemory(
+      execution, 1, nullptr, stateOut, 0, stateOutLength * sizeof(float));
   if (status != ANEURALNETWORKS_NO_ERROR) {
-    __android_log_print(ANDROID_LOG_ERROR,
-                        LOG_TAG,
-                        "ANeuralNetworksExecution_setOutputFromMemory failed for stateOut");
+    __android_log_print(
+        ANDROID_LOG_ERROR, LOG_TAG,
+        "ANeuralNetworksExecution_setOutputFromMemory failed for stateOut");
     return false;
   }
 
@@ -652,11 +591,10 @@ static bool DispatchSingleStep(ANeuralNetworksCompilation* compilation,
     dependencies = &waitFor;
     numDependencies = 1;
   }
-  status = ANeuralNetworksExecution_startComputeWithDependencies(execution,
-                                                                 dependencies,
-                                                                 numDependencies,
-                                                                 0,  // infinite timeout duration
-                                                                 event);
+  status = ANeuralNetworksExecution_startComputeWithDependencies(
+      execution, dependencies, numDependencies,
+      0,  // infinite timeout duration
+      event);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "ANeuralNetworksExecution_compute failed");
@@ -674,8 +612,7 @@ static bool DispatchSingleStep(ANeuralNetworksCompilation* compilation,
  * @param   steps         the number of terms to accumulate
  * @return  computed result, or 0.0f if there is error.
  */
-bool SimpleSequenceModel::Compute(float initialValue,
-                                  uint32_t steps,
+bool SimpleSequenceModel::Compute(float initialValue, uint32_t steps,
                                   float* result) {
   if (!result) {
     return false;
@@ -726,24 +663,16 @@ bool SimpleSequenceModel::Compute(float initialValue,
     stateOutMemory = memoryOpaqueStateOut_;
     stateOutLength = 0;
 
-    // Dispatch a single computation step with a dependency on the previous step, if any.
-    // The actual computation will start once its dependency has finished.
+    // Dispatch a single computation step with a dependency on the previous
+    // step, if any. The actual computation will start once its dependency has
+    // finished.
     const ANeuralNetworksEvent* waitFor = i == 0 ? nullptr : events[i - 1];
-    if (!DispatchSingleStep(compilation_,
-                           sumInMemory,
-                           sumInLength,
-                           stateInMemory,
-                           stateInLength,
-                           sumOutMemory,
-                           sumOutLength,
-                           stateOutMemory,
-                           stateOutLength,
-                           waitFor,
-                           &events[i])) {
-      __android_log_print(ANDROID_LOG_ERROR,
-                          LOG_TAG,
-                          "DispatchSingleStep failed for step %d",
-                          i);
+    if (!DispatchSingleStep(compilation_, sumInMemory, sumInLength,
+                            stateInMemory, stateInLength, sumOutMemory,
+                            sumOutLength, stateOutMemory, stateOutLength,
+                            waitFor, &events[i])) {
+      __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
+                          "DispatchSingleStep failed for step %d", i);
       return false;
     }
 
@@ -757,19 +686,15 @@ bool SimpleSequenceModel::Compute(float initialValue,
   ANeuralNetworksEvent_wait(events.back());
 
   // Get the results.
-  float* outputTensorPtr = reinterpret_cast<float*>(
-      mmap(nullptr,
-           tensorSize_ * sizeof(float),
-           PROT_READ,
-           MAP_SHARED,
-           sumOutFd_,
-           0));
+  float* outputTensorPtr =
+      reinterpret_cast<float*>(mmap(nullptr, tensorSize_ * sizeof(float),
+                                    PROT_READ, MAP_SHARED, sumOutFd_, 0));
   *result = outputTensorPtr[0];
   munmap(outputTensorPtr, tensorSize_ * sizeof(float));
 
   // Cleanup event objects.
   for (auto* event : events) {
-      ANeuralNetworksEvent_free(event);
+    ANeuralNetworksEvent_free(event);
   }
   return true;
 }

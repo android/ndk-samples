@@ -16,9 +16,10 @@
 
 #ifndef NATIVE_AUDIO_AUDIO_RECORDER_H
 #define NATIVE_AUDIO_AUDIO_RECORDER_H
-#include <sys/types.h>
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
+#include <sys/types.h>
+
 #include "audio_common.h"
 #include "buf_manager.h"
 #include "debug_utils.h"

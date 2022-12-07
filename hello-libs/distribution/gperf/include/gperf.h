@@ -24,7 +24,8 @@
  */
 #ifdef __cplusplus
 extern "C"
-#endif // __cplusplus
-uint64_t GetTicks(void);
+#endif  // __cplusplus
+    uint64_t
+    GetTicks(void);
 
-#endif //__GPERF_HPP__
+#endif  //__GPERF_HPP__

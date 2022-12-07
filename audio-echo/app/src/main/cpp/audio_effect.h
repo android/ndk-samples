@@ -18,8 +18,9 @@
 #define EFFECT_PROCESSOR_H
 
 #include <SLES/OpenSLES_Android.h>
-#include <cstdint>
+
 #include <atomic>
+#include <cstdint>
 #include <mutex>
 
 class AudioFormat {

@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <utility>
-#include <queue>
-#include <unistd.h>
-#include <cinttypes>
-#include <camera/NdkCameraManager.h>
 #include "camera_manager.h"
-#include "utils/native_debug.h"
+
+#include <camera/NdkCameraManager.h>
+#include <unistd.h>
+
+#include <cinttypes>
+#include <queue>
+#include <utility>
+
 #include "utils/camera_utils.h"
+#include "utils/native_debug.h"
 
 /**
  * Range of Camera Exposure Time:
@@ -84,7 +87,7 @@ NDKCamera::NDKCamera()
   status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_SENSITIVITY_RANGE, &val);
 
-  if (status == ACAMERA_OK){
+  if (status == ACAMERA_OK) {
     sensitivityRange_.min_ = val.data.i32[0];
     sensitivityRange_.max_ = val.data.i32[1];
 
@@ -189,8 +192,7 @@ bool NDKCamera::MatchCaptureSizeRequest(ANativeWindow* display,
     if (input) continue;
 
     if (format == AIMAGE_FORMAT_YUV_420_888 || format == AIMAGE_FORMAT_JPEG) {
-      DisplayDimension res(entry.data.i32[i + 1],
-                           entry.data.i32[i + 2]);
+      DisplayDimension res(entry.data.i32[i + 1], entry.data.i32[i + 2]);
       if (!disp.IsSameRatio(res)) continue;
       if (format == AIMAGE_FORMAT_YUV_420_888 && foundRes > res) {
         foundIt = true;
@@ -419,15 +421,15 @@ void NDKCamera::UpdateCameraRequestParameter(int32_t code, int64_t val) {
       if (exposureRange_.Supported()) {
         exposureTime_ = val;
         CALL_REQUEST(setEntry_i64(request, ACAMERA_SENSOR_EXPOSURE_TIME, 1,
-                                &exposureTime_));
+                                  &exposureTime_));
       }
       break;
 
     case ACAMERA_SENSOR_SENSITIVITY:
-      if(sensitivityRange_.Supported()) {
+      if (sensitivityRange_.Supported()) {
         sensitivity_ = val;
-        CALL_REQUEST(
-          setEntry_i32(request, ACAMERA_SENSOR_SENSITIVITY, 1, &sensitivity_));
+        CALL_REQUEST(setEntry_i32(request, ACAMERA_SENSOR_SENSITIVITY, 1,
+                                  &sensitivity_));
       }
       break;
     default:
@@ -453,7 +455,8 @@ void NDKCamera::UpdateCameraRequestParameter(int32_t code, int64_t val) {
  *         false camera has not initialized, no value available
  */
 bool NDKCamera::GetExposureRange(int64_t* min, int64_t* max, int64_t* curVal) {
-  if (!exposureRange_.Supported() || !exposureTime_ || !min || !max || !curVal) {
+  if (!exposureRange_.Supported() || !exposureTime_ || !min || !max ||
+      !curVal) {
     return false;
   }
   *min = exposureRange_.min_;
@@ -474,7 +477,8 @@ bool NDKCamera::GetExposureRange(int64_t* min, int64_t* max, int64_t* curVal) {
  */
 bool NDKCamera::GetSensitivityRange(int64_t* min, int64_t* max,
                                     int64_t* curVal) {
-  if (!sensitivityRange_.Supported()|| !sensitivity_ || !min || !max || !curVal) {
+  if (!sensitivityRange_.Supported() || !sensitivity_ || !min || !max ||
+      !curVal) {
     return false;
   }
   *min = static_cast<int64_t>(sensitivityRange_.min_);

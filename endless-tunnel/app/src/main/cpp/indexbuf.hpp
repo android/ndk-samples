@@ -20,18 +20,17 @@
 
 /* Represents an index buffer (IBO). */
 class IndexBuf {
-    public:
-        IndexBuf(GLushort *data, int dataSizeBytes);
-        ~IndexBuf();
+ public:
+  IndexBuf(GLushort *data, int dataSizeBytes);
+  ~IndexBuf();
 
-        void BindBuffer();
-        void UnbindBuffer();
-        int GetCount() { return mCount; }
+  void BindBuffer();
+  void UnbindBuffer();
+  int GetCount() { return mCount; }
 
-    private:
-        GLuint mIbo;
-        int mCount;
+ private:
+  GLuint mIbo;
+  int mCount;
 };
 
 #endif
-

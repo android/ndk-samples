@@ -18,8 +18,10 @@
  *   Demonstrate NDK Camera interface added to android-24
  */
 
-#include <cstdio>
 #include "camera_engine.h"
+
+#include <cstdio>
+
 #include "utils/native_debug.h"
 
 /**
@@ -91,9 +93,10 @@ void CameraEngine::CreateCamera(void) {
   yuvReader_->SetPresentRotation(imageRotation);
   jpgReader_ = new ImageReader(&capture, AIMAGE_FORMAT_JPEG);
   jpgReader_->SetPresentRotation(imageRotation);
-  jpgReader_->RegisterCallback(this, [this](void* ctx, const char* str) -> void {
-    reinterpret_cast<CameraEngine* >(ctx)->OnPhotoTaken(str);
-  });
+  jpgReader_->RegisterCallback(
+      this, [this](void* ctx, const char* str) -> void {
+        reinterpret_cast<CameraEngine*>(ctx)->OnPhotoTaken(str);
+      });
 
   // now we could create session
   camera_->CreateSession(yuvReader_->GetNativeWindow(),

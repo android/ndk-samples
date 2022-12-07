@@ -15,14 +15,15 @@
  *
  */
 #include <android/input.h>
-#include "mathfu/matrix.h"
-#include "mathfu/glsl_mappings.h"
+
 #include "ImageViewEngine.h"
+#include "mathfu/glsl_mappings.h"
+#include "mathfu/matrix.h"
 
 const uint64_t kSwipeThreshold = static_cast<uint64_t>(1000000000);
 const uint32_t kMinDistance = 100;
 const uint32_t kMaxTapDistance = 10;
-const uint32_t kMaxTapTime   = static_cast<uint64_t>(125000000);
+const uint32_t kMaxTapTime = static_cast<uint64_t>(125000000);
 
 void ImageViewEngine::ResetUserEventCache(void) {
   touchStartPos_ = mathfu::vec2(0.0f, 0.0f);
@@ -30,22 +31,21 @@ void ImageViewEngine::ResetUserEventCache(void) {
 }
 
 void ImageViewEngine::ProcessTapEvent(int x, int y) {
-  // Get current display_ size:  the phone is in landscape mode ( in AndroidManifest.xml )
+  // Get current display_ size:  the phone is in landscape mode ( in
+  // AndroidManifest.xml )
   int halfWidth = renderTargetWidth_ / 2;
 
-  if (x > halfWidth - 10  && x < halfWidth + 10)
-    return;
+  if (x > halfWidth - 10 && x < halfWidth + 10) return;
 
-  uint32_t  mask = 1 << (x / halfWidth);
+  uint32_t mask = 1 << (x / halfWidth);
 
-  renderModeBits_ = (renderModeBits_ & mask) ?
-                    (renderModeBits_ & ~mask) :
-                    (renderModeBits_ | mask);
+  renderModeBits_ = (renderModeBits_ & mask) ? (renderModeBits_ & ~mask)
+                                             : (renderModeBits_ | mask);
   UpdateUI();
 }
 
 bool ImageViewEngine::ProcessInputEvent(const AInputEvent* event) {
-  if(AMotionEvent_getPointerCount(event) > 1) {
+  if (AMotionEvent_getPointerCount(event) > 1) {
     ResetUserEventCache();
     LOGE("more than one pointer action");
     return true;
@@ -57,12 +57,12 @@ bool ImageViewEngine::ProcessInputEvent(const AInputEvent* event) {
     return true;
   }
 
-  if(action == AMOTION_EVENT_ACTION_DOWN) {
+  if (action == AMOTION_EVENT_ACTION_DOWN) {
     touchStartPos_.x = AMotionEvent_getX(event, 0);
     touchStartPos_.y = AMotionEvent_getY(event, 0);
     startTime_ = AMotionEvent_getEventTime(event);
     return true;
-  } else if(action == AMOTION_EVENT_ACTION_UP) {
+  } else if (action == AMOTION_EVENT_ACTION_UP) {
     uint64_t endTime = AMotionEvent_getEventTime(event);
     if (endTime - startTime_ > kSwipeThreshold) {
       return true;
@@ -73,9 +73,9 @@ bool ImageViewEngine::ProcessInputEvent(const AInputEvent* event) {
     v2.y = AMotionEvent_getY(event, 0);
 
     v2 = v2 - touchStartPos_;
-    if (endTime - startTime_ < kMaxTapTime  &&
-        v2.Length() < kMaxTapDistance) {
-      LOGI("Detected a tap event, (%f, %f)", touchStartPos_.x, touchStartPos_.y);
+    if (endTime - startTime_ < kMaxTapTime && v2.Length() < kMaxTapDistance) {
+      LOGI("Detected a tap event, (%f, %f)", touchStartPos_.x,
+           touchStartPos_.y);
       ProcessTapEvent(static_cast<int>(touchStartPos_.x),
                       static_cast<int>(touchStartPos_.y));
       return true;
@@ -114,8 +114,7 @@ void ImageViewEngine::EnableWelcomeUI(void) {
   // Default class retrieval
   jclass clazz = jni->GetObjectClass(app_->activity->clazz);
   jmethodID methodID = jni->GetMethodID(clazz, "EnableUI", "(I)V");
-  jni->CallVoidMethod(app_->activity->clazz, methodID,
-                     renderModeBits_);
+  jni->CallVoidMethod(app_->activity->clazz, methodID, renderModeBits_);
 
   app_->activity->vm->DetachCurrentThread();
 }
@@ -126,8 +125,8 @@ void ImageViewEngine::EnableRenderUI(void) {
 
   // Default class retrieval
   jclass clazz = jni->GetObjectClass(app_->activity->clazz);
-  jmethodID methodID = jni->GetMethodID(clazz, "EnableRenderUI",
-                                        "(Ljava/lang/String;)V");
+  jmethodID methodID =
+      jni->GetMethodID(clazz, "EnableRenderUI", "(Ljava/lang/String;)V");
 
   jstring file = jni->NewStringUTF(textures_[textureIdx_]->Name().c_str());
   jni->CallVoidMethod(app_->activity->clazz, methodID, file);
@@ -141,11 +140,10 @@ void ImageViewEngine::UpdateUI(void) {
 
   // Default class retrieval
   jclass clazz = jni->GetObjectClass(app_->activity->clazz);
-  jmethodID methodID = jni->GetMethodID(clazz, "UpdateUI",
-                                        "(ILjava/lang/String;)V");
+  jmethodID methodID =
+      jni->GetMethodID(clazz, "UpdateUI", "(ILjava/lang/String;)V");
   jstring file = jni->NewStringUTF(textures_[textureIdx_]->Name().c_str());
-  jni->CallVoidMethod(app_->activity->clazz, methodID,
-                     renderModeBits_, file);
+  jni->CallVoidMethod(app_->activity->clazz, methodID, renderModeBits_, file);
   jni->DeleteLocalRef(file);
 
   app_->activity->vm->DetachCurrentThread();

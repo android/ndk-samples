@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cstdlib>
 #include "audio_player.h"
+
+#include <cstdlib>
 
 /*
  * Called by OpenSL SimpleBufferQueue for every audio buffer played
@@ -95,8 +96,8 @@ AudioPlayer::AudioPlayer(SampleFormat *sampleFormat, SLEngineItf slEngine)
   assert(sampleFormat);
   sampleInfo_ = *sampleFormat;
 
-  result = (*slEngine)
-               ->CreateOutputMix(slEngine, &outputMixObjectItf_, 0, NULL, NULL);
+  result = (*slEngine)->CreateOutputMix(slEngine, &outputMixObjectItf_, 0, NULL,
+                                        NULL);
   SLASSERT(result);
 
   // realize the output mix
@@ -179,7 +180,7 @@ AudioPlayer::~AudioPlayer() {
   while (devShadowQueue_->front(&buf)) {
     buf->size_ = 0;
     devShadowQueue_->pop();
-    if(buf != &silentBuf_) {
+    if (buf != &silentBuf_) {
       freeQueue_->push(buf);
     }
   }

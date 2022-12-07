@@ -20,6 +20,7 @@
 
 #include <android/native_window.h>
 #include <android_native_app_glue.h>
+
 #include <functional>
 #include <thread>
 
@@ -59,7 +60,7 @@ class CameraEngine {
 
  private:
   void OnPhotoTaken(const char* fileName);
-  int  GetDisplayRotation(void);
+  int GetDisplayRotation(void);
 
   struct android_app* app_;
   ImageFormat savedNativeWinRes_;

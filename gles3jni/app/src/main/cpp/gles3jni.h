@@ -39,7 +39,8 @@
 #define LOG_TAG "GLES3JNI"
 #define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 #if DEBUG
-#define ALOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
+#define ALOGV(...) \
+  __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
 #else
 #define ALOGV(...)
 #endif
@@ -49,9 +50,9 @@
 // Defined in gles3jni.cpp.
 
 #define MAX_INSTANCES_PER_SIDE 16
-#define MAX_INSTANCES   (MAX_INSTANCES_PER_SIDE * MAX_INSTANCES_PER_SIDE)
-#define TWO_PI          (2.0 * M_PI)
-#define MAX_ROT_SPEED   (0.3 * TWO_PI)
+#define MAX_INSTANCES (MAX_INSTANCES_PER_SIDE * MAX_INSTANCES_PER_SIDE)
+#define TWO_PI (2.0 * M_PI)
+#define MAX_ROT_SPEED (0.3 * TWO_PI)
 
 // This demo uses three coordinate spaces:
 // - The model (a quad) is in a [-1 .. 1]^2 space
@@ -66,8 +67,8 @@
 // so vertices go directly from model to clip space.
 
 struct Vertex {
-    GLfloat pos[2];
-    GLubyte rgba[4];
+  GLfloat pos[2];
+  GLubyte rgba[4];
 };
 extern const Vertex QUAD[4];
 
@@ -80,37 +81,37 @@ extern GLuint createProgram(const char* vtxSrc, const char* fragSrc);
 // Interface to the ES2 and ES3 renderers, used by JNI code.
 
 class Renderer {
-public:
-    virtual ~Renderer();
-    void resize(int w, int h);
-    void render();
+ public:
+  virtual ~Renderer();
+  void resize(int w, int h);
+  void render();
 
-protected:
-    Renderer();
+ protected:
+  Renderer();
 
-    // return a pointer to a buffer of MAX_INSTANCES * sizeof(vec2).
-    // the buffer is filled with per-instance offsets, then unmapped.
-    virtual float* mapOffsetBuf() = 0;
-    virtual void unmapOffsetBuf() = 0;
-    // return a pointer to a buffer of MAX_INSTANCES * sizeof(vec4).
-    // the buffer is filled with per-instance scale and rotation transforms.
-    virtual float* mapTransformBuf() = 0;
-    virtual void unmapTransformBuf() = 0;
+  // return a pointer to a buffer of MAX_INSTANCES * sizeof(vec2).
+  // the buffer is filled with per-instance offsets, then unmapped.
+  virtual float* mapOffsetBuf() = 0;
+  virtual void unmapOffsetBuf() = 0;
+  // return a pointer to a buffer of MAX_INSTANCES * sizeof(vec4).
+  // the buffer is filled with per-instance scale and rotation transforms.
+  virtual float* mapTransformBuf() = 0;
+  virtual void unmapTransformBuf() = 0;
 
-    virtual void draw(unsigned int numInstances) = 0;
+  virtual void draw(unsigned int numInstances) = 0;
 
-private:
-    void calcSceneParams(unsigned int w, unsigned int h, float* offsets);
-    void step();
+ private:
+  void calcSceneParams(unsigned int w, unsigned int h, float* offsets);
+  void step();
 
-    unsigned int mNumInstances;
-    float mScale[2];
-    float mAngularVelocity[MAX_INSTANCES];
-    uint64_t mLastFrameNs;
-    float mAngles[MAX_INSTANCES];
+  unsigned int mNumInstances;
+  float mScale[2];
+  float mAngularVelocity[MAX_INSTANCES];
+  uint64_t mLastFrameNs;
+  float mAngles[MAX_INSTANCES];
 };
 
 extern Renderer* createES2Renderer();
 extern Renderer* createES3Renderer();
 
-#endif // GLES3JNI_H
+#endif  // GLES3JNI_H

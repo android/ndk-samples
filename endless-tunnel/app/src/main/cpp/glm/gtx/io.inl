@@ -9,320 +9,269 @@
 
 #include "../matrix.hpp"
 // #include <boost/io/ios_state.hpp> // boost::io::ios_all_saver
-#include <iomanip>                // std::setfill<>, std::fixed, std::setprecision, std::right,
-                                  // std::setw
-#include <ostream>                // std::basic_ostream<>
+#include <iomanip>  // std::setfill<>, std::fixed, std::setprecision, std::right,
+                    // std::setw
+#include <ostream>  // std::basic_ostream<>
 
-namespace glm{
-namespace io
-{
-  
-    /* explicit */ GLM_FUNC_QUALIFIER
-    precision_guard::precision_guard()
-      : precision_  (precision()),
-        value_width_(value_width())
-    {}
+namespace glm {
+namespace io {
 
-    GLM_FUNC_QUALIFIER
-    precision_guard::~precision_guard()
-    {
-      value_width() = value_width_;
-      precision()   = precision_;
-    }
+/* explicit */ GLM_FUNC_QUALIFIER
+precision_guard::precision_guard()
+    : precision_(precision()), value_width_(value_width()) {}
 
-    /* explicit */ GLM_FUNC_QUALIFIER
-    format_guard::format_guard()
-      : order_(order()),
-        cr_   (cr())
-    {}
+GLM_FUNC_QUALIFIER
+precision_guard::~precision_guard() {
+  value_width() = value_width_;
+  precision() = precision_;
+}
 
-    GLM_FUNC_QUALIFIER
-    format_guard::~format_guard()
-    {
-      cr()    = cr_;
-      order() = order_;
-    }
+/* explicit */ GLM_FUNC_QUALIFIER
+format_guard::format_guard() : order_(order()), cr_(cr()) {}
 
-    GLM_FUNC_QUALIFIER unsigned& precision()
-    {
-      static unsigned p(3);
+GLM_FUNC_QUALIFIER
+format_guard::~format_guard() {
+  cr() = cr_;
+  order() = order_;
+}
 
-      return p;
-    }
-    
-    GLM_FUNC_QUALIFIER unsigned& value_width()
-    {
-      static unsigned p(9);
+GLM_FUNC_QUALIFIER unsigned& precision() {
+  static unsigned p(3);
 
-      return p;
-    }
-    
-    GLM_FUNC_QUALIFIER format_guard::order_t& order()
-    {
-      static format_guard::order_t p(format_guard::row_major);
+  return p;
+}
 
-      return p;
-    }
-    
-    GLM_FUNC_QUALIFIER char&
-    cr()
-    {
-      static char p('\n'); return p;
-    }
-    
-    GLM_FUNC_QUALIFIER std::ios_base& column_major(std::ios_base& os)
-    {
-      order() = format_guard::column_major;
-      
-      return os;
-    }
-    
-    GLM_FUNC_QUALIFIER std::ios_base& row_major(std::ios_base& os)
-    {
-      order() = format_guard::row_major;
-      
-      return os;
-    }
+GLM_FUNC_QUALIFIER unsigned& value_width() {
+  static unsigned p(9);
 
-    GLM_FUNC_QUALIFIER std::ios_base& formatted(std::ios_base& os)
-    {
-      cr() = '\n';
-      
-      return os;
-    }
-    
-    GLM_FUNC_QUALIFIER std::ios_base& unformatted(std::ios_base& os)
-    {
-      cr() = ' ';
-      
-      return os;
-    }
-    
-} // namespace io
-namespace detail
-{
-    // functions, inlined (inline)
+  return p;
+}
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tquat<T,P> const& a)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+GLM_FUNC_QUALIFIER format_guard::order_t& order() {
+  static format_guard::order_t p(format_guard::row_major);
 
-      if (cerberus) {
-        // boost::io::ios_all_saver const ias(os);
-      
-        os << std::fixed << std::setprecision(io::precision())
-           << '['
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.w << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.x << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.y << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.z
-           << ']';
-      }
+  return p;
+}
 
-      return os;
-    }
-    
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tvec2<T,P> const& a)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+GLM_FUNC_QUALIFIER char& cr() {
+  static char p('\n');
+  return p;
+}
 
-      if (cerberus) {
-        // boost::io::ios_all_saver const ias(os);
-      
-        os << std::fixed << std::setprecision(io::precision())
-           << '['
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.x << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.y
-           << ']';
-      }
+GLM_FUNC_QUALIFIER std::ios_base& column_major(std::ios_base& os) {
+  order() = format_guard::column_major;
 
-      return os;
-    }
-  
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tvec3<T,P> const& a)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  return os;
+}
 
-      if (cerberus) {
-        // boost::io::ios_all_saver const ias(os);
-      
-        os << std::fixed << std::setprecision(io::precision())
-           << '['
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.x << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.y << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.z
-           << ']';
-      }
+GLM_FUNC_QUALIFIER std::ios_base& row_major(std::ios_base& os) {
+  order() = format_guard::row_major;
 
-      return os;
-    }
+  return os;
+}
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tvec4<T,P> const& a)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+GLM_FUNC_QUALIFIER std::ios_base& formatted(std::ios_base& os) {
+  cr() = '\n';
 
-      if (cerberus) {
-        // boost::io::ios_all_saver const ias(os);
-      
-        os << std::fixed << std::setprecision(io::precision())
-           << '['
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.x << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.y << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.z << ','
-           << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.w
-           << ']';
-      }
+  return os;
+}
 
-      return os;
-    }
+GLM_FUNC_QUALIFIER std::ios_base& unformatted(std::ios_base& os) {
+  cr() = ' ';
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat2x2<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  return os;
+}
 
-      if (cerberus) {
-        
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << ']';
-      }
+}  // namespace io
+namespace detail {
+// functions, inlined (inline)
 
-      return os;
-    }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tquat<T, P> const& a) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat2x3<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  if (cerberus) {
+    // boost::io::ios_all_saver const ias(os);
 
-      if (cerberus) {
+    os << std::fixed << std::setprecision(io::precision()) << '[' << std::right
+       << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.w << ','
+       << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width())
+       << a.x << ',' << std::right << std::setfill<CTy>(' ')
+       << std::setw(io::value_width()) << a.y << ',' << std::right
+       << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.z << ']';
+  }
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << ']';
-      }
+  return os;
+}
 
-      return os;
-    }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tvec2<T, P> const& a) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat2x4<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  if (cerberus) {
+    // boost::io::ios_all_saver const ias(os);
 
-      if (cerberus) {
+    os << std::fixed << std::setprecision(io::precision()) << '[' << std::right
+       << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.x << ','
+       << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width())
+       << a.y << ']';
+  }
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << ']';
-      }
+  return os;
+}
 
-      return os;
-    }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tvec3<T, P> const& a) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat3x2<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  if (cerberus) {
+    // boost::io::ios_all_saver const ias(os);
 
-      if (cerberus) {
+    os << std::fixed << std::setprecision(io::precision()) << '[' << std::right
+       << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.x << ','
+       << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width())
+       << a.y << ',' << std::right << std::setfill<CTy>(' ')
+       << std::setw(io::value_width()) << a.z << ']';
+  }
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << io::cr()
-           << ' ' << m[2] << ']';
-      }
+  return os;
+}
 
-      return os;
-    }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tvec4<T, P> const& a) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat3x3<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  if (cerberus) {
+    // boost::io::ios_all_saver const ias(os);
 
-      if (cerberus) {
+    os << std::fixed << std::setprecision(io::precision()) << '[' << std::right
+       << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.x << ','
+       << std::right << std::setfill<CTy>(' ') << std::setw(io::value_width())
+       << a.y << ',' << std::right << std::setfill<CTy>(' ')
+       << std::setw(io::value_width()) << a.z << ',' << std::right
+       << std::setfill<CTy>(' ') << std::setw(io::value_width()) << a.w << ']';
+  }
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << io::cr()
-           << ' ' << m[2] << ']';
-      }
+  return os;
+}
 
-      return os;
-    }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat2x2<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat3x4<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << ']';
+  }
 
-      if (cerberus) {
+  return os;
+}
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << io::cr()
-           << ' ' << m[2] << ']';
-      }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat2x3<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-      return os;
-    }
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << ']';
+  }
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat4x2<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  return os;
+}
 
-      if (cerberus) {
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat2x4<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << io::cr()
-           << ' ' << m[2] << io::cr()
-           << ' ' << m[3] << ']';
-      }
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << ']';
+  }
 
-      return os;
-    }
+  return os;
+}
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat4x3<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat3x2<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-      if (cerberus) {
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << io::cr() << ' '
+       << m[2] << ']';
+  }
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << io::cr()
-           << ' ' << m[2] << io::cr()
-           << ' ' << m[3] << ']';
-      }
+  return os;
+}
 
-      return os;
-    }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat3x3<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-    template <typename CTy, typename CTr, typename T, precision P>
-    GLM_FUNC_QUALIFIER std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>& os, tmat4x4<T,P> const& m)
-    {
-      typename std::basic_ostream<CTy,CTr>::sentry const cerberus(os);
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << io::cr() << ' '
+       << m[2] << ']';
+  }
 
-      if (cerberus) {
+  return os;
+}
 
-        os << io::cr()
-           << '[' << m[0] << io::cr()
-           << ' ' << m[1] << io::cr()
-           << ' ' << m[2] << io::cr()
-           << ' ' << m[3] << ']';
-      }
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat3x4<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
 
-      return os;
-    }
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << io::cr() << ' '
+       << m[2] << ']';
+  }
 
-}//namespace detail
-}//namespace glm
+  return os;
+}
+
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat4x2<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
+
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << io::cr() << ' '
+       << m[2] << io::cr() << ' ' << m[3] << ']';
+  }
+
+  return os;
+}
+
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat4x3<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
+
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << io::cr() << ' '
+       << m[2] << io::cr() << ' ' << m[3] << ']';
+  }
+
+  return os;
+}
+
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_QUALIFIER std::basic_ostream<CTy, CTr>& operator<<(
+    std::basic_ostream<CTy, CTr>& os, tmat4x4<T, P> const& m) {
+  typename std::basic_ostream<CTy, CTr>::sentry const cerberus(os);
+
+  if (cerberus) {
+    os << io::cr() << '[' << m[0] << io::cr() << ' ' << m[1] << io::cr() << ' '
+       << m[2] << io::cr() << ' ' << m[3] << ']';
+  }
+
+  return os;
+}
+
+}  // namespace detail
+}  // namespace glm

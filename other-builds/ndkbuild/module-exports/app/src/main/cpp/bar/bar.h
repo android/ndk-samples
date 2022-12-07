@@ -25,6 +25,6 @@
 #error FOO is not correctly defined here !
 #endif
 
-extern int  bar(int  x);
+extern int bar(int x);
 
 #endif /* BAR_H */

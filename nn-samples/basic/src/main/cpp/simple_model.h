@@ -17,8 +17,9 @@
 #ifndef NNAPI_SIMPLE_MODEL_H
 #define NNAPI_SIMPLE_MODEL_H
 
-#include <android/asset_manager_jni.h>
 #include <android/NeuralNetworks.h>
+#include <android/asset_manager_jni.h>
+
 #include <vector>
 
 #define FLOAT_EPISILON (1e-6)
@@ -38,26 +39,26 @@
  *
  */
 class SimpleModel {
-public:
-    explicit SimpleModel(AAsset* asset);
-    ~SimpleModel();
+ public:
+  explicit SimpleModel(AAsset *asset);
+  ~SimpleModel();
 
-    bool CreateCompiledModel();
-    bool Compute(float inputValue1, float inputValue2, float *result);
+  bool CreateCompiledModel();
+  bool Compute(float inputValue1, float inputValue2, float *result);
 
-private:
-    ANeuralNetworksModel *model_;
-    ANeuralNetworksCompilation *compilation_;
-    ANeuralNetworksMemory *memoryModel_;
-    ANeuralNetworksMemory *memoryInput2_;
-    ANeuralNetworksMemory *memoryOutput_;
+ private:
+  ANeuralNetworksModel *model_;
+  ANeuralNetworksCompilation *compilation_;
+  ANeuralNetworksMemory *memoryModel_;
+  ANeuralNetworksMemory *memoryInput2_;
+  ANeuralNetworksMemory *memoryOutput_;
 
-    uint32_t dimLength_;
-    uint32_t tensorSize_;
+  uint32_t dimLength_;
+  uint32_t tensorSize_;
 
-    std::vector<float> inputTensor1_;
-    int inputTensor2Fd_;
-    int outputTensorFd_;
+  std::vector<float> inputTensor1_;
+  int inputTensor2Fd_;
+  int outputTensorFd_;
 };
 
 #endif  // NNAPI_SIMPLE_MODEL_H

@@ -31,11 +31,12 @@
 // number of tunnel sections to render ahead
 #define RENDER_TUNNEL_SECTION_COUNT 4
 
-// An obstacle is a grid of boxes. This indicates how many boxes by how many boxes this grid is.
+// An obstacle is a grid of boxes. This indicates how many boxes by how many
+// boxes this grid is.
 #define OBS_GRID_SIZE 5
 
 // This is how wide each of the grid cells are
-#define OBS_CELL_SIZE ((2*TUNNEL_HALF_W)/(float)OBS_GRID_SIZE)
+#define OBS_CELL_SIZE ((2 * TUNNEL_HALF_W) / (float)OBS_GRID_SIZE)
 
 // size of each obstacle box
 #define OBS_BOX_SIZE (0.8f * OBS_CELL_SIZE)
@@ -43,7 +44,8 @@
 // size of bonus box
 #define OBS_BONUS_SIZE (0.3f * OBS_CELL_SIZE)
 
-// at what distance (in tunnel sections) from the start position do obstacles start to appear?
+// at what distance (in tunnel sections) from the start position do obstacles
+// start to appear?
 #define OBS_START_SECTION 4
 
 // once a tunnel section is this far behind the player, delete it
@@ -67,8 +69,8 @@
 #define PLAYER_MAX_Z TUNNEL_HALF_H - 1.0f
 #define PLAYER_MIN_Z -(PLAYER_MAX_Z)
 
-// touch control sensivity (ship displacement caused by dragging the screen by a length
-// equivalent to its height).
+// touch control sensivity (ship displacement caused by dragging the screen by a
+// length equivalent to its height).
 #define TOUCH_CONTROL_SENSIVITY (TUNNEL_HALF_W * 5)
 
 // joystick control sensivity (maximum velocity attained per axis)
@@ -81,7 +83,6 @@
 #define SCORE_POS_X 0.15f
 #define SCORE_POS_Y 0.92f
 #define SCORE_FONT_SCALE 0.8f
-
 
 // scale of the signs that appear onscreen
 #define SIGN_FONT_SCALE 0.9f
@@ -101,7 +102,8 @@
 #define LIFE_ICON_SCALE 0.004f
 #define LIFE_LINE_WIDTH 3
 
-// where do we start drawing the life icons? (negative to mean counting from right side of screen)
+// where do we start drawing the life icons? (negative to mean counting from
+// right side of screen)
 #define LIFE_POS_X -0.4f
 #define LIFE_POS_Y SCORE_POS_Y
 #define LIFE_SPACING_X 0.08f
@@ -114,13 +116,16 @@
 #define BONUS_POINTS 50
 
 // roll speeds for each level (how fast the chamber turns)
-#define ROLL_SPEEDS { 0.0f, 0.1f, 0.0f, -0.1f, 0.0f, 0.2f, 0.0f, -0.2f }
+#define ROLL_SPEEDS \
+  { 0.0f, 0.1f, 0.0f, -0.1f, 0.0f, 0.2f, 0.0f, -0.2f }
 
 // recipes for synthesizing our very advanced sound effects:
 #define TONE_LEVEL_UP "d100 f500. f600. f700. f600. f700. f800."
-#define TONE_CRASHED "a100 d15 f0. a40 d75 f0. a30 f0. a20 f0. a70 d100 f400. a0. a70. a0. a70."
-#define TONE_GAME_OVER "a100 d15 f0. a40 d75 f0. a30 f0. a20 f0. a70 d200 f400. a0. f350 a70. " \
-        "a0. f300 a70. a0. f250 a70. a0. f200 a70."
+#define TONE_CRASHED \
+  "a100 d15 f0. a40 d75 f0. a30 f0. a20 f0. a70 d100 f400. a0. a70. a0. a70."
+#define TONE_GAME_OVER                                                     \
+  "a100 d15 f0. a40 d75 f0. a30 f0. a20 f0. a70 d200 f400. a0. f350 a70. " \
+  "a0. f300 a70. a0. f250 a70. a0. f200 a70."
 #define TONE_AMBIENT_0 "d100 f300."
 #define TONE_AMBIENT_1 "d100 f200."
 
@@ -143,9 +148,9 @@
 // UI transition animation duration
 #define TRANSITION_DURATION 0.25f
 
-// for the purposes of testing for close calls with obstacles, by how much do we move
-// the player to test for collisions?
-#define CLOSE_CALL_CALC_DELTA (OBS_CELL_SIZE*0.2f)
+// for the purposes of testing for close calls with obstacles, by how much do we
+// move the player to test for collisions?
+#define CLOSE_CALL_CALC_DELTA (OBS_CELL_SIZE * 0.2f)
 
 // menu item pulse animation settings
 #define MENUITEM_PULSE_AMOUNT 1.1f
@@ -158,4 +163,3 @@
 #define LEVELS_PER_CHECKPOINT 4
 
 #endif
-

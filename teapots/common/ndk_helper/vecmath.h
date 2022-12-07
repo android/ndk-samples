@@ -18,6 +18,7 @@
 #define VECMATH_H_
 
 #include <cmath>
+
 #include "JNIHelper.h"
 
 namespace ndk_helper {
@@ -604,8 +605,7 @@ class Vec4 {
   }
 
   bool Validate() {
-    if (std::isnan(x_) || std::isnan(y_) ||
-        std::isnan(z_) || std::isnan(w_))
+    if (std::isnan(x_) || std::isnan(y_) || std::isnan(z_) || std::isnan(w_))
       return false;
 
     return true;

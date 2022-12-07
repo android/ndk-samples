@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "jni_interface.h"
-#include "audio_recorder.h"
-#include "audio_player.h"
-#include "audio_effect.h"
-#include "audio_common.h"
-#include <jni.h>
 #include <SLES/OpenSLES_Android.h>
+#include <jni.h>
 #include <sys/types.h>
+
 #include <cassert>
 #include <cstring>
+
+#include "audio_common.h"
+#include "audio_effect.h"
+#include "audio_player.h"
+#include "audio_recorder.h"
+#include "jni_interface.h"
 
 struct EchoAudioEngine {
   SLmilliHertz fastPathSampleRate_;

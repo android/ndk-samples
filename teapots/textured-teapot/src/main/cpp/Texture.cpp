@@ -15,10 +15,12 @@
  */
 
 #include "Texture.h"
+
 #include <GLES3/gl32.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
+
 #include "AssetUtil.h"
 
 #define MODULE_NAME "Teapot::Texture"
@@ -27,42 +29,43 @@
 /**
  * Cubemap and Texture2d implementations for Class Texture.
  */
-class TextureCubemap :public Texture {
-protected:
-    GLuint texId_ = GL_INVALID_VALUE;
-    bool activated_ = false;
+class TextureCubemap : public Texture {
+ protected:
+  GLuint texId_ = GL_INVALID_VALUE;
+  bool activated_ = false;
 
-public:
-    virtual ~TextureCubemap();
-    TextureCubemap(std::vector<std::string>& texFiles,
-                   AAssetManager* assetManager);
-    virtual bool GetActiveSamplerInfo(std::vector<std::string>& names,
-                                      std::vector<GLint>& units);
-    virtual bool Activate(void);
-    virtual GLuint GetTexType();
-    virtual GLuint GetTexId();
+ public:
+  virtual ~TextureCubemap();
+  TextureCubemap(std::vector<std::string>& texFiles,
+                 AAssetManager* assetManager);
+  virtual bool GetActiveSamplerInfo(std::vector<std::string>& names,
+                                    std::vector<GLint>& units);
+  virtual bool Activate(void);
+  virtual GLuint GetTexType();
+  virtual GLuint GetTexId();
 };
 
-class Texture2d :public Texture {
-protected:
-    GLuint texId_ = GL_INVALID_VALUE;
-    bool activated_ = false;
-public:
-    virtual ~Texture2d();
-    // Implement just one texture
-    Texture2d(std::string &texFiles, AAssetManager* assetManager);
-    virtual bool GetActiveSamplerInfo(std::vector<std::string>& names,
-                                      std::vector<GLint>& units);
-    virtual bool Activate(void);
-    virtual GLuint GetTexType();
-    virtual GLuint GetTexId();
+class Texture2d : public Texture {
+ protected:
+  GLuint texId_ = GL_INVALID_VALUE;
+  bool activated_ = false;
+
+ public:
+  virtual ~Texture2d();
+  // Implement just one texture
+  Texture2d(std::string& texFiles, AAssetManager* assetManager);
+  virtual bool GetActiveSamplerInfo(std::vector<std::string>& names,
+                                    std::vector<GLint>& units);
+  virtual bool Activate(void);
+  virtual GLuint GetTexType();
+  virtual GLuint GetTexId();
 };
 
 /**
  * Capability debug string
  */
-static const std::string supportedTextureTypes = "GL_TEXTURE_2D(0x0DE1) GL_TEXTURE_CUBE_MAP(0x8513)";
-
+static const std::string supportedTextureTypes =
+    "GL_TEXTURE_2D(0x0DE1) GL_TEXTURE_CUBE_MAP(0x8513)";
 
 /**
  * Interface implementations
@@ -76,116 +79,112 @@ Texture::~Texture() {}
  * @param assetManager is used to open texture files inside assets
  * @return is the newly created Texture Object
  */
-Texture* Texture::Create( GLuint type, std::vector<std::string>& texFiles,
-                       AAssetManager* assetManager) {
-    if (type == GL_TEXTURE_2D) {
-        return dynamic_cast<Texture*>(new Texture2d(texFiles[0], assetManager));
-    } else if (type == GL_TEXTURE_CUBE_MAP) {
-        return dynamic_cast<Texture*>(new TextureCubemap(texFiles, assetManager));
-    }
+Texture* Texture::Create(GLuint type, std::vector<std::string>& texFiles,
+                         AAssetManager* assetManager) {
+  if (type == GL_TEXTURE_2D) {
+    return dynamic_cast<Texture*>(new Texture2d(texFiles[0], assetManager));
+  } else if (type == GL_TEXTURE_CUBE_MAP) {
+    return dynamic_cast<Texture*>(new TextureCubemap(texFiles, assetManager));
+  }
 
-    LOGE("Unknow texture type %x to created", type);
-    LOGE("Supported Texture Types: %s", supportedTextureTypes.c_str());
-    assert(false);
-    return nullptr;
+  LOGE("Unknow texture type %x to created", type);
+  LOGE("Supported Texture Types: %s", supportedTextureTypes.c_str());
+  assert(false);
+  return nullptr;
 }
 
 void Texture::Delete(Texture* obj) {
-    if(obj == nullptr) {
-        ASSERT(false, "NULL pointer to Texture::Delete() function");
-        return;
-    }
+  if (obj == nullptr) {
+    ASSERT(false, "NULL pointer to Texture::Delete() function");
+    return;
+  }
 
-    GLuint type = obj->GetTexType();
-    if(type == GL_TEXTURE_2D) {
-        Texture2d *d2Instance = dynamic_cast<Texture2d*>(obj);
-        if (d2Instance) {
-            delete d2Instance;
-        } else {
-            ASSERT(false, "Unknown obj type to %s", __FUNCTION__);
-        }
-    } else if(type == GL_TEXTURE_CUBE_MAP) {
-        TextureCubemap *cubemapInstance = dynamic_cast<TextureCubemap*>(obj);
-        if (cubemapInstance) {
-            delete cubemapInstance;
-        } else {
-            ASSERT(false, "Unknown obj type to %s", __FUNCTION__);
-        }
+  GLuint type = obj->GetTexType();
+  if (type == GL_TEXTURE_2D) {
+    Texture2d* d2Instance = dynamic_cast<Texture2d*>(obj);
+    if (d2Instance) {
+      delete d2Instance;
     } else {
-        LOGE("Supported Texture Types: %s", supportedTextureTypes.c_str());
-        ASSERT(false, "Unknow texture type %x to delete", type);
+      ASSERT(false, "Unknown obj type to %s", __FUNCTION__);
     }
+  } else if (type == GL_TEXTURE_CUBE_MAP) {
+    TextureCubemap* cubemapInstance = dynamic_cast<TextureCubemap*>(obj);
+    if (cubemapInstance) {
+      delete cubemapInstance;
+    } else {
+      ASSERT(false, "Unknown obj type to %s", __FUNCTION__);
+    }
+  } else {
+    LOGE("Supported Texture Types: %s", supportedTextureTypes.c_str());
+    ASSERT(false, "Unknow texture type %x to delete", type);
+  }
 }
 
 /**
  * TextureCubemap implementations
  */
 bool TextureCubemap::Activate(void) {
-    assert(texId_ != GL_INVALID_VALUE);
+  assert(texId_ != GL_INVALID_VALUE);
 
-    glBindTexture(texId_, GL_TEXTURE0);
-    glActiveTexture(GL_TEXTURE0 + 0);
-    activated_ = true;
-    return true;
+  glBindTexture(texId_, GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0 + 0);
+  activated_ = true;
+  return true;
 }
 
-GLuint TextureCubemap::GetTexType() {
-    return GL_TEXTURE_CUBE_MAP;
-}
+GLuint TextureCubemap::GetTexType() { return GL_TEXTURE_CUBE_MAP; }
 
 GLuint TextureCubemap::GetTexId() {
-    assert(texId_ != GL_INVALID_VALUE);
-    return texId_;
+  assert(texId_ != GL_INVALID_VALUE);
+  return texId_;
 }
 
-TextureCubemap::TextureCubemap(std::vector<std::string> &files,
-                                    AAssetManager *mgr) {
-    // For Cubemap, we use world normal to sample the textures
-    // so no texture vbo necessary
+TextureCubemap::TextureCubemap(std::vector<std::string>& files,
+                               AAssetManager* mgr) {
+  // For Cubemap, we use world normal to sample the textures
+  // so no texture vbo necessary
 
-    int32_t imgWidth, imgHeight, channelCount;
-    std::vector<uint8_t> fileBits;
+  int32_t imgWidth, imgHeight, channelCount;
+  std::vector<uint8_t> fileBits;
 
-    if (!mgr || files.size() != 6) {
-        assert(false);
-        return;
-    }
+  if (!mgr || files.size() != 6) {
+    assert(false);
+    return;
+  }
 
-    glGenTextures(1, &texId_);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, texId_);
+  glGenTextures(1, &texId_);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, texId_);
 
-    if(texId_ == GL_INVALID_VALUE) {
-        assert(false);
-        return;
-    }
+  if (texId_ == GL_INVALID_VALUE) {
+    assert(false);
+    return;
+  }
 
-    for(GLuint i = 0; i < 6; i++) {
-        fileBits.clear();
-        AssetReadFile(mgr, files[i], fileBits);
+  for (GLuint i = 0; i < 6; i++) {
+    fileBits.clear();
+    AssetReadFile(mgr, files[i], fileBits);
 
-        // tga/bmp files are saved as vertical mirror images ( at least more than half ).
-        stbi_set_flip_vertically_on_load(1);
+    // tga/bmp files are saved as vertical mirror images ( at least more than
+    // half ).
+    stbi_set_flip_vertically_on_load(1);
 
-        uint8_t* imageBits = stbi_load_from_memory(
-            fileBits.data(), fileBits.size(),
-            &imgWidth, &imgHeight, &channelCount, 4);
+    uint8_t* imageBits =
+        stbi_load_from_memory(fileBits.data(), fileBits.size(), &imgWidth,
+                              &imgHeight, &channelCount, 4);
 
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                     0, GL_RGBA,
-                     imgWidth, imgHeight,
-                     0, GL_RGBA,
-                     GL_UNSIGNED_BYTE, imageBits);
-        stbi_image_free(imageBits);
-    }
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, imgWidth,
+                 imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBits);
+    stbi_image_free(imageBits);
+  }
 
-    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT );
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_REPEAT );
+  glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_REPEAT);
 
-    glActiveTexture(GL_TEXTURE0);
-    activated_ = true;
+  glActiveTexture(GL_TEXTURE0);
+  activated_ = true;
 }
 
 /**
@@ -193,11 +192,11 @@ TextureCubemap::TextureCubemap(std::vector<std::string> &files,
  *    clean-up function
  */
 TextureCubemap::~TextureCubemap() {
-    if (texId_!= GL_INVALID_VALUE) {
-        glDeleteTextures(1, &texId_);
-        texId_ = GL_INVALID_VALUE;
-        activated_ =  false;
-    }
+  if (texId_ != GL_INVALID_VALUE) {
+    glDeleteTextures(1, &texId_);
+    texId_ = GL_INVALID_VALUE;
+    activated_ = false;
+  }
 }
 
 /**
@@ -205,94 +204,90 @@ TextureCubemap::~TextureCubemap() {
       so application could configure shader's sampler uniform(s).
   Cubemap just used one sampler at unit 0 with "samplerObj" as its name.
  */
- bool TextureCubemap::GetActiveSamplerInfo(std::vector<std::string>& names,
-                                           std::vector<GLint>& units) {
-    names.clear();
-    names.push_back(std::string("samplerObj"));
-    units.clear();
-    units.push_back(0);
+bool TextureCubemap::GetActiveSamplerInfo(std::vector<std::string>& names,
+                                          std::vector<GLint>& units) {
+  names.clear();
+  names.push_back(std::string("samplerObj"));
+  units.clear();
+  units.push_back(0);
 
-    return true;
+  return true;
 }
 
 /**
  * Texture2D implementation
  */
-Texture2d::Texture2d(std::string& fileName, AAssetManager* assetManager)  {
-    if (!assetManager) {
-        LOGE("AssetManager to Texture2D() could not be null!!!");
-        assert(false);
-        return;
-    }
+Texture2d::Texture2d(std::string& fileName, AAssetManager* assetManager) {
+  if (!assetManager) {
+    LOGE("AssetManager to Texture2D() could not be null!!!");
+    assert(false);
+    return;
+  }
 
-    int32_t imgWidth, imgHeight, channelCount;
-    std::string texName(fileName);
-    std::vector<uint8_t> fileBits;
+  int32_t imgWidth, imgHeight, channelCount;
+  std::string texName(fileName);
+  std::vector<uint8_t> fileBits;
 
-    glGenTextures(1, &texId_);
-    glBindTexture(GL_TEXTURE_2D, texId_);
+  glGenTextures(1, &texId_);
+  glBindTexture(GL_TEXTURE_2D, texId_);
 
-    if(texId_ == GL_INVALID_VALUE) {
-        assert(false);
-        return;
-    }
+  if (texId_ == GL_INVALID_VALUE) {
+    assert(false);
+    return;
+  }
 
-    AssetReadFile(assetManager, texName, fileBits);
+  AssetReadFile(assetManager, texName, fileBits);
 
-    // tga/bmp files are saved as vertical mirror images ( at least more than half ).
-    stbi_set_flip_vertically_on_load(1);
+  // tga/bmp files are saved as vertical mirror images ( at least more than half
+  // ).
+  stbi_set_flip_vertically_on_load(1);
 
-    uint8_t* imageBits = stbi_load_from_memory(
-            fileBits.data(), fileBits.size(),
-            &imgWidth, &imgHeight, &channelCount, 4);
-    glTexImage2D(GL_TEXTURE_2D, 0,  // mip level
-                 GL_RGBA,
-                 imgWidth, imgHeight,
-                 0,                // border color
-                 GL_RGBA, GL_UNSIGNED_BYTE, imageBits);
+  uint8_t* imageBits =
+      stbi_load_from_memory(fileBits.data(), fileBits.size(), &imgWidth,
+                            &imgHeight, &channelCount, 4);
+  glTexImage2D(GL_TEXTURE_2D, 0,  // mip level
+               GL_RGBA, imgWidth, imgHeight,
+               0,  // border color
+               GL_RGBA, GL_UNSIGNED_BYTE, imageBits);
 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glActiveTexture(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0);
 
-    stbi_image_free(imageBits);
+  stbi_image_free(imageBits);
 }
 
 Texture2d::~Texture2d() {
-    if (texId_!= GL_INVALID_VALUE) {
-        glDeleteTextures(1, &texId_);
-        texId_ = GL_INVALID_VALUE;
-    }
-    activated_ = false;
+  if (texId_ != GL_INVALID_VALUE) {
+    glDeleteTextures(1, &texId_);
+    texId_ = GL_INVALID_VALUE;
+  }
+  activated_ = false;
 }
 
 /**
  * Same as the Cubemap::GetActiveSamplerInfo()
  */
 bool Texture2d::GetActiveSamplerInfo(std::vector<std::string>& names,
-                                      std::vector<GLint>& units) {
-    names.clear();
-    names.push_back(std::string("samplerObj"));
-    units.clear();
-    units.push_back(0);
+                                     std::vector<GLint>& units) {
+  names.clear();
+  names.push_back(std::string("samplerObj"));
+  units.clear();
+  units.push_back(0);
 
-    return true;
+  return true;
 }
 
 bool Texture2d::Activate(void) {
-    glBindTexture(texId_, GL_TEXTURE0);
-    glActiveTexture(GL_TEXTURE0 + 0);
-    activated_ = true;
-    return true;
+  glBindTexture(texId_, GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0 + 0);
+  activated_ = true;
+  return true;
 }
 
-GLuint Texture2d::GetTexType() {
-    return GL_TEXTURE_2D;
-}
+GLuint Texture2d::GetTexType() { return GL_TEXTURE_2D; }
 
-GLuint Texture2d::GetTexId() {
-    return texId_;
-}
+GLuint Texture2d::GetTexId() { return texId_; }

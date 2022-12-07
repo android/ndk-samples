@@ -17,12 +17,14 @@
 #ifndef INTERPOLATOR_H_
 #define INTERPOLATOR_H_
 
-#include <jni.h>
 #include <errno.h>
+#include <jni.h>
 #include <time.h>
+
+#include <list>
+
 #include "JNIHelper.h"
 #include "perfMonitor.h"
-#include <list>
 
 namespace ndk_helper {
 
@@ -76,5 +78,5 @@ class Interpolator {
   void Clear();
 };
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper
 #endif /* INTERPOLATOR_H_ */

@@ -20,12 +20,13 @@
 #ifndef GESTUREDETECTOR_H_
 #define GESTUREDETECTOR_H_
 
+#include <android/log.h>
+#include <android/native_window_jni.h>
+#include <android/sensor.h>
+#include <android_native_app_glue.h>
+
 #include <vector>
 
-#include <android/sensor.h>
-#include <android/log.h>
-#include <android_native_app_glue.h>
-#include <android/native_window_jni.h>
 #include "JNIHelper.h"
 #include "vecmath.h"
 
@@ -140,5 +141,5 @@ class DragDetector : public GestureDetector {
   bool GetPointer(Vec2& v);
 };
 
-}  // namespace ndkHelper
+}  // namespace ndk_helper
 #endif /* GESTUREDETECTOR_H_ */

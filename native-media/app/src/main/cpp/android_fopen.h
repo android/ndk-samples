@@ -16,9 +16,9 @@
 
 #ifndef ANDROID_FOPEN_H
 #define ANDROID_FOPEN_H
-#define  __USE_BSD
-#include <stdio.h>
+#define __USE_BSD
 #include <android/asset_manager.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {

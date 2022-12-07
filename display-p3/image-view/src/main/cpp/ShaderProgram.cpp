@@ -14,11 +14,12 @@
  * limitations under the License.
  *
  */
-#include <vector>
-#include "gldebug.h"
-#include "android_debug.h"
 #include "ShaderProgram.h"
 
+#include <vector>
+
+#include "android_debug.h"
+#include "gldebug.h"
 
 static const char gVertexShader[] =
     "#version 300 es                         \n"
@@ -67,7 +68,8 @@ GLuint loadShader(GLenum shaderType, const char* pSource) {
 GLuint ShaderProgram::createProgram(void) {
   return createProgram(gVertexShader, gFragmentShader);
 }
-GLuint ShaderProgram::createProgram(const char* pVertexSource, const char* pFragmentSource) {
+GLuint ShaderProgram::createProgram(const char* pVertexSource,
+                                    const char* pFragmentSource) {
   GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
   if (!vertexShader) {
     return 0;
@@ -100,7 +102,7 @@ GLuint ShaderProgram::createProgram(const char* pVertexSource, const char* pFrag
       ASSERT(false, "Link Program failed");
     } else {
       gvPositionHandle_ = glGetAttribLocation(gProgram_, "vPosition");
-      gvTxtHandle_  = glGetAttribLocation(gProgram_, "vTexture");
+      gvTxtHandle_ = glGetAttribLocation(gProgram_, "vTexture");
     }
   }
 
@@ -111,4 +113,3 @@ GLint ShaderProgram::getSamplerLoc(void) {
   ASSERT(gProgram_, "Shader is not created");
   return glGetUniformLocation(gProgram_, "samplerObj");
 }
-
