@@ -23,6 +23,6 @@ JNI_SRC_PATH := $(SAMPLES_ROOT)/hello-jni/app/src/main/cpp
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := hello-jni
-LOCAL_SRC_FILES := $(JNI_SRC_PATH)/hello-jni.c
+LOCAL_SRC_FILES := $(JNI_SRC_PATH)/hello-jni.cpp
 
 include $(BUILD_SHARED_LIBRARY)
