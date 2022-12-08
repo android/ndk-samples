@@ -13,17 +13,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: set up JDK 11
-      uses: actions/setup-java@v1
+    - uses: actions/setup-java@v1
       with:
         java-version: 11
-
+    - uses: maxim-lobanov/setup-android-tools@v1
+      with:
+        packages: |
+          platforms;android-33
+          ndk;25.1.8937393
+          cmake;3.18.1
+        cache: true
     - uses: actions/setup-python@v4
       with:
         python-version: 3.x
-    - name: setup env
-      run:
-        source .ci_tools/setup_env.sh
+    - uses: android-actions/setup-android@v2
+    - uses: gradle/gradle-build-action@v2
     # Needs to be after "setup env" because we use the clang-format shipped with the NDK.
     - uses: pre-commit/action@v3.0.0
     - name: build samples

@@ -63,7 +63,7 @@ fi
 for d in "${projects[@]}"; do
   pushd ${d} >/dev/null
   echo "Building ${d}"
-  if ! TERM=dumb ./gradlew ${VERBOSITY} clean lint ; then
+  if ! TERM=dumb ./gradlew ${VERBOSITY} lint ; then
     export SAMPLE_CI_RESULT=1
     echo ${d} >> ${LINT_FAILURES}
   fi
