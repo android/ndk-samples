@@ -10,12 +10,9 @@ This app has a very simple library containing a function to add two numbers.
 
 [adder.h](app/src/main/cpp/adder.h):
 ```C++
-#ifndef UNIT_TEST_ADDER_H
-#define UNIT_TEST_ADDER_H
+#pragma once
 
 int add(int a, int b);
-
-#endif  // UNIT_TEST_ADDER_H
 ```
 
 [adder.cpp](app/src/main/cpp/adder.cpp):
