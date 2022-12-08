@@ -37,6 +37,14 @@ android {
     }
     buildFeatures {
         viewBinding true
+        prefab true
+    }
+    packagingOptions {
+        // Libraries that are wrongly included in the junit-gtest AAR that will
+        // end up in our APK if we don't explicitly exclude them.
+        exclude "**/libadder.so"
+        exclude "**/libapptest.so"
+        exclude "**/libc++_shared.so"
     }
 }
 
@@ -46,6 +54,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.test.ext:junit-gtest:1.0.0-alpha01'
+    implementation 'com.android.ndk.thirdparty:googletest:1.11.0-beta-1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
