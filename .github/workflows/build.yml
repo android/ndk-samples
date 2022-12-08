@@ -30,6 +30,6 @@ jobs:
       run: |
         export SAMPLE_CI_RESULT=0
         source .ci_tools/build_samples.sh
-        source .ci_tools/run_samples.sh
         eval "[[ $SAMPLE_CI_RESULT == 0 ]]"
-
+    - name: Run Tests
+      run: .ci_tools/run_tests.sh
