@@ -15,15 +15,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+        binding.sampleText.text = "1 + 2 = " + add(1, 2).toString()
     }
 
     /**
      * A native method that is implemented by the 'unittest' native library,
      * which is packaged with this application.
      */
-    external fun stringFromJNI(): String
+    external fun add(a: Int, b: Int): Int
 
     companion object {
         // Used to load the 'unittest' library on application startup.
