@@ -32,6 +32,7 @@ declare projects=(
     san-angeles
     sensor-graph
     teapots
+    unit-test
     webp
 ##   ndk-build samples
     other-builds/ndkbuild/bitmap-plasma
@@ -109,6 +110,7 @@ declare apks=(
   teapots/more-teapots/build/outputs/apk/debug/more-teapots-debug.apk
   teapots/choreographer-30fps/build/outputs/apk/debug/choreographer-30fps-debug.apk
   teapots/image-decoder/build/outputs/apk/debug/image-decoder-debug.apk
+  unit-test/app/build/outputs/apk/debug/app-debug.apk
   webp/view/build/outputs/apk/debug/view-debug.apk
 
 ## other-builds
