@@ -24,8 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    // Kotlin's Unit type corresponds to void in C/C++.
-    external fun throwsException(): Unit
+    external fun throwsException()
 
     companion object {
         // Used to load the 'exceptions' library on application startup.
