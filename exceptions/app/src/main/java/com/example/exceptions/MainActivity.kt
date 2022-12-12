@@ -15,15 +15,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+        try {
+            throwsException();
+            binding.sampleText.text = "No exception thrown";
+        } catch (e: java.lang.RuntimeException) {
+            binding.sampleText.text = "RuntimeException caught. Message: \"" + e.message + "\"";
+        }
+
     }
 
-    /**
-     * A native method that is implemented by the 'exceptions' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
+    // Kotlin's Unit type corresponds to void in C/C++.
+    external fun throwsException(): Unit
 
     companion object {
         // Used to load the 'exceptions' library on application startup.
