@@ -11,6 +11,7 @@ declare projects=(
     camera
     display-p3
     endless-tunnel
+    exceptions
     gles3jni
     hello-gl2
     hello-vulkan
@@ -83,6 +84,7 @@ declare apks=(
   camera/texture-view/build/outputs/apk/debug/texture-view-debug.apk
   display-p3/image-view/build/outputs/apk/debug/image-view-debug.apk
   endless-tunnel/app/build/outputs/apk/debug/app-debug.apk
+  exceptions/app/build/outputs/apk/debug/app-debug.apk
   gles3jni/app/build/outputs/apk/debug/app-debug.apk
   hello-gl2/app/build/outputs/apk/debug/app-debug.apk
   hello-vulkan/app/build/outputs/apk/debug/app-debug.apk
