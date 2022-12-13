@@ -5,5 +5,4 @@ Android Studio/Gradle DSL References
 | debuggable     | Debugging Java code | bool | true / false |         |
 | ndk.debuggable | Debugging JNI code  | bool | true / false |         |
 
-Notation:\
-dot(".") notation is same as closure ("{}") notation
+Notation: dot(".") notation is same as closure ("{}") notation
