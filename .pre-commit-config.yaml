@@ -11,3 +11,10 @@ repos:
     hooks:
     -   id: check-xml
     -   id: check-yaml
+-   repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.16
+    hooks:
+    -   id: mdformat
+        args: ["--wrap", "80"]
+        additional_dependencies:
+        - mdformat-gfm

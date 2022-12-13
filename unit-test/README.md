@@ -1,14 +1,14 @@
-Unit Test
-=========
+# Unit Test
+
 This Android sample shows how to write unit tests for native code with
 [googletest](https://github.com/google/googletest), and run them on-device.
 
-Writing unit tests
-------------------
+## Writing unit tests
 
 This app has a very simple library containing a function to add two numbers.
 
 [adder.h](app/src/main/cpp/adder.h):
+
 ```C++
 #pragma once
 
@@ -16,13 +16,15 @@ int add(int a, int b);
 ```
 
 [adder.cpp](app/src/main/cpp/adder.cpp):
+
 ```C++
 #include "adder.h"
 
 int add(int a, int b) { return a + b; }
 ```
 
-[adder_test.cpp](app/src/main/cpp/adder_test.cpp) contains a unit test for this function:
+[adder_test.cpp](app/src/main/cpp/adder_test.cpp) contains a unit test for this
+function:
 
 ```C++
 #include "adder.h"
@@ -32,10 +34,11 @@ int add(int a, int b) { return a + b; }
 TEST(adder, adder) { EXPECT_EQ(3, add(1, 2)); }
 ```
 
-Building and running the tests
-------------------------------
+## Building and running the tests
 
-We need to add a library for the test to [CMakeLists.txt](app/src/main/cpp/CMakeLists.txt), which depends on googletest and junit-gtest:
+We need to add a library for the test to
+[CMakeLists.txt](app/src/main/cpp/CMakeLists.txt), which depends on googletest
+and junit-gtest:
 
 ```cmake
 find_package(googletest REQUIRED CONFIG)
@@ -52,7 +55,8 @@ target_link_libraries(app_tests
 )
 ```
 
-We need to add googletest and junit-gtest as dependencies in [app/build.gradle](app/build.gradle). Googletest uses prefab, so we enable that.
+We need to add googletest and junit-gtest as dependencies in
+[app/build.gradle](app/build.gradle). Googletest uses prefab, so we enable that.
 
 ```
     build_features {
@@ -67,7 +71,8 @@ dependencies {
 }
 ```
 
-Finally, we need a wrapper in androidTest, [NativeTests.kt](app/src/androidTest/java/com/example/unittest/NativeTests.kt):
+Finally, we need a wrapper in androidTest,
+[NativeTests.kt](app/src/androidTest/java/com/example/unittest/NativeTests.kt):
 
 ```kotlin
 package com.example.unittest
@@ -81,7 +86,8 @@ import org.junit.runner.RunWith
 class NativeTests
 ```
 
-You can run the test on a phone or emulator as described in the [Android developer documentation](https://developer.android.com/studio/test/test-in-android-studio).
+You can run the test on a phone or emulator as described in the
+[Android developer documentation](https://developer.android.com/studio/test/test-in-android-studio).
 
 Try deliberately breaking the test, like this:
 
@@ -100,35 +106,37 @@ add(1,2)
 Which is: 3
 ```
 
-Screenshot
------------
+## Screenshot
+
 ![screenshot](screenshot.png)
 
-Support
--------
-If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+## Support
 
-Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
+If you've found an error in these samples, please
+[file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+
+Patches are encouraged, and may be submitted by
+[forking this project](https://github.com/googlesamples/android-ndk/fork) and
+submitting a pull request through GitHub. Please see
+[CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
 - [Android Tools Feedbacks](http://tools.android.com/feedback)
 
-License
--------
+## License
+
 Copyright 2022 Google, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
-license agreements.  See the NOTICE file distributed with this work for
-additional information regarding copyright ownership.  The ASF licenses this
-file to you under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License.  You may obtain a copy of
-the License at
+license agreements. See the NOTICE file distributed with this work for
+additional information regarding copyright ownership. The ASF licenses this file
+to you under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
-License for the specific language governing permissions and limitations under
-the License.
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
