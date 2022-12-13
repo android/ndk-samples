@@ -1,14 +1,13 @@
-Exceptions
-==========
+# Exceptions
+
 This Android sample shows how to handle exceptions across the JNI boundary.
 
-Handling native exceptions
---------------------------
+## Handling native exceptions
 
-Native exceptions can be caught in JNI methods and re-thrown in the JVM.
-Because uncaught native exceptions will cause your app to crash, we recommend
-catching **all** exceptions as a fail-safe. You may also want to catch
-instances of `std::exception` or your own exception interface:
+Native exceptions can be caught in JNI methods and re-thrown in the JVM. Because
+uncaught native exceptions will cause your app to crash, we recommend catching
+**all** exceptions as a fail-safe. You may also want to catch instances of
+`std::exception` or your own exception interface:
 
 ```C++
 extern "C" JNIEXPORT void JNICALL
@@ -44,35 +43,37 @@ in the Android platform's libnativehelper, from which
 [exception_helper.cpp](exceptions/app/src/main/cpp/exception_helper.cpp) are
 adapted.
 
-Screenshot
------------
+## Screenshot
+
 ![screenshot](screenshot.png)
 
-Support
--------
-If you've found an error in these samples, please [file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+## Support
 
-Patches are encouraged, and may be submitted by [forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
+If you've found an error in these samples, please
+[file an issue](https://github.com/googlesamples/android-ndk/issues/new).
+
+Patches are encouraged, and may be submitted by
+[forking this project](https://github.com/googlesamples/android-ndk/fork) and
+submitting a pull request through GitHub. Please see
+[CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
 
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
 - [Android Tools Feedbacks](http://tools.android.com/feedback)
 
-License
--------
+## License
+
 Copyright 2022 Google, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
-license agreements.  See the NOTICE file distributed with this work for
-additional information regarding copyright ownership.  The ASF licenses this
-file to you under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License.  You may obtain a copy of
-the License at
+license agreements. See the NOTICE file distributed with this work for
+additional information regarding copyright ownership. The ASF licenses this file
+to you under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
-License for the specific language governing permissions and limitations under
-the License.
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
