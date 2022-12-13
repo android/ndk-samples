@@ -11,11 +11,7 @@ Java_com_example_exceptions_MainActivity_throwsException(JNIEnv* env,
                                                          jobject /* this */) {
   try {
     might_throw();
-  } catch (std::runtime_error e) {
-    // Re-throw with the error message.
-    jniThrowRuntimeException(env, e.what());
-  } catch (std::exception e) {
-    // A more generic exception. We lose the specific message here.
+  } catch (std::exception& e) {
     jniThrowRuntimeException(env, e.what());
   } catch (...) {
     // We don't want any C++ exceptions to cross the JNI boundary, so include a
