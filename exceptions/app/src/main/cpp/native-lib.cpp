@@ -4,12 +4,22 @@
 
 #include "exception_helper.h"
 
+void might_throw() { throw std::runtime_error("A C++ runtime_error"); }
+
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_exceptions_MainActivity_throwsException(JNIEnv* env,
                                                          jobject /* this */) {
   try {
-    throw std::runtime_error("A C++ runtime_error");
+    might_throw();
   } catch (std::runtime_error e) {
+    // Re-throw with the error message.
     jniThrowRuntimeException(env, e.what());
+  } catch (std::exception e) {
+    // A more generic exception. We lose the specific message here.
+    jniThrowRuntimeException(env, e.what());
+  } catch (...) {
+    // We don't want any C++ exceptions to cross the JNI boundary, so include a
+    // catch-all.
+    jniThrowRuntimeException(env, "Catch-all");
   }
 }
