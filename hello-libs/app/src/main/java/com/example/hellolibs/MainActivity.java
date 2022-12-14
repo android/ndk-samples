@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TextView tv = new TextView(this);
-        tv.setText( stringFromJNI() );
+        tv.setText( "The calculation took " + measureTicks() + " ticks" );
         setContentView(tv);
     }
-    public native String  stringFromJNI();
+    public native long  measureTicks();
     static {
         System.loadLibrary("hello-libs");
     }

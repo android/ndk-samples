@@ -1,72 +1,65 @@
-# hello-libs
+# Pre-compiled Libraries
 
-hello-libs is a sample that shows you how to manage 3rd party C/C++ libraries
-with Android Studio.
+This sample shows you how to use pre-compiled 3rd party C/C++ libraries in your
+app.
 
 ## Introduction
 
-This sample uses the
-[Android Studio CMake plugin](http://tools.android.com/tech-docs/external-c-builds)
-with external library support. It demos how to:
-
-- include a pre-built static library (gmath) in your app
-- include a pre-built shared library (gperf) in your app
+This sample uses [CMake](https://developer.android.com/ndk/guides/cmake) with
+external library support. It shows how to include pre-built static libraries
+(gmath and gperf) in your app.
 
 ## Description
 
 The sample includes 2 modules:
 
-- app -- imports a shared library (libgperf.so) and a static library
-  (libgmath.a) from the `distribution` folder
-- gen-libs -- contains the source code and CMake build script for the gmath and
-  gperf example libraries. The resulting binaries are copied into the
-  `distribution` folder. By default, gen-libs module is disabled in
-  setting.gradle and app/build.gradle, so it won't show up in Android Studio
+- **app** -- imports a shared library (libgperf.so) and a static library
+  (libgmath.a) from the `distribution` folder.
+- **gen-libs** -- contains the source code and CMake build script for the gmath
+  and gperf example libraries. The resulting binaries are copied into the
+  `distribution` folder. By default, the gen-libs module is disabled in
+  settings.gradle and app/build.gradle, so it won't show up in Android Studio
   IDE. If re-generating lib is desirable, follow comments inside settings.gradle
   and app/build.gradle to enable this module, generate libs, then disable it
   again to avoid unnecessary confusion.
 
-The main goal of the sample is to demo how to use 3rd party libs, it is not to
-demonstrate lib package generation. Toward that goal, the pre-built libs are
-included in the `distribution` folder.
+The main goal of the sample is to show how to use pre-built 3rd party libraries,
+not to demonstrate how to build them. Thus, the pre-built libs are included in
+the `distribution` folder.
 
 When importing libraries into your app, include the following in your app's
 `CMakeLists.txt` file (in the following order):
 
-- import libraries as static or shared(using `add_library`)
-- configure each library binary location(using `set_target_properties`)
-- configure each library headers location (using `target_include_directories`)
+- Import libraries as static or shared (using `add_library`).
+- Configure each library binary location (using `set_target_properties` and
+  `${ANDROID_ABI}`).
+- Configure each library headers location (using `target_include_directories`).
 
-If you are using Android Gradle Plugin earlier than version 4.0.0, for shared
-libraries, you need to explicitly notify gradle to pack them into APK. One
-simple way is to include the shared lib directory into application's jniLibs
-directory:
+For example, from \[app/src/main/cpp/CMakeLists.txt\]:
 
-- jniLibs.srcDirs = \['../distribution/gperf/lib'\]
+```cmake
+add_library(lib_gmath STATIC IMPORTED)
+set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
+    ${distribution_DIR}/gmath/lib/${ANDROID_ABI}/libgmath.a)
 
-## Pre-requisites
+add_library(lib_gperf SHARED IMPORTED)
+set_target_properties(lib_gperf PROPERTIES IMPORTED_LOCATION
+    ${distribution_DIR}/gperf/lib/${ANDROID_ABI}/libgperf.so)
 
-- Android Studio 3.0.0 with [NDK](https://developer.android.com/ndk/) bundle.
+target_include_directories(hello-libs PRIVATE
+                           ${distribution_DIR}/gmath/include
+                           ${distribution_DIR}/gperf/include)
+```
 
-## Getting Started
+## Re-compiling the libraries
 
-1. [Download Android Studio](http://developer.android.com/sdk/index.html)
-1. Launch Android Studio.
-1. Open the sample directory.
-1. Open *File/Project Structure...*
+To regenerate the two libraries, follow these steps:
 
-- Click *Download* or *Select NDK location*.
-
-1. Click *Tools/Android/Sync Project with Gradle Files*.
-1. Click *Run/Run 'app'*.
-
-Note that if you do want to regenerate the two libraries, follow these steps:
-
-1. in settings.gradle file, enable the line `include :gen-libs`
-1. in app/build.gradle file, enable the line `api project(':gen-libs')`
-1. build the project
-1. undo the first 2 steps
-1. clean up temprorary build files with `rm -fr app/build app/.cxx`
+1. In \[settings.gradle\], enable the line `include :gen-libs`.
+1. In \[app/build.gradle\], enable the line `api project(':gen-libs')`.
+1. Build the project.
+1. Undo the first 2 steps.
+1. Clean up temporary build files with `rm -fr app/build app/.cxx`.
 
 ## Screenshots
 
