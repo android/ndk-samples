@@ -12,6 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+rootProject.name = "Pre-compiled Libraries"
 include ':app'
 
 // To generate libs used in this sample:

@@ -1,7 +1,7 @@
-# hello-libs
+# Pre-compiled Libraries
 
-hello-libs is a sample that shows you how to use pre-compiled 3rd party C/C++
-libraries in your app.
+This sample shows you how to use pre-compiled 3rd party C/C++ libraries in your
+app.
 
 ## Introduction
 
