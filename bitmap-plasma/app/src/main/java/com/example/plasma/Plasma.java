@@ -69,4 +69,9 @@ class PlasmaView extends View {
         // force a redraw, with a different time-based pattern.
         invalidate();
     }
+
+    @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+    }
+
 }
