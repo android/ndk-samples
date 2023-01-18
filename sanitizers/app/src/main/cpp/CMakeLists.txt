@@ -23,6 +23,44 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         native-lib.cpp)
 
+if(SANITIZE)
+if(${SANITIZE} STREQUAL "hwasan")
+    message("Using hwasan")
+    target_compile_options(sanitizers PUBLIC -fsanitize=hwaddress -fno-omit-frame-pointer)
+    set_target_properties(sanitizers PROPERTIES LINK_FLAGS -fsanitize=hwaddress)
+elseif(${SANITIZE} STREQUAL "asan")
+    message("Using asan")
+    target_compile_options(sanitizers PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+    set_target_properties(sanitizers PROPERTIES LINK_FLAGS -fsanitize=address)
+
+    get_filename_component(HINT_PATH ${ANDROID_C_COMPILER} DIRECTORY)
+    set(ARCH_STR ${CMAKE_ANDROID_ARCH})
+    if ("${CMAKE_ANDROID_ARCH_ABI}" STREQUAL "arm64-v8a")
+        set(ARCH_STR "aarch64")
+    elseif ("${CMAKE_ANDROID_ARCH_ABI}" STREQUAL "armeabi")
+        set(ARCH_STR "arm")
+    elseif ("${CMAKE_ANDROID_ARCH_ABI}" STREQUAL "armeabi-v7a")
+        set(ARCH_STR "arm")
+    elseif ("${CMAKE_ANDROID_ARCH_ABI}" STREQUAL "x86")
+        set(ARCH_STR "i686")
+    elseif ("${CMAKE_ANDROID_ARCH_ABI}" STREQUAL "x86_64")
+        set(ARCH_STR "x86_64")
+    endif()
+
+    file(GLOB ASAN_GLOB "${HINT_PATH}/../lib64/clang/*/lib/linux")
+    find_path(ASAN
+            NAMES libclang_rt.asan-${ARCH_STR}-android.so
+            PATHS ${ASAN_GLOB})
+
+    get_filename_component(ASAN_NAME ${ASAN} NAME)
+    set(ASAN_NAME ${CMAKE_SOURCE_DIR}/../../asan/jniLibs/${CMAKE_ANDROID_ARCH_ABI}/${ASAN_NAME})
+
+    add_custom_command(
+            TARGET sanitizers PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${ASAN} ${ASAN_NAME})
+endif()
+endif()
+
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
