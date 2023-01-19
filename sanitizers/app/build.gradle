@@ -40,6 +40,14 @@ android {
                 }
             }
         }
+        ubsan {
+            initWith debug
+            externalNativeBuild {
+                cmake {
+                    arguments "-DSANITIZE=ubsan"
+                }
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
