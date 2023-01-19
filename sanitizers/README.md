@@ -17,8 +17,8 @@ variants.
 
 The runtime libraries and wrapper script are included with the NDK distribution,
 but it hasn't been well-documented how to use them. By using some tricks in
-CMakeLists.txt, we can automatically grab what we need from the NDK and make it
-available to the build.
+[CMakeLists.txt](app/src/main/cpp/CMakeLists.txt), we can automatically grab
+what we need from the NDK and make it available to the build.
 
 ## Hardware-assisted Address Sanitizer (hwasan)
 
@@ -30,7 +30,7 @@ because it has much less RAM overhead.
 For more information, including how to flash a build of Android that supports
 hwasan, refer to the Android developer
 [guide](https://developer.android.com/ndk/guides/hwasan) and the
-[clang documentation](https://clang.llvm.org/docs/HardwareAssistedAddressSanitizerDesign.html)
+[clang documentation](https://clang.llvm.org/docs/HardwareAssistedAddressSanitizerDesign.html).
 
 [native-lib.cpp](app/src/main/cpp/native-lib.cpp) contains a simple
 use-after-free error:
@@ -78,7 +78,7 @@ int k = 0x7fffffff;
 k += 1;
 ```
 
-This triggers a crash when you build an run the ubsan variant, and the logcat
+This triggers a crash when you build and run the ubsan variant, and the logcat
 panel tells you what's going on:
 
 ![ubsan](ubsan.png)
