@@ -1,0 +1,2 @@
+# These are installed by the cmake build.
+libclang_rt.asan-*-android.so
