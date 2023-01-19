@@ -43,12 +43,12 @@ if(SANITIZE)
         message("Using hwasan")
 
         target_compile_options(sanitizers PUBLIC -fsanitize=hwaddress -fno-omit-frame-pointer)
-        set_target_properties(sanitizers PROPERTIES LINK_FLAGS -fsanitize=hwaddress)
+        target_link_options(sanitizers PUBLIC -fsanitize=hwaddress)
     elseif(${SANITIZE} STREQUAL "asan")
         message("Using asan")
 
         target_compile_options(sanitizers PUBLIC -fsanitize=address -fno-omit-frame-pointer)
-        set_target_properties(sanitizers PROPERTIES LINK_FLAGS -fsanitize=address)
+        target_link_options(sanitizers PUBLIC -fsanitize=address)
 
         # Grab libclang_rt.asan-${ARCH_STR}-android.so from the NDK.
         file(GLOB ASAN_GLOB "${HINT_PATH}/../lib64/clang/*/lib/linux")
