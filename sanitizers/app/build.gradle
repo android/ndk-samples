@@ -66,11 +66,6 @@ android {
         viewBinding true
     }
 }
-androidComponents {
-    onVariants(selector().withBuildType("asan"), {
-        packaging.dex.useLegacyPackaging.set(true)
-    })
-}
 
 dependencies {
 
