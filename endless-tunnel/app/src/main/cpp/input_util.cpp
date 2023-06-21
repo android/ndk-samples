@@ -222,7 +222,7 @@ static bool CookEvent_Motion(AInputEvent *event, CookedEventCallback callback) {
   }
 
   ev.motionPointerId = AMotionEvent_getPointerId(event, ptrIndex);
-  ev.motionIsOnScreen = (src == AINPUT_SOURCE_TOUCHSCREEN);
+  ev.motionIsOnScreen = (src & AINPUT_SOURCE_TOUCHSCREEN) != 0;
   ev.motionX = AMotionEvent_getX(event, ptrIndex);
   ev.motionY = AMotionEvent_getY(event, ptrIndex);
 
