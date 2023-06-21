@@ -1,32 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- BEGIN_INCLUDE(manifest) -->
+<?xml version="1.0" encoding="utf-8"?><!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-          android:versionName="1.0">
+    android:versionName="1.0">
 
-  <!-- This .apk has no Java code itself, so set hasCode to false. -->
-  <application
-      android:allowBackup="false"
-      android:fullBackupContent="false"
-      android:icon="@mipmap/ic_launcher"
-      android:label="@string/app_name"
-      android:hasCode="false">
+    <!-- This .apk has no Java code itself, so set hasCode to false. -->
+    <application
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:hasCode="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name">
 
-    <!-- Our activity is the built-in NativeActivity framework class.
-         This will take care of integrating with our NDK code. -->
-    <activity android:name="android.app.NativeActivity"
-              android:label="@string/app_name"
-              android:configChanges="orientation|keyboardHidden"
-        android:exported="true">
-      <!-- Tell NativeActivity the name of our .so -->
-      <meta-data android:name="android.app.lib_name"
-                 android:value="native-activity" />
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-  </application>
+        <!-- Our activity is the built-in NativeActivity framework class.
+             This will take care of integrating with our NDK code. -->
+        <activity
+            android:name="android.app.NativeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="true"
+            android:label="@string/app_name">
+            <!-- Tell NativeActivity the name of our .so -->
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="native-activity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+    </application>
 
-</manifest>
-<!-- END_INCLUDE(manifest) -->
+
+</manifest><!-- END_INCLUDE(manifest) -->
