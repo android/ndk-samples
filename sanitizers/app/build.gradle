@@ -12,6 +12,9 @@ android {
         applicationId "com.example.sanitizers"
         // If you raise minSdk to 23 or higher, make sure you've read the note
         // below about useLegacyPackaging.
+        //
+        // Note that the hwasan build type will override this. See the
+        // androidComponents stanza below.
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -25,8 +28,17 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        // HWASan for devices starting from Android 14. Does no longer require a special system image.
+        // See https://developer.android.com/ndk/guides/hwasan.
         hwasan {
             initWith debug
+            debuggable true
+            packagingOptions {
+                jniLibs {
+                    // Needed for wrap.sh.
+                    useLegacyPackaging = true
+                }
+            }
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_STL=c++_shared", "-DSANITIZE=hwasan"
@@ -85,6 +97,11 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+    androidComponents {
+        beforeVariants(selector().withBuildType("hwasan")) { variantBuilder ->
+            variantBuilder.minSdk = 34
+        }
     }
 }
 
