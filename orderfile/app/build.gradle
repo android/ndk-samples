@@ -12,7 +12,7 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
-        ndkVersion "23.1.7779620"
+        ndkVersion '25.2.9519653'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -38,14 +38,14 @@ android {
     externalNativeBuild {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
-            version '3.18.1'
+            version '3.22.1'
         }
     }
     buildFeatures {
         viewBinding true
     }
     namespace 'com.example.orderfiledemo'
-    ndkVersion '25.1.8937393'
+    ndkVersion '25.2.9519653'
 }
 
 dependencies {
