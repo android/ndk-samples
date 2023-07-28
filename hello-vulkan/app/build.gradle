@@ -19,7 +19,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdk 33
-    ndkVersion '25.1.8937393'
+    ndkVersion '25.2.9519653'
     
     defaultConfig {
         shaders {
@@ -50,13 +50,22 @@ android {
     buildFeatures {
         prefab true
     }
-    
+
     namespace 'com.android.hellovk'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
-    implementation 'androidx.core:core:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.games:games-activity:1.2.2-alpha01'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.games:games-activity:2.1.0-alpha01'
 }
 

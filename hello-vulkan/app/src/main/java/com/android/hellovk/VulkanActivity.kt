@@ -69,6 +69,8 @@ class VulkanActivity : GameActivity() {
         return processed
     }
 
+    // TODO: Migrate to androidx.activity.OnBackPressedCallback.
+    // onBackPressed is deprecated.
     override fun onBackPressed() {
         System.gc()
         System.exit(0)
