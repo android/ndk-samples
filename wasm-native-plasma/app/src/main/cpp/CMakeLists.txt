@@ -16,13 +16,13 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-# build native_app_glue as a static lib
-add_library(native_app_glue STATIC
-    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
-
+## build native_app_glue as a static lib
+#add_library(native_app_glue STATIC
+#    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+#
 # now build app's shared lib
 add_library(native-plasma SHARED
-    plasma.c)
+    native-plasma_generated.c)
 
 # Export ANativeActivity_onCreate(), 
 # Refer to: https://github.com/android-ndk/ndk/issues/381.
@@ -35,6 +35,6 @@ target_include_directories(native-plasma PRIVATE
 # add lib dependencies
 target_link_libraries(native-plasma
     android
-    native_app_glue
+#    native_app_glue
     log
     m)
