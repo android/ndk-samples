@@ -16,12 +16,18 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+# For wasm-ld only
+if (ANDROID_WASM)
+  add_link_options(-Wl,--export=ANativeActivity_onCreate)
+  add_link_options(-Wl,--strip-debug)
+endif()
+
 # build native_app_glue as a static lib
 add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 # now build app's shared lib
-add_library(native-plasma SHARED
+add_executable(native-plasma
     plasma.c)
 
 # Export ANativeActivity_onCreate(), 
@@ -34,7 +40,8 @@ target_include_directories(native-plasma PRIVATE
 
 # add lib dependencies
 target_link_libraries(native-plasma
-    android
+#    android
     native_app_glue
-    log
-    m)
+#    log
+#    m
+    )
