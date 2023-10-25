@@ -190,19 +190,25 @@ typedef struct {
 /* negge: apologies for the global static struct */
 static DisplayStats ds = { 0 };
 
+#define FONT_SCALE (3)
+
 static void bitmap_print(uint16_t *pixels, int row, int stride, uint16_t color,
  const unsigned char *str, const unsigned char font_8x8[][8]) {
-  pixels += 8*row*stride;
+  pixels += 8*FONT_SCALE*row*stride;
   while (*str) {
-    int i, j;
-    for (j = 0; j < 8; j++, pixels += stride) {
-      for (i = 0; i < 8; i++) {
-        if (font_8x8[*str][j] & (1 << (7 - i))) {
-          pixels[i] = color;
+    int i, j, u, v;
+    for (j = 0; j < 8; j++) {
+      for (v = 0; v < FONT_SCALE; v++, pixels += stride) {
+        for (i = 0; i < 8; i++) {
+          for (u = 0; u < FONT_SCALE; u++) {
+            if (font_8x8[*str][j] & (1 << (7 - i))) {
+              pixels[i*FONT_SCALE + u] = color;
+            }
+          }
         }
       }
     }
-    pixels += 8 - 8*stride;
+    pixels += 8*FONT_SCALE*(1 - stride);
     str++;
   }
 }
