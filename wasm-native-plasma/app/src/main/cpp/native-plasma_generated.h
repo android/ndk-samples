@@ -129,8 +129,10 @@ u32 pthread_mutex_unlock(u64);
 u64 read(u32, u64, u64);
 /* import: 'env' 'sin' */
 f64 sin(f64);
+/* import: 'env' 'strlen' */
+u64 strlen(u64);
 /* import: 'env' 'write' */
-// u64 write(u32, u64, u64);
+;
 
 /* export: 'ANativeActivity_onCreate' */
 #define w2c_native0x2Dplasma_ANativeActivity_onCreate ANativeActivity_onCreate
