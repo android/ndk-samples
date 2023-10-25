@@ -213,8 +213,12 @@ static void bitmap_print(uint16_t *pixels, int row, int stride, uint16_t color,
   }
 }
 
+#define STATS_OFFX (0)
+#define STATS_OFFY (150)
+
 static void show_stats(uint16_t *pixels, int stride) {
   char buf[200];
+  pixels += STATS_OFFY*stride + STATS_OFFX;
 #define DSINT(d) ((int)((d) + 0.5))
   sprintf(buf, "frame/s (avg,min,max) = (%i,%i,%i)",
    DSINT(ds.avgFrame), DSINT(ds.minFrame), DSINT(ds.maxFrame));
