@@ -190,7 +190,7 @@ typedef struct {
 /* negge: apologies for the global static struct */
 static DisplayStats ds = { 0 };
 
-#define FONT_SCALE (3)
+#define FONT_SCALE (2)
 
 static void bitmap_print(uint16_t *pixels, int row, int stride, uint16_t color,
  const unsigned char *str, const unsigned char font_8x8[][8]) {

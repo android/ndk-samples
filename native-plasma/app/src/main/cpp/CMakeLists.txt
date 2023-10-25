@@ -16,6 +16,9 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+add_compile_options(-O3)
+add_compile_options(-fno-unroll-loops)
+
 # For wasm-ld only
 if (ANDROID_WASM)
   add_link_options(-Wl,--export=ANativeActivity_onCreate)
@@ -28,7 +31,9 @@ add_library(native_app_glue STATIC
 
 # now build app's shared lib
 add_executable(native-plasma
-    plasma.c)
+    plasma.c
+    standalone-printf.c)
+
 
 # Export ANativeActivity_onCreate(), 
 # Refer to: https://github.com/android-ndk/ndk/issues/381.
