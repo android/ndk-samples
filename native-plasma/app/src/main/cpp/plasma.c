@@ -37,6 +37,9 @@
 /* Set to 1 to optimize memory stores when generating plasma. */
 #define OPTIMIZE_WRITES 1
 
+/* Set to 1 to display statistics over the rendered plasma */
+#define SHOW_STATS (1)
+
 /* Return current time in milliseconds */
 static double now_ms(void) {
   struct timeval tv;
@@ -176,6 +179,47 @@ static void init_tables(void) {
   init_angles();
 }
 
+#if SHOW_STATS
+#include "font.h"
+
+typedef struct {
+  double minRender, maxRender, avgRender;
+  double minFrame, maxFrame, avgFrame;
+} DisplayStats;
+
+/* negge: apologies for the global static struct */
+static DisplayStats ds = { 0 };
+
+static void bitmap_print(uint16_t *pixels, int row, int stride, uint16_t color,
+ const unsigned char *str, const unsigned char font_8x8[][8]) {
+  pixels += 8*row*stride;
+  while (*str) {
+    int i, j;
+    for (j = 0; j < 8; j++, pixels += stride) {
+      for (i = 0; i < 8; i++) {
+        if (font_8x8[*str][j] & (1 << (7 - i))) {
+          pixels[i] = color;
+        }
+      }
+    }
+    pixels += 8 - 8*stride;
+    str++;
+  }
+}
+
+static void show_stats(uint16_t *pixels, int stride) {
+  char buf[200];
+#define DSINT(d) ((int)((d) + 0.5))
+  sprintf(buf, "frame/s (avg,min,max) = (%i,%i,%i)",
+   DSINT(ds.avgFrame), DSINT(ds.minFrame), DSINT(ds.maxFrame));
+  bitmap_print(pixels, 0, stride, 0xffff, buf, FONT_8x8);
+  sprintf(buf, "render time ms (avg,min,max) = (%i,%i,%i)",
+   DSINT(ds.avgRender), DSINT(ds.minRender), DSINT(ds.maxRender));
+  bitmap_print(pixels, 1, stride, 0xffff, buf, FONT_8x8);
+#undef DSINT
+}
+#endif
+
 static void fill_plasma(ANativeWindow_Buffer* buffer, double t) {
   Fixed yt1 = FIXED_FROM_FLOAT(t / 1230.);
   Fixed yt2 = yt1;
@@ -257,6 +301,10 @@ static void fill_plasma(ANativeWindow_Buffer* buffer, double t) {
     // go to next line
     pixels = (uint16_t*)pixels + buffer->stride;
   }
+
+#if SHOW_STATS
+  show_stats((uint16_t *)buffer->bits, buffer->stride);
+#endif
 }
 
 /* simple stats management */
@@ -322,6 +370,15 @@ static void stats_endFrame(Stats* s) {
           "render time ms (avg,min,max) = (%.1f,%.1f,%.1f)\n",
           1000. / avgFrame, 1000. / maxFrame, 1000. / minFrame, avgRender,
           minRender, maxRender);
+
+#if SHOW_STATS
+      ds.minRender = minRender;
+      ds.maxRender = maxRender;
+      ds.avgRender = avgRender;
+      ds.minFrame = 1000. / minFrame;
+      ds.maxFrame = 1000. / maxFrame;
+      ds.avgFrame = 1000. / avgFrame;
+#endif
     }
     s->numFrames = 0;
     s->firstFrame = 0;
