@@ -32,7 +32,7 @@ add_library(native_app_glue STATIC
 # now build app's shared lib
 add_executable(native-plasma
     plasma.c
-    standalone-printf.c)
+    ${WASM_LIBRARY_PATH}/standalone-printf.c)
 
 
 # Export ANativeActivity_onCreate(), 
