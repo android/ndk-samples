@@ -219,14 +219,12 @@ static void bitmap_print(uint16_t *pixels, int row, int stride, uint16_t color,
 static void show_stats(uint16_t *pixels, int stride) {
   char buf[200];
   pixels += STATS_OFFY*stride + STATS_OFFX;
-#define DSINT(d) ((int)((d) + 0.5))
-  sprintf(buf, "frame/s (avg,min,max) = (%i,%i,%i)",
-   DSINT(ds.avgFrame), DSINT(ds.minFrame), DSINT(ds.maxFrame));
+  sprintf(buf, "frame/s (avg,min,max) = (%.1f,%.1f,%.1f)",
+    ds.avgFrame, ds.minFrame, ds.maxFrame);
   bitmap_print(pixels, 0, stride, 0xffff, buf, FONT_8x8);
-  sprintf(buf, "render time ms (avg,min,max) = (%i,%i,%i)",
-   DSINT(ds.avgRender), DSINT(ds.minRender), DSINT(ds.maxRender));
+  sprintf(buf, "render time ms (avg,min,max) = (%.2f,%.2f,%.2f)",
+    ds.avgRender, ds.minRender, ds.maxRender);
   bitmap_print(pixels, 1, stride, 0xffff, buf, FONT_8x8);
-#undef DSINT
 }
 #endif
 
