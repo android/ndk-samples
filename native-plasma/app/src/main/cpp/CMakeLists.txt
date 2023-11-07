@@ -28,8 +28,8 @@ add_link_options(-Wl,--export=ANativeActivity_onCreate)
 add_link_options(-Wl,--strip-debug)
 
 # build native_app_glue as a static lib
-add_library(native_app_glue STATIC
-    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+# Note that this is a cloned version with logging disabled.
+add_library(native_app_glue STATIC android_native_app_glue.c)
 
 # now build app's shared lib
 add_executable(native-plasma
