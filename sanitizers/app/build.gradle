@@ -37,6 +37,12 @@ android {
         asan {
             initWith debug
             debuggable true
+            compileSdk 27
+            packagingOptions {
+                jniLibs {
+                    useLegacyPackaging true
+                }
+            }
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_ARM_MODE=arm", "-DANDROID_STL=c++_shared", "-DSANITIZE=asan"
