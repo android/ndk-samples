@@ -37,7 +37,6 @@ android {
         asan {
             initWith debug
             debuggable true
-            compileSdk 27
             packagingOptions {
                 jniLibs {
                     useLegacyPackaging true
