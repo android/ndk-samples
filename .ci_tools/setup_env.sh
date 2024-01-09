@@ -7,12 +7,12 @@ if [ -f ~/.android/repositories.cfg ]; then
 fi
 
 for version in $(find . -name build.gradle | xargs grep -h compileSdk | sort | uniq | grep -o '[0-9]\+ *$'); do
-    echo y | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-${version}"
+    echo y | sdkmanager "platforms;android-${version}"
 done
 
 for version in $(find . -name build.gradle | xargs grep -h ndkVersion | sort | uniq | cut -d \' -f 2); do
-    echo y | $ANDROID_HOME/tools/bin/sdkmanager "ndk;${version}"
+    echo y | sdkmanager "ndk;${version}"
 done
 
-echo y | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "cmake;3.18.1"
-echo y | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "cmake;3.22.1"
+echo y | sdkmanager "cmake;3.18.1"
+echo y | sdkmanager "cmake;3.22.1"
