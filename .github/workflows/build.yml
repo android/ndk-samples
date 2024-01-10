@@ -24,15 +24,14 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: 3.x
-    - name: setup env
-      run:
-        source .ci_tools/setup_env.sh
-    # Needs to be after "setup env" because we use the clang-format shipped with the NDK.
-    - uses: pre-commit/action@v3.0.0
+
     - name: build samples
       run: |
         export SAMPLE_CI_RESULT=0
         source .ci_tools/build_samples.sh
         source .ci_tools/run_samples.sh
         eval "[[ $SAMPLE_CI_RESULT == 0 ]]"
+
+    # Needs to be run last because we use the clang-format shipped with the NDK.
+    - uses: pre-commit/action@v3.0.0
 
