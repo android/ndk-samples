@@ -54,9 +54,7 @@ class Engine {
 
   ~Engine() {}
 
-  struct android_app* AndroidApp(void) const {
-    return app_;
-  }
+  struct android_app* AndroidApp(void) const { return app_; }
   void StartAnimation(bool start) { animating_ = start; }
   bool IsAnimating(void) const { return animating_; }
   void TerminateDisplay(void) { StartAnimation(false); }

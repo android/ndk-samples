@@ -204,6 +204,6 @@ bool genType<VALTYPE, TYPE>::is_vector() {
 }  // namespace detail
 }  // namespace glm
 
-//#include "type_gentype.inl"
+// #include "type_gentype.inl"
 
 #endif  // glm_core_type_gentype

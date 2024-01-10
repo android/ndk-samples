@@ -29,7 +29,7 @@
 #ifndef glm_core_type_gentype3
 #define glm_core_type_gentype3
 
-//#include "../fwd.hpp"
+// #include "../fwd.hpp"
 #include "type_vec.hpp"
 #ifdef GLM_SWIZZLE
 #if GLM_HAS_ANONYMOUS_UNION

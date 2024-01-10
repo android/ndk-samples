@@ -45,9 +45,7 @@ CameraEngine::~CameraEngine() {
   DeleteCamera();
 }
 
-struct android_app* CameraEngine::AndroidApp(void) const {
-  return app_;
-}
+struct android_app* CameraEngine::AndroidApp(void) const { return app_; }
 
 /**
  * Create a camera object for onboard BACK_FACING camera

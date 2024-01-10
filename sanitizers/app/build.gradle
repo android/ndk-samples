@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.example.sanitizers'
-    ndkVersion '25.1.8937393'
+    ndkVersion '26.1.10909125'
     compileSdk 32
 
     defaultConfig {

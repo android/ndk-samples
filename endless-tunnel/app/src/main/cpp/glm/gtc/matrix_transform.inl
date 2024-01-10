@@ -47,7 +47,7 @@ GLM_FUNC_QUALIFIER detail::tmat4x4<T, P> rotate(detail::tmat4x4<T, P> const& m,
   T a = angle;
 #else
 #pragma message( \
-    "GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+        "GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
   T a = radians(angle);
 #endif
   T c = cos(a);
@@ -85,7 +85,7 @@ GLM_FUNC_QUALIFIER detail::tmat4x4<T, P> rotate_slow(
   T const a = angle;
 #else
 #pragma message( \
-    "GLM: rotate_slow function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+        "GLM: rotate_slow function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
   T const a = radians(angle);
 #endif
   T c = cos(a);
@@ -188,7 +188,7 @@ GLM_FUNC_QUALIFIER detail::tmat4x4<valType, defaultp> perspective(
   valType const rad = fovy;
 #else
 #pragma message( \
-    "GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+        "GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
   valType const rad = glm::radians(fovy);
 #endif
 
@@ -215,7 +215,7 @@ GLM_FUNC_QUALIFIER detail::tmat4x4<valType, defaultp> perspectiveFov(
   valType rad = fov;
 #else
 #pragma message( \
-    "GLM: perspectiveFov function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+        "GLM: perspectiveFov function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
   valType rad = glm::radians(fov);
 #endif
   valType h = glm::cos(valType(0.5) * rad) / glm::sin(valType(0.5) * rad);
@@ -239,7 +239,7 @@ GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> infinitePerspective(T fovy,
   T const range = tan(fovy / T(2)) * zNear;
 #else
 #pragma message( \
-    "GLM: infinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+        "GLM: infinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
   T const range = tan(radians(fovy / T(2))) * zNear;
 #endif
   T left = -range * aspect;
@@ -263,7 +263,7 @@ GLM_FUNC_QUALIFIER detail::tmat4x4<T, defaultp> tweakedInfinitePerspective(
   T range = tan(fovy / T(2)) * zNear;
 #else
 #pragma message( \
-    "GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+        "GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
   T range = tan(radians(fovy / T(2))) * zNear;
 #endif
   T left = -range * aspect;

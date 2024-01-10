@@ -3389,7 +3389,7 @@ _NEON2SSE_INLINE __m128 _MM_INSERT_PS(__m128 vec, __m128 p, const int LANE) {
 
 #endif  // USE_SSE4
 
-#endif  //#ifdef NDEBUG
+#endif  // #ifdef NDEBUG
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Below are some helper functions used either for SSE4 intrinsics "emulation"
@@ -18918,12 +18918,12 @@ poly8x16x2_t vuzpq_p8(poly8x16_t a, poly8x16_t b);  // VUZP.8 q0,q0
 poly16x8x2_t vuzpq_p16(poly16x8_t a, poly16x8_t b);  // VUZP.16 q0,q0
 #define vuzpq_p16 vuzpq_u16
 
-//##############################################################################################
+// ##############################################################################################
 //*********************** Reinterpret cast
-// intrinsics.******************************************
-//##############################################################################################
-// Not a part of oficial NEON instruction set but available in gcc compiler
-// *********************
+//  intrinsics.******************************************
+// ##############################################################################################
+//  Not a part of oficial NEON instruction set but available in gcc compiler
+//  *********************
 poly8x8_t vreinterpret_p8_u32(uint32x2_t t);
 #define vreinterpret_p8_u32
 
