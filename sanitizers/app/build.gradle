@@ -10,6 +10,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.sanitizers"
+        // If you raise minSdk to 23 or higher, make sure you've read the note
+        // below about useLegacyPackaging.
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -37,6 +39,22 @@ android {
         asan {
             initWith debug
             debuggable true
+            packagingOptions {
+                jniLibs {
+                    // Without legacy packaging, the Android package manager
+                    // will not extract the libraries from the APK, and the app
+                    // will instead load them directly from the APK. That saves
+                    // space on disk so is generally preferable, but ASan
+                    // doesn't work in that configuration, so we need to
+                    // opt-out of the new behavior.
+                    //
+                    // Note that this won't actually do anything to the sample
+                    // in its default configuration. The sample uses minSdk 21,
+                    // and legacy packaging is the default for all builds below
+                    // minSdk 23.
+                    useLegacyPackaging true
+                }
+            }
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_ARM_MODE=arm", "-DANDROID_STL=c++_shared", "-DSANITIZE=asan"
