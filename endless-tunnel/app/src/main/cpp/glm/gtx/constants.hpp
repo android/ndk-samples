@@ -28,7 +28,7 @@
 
 #if (defined(GLM_MESSAGES))
 #pragma message( \
-    "GLM: GLM_GTX_constants extension is deprecated, include GLM_GTC_constants (glm/gtc/constants.hpp) instead")
+        "GLM: GLM_GTX_constants extension is deprecated, include GLM_GTC_constants (glm/gtc/constants.hpp) instead")
 #endif
 
 #endif  // GLM_GTX_constants

@@ -29,7 +29,7 @@
 #ifndef glm_core_type_gentype4
 #define glm_core_type_gentype4
 
-//#include "../fwd.hpp"
+// #include "../fwd.hpp"
 #include "setup.hpp"
 #include "type_vec.hpp"
 #ifdef GLM_SWIZZLE

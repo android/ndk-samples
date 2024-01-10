@@ -47,7 +47,7 @@
 #define GLM_PLATFORM_WINDOWS 0x00010000
 #define GLM_PLATFORM_LINUX 0x00020000
 #define GLM_PLATFORM_APPLE 0x00040000
-//#define GLM_PLATFORM_IOS			0x00080000
+// #define GLM_PLATFORM_IOS			0x00080000
 #define GLM_PLATFORM_ANDROID 0x00100000
 #define GLM_PLATFORM_CHROME_NACL 0x00200000
 #define GLM_PLATFORM_UNIX 0x00400000
@@ -81,8 +81,8 @@
 #define GLM_MESSAGE_PLATFORM_DISPLAYED
 #if (GLM_PLATFORM & GLM_PLATFORM_QNXNTO)
 #pragma message("GLM: QNX platform detected")
-//#	elif(GLM_PLATFORM & GLM_PLATFORM_IOS)
-//#		pragma message("GLM: iOS platform detected")
+// #	elif(GLM_PLATFORM & GLM_PLATFORM_IOS)
+// #		pragma message("GLM: iOS platform detected")
 #elif (GLM_PLATFORM & GLM_PLATFORM_APPLE)
 #pragma message("GLM: Apple platform detected")
 #elif (GLM_PLATFORM & GLM_PLATFORM_WINCE)
@@ -484,7 +484,7 @@
 #pragma message("GLM: C++ language undetected")
 #endif  // GLM_MODEL
 #pragma message( \
-    "GLM: #define GLM_FORCE_CXX98, GLM_FORCE_CXX03, GLM_LANG_CXX11 or GLM_FORCE_CXX1Y to force using a specific version of the C++ language")
+        "GLM: #define GLM_FORCE_CXX98, GLM_FORCE_CXX03, GLM_LANG_CXX11 or GLM_FORCE_CXX1Y to force using a specific version of the C++ language")
 #endif  // GLM_MESSAGE
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -616,7 +616,7 @@
 #include <intrin.h>
 #endif
 
-//#if(GLM_ARCH != GLM_ARCH_PURE)
+// #if(GLM_ARCH != GLM_ARCH_PURE)
 #if (GLM_ARCH & GLM_ARCH_AVX2)
 #include <immintrin.h>
 #endif  // GLM_ARCH
@@ -668,7 +668,7 @@ inline __m128 _mm_castsi128_ps(__m128i PI) {
 }
 #endif
 #endif  // GLM_ARCH
-//#endif//(GLM_ARCH != GLM_ARCH_PURE)
+// #endif//(GLM_ARCH != GLM_ARCH_PURE)
 
 #if (defined(GLM_MESSAGES) && !defined(GLM_MESSAGE_ARCH_DISPLAYED))
 #define GLM_MESSAGE_ARCH_DISPLAYED
@@ -686,13 +686,13 @@ inline __m128 _mm_castsi128_ps(__m128i PI) {
 #pragma message("GLM: AVX2 instruction set")
 #endif  // GLM_ARCH
 #pragma message( \
-    "GLM: #define GLM_FORCE_PURE to avoid using platform specific instruction sets")
+        "GLM: #define GLM_FORCE_PURE to avoid using platform specific instruction sets")
 #endif  // GLM_MESSAGE
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Radians
 
-//#define GLM_FORCE_RADIANS
+// #define GLM_FORCE_RADIANS
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Static assert
@@ -757,7 +757,7 @@ inline __m128 _mm_castsi128_ps(__m128i PI) {
 #pragma message("GLM: Swizzling operators enabled")
 #else
 #pragma message( \
-    "GLM: Swizzling operators disabled, #define GLM_SWIZZLE to enable swizzle operators")
+        "GLM: Swizzling operators disabled, #define GLM_SWIZZLE to enable swizzle operators")
 #endif
 #endif  // GLM_MESSAGE
 
@@ -778,12 +778,12 @@ typedef int length_t;
 #define GLM_MESSAGE_FORCE_SIZE_T_LENGTH
 #if defined(GLM_FORCE_SIZE_T_LENGTH)
 #pragma message( \
-    "GLM: .length() returns glm::length_t, a typedef of std::size_t")
+        "GLM: .length() returns glm::length_t, a typedef of std::size_t")
 #else
 #pragma message( \
-    "GLM: .length() returns glm::length_t, a typedef of int following the GLSL specification")
+        "GLM: .length() returns glm::length_t, a typedef of int following the GLSL specification")
 #pragma message( \
-    "GLM: #define GLM_FORCE_SIZE_T_LENGTH for .length() to return a std::size_t")
+        "GLM: #define GLM_FORCE_SIZE_T_LENGTH for .length() to return a std::size_t")
 #endif
 #endif  // GLM_MESSAGE
 

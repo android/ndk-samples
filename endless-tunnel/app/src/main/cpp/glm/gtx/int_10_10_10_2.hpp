@@ -30,7 +30,7 @@
 
 #if (defined(GLM_MESSAGES))
 #pragma message( \
-    "GLM: GLM_GTX_int_10_10_10_2 extension is deprecated, include GLM_GTC_packing (glm/gtc/packing.hpp) instead")
+        "GLM: GLM_GTX_int_10_10_10_2 extension is deprecated, include GLM_GTC_packing (glm/gtc/packing.hpp) instead")
 #endif
 
 namespace glm {

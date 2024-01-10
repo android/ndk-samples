@@ -464,7 +464,7 @@ GLM_FUNC_QUALIFIER detail::fquatSIMD angleAxisSIMD(float const& angle,
   float a(angle);
 #else
 #pragma message( \
-    "GLM: rotateZ function taking degrees as parameters is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+        "GLM: rotateZ function taking degrees as parameters is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
   float a(glm::radians(angle));
 #endif
   float s = glm::sin(a * 0.5f);
