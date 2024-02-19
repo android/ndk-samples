@@ -146,8 +146,8 @@ void HelloVK::initVulkan() {
 }
 
 /*
- *	Create a buffer with specified usage and memory properties
- *	i.e a uniform buffer which uses HOST_COHERENT memory
+ *  Create a buffer with specified usage and memory properties
+ *  i.e a uniform buffer which uses HOST_COHERENT memory
  *  Upon creation, these buffers will list memory requirements which need to be
  *  satisfied by the device in use in order to be created.
  */
