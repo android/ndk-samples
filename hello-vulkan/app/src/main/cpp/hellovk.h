@@ -40,8 +40,10 @@
 
 namespace vkt {
 #define LOG_TAG "hellovkjni"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
 #define VK_CHECK(x)                           \
   do {                                        \
     VkResult err = x;                         \
@@ -96,17 +98,16 @@ class HelloVK {
   void createRenderPass();
   void createDescriptorSetLayout();
   void createGraphicsPipeline();
-  void createFramebuffers();
+  void createFrameBuffers();
   void createCommandPool();
   void createCommandBuffer();
   void createSyncObjects();
-  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-  bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-  bool isDeviceSuitable(VkPhysicalDevice device);
+  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice candidateDevice);
+  bool checkDeviceExtensionSupport(VkPhysicalDevice candidateDevice);
+  bool isDeviceSuitable(VkPhysicalDevice candidateDevice);
   bool checkValidationLayerSupport();
-  std::vector<const char *> getRequiredExtensions(bool enableValidation);
-  SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-  VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+  std::vector<const char *> getRequiredExtensions();
+  SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice candidateDevice);
   VkShaderModule createShaderModule(const std::vector<uint8_t> &code);
   void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
   void recreateSwapChain();
@@ -153,7 +154,7 @@ class HelloVK {
   VkExtent2D swapChainExtent;
   VkExtent2D displaySizeIdentity;
   std::vector<VkImageView> swapChainImageViews;
-  std::vector<VkFramebuffer> swapChainFramebuffers;
+  std::vector<VkFramebuffer> swapChainFrameBuffers;
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
 
@@ -176,7 +177,7 @@ class HelloVK {
 
   uint32_t currentFrame = 0;
   bool orientationChanged = false;
-  VkSurfaceTransformFlagBitsKHR pretransformFlag;
+  VkSurfaceTransformFlagBitsKHR preTransformFlag;
 };
 
 }  // namespace vkt
