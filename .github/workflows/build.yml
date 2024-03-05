@@ -32,6 +32,5 @@ jobs:
         source .ci_tools/run_samples.sh
         eval "[[ $SAMPLE_CI_RESULT == 0 ]]"
 
-    # Needs to be run last because we use the clang-format shipped with the NDK.
     - uses: pre-commit/action@v3.0.0
 
