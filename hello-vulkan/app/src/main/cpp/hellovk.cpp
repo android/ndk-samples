@@ -555,12 +555,13 @@ void HelloVK::createInstance() {
   createInfo.ppEnabledExtensionNames = requiredExtensions.data();
   createInfo.pApplicationInfo = &appInfo;
 
+  VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
+  populateDebugMessengerCreateInfo(debugCreateInfo);
+
   if (enableValidationLayers) {
-    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
     createInfo.enabledLayerCount =
         static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
-    populateDebugMessengerCreateInfo(debugCreateInfo);
     createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
   } else {
     createInfo.enabledLayerCount = 0;
