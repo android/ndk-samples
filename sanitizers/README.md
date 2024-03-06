@@ -23,9 +23,9 @@ what we need from the NDK and make it available to the build.
 ## Hardware-assisted Address Sanitizer (hwasan)
 
 The recommended way to detect memory errors such as use-after-free in native
-code is with hwasan. It uses special hardware features on 64-bit ARM devices,
-and requires a special build of Android. It is preferable to asan (below)
-because it has much less RAM overhead.
+code is with hwasan. It uses special hardware features on 64-bit ARM devices. It
+is preferable to asan (below) because it has much less RAM overhead, and is
+actively supported.
 
 For more information, including how to flash a build of Android that supports
 hwasan, refer to the Android developer
