@@ -194,7 +194,7 @@ static inline uint32_t YUV2RGB(int nY, int nU, int nV) {
   nG = (nG >> 10) & 0xff;
   nB = (nB >> 10) & 0xff;
 
-  return 0xff000000 | (nR << 16) | (nG << 8) | nB;
+  return 0xff000000 | (nB << 16) | (nG << 8) | nR;
 }
 
 /**
@@ -258,8 +258,8 @@ void ImageReader::PresentImage(ANativeWindow_Buffer *buf, AImage *image) {
   AImage_getPlaneRowStride(image, 0, &yStride);
   AImage_getPlaneRowStride(image, 1, &uvStride);
   AImage_getPlaneData(image, 0, &yPixel, &yLen);
-  AImage_getPlaneData(image, 1, &vPixel, &vLen);
-  AImage_getPlaneData(image, 2, &uPixel, &uLen);
+  AImage_getPlaneData(image, 1, &uPixel, &uLen);
+  AImage_getPlaneData(image, 2, &vPixel, &vLen);
   int32_t uvPixelStride;
   AImage_getPlanePixelStride(image, 1, &uvPixelStride);
 
@@ -297,8 +297,8 @@ void ImageReader::PresentImage90(ANativeWindow_Buffer *buf, AImage *image) {
   AImage_getPlaneRowStride(image, 0, &yStride);
   AImage_getPlaneRowStride(image, 1, &uvStride);
   AImage_getPlaneData(image, 0, &yPixel, &yLen);
-  AImage_getPlaneData(image, 1, &vPixel, &vLen);
-  AImage_getPlaneData(image, 2, &uPixel, &uLen);
+  AImage_getPlaneData(image, 1, &uPixel, &uLen);
+  AImage_getPlaneData(image, 2, &vPixel, &vLen);
   int32_t uvPixelStride;
   AImage_getPlanePixelStride(image, 1, &uvPixelStride);
 
@@ -338,8 +338,8 @@ void ImageReader::PresentImage180(ANativeWindow_Buffer *buf, AImage *image) {
   AImage_getPlaneRowStride(image, 0, &yStride);
   AImage_getPlaneRowStride(image, 1, &uvStride);
   AImage_getPlaneData(image, 0, &yPixel, &yLen);
-  AImage_getPlaneData(image, 1, &vPixel, &vLen);
-  AImage_getPlaneData(image, 2, &uPixel, &uLen);
+  AImage_getPlaneData(image, 1, &uPixel, &uLen);
+  AImage_getPlaneData(image, 2, &vPixel, &vLen);
   int32_t uvPixelStride;
   AImage_getPlanePixelStride(image, 1, &uvPixelStride);
 
@@ -380,8 +380,8 @@ void ImageReader::PresentImage270(ANativeWindow_Buffer *buf, AImage *image) {
   AImage_getPlaneRowStride(image, 0, &yStride);
   AImage_getPlaneRowStride(image, 1, &uvStride);
   AImage_getPlaneData(image, 0, &yPixel, &yLen);
-  AImage_getPlaneData(image, 1, &vPixel, &vLen);
-  AImage_getPlaneData(image, 2, &uPixel, &uLen);
+  AImage_getPlaneData(image, 1, &uPixel, &uLen);
+  AImage_getPlaneData(image, 2, &vPixel, &vLen);
   int32_t uvPixelStride;
   AImage_getPlanePixelStride(image, 1, &uvPixelStride);
 
