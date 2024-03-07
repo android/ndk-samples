@@ -13,9 +13,9 @@ project("sanitizers")
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
-
+set(SANITIZERS_LIB ${PROJECT_NAME})
 add_library( # Sets the name of the library.
-        sanitizers
+        ${SANITIZERS_LIB}
 
         # Sets the library as a shared library.
         SHARED
@@ -42,13 +42,13 @@ if(SANITIZE)
     if(${SANITIZE} STREQUAL "hwasan")
         message("Using hwasan")
 
-        target_compile_options(sanitizers PUBLIC -fsanitize=hwaddress -fno-omit-frame-pointer)
-        target_link_options(sanitizers PUBLIC -fsanitize=hwaddress)
+        target_compile_options(${SANITIZERS_LIB} PUBLIC -fsanitize=hwaddress -fno-omit-frame-pointer)
+        target_link_options(${SANITIZERS_LIB} PUBLIC -fsanitize=hwaddress)
     elseif(${SANITIZE} STREQUAL "asan")
         message("Using asan")
 
-        target_compile_options(sanitizers PUBLIC -fsanitize=address -fno-omit-frame-pointer)
-        target_link_options(sanitizers PUBLIC -fsanitize=address)
+        target_compile_options(${SANITIZERS_LIB} PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+        target_link_options(${SANITIZERS_LIB} PUBLIC -fsanitize=address)
 
         # Grab libclang_rt.asan-${ARCH_STR}-android.so from the NDK.
         file(GLOB ASAN_GLOB "${HINT_PATH}/../lib64/clang/*/lib/linux")
@@ -58,7 +58,7 @@ if(SANITIZE)
         get_filename_component(ASAN_NAME ${ASAN} NAME)
         set(ASAN_NAME ${CMAKE_SOURCE_DIR}/../../asan/jniLibs/${CMAKE_ANDROID_ARCH_ABI}/${ASAN_NAME})
         add_custom_command(
-                TARGET sanitizers PRE_BUILD
+                TARGET ${SANITIZERS_LIB} PRE_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy ${ASAN} ${ASAN_NAME})
 
         # Grab the asan wrapper script from the NDK.
@@ -67,13 +67,13 @@ if(SANITIZE)
                 HINTS ${HINT_PATH}/../../../../../wrap.sh)
         set(WRAP_NAME ${CMAKE_SOURCE_DIR}/../../asan/resources/lib/${CMAKE_ANDROID_ARCH_ABI}/wrap.sh)
         add_custom_command(
-                TARGET sanitizers PRE_BUILD
+                TARGET ${SANITIZERS_LIB} PRE_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy ${WRAP} ${WRAP_NAME})
     elseif(${SANITIZE} STREQUAL "ubsan")
         message("Using ubsan")
 
-        target_compile_options(sanitizers PUBLIC -fsanitize=undefined -fno-sanitize-recover=undefined)
-        target_link_options(sanitizers PUBLIC -fsanitize=undefined -fno-sanitize-recover=undefined)
+        target_compile_options(${SANITIZERS_LIB} PUBLIC -fsanitize=undefined -fno-sanitize-recover=undefined)
+        target_link_options(${SANITIZERS_LIB} PUBLIC -fsanitize=undefined -fno-sanitize-recover=undefined)
 
         # Grab libclang_rt.ubsan_standalone-${ARCH_STR}-android.so from the NDK.
         file(GLOB UBSAN_GLOB "${HINT_PATH}/../lib64/clang/*/lib/linux")
@@ -83,7 +83,7 @@ if(SANITIZE)
         get_filename_component(UBSAN_NAME ${UBSAN} NAME)
         set(UBSAN_NAME ${CMAKE_SOURCE_DIR}/../../ubsan/jniLibs/${CMAKE_ANDROID_ARCH_ABI}/${UBSAN_NAME})
         add_custom_command(
-                TARGET sanitizers PRE_BUILD
+                TARGET ${SANITIZERS_LIB} PRE_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy ${UBSAN} ${UBSAN_NAME})
     endif()
 endif()
@@ -106,7 +106,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-        sanitizers
+        ${SANITIZERS_LIB}
 
         # Links the target library to the log library
         # included in the NDK.
