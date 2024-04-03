@@ -15,6 +15,7 @@ declare projects=(
     gles3jni
     hello-gl2
     hello-vulkan
+    hello-hlsl
     hello-jni
     hello-jniCallback
     hello-libs
@@ -88,6 +89,7 @@ declare apks=(
   gles3jni/app/build/outputs/apk/debug/app-debug.apk
   hello-gl2/app/build/outputs/apk/debug/app-debug.apk
   hello-vulkan/app/build/outputs/apk/debug/app-debug.apk
+  hello-hlsl/app/build/outputs/apk/debug/app-debug.apk
   hello-jni/app/build/outputs/apk/debug/app-debug.apk
   hello-jniCallback/app/build/outputs/apk/debug/app-debug.apk
   hello-libs/app/build/outputs/apk/debug/app-debug.apk

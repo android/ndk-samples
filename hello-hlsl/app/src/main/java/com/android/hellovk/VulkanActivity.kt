@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.hellovk
+package com.android.hellohlsl
 
 import android.annotation.SuppressLint
 import android.os.Build.VERSION

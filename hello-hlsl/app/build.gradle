@@ -22,10 +22,7 @@ android {
     ndkVersion '25.2.9519653'
     
     defaultConfig {
-        shaders {
-            glslcArgs.addAll(['-c'])
-        }
-        applicationId 'com.android.hellovk'
+        applicationId 'com.android.hellohlsl'
         minSdk 30
         targetSdk 33
         externalNativeBuild {
@@ -51,7 +48,7 @@ android {
         prefab true
     }
 
-    namespace 'com.android.hellovk'
+    namespace 'com.android.hellohlsl'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -60,6 +57,46 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def vulkanSdkDir = properties.getProperty('vulkansdk.dir')
+
+    task prepareAssetDir {
+        doLast {
+            mkdir "${buildDir}/assets/shaders"
+        }
+    }
+
+    // Built to run on minSdk 30 => Android 11+, so Vulkan API version 1.1 is supported.
+    // See: https://source.android.com/docs/core/graphics/implement-vulkan#versions
+    def targetEnv = 'vulkan1.1'
+
+    // Compile HLSL shaders to SPIR-V with DXC.
+    // Note: Output shader file names (-Fo) match those referenced in hellovk.h.
+    task compileFragShader(type: Exec, dependsOn: prepareAssetDir) {
+        commandLine "${vulkanSdkDir}/bin/dxc",
+                '-T', 'vs_6_7', '-spirv', "-fspv-target-env=${targetEnv}",
+                "${projectDir}/src/main/shaders/shader.vert.hlsl",
+                '-Fo', "${buildDir}/assets/shaders/shader.vert.spv"
+    }
+    task compileVertShader(type: Exec, dependsOn: prepareAssetDir) {
+        commandLine "${vulkanSdkDir}/bin/dxc",
+                '-T', 'ps_6_7', '-spirv', "-fspv-target-env=${targetEnv}",
+                "${projectDir}/src/main/shaders/shader.frag.hlsl",
+                '-Fo', "${buildDir}/assets/shaders/shader.frag.spv"
+    }
+
+    // Add shader directory to asset manager.
+    sourceSets.main.assets.srcDirs += new File("${buildDir}/assets")
+
+    // Compile shaders before packaging assets.
+    android.applicationVariants.all { variant ->
+        variant.mergeAssetsProvider.configure {
+            dependsOn compileFragShader
+            dependsOn compileVertShader
+        }
     }
 }
 

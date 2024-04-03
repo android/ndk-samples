@@ -23,7 +23,7 @@
 
 <resources>
     <!-- Simple strings. -->
-    <string name="hellovk_activity">HelloVk</string>
+    <string name="hellohlsl_activity">HelloHLSL</string>
 
 </resources>
 

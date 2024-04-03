@@ -1,7 +1,7 @@
-# Hello VK
+# Hello HLSL
 
-Hello VK is an Android C++ sample that draws the simple, but traditional Hello
-World Triangle.
+Hello HLSL is an Android C++ sample that draws the simple, but traditional Hello
+World Triangle using HLSL shaders.
 
 Aside from the base functionality the source code also covers convenient
 features such as:
@@ -15,6 +15,7 @@ features such as:
 ## Pre-requisites
 
 - Android Studio 4.2+ with [NDK](https://developer.android.com/ndk/) bundle.
+- Downlaod and install [Vulkan SDK](https://vulkan.lunarg.com/) from LunarG.
 
 ## Getting Started
 
@@ -22,8 +23,14 @@ features such as:
 1. Launch Android Studio.
 1. Open the sample directory.
 1. Open *File/Project Structure...*
+1. Click *Download* or *Select NDK location*.
+1. Open the `local.properties` file.
 
-- Click *Download* or *Select NDK location*.
+   Add the following line to the end of the file:
+
+      `vulkansdk.dir=/path/to/vulkansdk`
+
+    where `/path/to/vulkansdk` should be replaced with the value of the `VULKAN_SDK` environment variable configured on your system in the Vulkan SDK installation steps.
 
 1. Click *File/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
