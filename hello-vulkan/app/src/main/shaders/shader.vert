@@ -10,19 +10,21 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 MVP;
 } ubo;
 
-vec2 positions[3] = vec2[](
-    vec2(0.0, -0.5),
-    vec2(0.5, 0.5),
-    vec2(-0.5, 0.5)
-);
+vec2 positions[9] = vec2[](
+    vec2(-0.984375, -0.99609375),
+    vec2(-0.99999, -0.98828125),
+    vec2(-0.96875, -0.98828125),
 
-vec3 colors[3] = vec3[](
-    vec3(0.67, 0.1, 0.2),
-    vec3(0.67, 0.1, 0.2),
-    vec3(0.67, 0.1, 0.2)
+    vec2(-0.96875, -0.984375),
+    vec2(1., -1.),
+    vec2(1., 1.),
+
+    vec2(-0.96875, -0.984375),
+    vec2(-1., 1.),
+    vec2(1., 1.)
 );
 
 void main() {
     gl_Position = ubo.MVP * vec4(positions[gl_VertexIndex], 0.0, 1.0);
-    fragColor = colors[gl_VertexIndex];
+    fragColor = vec3(0.67, 0.1, 0.2);
 }

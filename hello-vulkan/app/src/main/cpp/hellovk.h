@@ -192,6 +192,7 @@ class HelloVK {
   void createSwapChain();
   void createImageViews();
   void createRenderPass();
+  void createFodderObjects();
   void createDescriptorSetLayout();
   void createGraphicsPipeline();
   void createFramebuffers();
@@ -228,7 +229,7 @@ class HelloVK {
    *
    * The validation layers are not shipped with the APK as they are sizeable.
    */
-  bool enableValidationLayers = false;
+  bool enableValidationLayers = true;
 
   const std::vector<const char *> validationLayers = {
       "VK_LAYER_KHRONOS_validation"};
@@ -254,6 +255,15 @@ class HelloVK {
   std::vector<VkFramebuffer> swapChainFramebuffers;
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
+
+  // To make rendering more expensive
+  static constexpr uint32_t kFodderImageWidth = 1024;
+  static constexpr uint32_t kFodderImageHeight = 2048;
+  std::vector<VkImage> fodderImages;
+  std::vector<VkDeviceMemory> fodderImageMemories;
+  std::vector<VkImageView> fodderImageViews;
+  VkRenderPass fodderRenderPass;
+  VkFramebuffer fodderFramebuffer;
 
   VkQueue graphicsQueue;
   VkQueue presentQueue;
@@ -291,11 +301,13 @@ void HelloVK::initVulkan() {
   createUniformBuffers();
   createDescriptorPool();
   createDescriptorSets();
+  createFodderObjects();
   createGraphicsPipeline();
   createFramebuffers();
   createCommandPool();
   createCommandBuffer();
   createSyncObjects();
+
   initialized = true;
 }
 
@@ -556,43 +568,132 @@ void HelloVK::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
   VK_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo));
 
-  VkRenderPassBeginInfo renderPassInfo{};
-  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-  renderPassInfo.renderPass = renderPass;
-  renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
-  renderPassInfo.renderArea.offset = {0, 0};
-  renderPassInfo.renderArea.extent = swapChainExtent;
 
-  VkViewport viewport{};
-  viewport.width = (float)swapChainExtent.width;
-  viewport.height = (float)swapChainExtent.height;
-  viewport.minDepth = 0.0f;
-  viewport.maxDepth = 1.0f;
-  vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+  QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+  uint32_t queueFamily = indices.graphicsFamily.value();
 
-  VkRect2D scissor{};
-  scissor.extent = swapChainExtent;
-  vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+  std::vector<VkImageMemoryBarrier> fodderImageBarriers(fodderImages.size(), VkImageMemoryBarrier{});
+  for (size_t i = 0; i < fodderImages.size(); ++i)
+  {
+    fodderImageBarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    fodderImageBarriers[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    fodderImageBarriers[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    fodderImageBarriers[i].oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    fodderImageBarriers[i].newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    fodderImageBarriers[i].srcQueueFamilyIndex = queueFamily;
+    fodderImageBarriers[i].dstQueueFamilyIndex = queueFamily;
+    fodderImageBarriers[i].image = fodderImages[i];
+    fodderImageBarriers[i].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    fodderImageBarriers[i].subresourceRange.levelCount = 1;
+    fodderImageBarriers[i].subresourceRange.layerCount = 1;
+  }
+
+  constexpr uint32_t kTriWidth = 16;
+  constexpr uint32_t kTriHeight = 16;
 
   static float grey;
   grey += 0.005f;
   if (grey > 1.0f) {
     grey = 0.0f;
   }
+
   VkClearValue clearColor = {{{grey, grey, grey, 1.0f}}};
+  std::vector<VkClearValue> clearColors(fodderImages.size(), clearColor);
 
-  renderPassInfo.clearValueCount = 1;
-  renderPassInfo.pClearValues = &clearColor;
-  vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
-                       VK_SUBPASS_CONTENTS_INLINE);
-  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    graphicsPipeline);
-  vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                          pipelineLayout, 0, 1, &descriptorSets[currentFrame],
-                          0, nullptr);
+  // Draw a few times to the fodder images.  This is just to exaggerate the cost of the render pass.
+  for (uint32_t i = 0; i < 4; ++i) {
+    vkCmdPipelineBarrier(commandBuffer,
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        0,
+        0, nullptr,
+        0, nullptr,
+        static_cast<uint32_t>(fodderImageBarriers.size()),
+        fodderImageBarriers.data());
 
-  vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-  vkCmdEndRenderPass(commandBuffer);
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = fodderRenderPass;
+    renderPassInfo.framebuffer = fodderFramebuffer;
+    renderPassInfo.renderArea.offset = {0, 0};
+    renderPassInfo.renderArea.extent = {kFodderImageWidth, kFodderImageHeight};
+    renderPassInfo.clearValueCount = (uint32_t)clearColors.size();
+    renderPassInfo.pClearValues = clearColors.data();
+
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
+                         VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                      graphicsPipeline);
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                            pipelineLayout, 0, 1, &descriptorSets[currentFrame],
+                            0, nullptr);
+
+    VkViewport viewport{};
+    viewport.width = (float)kFodderImageWidth;
+    viewport.height = (float)kFodderImageHeight;
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.extent = renderPassInfo.renderArea.extent;
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+    vkCmdDraw(commandBuffer, 9, 1, 0, 0);
+    vkCmdEndRenderPass(commandBuffer);
+  }
+
+  VkImageMemoryBarrier blitBarriers[2] = {
+    fodderImageBarriers[0], fodderImageBarriers[0],
+  };
+  blitBarriers[0].dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+  blitBarriers[0].oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+  blitBarriers[0].newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+
+  blitBarriers[1].srcAccessMask = 0;
+  blitBarriers[1].dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+  blitBarriers[1].oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  blitBarriers[1].newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+  blitBarriers[1].image = swapChainImages[imageIndex];
+
+  vkCmdPipelineBarrier(commandBuffer,
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+      VK_PIPELINE_STAGE_TRANSFER_BIT,
+      0,
+      0, nullptr,
+      0, nullptr,
+      2, blitBarriers);
+
+  VkImageBlit blit{};
+  blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  blit.srcSubresource.layerCount = 1;
+  //blit.srcOffsets[1] = {kFodderImageWidth, kFodderImageHeight, 1};
+  blit.srcOffsets[1] = {kTriWidth, kTriHeight, 1};
+  blit.dstSubresource = blit.srcSubresource;
+  blit.dstOffsets[1] = {(int)swapChainExtent.width, (int)swapChainExtent.height, 1};
+
+  vkCmdBlitImage(commandBuffer, fodderImages[0], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+      swapChainImages[imageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+      1, &blit, VK_FILTER_NEAREST);
+
+  blitBarriers[0].srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+  blitBarriers[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+  blitBarriers[0].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+  blitBarriers[0].newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+  blitBarriers[1].srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+  blitBarriers[1].dstAccessMask = 0;
+  blitBarriers[1].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+  blitBarriers[1].newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+  vkCmdPipelineBarrier(commandBuffer,
+      VK_PIPELINE_STAGE_TRANSFER_BIT,
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+      0,
+      0, nullptr,
+      0, nullptr,
+      2, blitBarriers);
+
   VK_CHECK(vkEndCommandBuffer(commandBuffer));
 }
 
@@ -625,6 +726,13 @@ void HelloVK::cleanup() {
     vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
     vkDestroyFence(device, inFlightFences[i], nullptr);
   }
+  for (size_t i = 0; i < fodderImages.size(); i++) {
+    vkDestroyImageView(device, fodderImageViews[i], nullptr);
+    vkFreeMemory(device, fodderImageMemories[i], nullptr);
+    vkDestroyImage(device, fodderImages[i], nullptr);
+  }
+  vkDestroyFramebuffer(device, fodderFramebuffer, nullptr);
+  vkDestroyRenderPass(device, fodderRenderPass, nullptr);
   vkDestroyCommandPool(device, commandPool, nullptr);
   vkDestroyPipeline(device, graphicsPipeline, nullptr);
   vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
@@ -981,7 +1089,7 @@ void HelloVK::createSwapChain() {
   createInfo.imageColorSpace = surfaceFormat.colorSpace;
   createInfo.imageExtent = displaySizeIdentity;
   createInfo.imageArrayLayers = 1;
-  createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+  createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
   createInfo.preTransform = pretransformFlag;
 
   QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
@@ -1154,7 +1262,7 @@ void HelloVK::createGraphicsPipeline() {
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
 
-  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+  rasterizer.cullMode = VK_CULL_MODE_NONE;
   rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
   rasterizer.depthBiasEnable = VK_FALSE;
@@ -1178,13 +1286,15 @@ void HelloVK::createGraphicsPipeline() {
       VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
   colorBlendAttachment.blendEnable = VK_FALSE;
 
+  std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments(fodderImages.size(), colorBlendAttachment);
+
   VkPipelineColorBlendStateCreateInfo colorBlending{};
   colorBlending.sType =
       VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
   colorBlending.logicOpEnable = VK_FALSE;
   colorBlending.logicOp = VK_LOGIC_OP_COPY;
-  colorBlending.attachmentCount = 1;
-  colorBlending.pAttachments = &colorBlendAttachment;
+  colorBlending.attachmentCount = (uint32_t)colorBlendAttachments.size();
+  colorBlending.pAttachments = colorBlendAttachments.data();
   colorBlending.blendConstants[0] = 0.0f;
   colorBlending.blendConstants[1] = 0.0f;
   colorBlending.blendConstants[2] = 0.0f;
@@ -1220,7 +1330,7 @@ void HelloVK::createGraphicsPipeline() {
   pipelineInfo.pColorBlendState = &colorBlending;
   pipelineInfo.pDynamicState = &dynamicStateCI;
   pipelineInfo.layout = pipelineLayout;
-  pipelineInfo.renderPass = renderPass;
+  pipelineInfo.renderPass = fodderRenderPass;
   pipelineInfo.subpass = 0;
   pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
   pipelineInfo.basePipelineIndex = -1;
@@ -1304,6 +1414,98 @@ void HelloVK::createSyncObjects() {
 
     VK_CHECK(vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]));
   }
+}
+
+void HelloVK::createFodderObjects() {
+
+  VkImageCreateInfo imageCreateInfo{};
+  imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+  imageCreateInfo.flags = 0;
+  imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+  imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+  imageCreateInfo.extent = {kFodderImageWidth, kFodderImageHeight, 1};
+  imageCreateInfo.mipLevels = 1;
+  imageCreateInfo.arrayLayers = 1;
+  imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+  imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+  imageCreateInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+  imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+  imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+  VkImageViewCreateInfo imageViewCreateInfo{};
+  imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+  imageViewCreateInfo.flags = 0;
+  imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+  imageViewCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+  imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  imageViewCreateInfo.subresourceRange.levelCount = 1;
+  imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+  VkAttachmentDescription attachmentDesc{};
+  attachmentDesc.format = VK_FORMAT_R8G8B8A8_UNORM;
+  attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
+  attachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  attachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  attachmentDesc.initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+  attachmentDesc.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+  // Create 4 color attachments
+  constexpr uint32_t kImageCount = 4;
+  fodderImages.resize(kImageCount);
+  fodderImageMemories.resize(kImageCount);
+  fodderImageViews.resize(kImageCount);
+  std::vector<VkAttachmentDescription> colorAttachments(kImageCount, attachmentDesc);
+  std::vector<VkAttachmentReference> colorAttachmentRefs(kImageCount, VkAttachmentReference{});
+
+  for (uint32_t i = 0; i < kImageCount; ++i) {
+    VK_CHECK(vkCreateImage(device, &imageCreateInfo, nullptr, &fodderImages[i]));
+
+    VkMemoryRequirements memRequirements;
+    vkGetImageMemoryRequirements(device, fodderImages[i], &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex =
+        findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &fodderImageMemories[i]));
+
+    vkBindImageMemory(device, fodderImages[i], fodderImageMemories[i], 0);
+
+    imageViewCreateInfo.image = fodderImages[i];
+    VK_CHECK(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &fodderImageViews[i]));
+
+    colorAttachmentRefs[i].attachment = i;
+    colorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+  }
+
+  VkSubpassDescription subpass{};
+  subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+  subpass.colorAttachmentCount = kImageCount;
+  subpass.pColorAttachments = colorAttachmentRefs.data();
+
+  VkRenderPassCreateInfo renderPassInfo{};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+  renderPassInfo.attachmentCount = kImageCount;
+  renderPassInfo.pAttachments = colorAttachments.data();
+  renderPassInfo.subpassCount = 1;
+  renderPassInfo.pSubpasses = &subpass;
+
+  VK_CHECK(vkCreateRenderPass(device, &renderPassInfo, nullptr, &fodderRenderPass));
+
+  VkFramebufferCreateInfo framebufferInfo{};
+  framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+  framebufferInfo.renderPass = fodderRenderPass;
+  framebufferInfo.attachmentCount = kImageCount;
+  framebufferInfo.pAttachments = fodderImageViews.data();
+  framebufferInfo.width = kFodderImageWidth;
+  framebufferInfo.height = kFodderImageHeight;
+  framebufferInfo.layers = 1;
+
+  VK_CHECK(vkCreateFramebuffer(device, &framebufferInfo, nullptr, &fodderFramebuffer));
 }
 
 }  // namespace vkt
