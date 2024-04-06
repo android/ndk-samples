@@ -114,7 +114,7 @@ jstring Java_com_example_helloneon_HelloNeon_stringFromJNI(JNIEnv* env,
   strlcat(buffer, "Neon version   : ", sizeof buffer);
 
   family = android_getCpuFamily();
-  if ((family != ANDROID_CPU_FAMILY_ARM) &&
+  if ((family != ANDROID_CPU_FAMILY_ARM) && (family!=ANDROID_CPU_FAMILY_ARM64) &&
       (family != ANDROID_CPU_FAMILY_X86)) {
     strlcat(buffer, "Not an ARM and not an X86 CPU !\n", sizeof buffer);
     goto EXIT;
