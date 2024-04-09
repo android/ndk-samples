@@ -30,6 +30,41 @@
 #include <string>
 #include <vector>
 
+// If MSRTSS is enabled, render multisampled that way; this demo shows how easy it is to enable
+// efficient multisampling with the VK_EXT_multisampled_render_to_single_sampled extension.
+#define USE_MSRTSS 1
+// Otherwise, if MSAA is enabled, render multisampled with the help of a lazy-allocated MSAA image.
+// This demo shows how multisampled rendering can be done efficiently without the MSRTSS extension.
+#define USE_MSAA 0
+// If both MSRTSS and MSAA are disabled, the test renders in single-sampled.  This is used to
+// compare the performance of multisampled rendering.
+
+// Note: NDK headers may be too old.  The following are taken from a recent header.
+#if USE_MSRTSS
+#if !VK_EXT_multisampled_render_to_single_sampled
+#define VK_EXT_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_SPEC_VERSION 1
+#define VK_EXT_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXTENSION_NAME "VK_EXT_multisampled_render_to_single_sampled"
+typedef struct VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {
+    VkStructureType    sType;
+    void*              pNext;
+    VkBool32           multisampledRenderToSingleSampled;
+} VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT;
+
+typedef struct VkMultisampledRenderToSingleSampledInfoEXT {
+    VkStructureType          sType;
+    const void*              pNext;
+    VkBool32                 multisampledRenderToSingleSampledEnable;
+    VkSampleCountFlagBits    rasterizationSamples;
+} VkMultisampledRenderToSingleSampledInfoEXT;
+
+#define VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT (VkStructureType)1000376000
+#define VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT (VkStructureType)1000376002
+#define VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT (VkImageCreateFlagBits)0x00040000
+
+#endif
+PFN_vkCreateRenderPass2KHR pfn_vkCreateRenderPass2KHR = nullptr;
+#endif
+
 /**
  * HelloVK contains the core of Vulkan pipeline setup. It includes recording
  * draw commands as well as screen clearing during the render pass.
@@ -234,7 +269,12 @@ class HelloVK {
   const std::vector<const char *> validationLayers = {
       "VK_LAYER_KHRONOS_validation"};
   const std::vector<const char *> deviceExtensions = {
-      VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+      VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+#if USE_MSRTSS
+      VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
+      VK_EXT_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXTENSION_NAME,
+#endif
+  };
   std::unique_ptr<ANativeWindow, ANativeWindowDeleter> window;
   AAssetManager *assetManager;
 
@@ -985,14 +1025,25 @@ void HelloVK::createLogicalDeviceAndQueue() {
     queueCreateInfos.push_back(queueCreateInfo);
   }
 
-  VkPhysicalDeviceFeatures deviceFeatures{};
+  VkPhysicalDeviceFeatures2 deviceFeatures{};
+  deviceFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+
+#if USE_MSRTSS
+  // Note: assumes the device supports this feature.  In truth, this needs to be queried.
+  VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT msrtssFeatures{};
+  msrtssFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT;
+  msrtssFeatures.multisampledRenderToSingleSampled = VK_TRUE;
+#endif
 
   VkDeviceCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+#if USE_MSRTSS
+  createInfo.pNext = &msrtssFeatures;
+#endif
   createInfo.queueCreateInfoCount =
       static_cast<uint32_t>(queueCreateInfos.size());
   createInfo.pQueueCreateInfos = queueCreateInfos.data();
-  createInfo.pEnabledFeatures = &deviceFeatures;
+  createInfo.pEnabledFeatures = &deviceFeatures.features;
   createInfo.enabledExtensionCount =
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
@@ -1005,6 +1056,10 @@ void HelloVK::createLogicalDeviceAndQueue() {
   }
 
   VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device));
+
+#if USE_MSRTSS
+  pfn_vkCreateRenderPass2KHR = (PFN_vkCreateRenderPass2KHR)vkGetDeviceProcAddr(device, "vkCreateRenderPass2KHR");
+#endif
 
   vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
   vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
@@ -1274,7 +1329,11 @@ void HelloVK::createGraphicsPipeline() {
   multisampling.sType =
       VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
   multisampling.sampleShadingEnable = VK_FALSE;
+#if USE_MSRTSS
+  multisampling.rasterizationSamples = VK_SAMPLE_COUNT_4_BIT;
+#else
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+#endif
   multisampling.minSampleShading = 1.0f;
   multisampling.pSampleMask = nullptr;
   multisampling.alphaToCoverageEnable = VK_FALSE;
@@ -1421,6 +1480,9 @@ void HelloVK::createFodderObjects() {
   VkImageCreateInfo imageCreateInfo{};
   imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
   imageCreateInfo.flags = 0;
+#if USE_MSRTSS
+  imageCreateInfo.flags |= VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT;
+#endif
   imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
   imageCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
   imageCreateInfo.extent = {kFodderImageWidth, kFodderImageHeight, 1};
@@ -1494,7 +1556,52 @@ void HelloVK::createFodderObjects() {
   renderPassInfo.subpassCount = 1;
   renderPassInfo.pSubpasses = &subpass;
 
+#if USE_MSRTSS
+  VkAttachmentDescription2 attachmentDesc2{};
+  attachmentDesc2.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
+  attachmentDesc2.format = attachmentDesc.format;
+  attachmentDesc2.samples = attachmentDesc.samples;
+  attachmentDesc2.loadOp = attachmentDesc.loadOp;
+  attachmentDesc2.storeOp = attachmentDesc.storeOp;
+  attachmentDesc2.stencilLoadOp = attachmentDesc.stencilLoadOp;
+  attachmentDesc2.stencilStoreOp = attachmentDesc.stencilStoreOp;
+  attachmentDesc2.initialLayout = attachmentDesc.initialLayout;
+  attachmentDesc2.finalLayout = attachmentDesc.finalLayout;
+
+  std::vector<VkAttachmentDescription2> colorAttachments2(kImageCount, attachmentDesc2);
+  std::vector<VkAttachmentReference2> colorAttachmentRefs2(kImageCount, VkAttachmentReference2{});
+
+  for (uint32_t i = 0; i < kImageCount; ++i) {
+    colorAttachmentRefs2[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
+    colorAttachmentRefs2[i].attachment = colorAttachmentRefs[i].attachment;
+    colorAttachmentRefs2[i].layout = colorAttachmentRefs[i].layout;
+    colorAttachmentRefs2[i].aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  }
+
+  VkSubpassDescription2 subpass2{};
+  subpass2.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2;
+  subpass2.pipelineBindPoint = subpass.pipelineBindPoint;
+  subpass2.colorAttachmentCount = subpass.colorAttachmentCount;
+  subpass2.pColorAttachments = colorAttachmentRefs2.data();
+
+  // Make this a 4x MSRTSS subpass
+  VkMultisampledRenderToSingleSampledInfoEXT msrtss{};
+  msrtss.sType = VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT;
+  msrtss.multisampledRenderToSingleSampledEnable = VK_TRUE;
+  msrtss.rasterizationSamples = VK_SAMPLE_COUNT_4_BIT;
+  subpass2.pNext = &msrtss;
+
+  VkRenderPassCreateInfo2 renderPassInfo2{};
+  renderPassInfo2.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2;
+  renderPassInfo2.attachmentCount = kImageCount;
+  renderPassInfo2.pAttachments = colorAttachments2.data();
+  renderPassInfo2.subpassCount = 1;
+  renderPassInfo2.pSubpasses = &subpass2;
+
+  VK_CHECK(pfn_vkCreateRenderPass2KHR(device, &renderPassInfo2, nullptr, &fodderRenderPass));
+#else
   VK_CHECK(vkCreateRenderPass(device, &renderPassInfo, nullptr, &fodderRenderPass));
+#endif
 
   VkFramebufferCreateInfo framebufferInfo{};
   framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
