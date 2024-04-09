@@ -32,15 +32,19 @@
 
 // If MSRTSS is enabled, render multisampled that way; this demo shows how easy it is to enable
 // efficient multisampling with the VK_EXT_multisampled_render_to_single_sampled extension.
-#define USE_MSRTSS 1
+#define USE_MSRTSS 0
 // Otherwise, if MSAA is enabled, render multisampled with the help of a lazy-allocated MSAA image.
 // This demo shows how multisampled rendering can be done efficiently without the MSRTSS extension.
-#define USE_MSAA 0
+#define USE_MSAA 1
 // If both MSRTSS and MSAA are disabled, the test renders in single-sampled.  This is used to
 // compare the performance of multisampled rendering.
 
 // Note: NDK headers may be too old.  The following are taken from a recent header.
 #if USE_MSRTSS
+// Make MSRTSS override MSAA
+#undef USE_MSAA
+#define USE_MSAA 0
+
 #if !VK_EXT_multisampled_render_to_single_sampled
 #define VK_EXT_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_SPEC_VERSION 1
 #define VK_EXT_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXTENSION_NAME "VK_EXT_multisampled_render_to_single_sampled"
@@ -302,6 +306,10 @@ class HelloVK {
   std::vector<VkImage> fodderImages;
   std::vector<VkDeviceMemory> fodderImageMemories;
   std::vector<VkImageView> fodderImageViews;
+#if USE_MSAA
+  std::vector<VkImage> fodderMSAAImages;
+  std::vector<VkDeviceMemory> fodderMSAAImageMemories;
+#endif
   VkRenderPass fodderRenderPass;
   VkFramebuffer fodderFramebuffer;
 
@@ -613,8 +621,7 @@ void HelloVK::recordCommandBuffer(VkCommandBuffer commandBuffer,
   uint32_t queueFamily = indices.graphicsFamily.value();
 
   std::vector<VkImageMemoryBarrier> fodderImageBarriers(fodderImages.size(), VkImageMemoryBarrier{});
-  for (size_t i = 0; i < fodderImages.size(); ++i)
-  {
+  for (size_t i = 0; i < fodderImages.size(); ++i) {
     fodderImageBarriers[i].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
     fodderImageBarriers[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     fodderImageBarriers[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -627,6 +634,12 @@ void HelloVK::recordCommandBuffer(VkCommandBuffer commandBuffer,
     fodderImageBarriers[i].subresourceRange.levelCount = 1;
     fodderImageBarriers[i].subresourceRange.layerCount = 1;
   }
+#if USE_MSAA
+  fodderImageBarriers.resize(fodderImages.size() + fodderMSAAImages.size(), fodderImageBarriers[0]);
+  for (size_t i = 0; i < fodderMSAAImages.size(); ++i) {
+    fodderImageBarriers[fodderImages.size() + i].image = fodderMSAAImages[i];
+  }
+#endif
 
   constexpr uint32_t kTriWidth = 16;
   constexpr uint32_t kTriHeight = 16;
@@ -638,7 +651,7 @@ void HelloVK::recordCommandBuffer(VkCommandBuffer commandBuffer,
   }
 
   VkClearValue clearColor = {{{grey, grey, grey, 1.0f}}};
-  std::vector<VkClearValue> clearColors(fodderImages.size(), clearColor);
+  std::vector<VkClearValue> clearColors(fodderImages.size() * 2, clearColor);
 
   // Draw a few times to the fodder images.  This is just to exaggerate the cost of the render pass.
   for (uint32_t i = 0; i < 4; ++i) {
@@ -1329,7 +1342,7 @@ void HelloVK::createGraphicsPipeline() {
   multisampling.sType =
       VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
   multisampling.sampleShadingEnable = VK_FALSE;
-#if USE_MSRTSS
+#if USE_MSRTSS || USE_MSAA
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_4_BIT;
 #else
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
@@ -1599,6 +1612,61 @@ void HelloVK::createFodderObjects() {
   renderPassInfo2.pSubpasses = &subpass2;
 
   VK_CHECK(pfn_vkCreateRenderPass2KHR(device, &renderPassInfo2, nullptr, &fodderRenderPass));
+#elif USE_MSAA
+
+  // Create lazy-allocated MSAA images for rendering.
+  fodderMSAAImages.resize(kImageCount);
+  fodderMSAAImageMemories.resize(kImageCount);
+  fodderImageViews.resize(kImageCount * 2);
+  attachmentDesc.samples = VK_SAMPLE_COUNT_4_BIT;
+  colorAttachments.resize(kImageCount * 2, attachmentDesc);
+  std::vector<VkAttachmentReference> msaaColorAttachmentRefs(kImageCount, VkAttachmentReference{});
+
+  imageCreateInfo.samples = VK_SAMPLE_COUNT_4_BIT;
+  imageCreateInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
+
+  for (uint32_t i = 0; i < kImageCount; ++i) {
+    VK_CHECK(vkCreateImage(device, &imageCreateInfo, nullptr, &fodderMSAAImages[i]));
+
+    VkMemoryRequirements memRequirements;
+    vkGetImageMemoryRequirements(device, fodderMSAAImages[i], &memRequirements);
+
+    // For simplicity, this demo assumes lazy-allocated memory is available.  The application should
+    // fall back to VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT if not.
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex =
+        findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT);
+
+    VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &fodderMSAAImageMemories[i]));
+
+    vkBindImageMemory(device, fodderMSAAImages[i], fodderMSAAImageMemories[i], 0);
+
+    imageViewCreateInfo.image = fodderMSAAImages[i];
+    VK_CHECK(vkCreateImageView(device, &imageViewCreateInfo, nullptr, &fodderImageViews[kImageCount + i]));
+
+    msaaColorAttachmentRefs[i].attachment = kImageCount + i;
+    msaaColorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    // Make the multisampled images become the color attachments, and the single-sampled images the
+    // resolve attachments.  It's important to make sure the multisampled images are neither LOADed
+    // nor STOREd, so no memory is allocated for them and bandwidth is not wasted on them.
+    //
+    // In the end, the multisampled image is CLEARed on load and DONT_CARE on store.  The resolve
+    // image is DONT_CARE on load and STOREd on store.
+    colorAttachments[kImageCount + i].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    colorAttachments[i].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  }
+
+  subpass.pColorAttachments = msaaColorAttachmentRefs.data();
+  subpass.pResolveAttachments = colorAttachmentRefs.data();
+
+  renderPassInfo.attachmentCount = kImageCount * 2;
+  renderPassInfo.pAttachments = colorAttachments.data();
+
+  VK_CHECK(vkCreateRenderPass(device, &renderPassInfo, nullptr, &fodderRenderPass));
+
 #else
   VK_CHECK(vkCreateRenderPass(device, &renderPassInfo, nullptr, &fodderRenderPass));
 #endif
@@ -1606,7 +1674,11 @@ void HelloVK::createFodderObjects() {
   VkFramebufferCreateInfo framebufferInfo{};
   framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
   framebufferInfo.renderPass = fodderRenderPass;
+#if USE_MSAA
+  framebufferInfo.attachmentCount = kImageCount * 2;
+#else
   framebufferInfo.attachmentCount = kImageCount;
+#endif
   framebufferInfo.pAttachments = fodderImageViews.data();
   framebufferInfo.width = kFodderImageWidth;
   framebufferInfo.height = kFodderImageHeight;
