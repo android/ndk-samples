@@ -658,6 +658,11 @@ extern GL_APICALL void (*GL_APIENTRY glGetInternalformativ)(
     GLenum target, GLenum internalformat, GLenum pname, GLsizei bufSize,
     GLint* params);
 
+// From GLES3.1
+extern GL_APICALL void (*GL_APIENTRY glTexStorage2DMultisample)(GLenum target,
+    GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height,
+    GLboolean fixedsamplelocations);
+
 #ifdef __cplusplus
 }
 #endif

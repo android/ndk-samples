@@ -124,6 +124,8 @@ GLboolean gl3stubInit() {
   FIND_PROC(glTexStorage2D);
   FIND_PROC(glTexStorage3D);
   FIND_PROC(glGetInternalformativ);
+  // GLES3.1
+  FIND_PROC(glTexStorage2DMultisample);
 #undef FIND_PROC
 
   if (!glReadBuffer || !glDrawRangeElements || !glTexImage3D ||
@@ -163,7 +165,8 @@ GLboolean gl3stubInit() {
       !glPauseTransformFeedback || !glResumeTransformFeedback ||
       !glGetProgramBinary || !glProgramBinary || !glProgramParameteri ||
       !glInvalidateFramebuffer || !glInvalidateSubFramebuffer ||
-      !glTexStorage2D || !glTexStorage3D || !glGetInternalformativ) {
+      !glTexStorage2D || !glTexStorage3D || !glGetInternalformativ ||
+      !glTexStorage2DMultisample) {
     return GL_FALSE;
   }
 
@@ -420,3 +423,11 @@ GL_APICALL void (*GL_APIENTRY glGetInternalformativ)(GLenum target,
                                                      GLenum pname,
                                                      GLsizei bufSize,
                                                      GLint* params);
+
+// GLES3.1
+GL_APICALL void (*GL_APIENTRY glTexStorage2DMultisample)(GLenum target,
+        GLsizei samples,
+        GLenum internalformat,
+        GLsizei width,
+        GLsizei height,
+        GLboolean fixedsamplelocations);

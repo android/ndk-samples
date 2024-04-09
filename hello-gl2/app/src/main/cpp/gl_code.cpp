@@ -34,12 +34,18 @@
 
 // If MSRTT is enabled, render multisampled that way; this demo shows how easy it is to enable
 // efficient multisampling with the GL_EXT_multisampled_render_to_texture extension.
-#define USE_MSRTT 1
+#define USE_MSRTT 0
 // Otherwise, if MSAA is enabled, render multisampled with the help of MSAA textures.
 // This demo shows how multisampled rendering can be done efficiently without the MSRTT extension.
-#define USE_MSAA 0
+#define USE_MSAA 1
 // If both MSRTT and MSAA are disabled, the test renders in single-sampled.  This is used to
 // compare the performance of multisampled rendering.
+
+#if USE_MSRTT
+// Make MSRTT override MSAA
+#undef USE_MSAA
+#define USE_MSAA 0
+#endif
 
 static void printGLString(const char* name, GLenum s) {
   const char* v = (const char*)glGetString(s);
@@ -150,6 +156,11 @@ GLuint gFramebuffer;
 GLuint gNoMSRTTFramebuffer;
 #endif
 
+#if USE_MSAA
+GLuint gResolveImages[kImageCount];
+GLuint gResolveFramebuffers[kImageCount];
+#endif
+
 int gWindowWidth = 1, gWindowHeight = 1;
 
 PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXTPROC pfn_glFramebufferTexture2DMultisampleEXT = nullptr;
@@ -201,6 +212,13 @@ bool setupGraphics(int w, int h) {
   glBindFramebuffer(GL_FRAMEBUFFER, gFramebuffer);
   GLenum enabledBufs[kImageCount];
   for (uint32_t i = 0; i < kImageCount; ++i) {
+#if USE_MSAA
+    // For MSAA framebuffer, create MSAA textures!
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, gImages[i]);
+    glTexStorage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, kImageWidth, kImageHeight, GL_FALSE);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D_MULTISAMPLE, gImages[i], 0);
+#else
+    // Otherwise the textures are single-sampled, even for MSRTT
     glBindTexture(GL_TEXTURE_2D, gImages[i]);
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, kImageWidth, kImageHeight);
 #if USE_MSRTT
@@ -210,6 +228,7 @@ bool setupGraphics(int w, int h) {
 #else
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, gImages[i], 0);
 #endif
+#endif
     enabledBufs[i] = GL_COLOR_ATTACHMENT0 + i;
   }
   glDrawBuffers(kImageCount, enabledBufs);
@@ -218,6 +237,20 @@ bool setupGraphics(int w, int h) {
   glGenFramebuffers(1, &gNoMSRTTFramebuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, gNoMSRTTFramebuffer);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gImages[0], 0);
+#endif
+
+#if USE_MSAA
+  // Create the single-sampled resolve framebuffers.  Resolve is done with glBlitFramebuffer, but
+  // that function broadcasts to all of the attachments in the destination framebuffer.  Because of
+  // that, every attachment needs to be resolved separately and with a separate framebuffer.
+  glGenTextures(kImageCount, gResolveImages);
+  glGenFramebuffers(kImageCount, gResolveFramebuffers);
+  for (uint32_t i = 0; i < kImageCount; ++i) {
+    glBindTexture(GL_TEXTURE_2D, gResolveImages[i]);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, kImageWidth, kImageHeight);
+    glBindFramebuffer(GL_FRAMEBUFFER, gResolveFramebuffers[i]);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gResolveImages[i], 0);
+  }
 #endif
 
   glViewport(0, 0, kImageWidth, kImageHeight);
@@ -247,11 +280,41 @@ void renderFrame() {
   glDrawArrays(GL_TRIANGLES, 0, 9);
   checkGlError("glDrawArrays");
 
+#if USE_MSAA
+  // Resolve every attachment to a single-sampled framebuffer
+  GLenum invalidateAttachments[kImageCount];
+  for (uint32_t i = 0; i < kImageCount; ++i) {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gResolveFramebuffers[i]);
+    glReadBuffer(GL_COLOR_ATTACHMENT0 + i);
+
+    glBlitFramebuffer(0, 0, kImageWidth, kImageHeight, 0, 0, kImageWidth, kImageHeight,
+        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+    invalidateAttachments[i] = GL_COLOR_ATTACHMENT0 + i;
+  }
+
+  // Don't forget to discard the MSAA data!  This is the equivalent of using Vulkan's
+  // VK_ATTACHMENT_STORE_OP_DONT_CARE.  Missing this step is very costly.
+  //
+  // Also make sure this is done _immediately_ after blit.  Make sure blit itself is done
+  // _immediately_ after rendering.  Doing anything else in between may result in the render pass
+  // created for draw to be permanently closed and the blit and invalidate left unoptimized.
+  //
+  // NOTE: NOT ALL GL DRIVERS FULLY OPTIMIZE MSAA RENDERING THIS WAY, AT LEAST WHEN MULTIPLE
+  // ATTACHMENTS ARE PRESENT.  GL_EXT_multisampled_render_to_texture remains the best way to get
+  // multisampling done on these drivers.
+  glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, kImageCount, invalidateAttachments);
+#endif
+
   // Blit to the default framebuffer for verification.
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 #if USE_MSRTT
   glBindFramebuffer(GL_READ_FRAMEBUFFER, gNoMSRTTFramebuffer);
 #endif
+#if USE_MSAA
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, gResolveFramebuffers[0]);
+#endif
+
   glBlitFramebuffer(0, 0, 16, 16, 0, 0, gWindowWidth, gWindowHeight,
       GL_COLOR_BUFFER_BIT, GL_NEAREST);
   checkGlError("glBlitFramebuffer");
