@@ -16,6 +16,8 @@
 
 // OpenGL ES 3.0 demo for efficient multisampling
 
+#define GL_GLEXT_PROTOTYPES
+#include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <android/log.h>
@@ -29,6 +31,15 @@
 #define LOG_TAG "libgl2jni"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+
+// If MSRTT is enabled, render multisampled that way; this demo shows how easy it is to enable
+// efficient multisampling with the GL_EXT_multisampled_render_to_texture extension.
+#define USE_MSRTT 1
+// Otherwise, if MSAA is enabled, render multisampled with the help of MSAA textures.
+// This demo shows how multisampled rendering can be done efficiently without the MSRTT extension.
+#define USE_MSAA 0
+// If both MSRTT and MSAA are disabled, the test renders in single-sampled.  This is used to
+// compare the performance of multisampled rendering.
 
 static void printGLString(const char* name, GLenum s) {
   const char* v = (const char*)glGetString(s);
@@ -135,8 +146,13 @@ static constexpr uint32_t kImageHeight = 2048;
 static constexpr uint32_t kImageCount = 4;
 GLuint gImages[kImageCount];
 GLuint gFramebuffer;
+#if USE_MSRTT
+GLuint gNoMSRTTFramebuffer;
+#endif
 
 int gWindowWidth = 1, gWindowHeight = 1;
+
+PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXTPROC pfn_glFramebufferTexture2DMultisampleEXT = nullptr;
 
 bool setupGraphics(int w, int h) {
   gWindowWidth = w;
@@ -187,10 +203,22 @@ bool setupGraphics(int w, int h) {
   for (uint32_t i = 0; i < kImageCount; ++i) {
     glBindTexture(GL_TEXTURE_2D, gImages[i]);
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, kImageWidth, kImageHeight);
+#if USE_MSRTT
+    // Render with 4 samples with MSRTT.  This is the only real difference between the MSRTT and
+    // the single-sampled framebuffer.
+    pfn_glFramebufferTexture2DMultisampleEXT(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, gImages[i], 0, 4);
+#else
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, gImages[i], 0);
+#endif
     enabledBufs[i] = GL_COLOR_ATTACHMENT0 + i;
   }
   glDrawBuffers(kImageCount, enabledBufs);
+
+#if USE_MSRTT
+  glGenFramebuffers(1, &gNoMSRTTFramebuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER, gNoMSRTTFramebuffer);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gImages[0], 0);
+#endif
 
   glViewport(0, 0, kImageWidth, kImageHeight);
   checkGlError("glViewport");
@@ -221,6 +249,9 @@ void renderFrame() {
 
   // Blit to the default framebuffer for verification.
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+#if USE_MSRTT
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, gNoMSRTTFramebuffer);
+#endif
   glBlitFramebuffer(0, 0, 16, 16, 0, 0, gWindowWidth, gWindowHeight,
       GL_COLOR_BUFFER_BIT, GL_NEAREST);
   checkGlError("glBlitFramebuffer");
@@ -240,6 +271,7 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv* env,
                                                               jint width,
                                                               jint height) {
   gl3stubInit();
+  pfn_glFramebufferTexture2DMultisampleEXT = (PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXTPROC)eglGetProcAddress("glFramebufferTexture2DMultisampleEXT");
   setupGraphics(width, height);
 }
 
