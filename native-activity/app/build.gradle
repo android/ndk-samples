@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
+// Caution: If you add any Java or Kotlin code to this project, or if you add
+// any dependencies which themselves use Java/Kotlin, you'll need to remove
+// `android:hasCode` from main/AndroidManifest.xml.
+
 android {
     compileSdk 33
     ndkVersion '25.1.8937393'
@@ -29,10 +33,4 @@ android {
         }
     }
     namespace 'com.example.native_activity'
-}
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
