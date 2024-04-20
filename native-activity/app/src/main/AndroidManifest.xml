@@ -4,7 +4,13 @@
     android:versionCode="1"
           android:versionName="1.0">
 
-  <!-- This .apk has no Java code itself, so set hasCode to false. -->
+  <!--
+  This .apk has no Java/Kotlin code, so set hasCode to false.
+
+  If you copy from this sample and later add Java/Kotlin code, or add a
+  dependency on a library that does (such as androidx), be sure to set
+  `android:hasCode` to `true` (or just remove it, since that's the default).
+  -->
   <application
       android:allowBackup="false"
       android:fullBackupContent="false"

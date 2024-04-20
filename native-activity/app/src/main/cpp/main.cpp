@@ -127,6 +127,10 @@ static int engine_init_display(struct engine* engine) {
   eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
   surface =
       eglCreateWindowSurface(display, config, engine->app->window, nullptr);
+
+  /* A version of OpenGL has not been specified here.  This will default to
+   * OpenGL 1.0.  You will need to change this if you want to use the newer
+   * features of OpenGL like shaders. */
   context = eglCreateContext(display, config, nullptr, nullptr);
 
   if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
