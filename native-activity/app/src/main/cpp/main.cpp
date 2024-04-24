@@ -27,13 +27,18 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
+#include <functional>
 #include <initializer_list>
 #include <memory>
 
-#define LOGI(...) \
-  ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
-#define LOGW(...) \
-  ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+#define LOG_TAG "native-activity"
+
+#define _LOG(priority, ...) \
+  ((void)__android_log_print((priority), LOG_TAG, __VA_ARGS__))
+
+#define LOGE(...) _LOG(ANDROID_LOG_ERROR, __VA_ARGS__)
+#define LOGI(...) _LOG(ANDROID_LOG_INFO, __VA_ARGS__)
+#define LOGW(...) _LOG(ANDROID_LOG_WARN, __VA_ARGS__)
 
 /**
  * Our saved state data.
@@ -310,6 +315,45 @@ ASensorManager* AcquireASensorManagerInstance(android_app* app) {
   return getInstanceFunc();
 }
 
+void WaitForEvents(engine& engine, std::function<void(int)> handle_event) {
+  // Do not use pollAll:
+  // https://developer.android.com/ndk/reference/group/looper#alooper_pollall
+  while (true) {
+    int events;
+    android_poll_source* source;
+    // 0 is non-blocking, -1 blocks until we have an event. If we have frames
+    // to render we should check for events and get back to rendering ASAP. If
+    // we aren't, we can safely block until we have an event that causes us to
+    // start rendering again.
+    int timeout = engine.animating ? 0 : -1;
+    int result = ALooper_pollOnce(timeout, nullptr, &events,
+                                  reinterpret_cast<void**>(&source));
+    switch (result) {
+      case ALOOPER_POLL_TIMEOUT:
+        [[fallthrough]];
+      case ALOOPER_POLL_WAKE:
+        // No events occurred before the timeout or explicit wake. Stop checking
+        // for events and return to rendering.
+        return;
+      case ALOOPER_EVENT_ERROR:
+        LOGE("ALooper_pollOnce returned an error");
+        break;
+      case ALOOPER_POLL_CALLBACK:
+        break;
+      default:
+        if (result < 0) {
+          LOGE("Unhandled ALooper_pollOnce error: %d", result);
+          return;
+        }
+        if (source != nullptr) {
+          source->process(engine.app, source);
+        }
+        handle_event(result);
+        break;
+    }
+  }
+}
+
 /**
  * This is the main entry point of a native application that is using
  * android_native_app_glue.  It runs in its own thread, with its own
@@ -339,38 +383,24 @@ void android_main(struct android_app* state) {
   // loop waiting for stuff to do.
 
   while (true) {
-    // Read all pending events.
-    int ident;
-    int events;
-    struct android_poll_source* source;
-
-    // If not animating, we will block forever waiting for events.
-    // If animating, we loop until all events are read, then continue
-    // to draw the next frame of animation.
-    while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, nullptr, &events,
-                                    (void**)&source)) >= 0) {
-      // Process this event.
-      if (source != nullptr) {
-        source->process(state, source);
-      }
-
-      // If a sensor has data, process it now.
-      if (ident == LOOPER_ID_USER) {
-        if (engine.accelerometerSensor != nullptr) {
-          ASensorEvent event;
-          while (ASensorEventQueue_getEvents(engine.sensorEventQueue, &event,
-                                             1) > 0) {
-            LOGI("accelerometer: x=%f y=%f z=%f", event.acceleration.x,
-                 event.acceleration.y, event.acceleration.z);
+    WaitForEvents(engine, [&engine](int event_fd) {
+      switch (event_fd) {
+        case LOOPER_ID_USER: {
+          if (engine.accelerometerSensor != nullptr) {
+            ASensorEvent event;
+            while (ASensorEventQueue_getEvents(engine.sensorEventQueue, &event,
+                                               1) > 0) {
+              LOGI("accelerometer: x=%f y=%f z=%f", event.acceleration.x,
+                   event.acceleration.y, event.acceleration.z);
+            }
           }
         }
       }
+    });
 
-      // Check if we are exiting.
-      if (state->destroyRequested != 0) {
-        engine_term_display(&engine);
-        return;
-      }
+    if (state->destroyRequested != 0) {
+      engine_term_display(&engine);
+      return;
     }
 
     if (engine.animating) {
