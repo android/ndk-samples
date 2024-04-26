@@ -7,13 +7,13 @@ plugins {
 // `android:hasCode` from main/AndroidManifest.xml.
 
 android {
-    compileSdk 33
+    compileSdk 34
     ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId = 'com.example.native_activity'
         minSdkVersion 14
-        targetSdkVersion 33
+        targetSdkVersion 34
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
