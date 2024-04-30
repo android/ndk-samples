@@ -263,7 +263,6 @@ static int32_t engine_handle_input(android_app* app,
                                    AInputEvent* event) {
   auto* engine = (Engine*)app->userData;
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-    engine->StartRendering();
     engine->state.x = AMotionEvent_getX(event, 0);
     engine->state.y = AMotionEvent_getY(event, 0);
     return 1;
@@ -287,7 +286,6 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
       // The window is being shown, get it ready.
       if (engine->app->window != nullptr) {
         engine_init_display(engine);
-        engine_draw_frame(engine);
       }
       break;
     case APP_CMD_TERM_WINDOW:
@@ -304,6 +302,7 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
                                        engine->accelerometerSensor,
                                        (1000L / 60) * 1000);
       }
+      engine->StartRendering();
       break;
     case APP_CMD_LOST_FOCUS:
       // When our app loses focus, we stop monitoring the accelerometer.
@@ -313,7 +312,6 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
                                         engine->accelerometerSensor);
       }
       engine->StopRendering();
-      engine_draw_frame(engine);
       break;
     default:
       break;
