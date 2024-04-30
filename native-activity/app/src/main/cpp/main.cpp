@@ -20,6 +20,7 @@
 #include <GLES/gl.h>
 #include <android/log.h>
 #include <android/sensor.h>
+#include <android/set_abort_message.h>
 #include <android_native_app_glue.h>
 #include <jni.h>
 
@@ -35,8 +36,33 @@
 #define _LOG(priority, fmt, ...) \
   ((void)__android_log_print((priority), (LOG_TAG), (fmt)__VA_OPT__(, ) __VA_ARGS__))
 
+#define LOGE(fmt, ...) _LOG(ANDROID_LOG_ERROR, (fmt)__VA_OPT__(, ) __VA_ARGS__)
 #define LOGW(fmt, ...) _LOG(ANDROID_LOG_WARN, (fmt)__VA_OPT__(, ) __VA_ARGS__)
 #define LOGI(fmt, ...) _LOG(ANDROID_LOG_INFO, (fmt)__VA_OPT__(, ) __VA_ARGS__)
+
+[[noreturn]] __attribute__((__format__(__printf__, 1, 2))) static void fatal(
+    const char* fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  char* buf;
+  if (vasprintf(&buf, fmt, ap) < 0) {
+    android_set_abort_message("failed for format error message");
+  } else {
+    android_set_abort_message(buf);
+    // Also log directly, since the default Android Studio logcat filter hides
+    // the backtrace which would otherwise show the abort message.
+    LOGE("%s", buf);
+  }
+  std::abort();
+}
+
+#define CHECK_NOT_NULL(value)                                           \
+  do {                                                                  \
+    if ((value) == nullptr) {                                           \
+      fatal("%s:%d:%s must not be null", __PRETTY_FUNCTION__, __LINE__, \
+            #value);                                                    \
+    }                                                                   \
+  } while (false)
 
 /**
  * Our saved state data.
@@ -64,6 +90,20 @@ struct engine {
   int32_t width;
   int32_t height;
   struct saved_state state;
+
+  void CreateSensorListener(ALooper_callbackFunc callback) {
+    CHECK_NOT_NULL(app);
+
+    sensorManager = ASensorManager_getInstance();
+    if (sensorManager == nullptr) {
+      return;
+    }
+
+    accelerometerSensor = ASensorManager_getDefaultSensor(
+        sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+    sensorEventQueue = ASensorManager_createEventQueue(
+        sensorManager, app->looper, ALOOPER_POLL_CALLBACK, callback, this);
+  }
 };
 
 /**
@@ -269,6 +309,24 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
   }
 }
 
+int OnSensorEvent(int /* fd */, int /* events */, void* data) {
+  CHECK_NOT_NULL(data);
+  engine* engine = reinterpret_cast<struct engine*>(data);
+
+  CHECK_NOT_NULL(engine->accelerometerSensor);
+  ASensorEvent event;
+  while (ASensorEventQueue_getEvents(engine->sensorEventQueue, &event, 1) > 0) {
+    LOGI("accelerometer: x=%f y=%f z=%f", event.acceleration.x,
+         event.acceleration.y, event.acceleration.z);
+  }
+
+  // From the docs:
+  //
+  // Implementations should return 1 to continue receiving callbacks, or 0 to
+  // have this file descriptor and callback unregistered from the looper.
+  return 1;
+}
+
 /**
  * This is the main entry point of a native application that is using
  * android_native_app_glue.  It runs in its own thread, with its own
@@ -284,11 +342,7 @@ void android_main(struct android_app* state) {
   engine.app = state;
 
   // Prepare to monitor accelerometer
-  engine.sensorManager = ASensorManager_getInstance();
-  engine.accelerometerSensor = ASensorManager_getDefaultSensor(
-      engine.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
-  engine.sensorEventQueue = ASensorManager_createEventQueue(
-      engine.sensorManager, state->looper, LOOPER_ID_USER, nullptr, nullptr);
+  engine.CreateSensorListener(OnSensorEvent);
 
   if (state->savedState != nullptr) {
     // We are starting with a previous saved state; restore from it.
@@ -299,30 +353,17 @@ void android_main(struct android_app* state) {
 
   while (true) {
     // Read all pending events.
-    int ident;
     int events;
     struct android_poll_source* source;
 
     // If not animating, we will block forever waiting for events.
     // If animating, we loop until all events are read, then continue
     // to draw the next frame of animation.
-    while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, nullptr, &events,
-                                    (void**)&source)) >= 0) {
+    while ((ALooper_pollAll(engine.animating ? 0 : -1, nullptr, &events,
+                            (void**)&source)) >= 0) {
       // Process this event.
       if (source != nullptr) {
         source->process(state, source);
-      }
-
-      // If a sensor has data, process it now.
-      if (ident == LOOPER_ID_USER) {
-        if (engine.accelerometerSensor != nullptr) {
-          ASensorEvent event;
-          while (ASensorEventQueue_getEvents(engine.sensorEventQueue, &event,
-                                             1) > 0) {
-            LOGI("accelerometer: x=%f y=%f z=%f", event.acceleration.x,
-                 event.acceleration.y, event.acceleration.z);
-          }
-        }
       }
 
       // Check if we are exiting.
