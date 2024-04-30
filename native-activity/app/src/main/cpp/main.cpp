@@ -83,7 +83,6 @@ struct Engine {
   const ASensor* accelerometerSensor;
   ASensorEventQueue* sensorEventQueue;
 
-  int animating;
   EGLDisplay display;
   EGLSurface surface;
   EGLContext context;
@@ -104,6 +103,19 @@ struct Engine {
     sensorEventQueue = ASensorManager_createEventQueue(
         sensorManager, app->looper, ALOOPER_POLL_CALLBACK, callback, this);
   }
+
+  bool animating() const { return animating_; }
+
+  void StartRendering() {
+    animating_ = true;
+  }
+
+  void StopRendering() {
+    animating_ = false;
+  }
+
+ private:
+  bool animating_;
 };
 
 /**
@@ -238,7 +250,7 @@ static void engine_term_display(Engine* engine) {
     }
     eglTerminate(engine->display);
   }
-  engine->animating = 0;
+  engine->StopRendering();
   engine->display = EGL_NO_DISPLAY;
   engine->context = EGL_NO_CONTEXT;
   engine->surface = EGL_NO_SURFACE;
@@ -251,7 +263,7 @@ static int32_t engine_handle_input(android_app* app,
                                    AInputEvent* event) {
   auto* engine = (Engine*)app->userData;
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-    engine->animating = 1;
+    engine->StartRendering();
     engine->state.x = AMotionEvent_getX(event, 0);
     engine->state.y = AMotionEvent_getY(event, 0);
     return 1;
@@ -300,8 +312,7 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
         ASensorEventQueue_disableSensor(engine->sensorEventQueue,
                                         engine->accelerometerSensor);
       }
-      // Also stop animating.
-      engine->animating = 0;
+      engine->StopRendering();
       engine_draw_frame(engine);
       break;
     default:
@@ -356,10 +367,10 @@ void android_main(android_app* state) {
     int events;
     android_poll_source* source;
 
-    // If not animating, we will block forever waiting for events.
-    // If animating, we loop until all events are read, then continue
+    // If not animating_, we will block forever waiting for events.
+    // If animating_, we loop until all events are read, then continue
     // to draw the next frame of animation.
-    while ((ALooper_pollAll(engine.animating ? 0 : -1, nullptr, &events,
+    while ((ALooper_pollAll(engine.animating() ? 0 : -1, nullptr, &events,
                             (void**)&source)) >= 0) {
       // Process this event.
       if (source != nullptr) {
@@ -373,7 +384,7 @@ void android_main(android_app* state) {
       }
     }
 
-    if (engine.animating) {
+    if (engine.animating()) {
       // Done with events; draw next animation frame.
       engine.state.angle += .01f;
       if (engine.state.angle > 1) {
