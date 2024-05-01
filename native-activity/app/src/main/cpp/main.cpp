@@ -18,6 +18,7 @@
 // BEGIN_INCLUDE(all)
 #include <EGL/egl.h>
 #include <GLES/gl.h>
+#include <android/choreographer.h>
 #include <android/log.h>
 #include <android/sensor.h>
 #include <android/set_abort_message.h>
@@ -104,18 +105,80 @@ struct Engine {
         sensorManager, app->looper, ALOOPER_POLL_CALLBACK, callback, this);
   }
 
-  bool animating() const { return animating_; }
-
-  void StartRendering() {
-    animating_ = true;
+  /// Resumes ticking the application.
+  void Resume() {
+    // Checked to make sure we don't double schedule Choreographer.
+    if (!running_) {
+      running_ = true;
+      ScheduleNextTick();
+    }
   }
 
-  void StopRendering() {
-    animating_ = false;
-  }
+  /// Pauses ticking the application.
+  ///
+  /// When paused, sensor and input events will still be processed, but the
+  /// update and render parts of the loop will not run.
+  void Pause() { running_ = false; }
 
  private:
-  bool animating_;
+  bool running_;
+
+  void ScheduleNextTick() {
+    AChoreographer_postFrameCallback(AChoreographer_getInstance(), Tick, this);
+  }
+
+  /// Entry point for Choreographer.
+  ///
+  /// The first argument (the frame time) is not used as it is not needed for
+  /// this sample. If you copy from this sample and make use of that argument,
+  /// note that there's an API bug: that time is a signed 32-bit nanosecond
+  /// counter on 32-bit systems, so it will roll over every ~2 seconds. If your
+  /// minSdkVersion is 29 or higher, use AChoreographer_postFrameCallback64
+  /// instead, which is 64-bits for all architectures. Otherwise, bitwise-and
+  /// the value with the upper bits from CLOCK_MONOTONIC.
+  ///
+  /// \param data The Engine being ticked.
+  static void Tick(long, void* data) {
+    CHECK_NOT_NULL(data);
+    auto engine = reinterpret_cast<Engine*>(data);
+    engine->DoTick();
+  }
+
+  void DoTick() {
+    if (!running_) {
+      return;
+    }
+
+    // Input and sensor feedback is handled via their own callbacks.
+    // Choreographer ensures that those callbacks run before this callback does.
+
+    // Choreographer does not continuously schedule the callback. We have to re-
+    // register the callback each time we're ticked.
+    ScheduleNextTick();
+    Update();
+    DrawFrame();
+  }
+
+  void Update() {
+    state.angle += .01f;
+    if (state.angle > 1) {
+      state.angle = 0;
+    }
+  }
+
+  void DrawFrame() {
+    if (display == nullptr) {
+      // No display.
+      return;
+    }
+
+    // Just fill the screen with a color.
+    glClearColor(((float)state.x) / width, state.angle,
+                 ((float)state.y) / height, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    eglSwapBuffers(display, surface);
+  }
 };
 
 /**
@@ -219,23 +282,6 @@ static int engine_init_display(Engine* engine) {
 }
 
 /**
- * Just the current frame in the display.
- */
-static void engine_draw_frame(Engine* engine) {
-  if (engine->display == nullptr) {
-    // No display.
-    return;
-  }
-
-  // Just fill the screen with a color.
-  glClearColor(((float)engine->state.x) / engine->width, engine->state.angle,
-               ((float)engine->state.y) / engine->height, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  eglSwapBuffers(engine->display, engine->surface);
-}
-
-/**
  * Tear down the EGL context currently associated with the display.
  */
 static void engine_term_display(Engine* engine) {
@@ -250,7 +296,7 @@ static void engine_term_display(Engine* engine) {
     }
     eglTerminate(engine->display);
   }
-  engine->StopRendering();
+  engine->Pause();
   engine->display = EGL_NO_DISPLAY;
   engine->context = EGL_NO_CONTEXT;
   engine->surface = EGL_NO_SURFACE;
@@ -302,7 +348,7 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
                                        engine->accelerometerSensor,
                                        (1000L / 60) * 1000);
       }
-      engine->StartRendering();
+      engine->Resume();
       break;
     case APP_CMD_LOST_FOCUS:
       // When our app loses focus, we stop monitoring the accelerometer.
@@ -311,7 +357,7 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
         ASensorEventQueue_disableSensor(engine->sensorEventQueue,
                                         engine->accelerometerSensor);
       }
-      engine->StopRendering();
+      engine->Pause();
       break;
     default:
       break;
@@ -358,18 +404,14 @@ void android_main(android_app* state) {
     engine.state = *(SavedState*)state->savedState;
   }
 
-  // loop waiting for stuff to do.
-
   while (true) {
     // Read all pending events.
     int events;
     android_poll_source* source;
 
-    // If not animating_, we will block forever waiting for events.
-    // If animating_, we loop until all events are read, then continue
-    // to draw the next frame of animation.
-    while ((ALooper_pollAll(engine.animating() ? 0 : -1, nullptr, &events,
-                            (void**)&source)) >= 0) {
+    // Our input, sensor, and update/render logic is all driven by callbacks, so
+    // we don't need to use the non-blocking poll.
+    while ((ALooper_pollAll(-1, nullptr, &events, (void**)&source)) >= 0) {
       // Process this event.
       if (source != nullptr) {
         source->process(state, source);
@@ -380,18 +422,6 @@ void android_main(android_app* state) {
         engine_term_display(&engine);
         return;
       }
-    }
-
-    if (engine.animating()) {
-      // Done with events; draw next animation frame.
-      engine.state.angle += .01f;
-      if (engine.state.angle > 1) {
-        engine.state.angle = 0;
-      }
-
-      // Drawing is throttled to the screen update rate, so there
-      // is no need to do timing here.
-      engine_draw_frame(&engine);
     }
   }
 }
