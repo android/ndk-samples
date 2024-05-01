@@ -404,25 +404,21 @@ void android_main(android_app* state) {
     engine.state = *(SavedState*)state->savedState;
   }
 
-  while (true) {
-    // Read all pending events.
-    int events;
-    android_poll_source* source;
-
+  while (!state->destroyRequested) {
     // Our input, sensor, and update/render logic is all driven by callbacks, so
     // we don't need to use the non-blocking poll.
-    while ((ALooper_pollAll(-1, nullptr, &events, (void**)&source)) >= 0) {
-      // Process this event.
-      if (source != nullptr) {
-        source->process(state, source);
-      }
+    android_poll_source* source = nullptr;
+    auto result = ALooper_pollOnce(-1, nullptr, nullptr,
+                                   reinterpret_cast<void**>(&source));
+    if (result == ALOOPER_POLL_ERROR) {
+      fatal("ALooper_pollOnce returned an error");
+    }
 
-      // Check if we are exiting.
-      if (state->destroyRequested != 0) {
-        engine_term_display(&engine);
-        return;
-      }
+    if (source != nullptr) {
+      source->process(state, source);
     }
   }
+
+  engine_term_display(&engine);
 }
 // END_INCLUDE(all)
