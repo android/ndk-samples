@@ -102,22 +102,15 @@ void NativeEngine::GameLoop() {
   mApp->onAppCmd = _handle_cmd_proxy;
   mApp->onInputEvent = _handle_input_proxy;
 
-  while (1) {
-    int events;
-    struct android_poll_source *source;
-
+  while (!mApp->destroyRequested) {
     // If not animating, block until we get an event; if animating, don't block.
-    while ((ALooper_pollAll(IsAnimating() ? 0 : -1, NULL, &events,
-                            (void **)&source)) >= 0) {
-      // process event
-      if (source != NULL) {
-        source->process(mApp, source);
-      }
-
-      // are we exiting?
-      if (mApp->destroyRequested) {
-        return;
-      }
+    struct android_poll_source *source = nullptr;
+    auto result = ALooper_pollOnce(IsAnimating() ? 0 : -1, NULL, nullptr,
+                            (void **)&source);
+    MY_ASSERT(result != ALOOPER_POLL_ERROR);
+    // process event
+    if (source != NULL) {
+      source->process(mApp, source);
     }
 
     if (IsAnimating()) {

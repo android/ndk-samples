@@ -453,32 +453,28 @@ void android_main(struct android_app* state) {
 
   // loop waiting for stuff to do.
 
-  while (1) {
-    // Read all pending events.
-    int ident;
-    int events;
-    struct android_poll_source* source;
-
+  while (!state->destroyRequested) {
     // If not animating, we will block forever waiting for events.
     // If animating, we loop until all events are read, then continue
     // to draw the next frame of animation.
-    while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, NULL, &events,
-                                    (void**)&source)) >= 0) {
-      // Process this event.
-      if (source != NULL) {
-        source->process(state, source);
-      }
+    struct android_poll_source* source = NULL;
+    int result = ALooper_pollOnce(engine.animating ? 0 : -1, NULL, NULL,
+                                    (void**)&source);
+    if (result == ALOOPER_POLL_ERROR) {
+      LOGE("ALooper_pollOnce returned an error");
+      abort();
+    }
 
-      // Check if we are exiting.
-      if (state->destroyRequested != 0) {
-        LOGI("Engine thread destroy requested!");
-        engine_term_display(&engine);
-        return;
-      }
+    // Process this event.
+    if (source != NULL) {
+      source->process(state, source);
     }
 
     if (engine.animating) {
       engine_draw_frame(&engine);
     }
   }
+
+  LOGI("Engine thread destroy requested!");
+  engine_term_display(&engine);
 }
