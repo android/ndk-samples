@@ -133,19 +133,23 @@ void android_main(struct android_app *state) {
   android_app_set_key_event_filter(state, VulkanKeyEventFilter);
   android_app_set_motion_event_filter(state, VulkanMotionEventFilter);
 
-  while (true) {
-    int ident;
-    int events;
+  while (!state->destroyRequested) {
     android_poll_source *source;
-    while ((ident = ALooper_pollAll(engine.canRender ? 0 : -1, nullptr, &events,
-                                    (void **)&source)) >= 0) {
-      if (source != nullptr) {
-        source->process(state, source);
-      }
+    auto result = ALooper_pollOnce(engine.canRender ? 0 : -1, nullptr, nullptr,
+                                   (void **)&source);
+    if (result == ALOOPER_POLL_ERROR) {
+      LOGE("ALooper_pollOnce returned an error");
+      std::abort();
+    }
+
+    if (source != nullptr) {
+      source->process(state, source);
     }
 
     HandleInputEvents(state);
 
-    engine.app_backend->render();
+    if (engine.canRender) {
+      engine.app_backend->render();
+    }
   }
 }
