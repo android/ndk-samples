@@ -17,9 +17,6 @@ with C++ support. For how to use Android Studio, refer to
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
 1. Launch Android Studio.
 1. Open the sample directory.
-1. Open *File/Project Structure.../SDK Location*, click *Download* or *Select
-   NDK location*.
-1. Click *File/Sync Project with Gradle Files*.
 1. Click *Run/Run 'app'*.
 
 ## Screenshots
