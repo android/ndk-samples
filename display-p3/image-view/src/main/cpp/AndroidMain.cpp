@@ -101,34 +101,26 @@ void android_main(struct android_app* state) {
   engine.sensorEventQueue = ASensorManager_createEventQueue(
       engine.sensorManager, state->looper, LOOPER_ID_USER, NULL, NULL);
 
-  while (1) {
-    // Read all pending events.
-    int ident;
-    int events;
-    struct android_poll_source* source;
-
+  while (!state->destroyRequested) {
     // If not animating_, we will block forever waiting for events.
     // If animating_, we loop until all events are read, then continue
     // to draw the next frame of animation.
-    while ((ident = ALooper_pollAll(engine.GetAnimationStatus() ? 0 : -1, NULL,
-                                    &events, (void**)&source)) >= 0) {
-      // Process this event.
-      if (source != NULL) {
-        source->process(state, source);
-      }
-      // If a sensor has data, process it now.
-      if (ident == LOOPER_ID_USER) {
-        if (engine.accelerometerSensor != NULL) {
-          ASensorEvent event;
-          while (ASensorEventQueue_getEvents(engine.sensorEventQueue, &event,
-                                             1) > 0) {
-          }
+    struct android_poll_source* source = nullptr;
+    int ident = ALooper_pollOnce(engine.GetAnimationStatus() ? 0 : -1, nullptr,
+                                    nullptr, (void**)&source);
+    ASSERT(ident != ALOOPER_POLL_ERROR, "ALooper_pollOnce returned and error");
+    // Process this event.
+    if (source != NULL) {
+      source->process(state, source);
+    }
+
+    // If a sensor has data, process it now.
+    if (ident == LOOPER_ID_USER) {
+      if (engine.accelerometerSensor != NULL) {
+        ASensorEvent event;
+        while (ASensorEventQueue_getEvents(engine.sensorEventQueue, &event,
+                                           1) > 0) {
         }
-      }
-      // Check if we are exiting.
-      if (state->destroyRequested != 0) {
-        engine.TerminateDisplay();
-        return;
       }
     }
 
@@ -136,4 +128,6 @@ void android_main(struct android_app* state) {
       engine.DrawFrame();
     }
   }
+
+  engine.TerminateDisplay();
 }

@@ -191,7 +191,7 @@ class sensorgraph {
   }
 
   void update() {
-    ALooper_pollAll(0, NULL, NULL, NULL);
+    ALooper_pollOnce(0, NULL, NULL, NULL);
     ASensorEvent event;
     float a = SENSOR_FILTER_ALPHA;
     while (ASensorEventQueue_getEvents(accelerometerEventQueue, &event, 1) >

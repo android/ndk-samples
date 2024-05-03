@@ -64,27 +64,19 @@ extern "C" void android_main(struct android_app* state) {
   state->onAppCmd = ProcessAndroidCmd;
 
   // loop waiting for stuff to do.
-  while (1) {
-    // Read all pending events.
-    int events;
-    struct android_poll_source* source;
-
-    while (ALooper_pollAll(0, NULL, &events, (void**)&source) >= 0) {
-      // Process this event.
-      if (source != NULL) {
-        source->process(state, source);
-      }
-
-      // Check if we are exiting.
-      if (state->destroyRequested != 0) {
-        LOGI("CameraEngine thread destroy requested!");
-        engine.DeleteCamera();
-        pEngineObj = nullptr;
-        return;
-      }
+  while (!state->destroyRequested) {
+    struct android_poll_source* source = nullptr;
+    auto result  = ALooper_pollOnce(0, NULL, nullptr, (void**)&source);
+    ASSERT(result != ALOOPER_POLL_ERROR, "ALooper_pollOnce returned an error");
+    if (source != NULL) {
+      source->process(state, source);
     }
     pEngineObj->DrawFrame();
   }
+
+  LOGI("CameraEngine thread destroy requested!");
+  engine.DeleteCamera();
+  pEngineObj = nullptr;
 }
 
 /**

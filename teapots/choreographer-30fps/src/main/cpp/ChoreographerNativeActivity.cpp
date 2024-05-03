@@ -588,26 +588,20 @@ void android_main(android_app* state) {
   state->onInputEvent = Engine::HandleInput;
 
   // loop waiting for stuff to do.
-  while (1) {
-    // Read all pending events.
-    int id;
-    int events;
-    android_poll_source* source;
-
+  while (!state->destroyRequested) {
     // If not animating, we will block forever waiting for events.
     // If animating, we loop until all events are read, then continue
     // to draw the next frame of animation.
-    while ((id = ALooper_pollAll(g_engine.IsReady() ? 0 : -1, NULL, &events,
-                                 (void**)&source)) >= 0) {
-      // Process this event.
-      if (source != NULL) source->process(state, source);
-
-      // Check if we are exiting.
-      if (state->destroyRequested != 0) {
-        g_engine.TermDisplay();
-        return;
-      }
+    android_poll_source* source = nullptr;
+    auto result = ALooper_pollOnce(g_engine.IsReady() ? 0 : -1, nullptr, nullptr,
+                                 (void**)&source);
+    if (result == ALOOPER_POLL_ERROR) {
+      LOGE("ALooper_pollOnce returned an error");
+      abort();
     }
+
+    // Process this event.
+    if (source != NULL) source->process(state, source);
 
     if (g_engine.IsReady()) {
       // Drawing is throttled to the screen update rate, so there
@@ -615,4 +609,6 @@ void android_main(android_app* state) {
       g_engine.DrawFrame();
     }
   }
+
+  g_engine.TermDisplay();
 }
