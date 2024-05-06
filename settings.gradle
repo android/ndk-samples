@@ -1,0 +1,65 @@
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "NDK Samples"
+include(":audio-echo:app")
+include(":bitmap-plasma:app")
+include(":camera:basic")
+include(":camera:texture-view")
+include(":display-p3:image-view")
+include(":endless-tunnel:app")
+include(":exceptions:app")
+include(":gles3jni:app")
+include(":hello-gl2:app")
+include(":hello-jni:app")
+include(":hello-jniCallback:app")
+include(":hello-libs:app")
+// To generate libs used in this sample:
+//   1) enable the gen-libs at end of this file
+//   2) enable module build dependency in app/build.gradle
+//   3) build the app's APK in Android Studio or on command line
+//   4) undo step 1) and 2) above
+// include(":hello-libs:gen-libs")
+include(":hello-neon:app")
+include(":hello-oboe:app")
+//include(":hello-vulkan:app")
+include(":native-activity:app")
+include(":native-audio:app")
+include(":native-codec:app")
+include(":native-media:app")
+include(":native-midi:app")
+include(":native-plasma:app")
+include(":nn-samples:basic")
+include(":nn-samples:sequence")
+include(":orderfile:app")
+include(":prefab:curl-ssl:app")
+include(":prefab:prefab-dependency:app")
+include(":prefab:prefab-publishing:mylibrary")
+include(":san-angeles:app")
+include(":sanitizers:app")
+include(":sensor-graph:app")
+include(":teapots:choreographer-30fps")
+include(":teapots:classic-teapot")
+include(":teapots:image-decoder")
+include(":teapots:more-teapots")
+include(":teapots:textured-teapot")
+include(":unit-test:app")
+include(":webp:view")
