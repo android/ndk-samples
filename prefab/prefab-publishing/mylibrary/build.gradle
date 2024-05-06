@@ -21,6 +21,7 @@ plugins {
 android {
     compileSdk 33
     ndkVersion '25.1.8937393'
+    namespace "com.example.prefabpublishing"
 
     defaultConfig {
         minSdkVersion 16
