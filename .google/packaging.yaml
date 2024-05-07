@@ -1,0 +1,13 @@
+status: PUBLISHED
+technologies:
+  - Android
+  - NDK
+  - Platform
+categories:
+  - NDK
+languages:
+  - C++
+solutions:
+  - Mobile
+github: android/ndk-samples
+license: apache2
