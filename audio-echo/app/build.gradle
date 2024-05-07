@@ -1,9 +1,8 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
 android {
-    compileSdk 33
     ndkVersion '25.1.8937393'
 
     defaultConfig {
@@ -14,7 +13,6 @@ android {
              *) set ANDROID_STL to c++_static for some very earlier version android.
          */
         minSdkVersion 23
-        targetSdkVersion 33
         versionCode 1
         versionName '1.0'
         externalNativeBuild {
