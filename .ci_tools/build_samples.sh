@@ -36,21 +36,8 @@ declare projects=(
     unit-test
     webp
 ##   ndk-build samples
-    other-builds/ndkbuild/bitmap-plasma
-    other-builds/ndkbuild/gles3jni
-    other-builds/ndkbuild/hello-gl2
     other-builds/ndkbuild/hello-jni
-    other-builds/ndkbuild/hello-libs
-    other-builds/ndkbuild/hello-neon
     other-builds/ndkbuild/native-activity
-    other-builds/ndkbuild/native-audio
-    other-builds/ndkbuild/native-codec
-    other-builds/ndkbuild/native-media
-    other-builds/ndkbuild/native-plasma
-    other-builds/ndkbuild/nn-samples
-    other-builds/ndkbuild/san-angeles
-    other-builds/ndkbuild/teapots
-    other-builds/ndkbuild/two-libs
     )
 
 LINT_FAILURES=$(mktemp)
@@ -116,24 +103,8 @@ declare apks=(
   webp/view/build/outputs/apk/debug/view-debug.apk
 
 ## other-builds
-  other-builds/ndkbuild/bitmap-plasma/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/gles3jni/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/hello-gl2/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/hello-jni/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/hello-libs/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/hello-neon/app/build/outputs/apk/debug/app-debug.apk
   other-builds/ndkbuild/native-activity/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/native-audio/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/native-codec/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/native-media/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/native-plasma/app/build/outputs/apk/debug/app-debug.apk
-  other-builds/ndkbuild/nn-samples/basic/build/outputs/apk/debug/basic-debug.apk
-  other-builds/ndkbuild/san-angeles/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
-  other-builds/ndkbuild/san-angeles/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
-  other-builds/ndkbuild/san-angeles/app/build/outputs/apk/debug/app-x86-debug.apk
-  other-builds/ndkbuild/teapots/more-teapots/build/outputs/apk/debug/more-teapots-debug.apk
-  other-builds/ndkbuild/teapots/classic-teapot/build/outputs/apk/debug/classic-teapot-debug.apk
-  other-builds/ndkbuild/two-libs/app/build/outputs/apk/debug/app-debug.apk
 )
 
 for apk in "${apks[@]}"; do
