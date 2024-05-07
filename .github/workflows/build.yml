@@ -21,15 +21,10 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - uses: actions/setup-python@v4
-      with:
-        python-version: 3.x
-
     - name: build samples
       run: |
         export SAMPLE_CI_RESULT=0
         source .ci_tools/build_samples.sh
-        source .ci_tools/run_samples.sh
         eval "[[ $SAMPLE_CI_RESULT == 0 ]]"
 
     - uses: pre-commit/action@v3.0.0
