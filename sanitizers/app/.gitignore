@@ -1,1 +1,4 @@
 /build
+
+# These are installed by the cmake build.
+libclang_rt.*.so
