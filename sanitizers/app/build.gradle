@@ -6,7 +6,7 @@ plugins {
 android {
     namespace 'com.example.sanitizers'
     ndkVersion '26.1.10909125'
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.sanitizers"
@@ -16,7 +16,7 @@ android {
         // Note that the hwasan build type will override this. See the
         // androidComponents stanza below.
         minSdk 21
-        targetSdk 32
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
