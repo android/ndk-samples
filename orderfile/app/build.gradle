@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.orderfiledemo"
         minSdk 21
-        targetSdk 31
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         ndkVersion '25.2.9519653'
