@@ -23,9 +23,7 @@ jobs:
 
     - name: build samples
       run: |
-        export SAMPLE_CI_RESULT=0
-        source .ci_tools/build_samples.sh
-        eval "[[ $SAMPLE_CI_RESULT == 0 ]]"
+        ./gradlew build
 
     - uses: pre-commit/action@v3.0.0
 
