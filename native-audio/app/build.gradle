@@ -25,6 +25,10 @@ android {
         }
     }
     namespace 'com.example.nativeaudio'
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
