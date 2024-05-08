@@ -1,30 +1,21 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
+    namespace 'com.example.nativemedia'
 
     defaultConfig {
         applicationId 'com.example.nativemedia'
-        minSdkVersion 14
-        targetSdkVersion 33
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                           'proguard-rules.pro'
-        }
-    }
-     externalNativeBuild {
+
+    externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+
     androidResources {
         noCompress 'ts'
     }
-    namespace 'com.example.nativemedia'
 }
