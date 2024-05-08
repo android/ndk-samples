@@ -6,6 +6,7 @@ junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 androidxConstraintLayout = "2.1.4"
 androidxCore = "1.9.0"
+androidxGames = "2.1.0-alpha01"
 appcompat = "1.6.1"
 material = "1.12.0"
 jetbrainsKotlinJvm = "1.7.21"
@@ -17,6 +18,7 @@ ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitV
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 androidx-core = { group = "androidx.core", name = "core", version.ref = "androidxCore" }
+androidx-games-gameactivity = { group = "androidx.games", name = "games-activity", version.ref = "androidxGames" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
