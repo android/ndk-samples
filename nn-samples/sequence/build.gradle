@@ -1,42 +1,28 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
+    namespace 'com.example.android.sequence'
 
     defaultConfig {
         applicationId "com.example.android.sequence"
         minSdkVersion 30
-        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
-        externalNativeBuild {
-            cmake {
-                cppFlags "-std=c++17"
-            }
-        }
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
+
     androidResources {
         noCompress 'bin'
     }
-    namespace 'com.example.android.sequence'
-
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation libs.androidx.constraintlayout
 }
