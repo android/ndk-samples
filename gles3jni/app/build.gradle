@@ -1,36 +1,22 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
-def platformVersion = 24      // openGLES 3.2 min api level
-// def platformVersion = 18    //openGLES 3 min api level
-// def platformVersion = 12    //openGLES 2 min api level
-
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
+    namespace 'com.android.gles3jni'
 
     defaultConfig {
         applicationId 'com.android.gles3jni'
-        minSdkVersion "${platformVersion}"
-        targetSdkVersion 33
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
             }
         }
     }
-    buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules.pro'
-        }
-    }
+
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
-    namespace 'com.android.gles3jni'
 }
