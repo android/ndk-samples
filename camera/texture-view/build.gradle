@@ -1,15 +1,12 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
-
+    namespace 'com.sample.textureview'
     defaultConfig {
         applicationId "com.sample.textureview"
         minSdkVersion 24
-        targetSdkVersion 33
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
@@ -22,18 +19,8 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules.txt'
-        }
-    }
-    namespace 'com.sample.textureview'
-
 }
 
 dependencies {
-    implementation 'androidx.core:core:1.9.0'
+    implementation libs.androidx.core
 }
