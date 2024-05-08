@@ -1,18 +1,15 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+    id "ndksamples.android.application"
+    id 'ndksamples.android.kotlin'
 }
 
 android {
-    compileSdk 34
+    namespace 'com.example.orderfiledemo'
 
     defaultConfig {
         applicationId "com.example.orderfiledemo"
-        minSdk 21
-        targetSdk 34
         versionCode 1
         versionName "1.0"
-        ndkVersion '25.2.9519653'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -22,37 +19,20 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
     externalNativeBuild {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
             version '3.22.1'
         }
     }
+
     buildFeatures {
         viewBinding true
     }
-    namespace 'com.example.orderfiledemo'
-    ndkVersion '25.2.9519653'
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.androidx.constraintlayout
 }
