@@ -15,6 +15,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 compileSdk = Versions.COMPILE_SDK
+                ndkVersion = Versions.NDK
                 defaultConfig {
                     targetSdk = Versions.TARGET_SDK
                 }
