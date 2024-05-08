@@ -9,6 +9,7 @@ androidxCore = "1.9.0"
 appcompat = "1.6.1"
 material = "1.12.0"
 jetbrainsKotlinJvm = "1.7.21"
+oboe = "1.6.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -19,6 +20,7 @@ androidx-core = { group = "androidx.core", name = "core", version.ref = "android
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+oboe = { group = "com.google.oboe", name = "oboe", version.ref = "oboe" }
 
 # build-logic dependencies
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
