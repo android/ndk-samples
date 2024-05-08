@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror")
+# TODO: Remove -Wno-unused-variable
+# That warning is ignore for now because those are release config only issues
+# caused by assert(). The fix is to migrate to CHECK/DCHECK, but that requires
+# importing absl or libbase first.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -Wno-unused-variable")
 
 add_library(accelerometergraph SHARED
             sensorgraph.cpp)
