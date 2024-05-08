@@ -15,23 +15,15 @@
  */
 
 plugins {
-    id  'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id "ndksamples.android.application"
+    id "ndksamples.android.kotlin"
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
-
-    buildFeatures {
-        prefab = true
-        viewBinding = true
-    }
+    namespace 'com.example.prefabdependency'
 
     defaultConfig {
         applicationId "com.example.com.example.prefabdependency"
-        minSdkVersion 21
-        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -41,13 +33,6 @@ android {
                     arguments "-DANDROID_STL=c++_shared"
                 }
             }
-        }
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -62,13 +47,15 @@ android {
             }
         }
     }
-    namespace 'com.example.prefabdependency'
+
+    buildFeatures {
+        prefab = true
+        viewBinding = true
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.21"
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "com.android.ndk.thirdparty:jsoncpp:1.8.4-alpha-1"
+    implementation libs.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.jsoncpp
 }
