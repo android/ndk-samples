@@ -8,12 +8,14 @@ espressoCore = "3.5.1"
 androidxConstraintLayout = "2.1.4"
 androidxCore = "1.9.0"
 androidxGames = "2.1.0-alpha01"
+androidxJUnitGTest = "1.0.0-alpha01"
 appcompat = "1.6.1"
 material = "1.12.0"
 jetbrainsKotlinJvm = "1.7.21"
 oboe = "1.6.1"
 
 curl = "7.79.1-beta-1"
+googletest = "1.11.0-beta-1"
 jsoncpp = "1.9.5-beta-1"
 openssl = "1.1.1l-beta-1"
 
@@ -24,6 +26,7 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 androidx-core = { group = "androidx.core", name = "core", version.ref = "androidxCore" }
 androidx-games-gameactivity = { group = "androidx.games", name = "games-activity", version.ref = "androidxGames" }
+androidx-junit-gtest = { group = "androidx.test.ext", name = "junit-gtest", version.ref = "androidxJUnitGTest" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -31,6 +34,7 @@ oboe = { group = "com.google.oboe", name = "oboe", version.ref = "oboe" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 curl = { group = "com.android.ndk.thirdparty", name = "curl", version.ref = "curl" }
+googletest = { group = "com.android.ndk.thirdparty", name = "googletest", version.ref = "googletest" }
 jsoncpp = { group = "com.android.ndk.thirdparty", name = "jsoncpp", version.ref = "jsoncpp" }
 openssl = { group = "com.android.ndk.thirdparty", name = "openssl", version.ref = "openssl" }
 
