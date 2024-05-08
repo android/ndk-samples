@@ -5,7 +5,6 @@ plugins {
 android {
     defaultConfig {
         applicationId 'com.google.sample.echo'
-        minSdkVersion 21
         versionCode 1
         versionName '1.0'
         externalNativeBuild {
