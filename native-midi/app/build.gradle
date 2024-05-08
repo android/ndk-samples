@@ -1,41 +1,30 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
+    namespace 'com.example.nativemidi'
     
     defaultConfig {
         applicationId "com.example.nativemidi"
         minSdkVersion 29
-        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_PLATFORM=android-29",
-                          "-DANDROID_STL=c++_static"
+                arguments "-DANDROID_STL=c++_static"
             }
         }
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
-        }
-    }
+
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
-    namespace 'com.example.nativemidi'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation libs.appcompat
+    implementation libs.androidx.constraintlayout
 }
