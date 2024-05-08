@@ -28,6 +28,10 @@ gradlePlugin {
             id = "ndksamples.android.application"
             implementationClass = "com.android.ndk.samples.buildlogic.AndroidApplicationConventionPlugin"
         }
+        register("androidLibrary") {
+            id = "ndksamples.android.library"
+            implementationClass = "com.android.ndk.samples.buildlogic.AndroidLibraryConventionPlugin"
+        }
         register("kotlinAndroid") {
             id = "ndksamples.android.kotlin"
             implementationClass = "com.android.ndk.samples.buildlogic.KotlinConventionPlugin"

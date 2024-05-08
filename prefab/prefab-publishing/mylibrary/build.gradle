@@ -15,18 +15,13 @@
  */
 
 plugins {
-   id  'com.android.library'
+   id  'ndksamples.android.library'
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
     namespace "com.example.prefabpublishing"
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 33
-
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_STL=c++_shared"
@@ -61,6 +56,4 @@ android {
         exclude("**/libmylibrary.so")
         exclude("**/libc++_shared.so")
     }
-
 }
-
