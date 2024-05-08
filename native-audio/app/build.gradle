@@ -1,30 +1,21 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
+    namespace 'com.example.nativeaudio'
 
     defaultConfig {
         applicationId 'com.example.nativeaudio'
         minSdkVersion 23
-        targetSdkVersion 33
     }
-    buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules.pro'
-        }
-    }
+
     externalNativeBuild {
         cmake {
             // todo: need to disable REVERT for fast audio recording
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
-    namespace 'com.example.nativeaudio'
 
     buildFeatures {
         buildConfig = true
@@ -32,5 +23,5 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation libs.appcompat
 }
