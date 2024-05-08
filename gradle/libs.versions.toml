@@ -17,7 +17,7 @@ oboe = "1.8.1"
 curl = "7.79.1-beta-1"
 googletest = "1.11.0-beta-1"
 jsoncpp = "1.9.5-beta-1"
-openssl = "1.1.1l-beta-1"
+openssl = "1.1.1q-beta-1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
