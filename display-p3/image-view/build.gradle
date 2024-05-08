@@ -1,27 +1,19 @@
 plugins {
-    id 'com.android.application'
+    id "ndksamples.android.application"
 }
 
 android {
-    compileSdk 33
-    ndkVersion '25.1.8937393'
-
+    namespace 'com.example.widecolor'
     defaultConfig {
         applicationId = 'com.example.widecolor'
+        // p3_passthrough_ext starts from Android-29
+        // it could be lowered to Android-26, from which p3_ext started
+        // TODO: Make the sample degrade gracefully on older API levels, reduce to 24 or 21.
         minSdkVersion   29
-        targetSdkVersion 33  // p3_passthrough_ext starts from Android-29
-                             // it could be lowered to Android-26, from which p3_ext started
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-29'
             }
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules.pro'
         }
     }
     externalNativeBuild {
@@ -29,9 +21,9 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
-    namespace 'com.example.widecolor'
 }
 
+// TODO: Vendor this into the tree.
 // download third_party libs: mathfu, stb
 List<String> TARGET_DIR = [projectDir.toString() + '/../third_party/mathfu',
                            projectDir.toString() + '/../third_party/stb']
@@ -53,5 +45,5 @@ for (int i = 0; i < TARGET_DIR.size(); i++) {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation libs.appcompat
 }
