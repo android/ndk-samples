@@ -4,6 +4,9 @@
 
 This repository contains sample apps that use the [Android NDK].
 
+For an explanation of the layout of this repository, see
+[ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Build and run
 
 1. Clone the repository
