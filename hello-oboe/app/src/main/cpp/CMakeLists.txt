@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 project(hello-oboe LANGUAGES CXX)
 
 # add oboe pre-release lib hosted at https://maven.google.com/web/index.html

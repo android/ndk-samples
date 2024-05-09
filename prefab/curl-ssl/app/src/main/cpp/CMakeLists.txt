@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.22.1)
 project(app VERSION 1.0.0 LANGUAGES CXX)
 
 find_package(curl REQUIRED CONFIG)

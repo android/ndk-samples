@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 add_library(hello-jnicallback SHARED
             hello-jnicallback.c)

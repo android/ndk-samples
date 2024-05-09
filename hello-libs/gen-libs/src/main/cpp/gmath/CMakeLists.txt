@@ -18,7 +18,7 @@
 # we could not delete the bin directory is because android studio would error out
 # when it checks target's existance. Only distribution place is used as import to app
 
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 

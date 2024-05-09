@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 # build cpufeatures as a static lib
 add_library(cpufeatures STATIC

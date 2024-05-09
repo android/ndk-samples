@@ -18,7 +18,7 @@
 # remove it after build complete, so only the distribution place could be
 # used for application linking.
 
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
