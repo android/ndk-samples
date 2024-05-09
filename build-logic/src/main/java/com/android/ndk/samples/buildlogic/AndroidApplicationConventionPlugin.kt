@@ -20,6 +20,10 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     minSdk = Versions.MIN_SDK
                     targetSdk = Versions.TARGET_SDK
                 }
+                compileOptions {
+                    sourceCompatibility = Versions.JAVA
+                    targetCompatibility = Versions.JAVA
+                }
             }
         }
     }

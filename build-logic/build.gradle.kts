@@ -19,6 +19,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 dependencies {
     compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
 }
 
 gradlePlugin {
@@ -26,6 +27,10 @@ gradlePlugin {
         register("androidApplication") {
             id = "ndksamples.android.application"
             implementationClass = "com.android.ndk.samples.buildlogic.AndroidApplicationConventionPlugin"
+        }
+        register("kotlinAndroid") {
+            id = "ndksamples.android.kotlin"
+            implementationClass = "com.android.ndk.samples.buildlogic.KotlinConventionPlugin"
         }
     }
 }
