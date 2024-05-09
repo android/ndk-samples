@@ -1,5 +1,5 @@
 # build native_app_glue as a static lib
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 include(AndroidNdkModules)
 android_ndk_import_module_native_app_glue()

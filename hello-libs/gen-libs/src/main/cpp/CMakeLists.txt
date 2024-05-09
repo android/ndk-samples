@@ -18,7 +18,7 @@
 # Generate one static lib and one shared lib, copy them into
 # ${project_dir}/distribution for other indepdendent applications
 # to use.
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 

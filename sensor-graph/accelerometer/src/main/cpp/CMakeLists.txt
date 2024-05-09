@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 # TODO: Remove -Wno-unused-variable
 # That warning is ignore for now because those are release config only issues
