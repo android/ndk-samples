@@ -19,6 +19,25 @@ tasks for an individual sample, run the `tasks` task for that directory. For
 example, `./gradlew :camera:basic:tasks` will show the tasks for the
 `camera/basic` app.
 
+## I just want something to copy from as a starting point
+
+The samples in this repository are generally not a good starting point for a
+production quality app. They aim to demonstrate individual NDK APIs, but often
+make sacrifices to be succinct that make them unsuitable for a production app.
+This is gradually changing, but for now you should not do this.
+
+[Now in Android](https://github.com/android/nowinandroid/) is an excellent
+resource for production quality apps in general, but does not touch on NDK-
+specific issues. https://github.com/DanAlbert/ndk-app-template can help some
+with that until this repository is able to.
+
+You're most likely best served by using the New Project wizard in Android Studio
+to create a new app, then using those resources and the samples here as a
+reference. Android Studio's "Native C++" template is a good starting point for
+typical applications that need to use some C++ via JNI. The "Game Activity"
+template is a good starting point for game-like apps (that is, apps that do not
+use the Android UI, but instead render their own UI using OpenGL or Vulkan).
+
 ## Additional documentation
 
 - [Add Native Code to Your Project](https://developer.android.com/studio/projects/add-native-code.html)
