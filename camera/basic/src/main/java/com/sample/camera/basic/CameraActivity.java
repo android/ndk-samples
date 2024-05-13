@@ -41,6 +41,8 @@ import android.widget.Toast;
 
 import static android.hardware.camera2.CameraMetadata.LENS_FACING_BACK;
 
+import java.util.Arrays;
+
 class CameraSeekBar {
     int _progress;
     long _min, _max, _absVal;
@@ -212,19 +214,53 @@ public class CameraActivity extends NativeActivity
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        /*
-         * if any permission failed, the sample could not play
-         */
-        if (PERMISSION_REQUEST_CODE_CAMERA != requestCode) {
+        if (requestCode != PERMISSION_REQUEST_CODE_CAMERA) {
+            // The permissions request isn't ours.
             super.onRequestPermissionsResult(requestCode,
                                              permissions,
                                              grantResults);
             return;
         }
 
-        if(grantResults.length == 2) {
-            notifyCameraPermission(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[1] == PackageManager.PERMISSION_GRANTED);
+        if (permissions.length == 0) {
+            // https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback#onRequestPermissionsResult(int,java.lang.String[],int[])
+            //
+            // Note: It is possible that the permissions request interaction with the user is
+            // interrupted. In this case you will receive empty permissions and results arrays which
+            // should be treated as a cancellation.
+            //
+            // The docs aren't clear about *why* it might be canceled, so it's not clear what we
+            // should do here other than restart the request.
+            RequestCamera();
+            return;
+        }
+
+        boolean granted = Arrays.stream(grantResults)
+                .allMatch(element -> element == PackageManager.PERMISSION_GRANTED);
+        if (!granted) {
+            logDeniedPermissions(permissions, grantResults);
+        }
+        notifyCameraPermission(granted);
+    }
+
+    private void logDeniedPermissions(
+            @NonNull String[] requestedPermissions,
+            @NonNull int[] grantResults
+    ) {
+        if (requestedPermissions.length != grantResults.length) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "requestedPermissions.length (%d) != grantResults.length (%d)",
+                            requestedPermissions.length,
+                            grantResults.length
+                    )
+            );
+        }
+
+        for (int i = 0; i < requestedPermissions.length; i++) {
+            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                Log.i(DBG_TAG, requestedPermissions[i] + " DENIED");
+            }
         }
     }
 
