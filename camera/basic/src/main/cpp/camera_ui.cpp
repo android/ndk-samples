@@ -115,9 +115,9 @@ void CameraEngine::OnPhotoTaken(const char *fileName) {
 void CameraEngine::OnCameraPermission(jboolean granted) {
   cameraGranted_ = (granted != JNI_FALSE);
 
-  if (cameraGranted_) {
-    OnAppInitWindow();
-  }
+  // TODO: Fail gracefully.
+  ASSERT(cameraGranted_, "required app permissions were not granted");
+  OnAppInitWindow();
 }
 
 /**
