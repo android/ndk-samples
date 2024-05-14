@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef TEAPOTS_TEXTURE_H
-#define TEAPOTS_TEXTURE_H
+#pragma once
 
 #include <EGL/egl.h>
 #include <GLES/gl.h>
@@ -37,24 +36,24 @@
  */
 class Texture {
  public:
-  Texture();
-  virtual ~Texture();
-
   /**
-   *   Create a texture object
-   * @param texFiles holds image file names under APK/assets.
-   *     2d texture uses the very first image texFiles[0]
+   * Create a texture object
+   *
+   * @param asset_paths holds image file names under APK/assets.
    *     cube map needs 6 (direction of +x, -x, +y, -y, +z, -z)
-   * @param assetManager Java side assetManager object
+   * @param asset_manager Java side asset_manager object
    * @return newly created texture object, or nullptr in case of errors
    */
-  static Texture* Create(std::vector<std::string>& texFiles,
-                         AAssetManager* assetManager);
+  Texture(std::vector<std::string>& asset_paths, AAssetManager* asset_manager);
+  Texture(const Texture&) = delete;
+  ~Texture();
 
-  virtual bool GetActiveSamplerInfo(std::vector<std::string>& names,
-                                    std::vector<GLint>& units) = 0;
-  virtual bool Activate(void) = 0;
-  virtual GLuint GetTexType() = 0;
-  virtual GLuint GetTexId() = 0;
+  Texture& operator=(const Texture&) = delete;
+
+  void GetActiveSamplerInfo(std::vector<std::string>& names,
+                            std::vector<GLint>& units);
+  bool Activate(void);
+
+ private:
+  GLuint texId_;
 };
-#endif  // TEAPOTS_TEXTURE_H
