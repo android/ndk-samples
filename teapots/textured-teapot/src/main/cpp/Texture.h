@@ -36,11 +36,10 @@
  *     - texture unit 0, sampler unit 0
  */
 class Texture {
- protected:
+ public:
   Texture();
   virtual ~Texture();
 
- public:
   /**
    *   Create a texture object
    * @param texFiles holds image file names under APK/assets.
@@ -51,7 +50,6 @@ class Texture {
    */
   static Texture* Create(std::vector<std::string>& texFiles,
                          AAssetManager* assetManager);
-  static void Delete(Texture* obj);
 
   virtual bool GetActiveSamplerInfo(std::vector<std::string>& names,
                                     std::vector<GLint>& units) = 0;
