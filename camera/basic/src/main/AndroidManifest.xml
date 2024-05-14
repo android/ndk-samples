@@ -4,7 +4,6 @@
           android:versionName="1.0">
   <uses-feature android:name="android.hardware.camera" />
   <uses-permission android:name="android.permission.CAMERA" />
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <application
       android:allowBackup="false"
       android:fullBackupContent="false"
