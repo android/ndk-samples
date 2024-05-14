@@ -188,23 +188,15 @@ public class CameraActivity extends NativeActivity
             Log.e(DBG_TAG, "Found legacy camera Device, this sample needs camera2 device");
             return;
         }
-        String[] accessPermissions = new String[] {
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        };
-        boolean needRequire  = false;
-        for(String access : accessPermissions) {
-           int curPermission = ActivityCompat.checkSelfPermission(this, access);
-           if(curPermission != PackageManager.PERMISSION_GRANTED) {
-               needRequire = true;
-               break;
-           }
-        }
-        if (needRequire) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+        ) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     this,
-                    accessPermissions,
-                    PERMISSION_REQUEST_CODE_CAMERA);
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSION_REQUEST_CODE_CAMERA
+            );
             return;
         }
         notifyCameraPermission(true);
