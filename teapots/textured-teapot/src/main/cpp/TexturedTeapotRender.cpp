@@ -97,7 +97,7 @@ void TexturedTeapotRender::Unload() {
     texVbo_ = GL_INVALID_VALUE;
   }
   if (texObj_) {
-    Texture::Delete(texObj_);
+    delete texObj_;
     texObj_ = nullptr;
   }
 }

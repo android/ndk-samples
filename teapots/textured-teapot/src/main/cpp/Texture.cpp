@@ -83,33 +83,6 @@ Texture* Texture::Create(std::vector<std::string>& texFiles,
   return new TextureCubemap(texFiles, assetManager);
 }
 
-void Texture::Delete(Texture* obj) {
-  if (obj == nullptr) {
-    ASSERT(false, "NULL pointer to Texture::Delete() function");
-    return;
-  }
-
-  GLuint type = obj->GetTexType();
-  if (type == GL_TEXTURE_2D) {
-    Texture2d* d2Instance = dynamic_cast<Texture2d*>(obj);
-    if (d2Instance) {
-      delete d2Instance;
-    } else {
-      ASSERT(false, "Unknown obj type to %s", __FUNCTION__);
-    }
-  } else if (type == GL_TEXTURE_CUBE_MAP) {
-    TextureCubemap* cubemapInstance = dynamic_cast<TextureCubemap*>(obj);
-    if (cubemapInstance) {
-      delete cubemapInstance;
-    } else {
-      ASSERT(false, "Unknown obj type to %s", __FUNCTION__);
-    }
-  } else {
-    LOGE("Supported Texture Types: %s", supportedTextureTypes.c_str());
-    ASSERT(false, "Unknow texture type %x to delete", type);
-  }
-}
-
 /**
  * TextureCubemap implementations
  */
