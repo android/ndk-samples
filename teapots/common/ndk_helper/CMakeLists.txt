@@ -17,11 +17,14 @@ add_library(NdkHelper
     tapCamera.cpp
     vecmath.cpp
 )
+# TODO: Remove this
+# This does not do what it looks like it does. It looks like it's redundant with
+# the target_include_directories(... PUBLIC ...) below. What it's actually doing
+# is re-exporting the headers for every library linked below. This is how all
+# the teapots samples are getting their native_app_glue. They should depend on
+# it explicitly.
 set_target_properties(NdkHelper
   PROPERTIES
-    CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO
     INTERFACE_INCLUDE_DIRECTORIES $<TARGET_PROPERTY:NdkHelper,INCLUDE_DIRECTORIES>
 )
 target_include_directories(NdkHelper
@@ -29,6 +32,10 @@ target_include_directories(NdkHelper
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# TODO: Audit, make private.
+# Some of these are here because it was a common location to link the
+# dependenices of the various teapot samples. Those samples should link their
+# dependencies explicitly.
 target_link_libraries(NdkHelper
   PUBLIC
     native_app_glue

@@ -33,13 +33,6 @@ add_library(${PROJECT_NAME}
     TeapotRenderer.cpp
 )
 
-set_target_properties(${PROJECT_NAME}
-  PROPERTIES
-    CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO
-)
-
 # Export ANativeActivity_onCreate(),
 # Refer to: https://github.com/android-ndk/ndk/issues/381.
 set_target_properties(${PROJECT_NAME}
