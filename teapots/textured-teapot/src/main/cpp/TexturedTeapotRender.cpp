@@ -29,7 +29,6 @@
 #define TILED_TEXTURE 0
 
 extern float teapotTexCoords[];
-constexpr int32_t kCoordElementCount = (TILED_TEXTURE ? 3 : 2);
 
 /**
  * Constructor: all work is done inside Init() function.
@@ -45,21 +44,6 @@ TexturedTeapotRender::TexturedTeapotRender() {}
 TexturedTeapotRender::~TexturedTeapotRender() { Unload(); };
 
 /**
- * Report type of teapot we are rendering. This is the only place
- * to decide what kind of teapot to render.
- *
- * @return
- *   GL_TEXTURE_CUBE_MAP if you want to render cubemaped teapot
- *   GL_TEXTURE_2D if just to render a 2D textured teapot
- *   GL_INVALID_VALUE no texture for teapot
- */
-GLint TexturedTeapotRender::GetTextureType(void) {
-  return GL_TEXTURE_CUBE_MAP;
-  //            GL_TEXTURE_2D;
-  //            GL_INVALID_VALUE;
-}
-
-/**
  * Init: Initialize the GL with needed data. We add on the things
  * needed for textures
  *  - load image data into generated glBuffers
@@ -69,47 +53,6 @@ GLint TexturedTeapotRender::GetTextureType(void) {
 void TexturedTeapotRender::Init(AAssetManager* assetMgr) {
   // initialize the basic things from TeapotRenderer, no change
   TeapotRenderer::Init();
-
-  GLint type = GetTextureType();
-  if (type == GL_INVALID_VALUE) {
-    // Plain teapot no texture
-    return;
-  }
-
-  // load texture coordinator for 2D texture. Cubemap texture uses world space
-  // normal to sample cubemap.
-  if (type == GL_TEXTURE_2D) {
-    // do Texture related initializations...
-    glGenBuffers(1, &texVbo_);
-    assert(texVbo_ != GL_INVALID_VALUE);
-
-    /*
-     * Loading Texture coord directly from data declared in model file
-     *   teapot.inl
-     * which is 3 floats/vertex.
-     */
-    glBindBuffer(GL_ARRAY_BUFFER, texVbo_);
-
-#if (TILED_TEXTURE)
-    glBufferData(GL_ARRAY_BUFFER,
-                 kCoordElementCount * sizeof(float) * num_vertices_,
-                 teapotTexCoords, GL_STATIC_DRAW);
-#else
-    std::vector<float> coords;
-    for (int32_t idx = 0; idx < num_vertices_; idx++) {
-      coords.push_back(teapotTexCoords[3 * idx] / 2);
-      coords.push_back(teapotTexCoords[3 * idx + 1] / 2);
-    }
-    glBufferData(GL_ARRAY_BUFFER,
-                 kCoordElementCount * sizeof(float) * num_vertices_,
-                 coords.data(), GL_STATIC_DRAW);
-#endif
-    glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
-                          kCoordElementCount * sizeof(float), BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(ATTRIB_UV);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-  }
 
   // Need flip Y, so as top/bottom image
   std::vector<std::string> textures{
@@ -121,11 +64,7 @@ void TexturedTeapotRender::Init(AAssetManager* assetMgr) {
       std::string("Textures/back.tga")     // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
   };
 
-  if (type == GL_TEXTURE_2D) {
-    textures[0] = std::string("Textures/front.tga");
-  }
-
-  texObj_ = Texture::Create(type, textures, assetMgr);
+  texObj_ = Texture::Create(textures, assetMgr);
   assert(texObj_);
 
   std::vector<std::string> samplers;

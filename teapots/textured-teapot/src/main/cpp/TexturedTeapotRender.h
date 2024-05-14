@@ -32,13 +32,6 @@ class TexturedTeapotRender : public TeapotRenderer {
  public:
   TexturedTeapotRender();
   virtual ~TexturedTeapotRender();
-  // This is to decide which teapot type to render:
-  //   plain teapot
-  //   2D textured teapot
-  //   Cubemap textured teapot
-  // the rest of the code looks this function to decide
-  // what to render.
-  virtual GLint GetTextureType(void);
   virtual void Init(AAssetManager* amgr);
   virtual void Render();
   virtual void Unload();
