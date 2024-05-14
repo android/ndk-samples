@@ -64,7 +64,7 @@ void TexturedTeapotRender::Init(AAssetManager* assetMgr) {
       std::string("Textures/back.tga")     // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
   };
 
-  texObj_ = Texture::Create(textures, assetMgr);
+  texObj_ = new Texture(textures, assetMgr);
   assert(texObj_);
 
   std::vector<std::string> samplers;
