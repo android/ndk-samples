@@ -20,7 +20,7 @@ cmake_minimum_required(VERSION 3.22.1)
 #   [24, infinite)   ES2 & ES3 & Vulkan
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -Wall")
 if (${ANDROID_PLATFORM_LEVEL} LESS 12)
   message(FATAL_ERROR "OpenGL 2 is not supported before API level 11 \
                       (currently using ${ANDROID_PLATFORM_LEVEL}).")
