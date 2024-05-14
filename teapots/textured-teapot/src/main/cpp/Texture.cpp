@@ -75,22 +75,12 @@ Texture::~Texture() {}
 /**
  * Create Texture Object
  * @param texFiles holds the texture file name(s) under APK's assets
- * @param type should be one (GL_TEXTURE_2D / GL_TEXTURE_CUBE_MAP)
  * @param assetManager is used to open texture files inside assets
  * @return is the newly created Texture Object
  */
-Texture* Texture::Create(GLuint type, std::vector<std::string>& texFiles,
+Texture* Texture::Create(std::vector<std::string>& texFiles,
                          AAssetManager* assetManager) {
-  if (type == GL_TEXTURE_2D) {
-    return dynamic_cast<Texture*>(new Texture2d(texFiles[0], assetManager));
-  } else if (type == GL_TEXTURE_CUBE_MAP) {
-    return dynamic_cast<Texture*>(new TextureCubemap(texFiles, assetManager));
-  }
-
-  LOGE("Unknow texture type %x to created", type);
-  LOGE("Supported Texture Types: %s", supportedTextureTypes.c_str());
-  assert(false);
-  return nullptr;
+  return new TextureCubemap(texFiles, assetManager);
 }
 
 void Texture::Delete(Texture* obj) {

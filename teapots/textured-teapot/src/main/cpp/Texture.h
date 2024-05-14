@@ -43,14 +43,13 @@ class Texture {
  public:
   /**
    *   Create a texture object
-   * @param type  should be GL_TEXTURE_2D / GL_TEXTURE_CUBE_MAP
    * @param texFiles holds image file names under APK/assets.
    *     2d texture uses the very first image texFiles[0]
    *     cube map needs 6 (direction of +x, -x, +y, -y, +z, -z)
    * @param assetManager Java side assetManager object
    * @return newly created texture object, or nullptr in case of errors
    */
-  static Texture* Create(GLuint type, std::vector<std::string>& texFiles,
+  static Texture* Create(std::vector<std::string>& texFiles,
                          AAssetManager* assetManager);
   static void Delete(Texture* obj);
 

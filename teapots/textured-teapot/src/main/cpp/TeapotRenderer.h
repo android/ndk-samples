@@ -92,7 +92,6 @@ class TeapotRenderer {
   TeapotRenderer();
   virtual ~TeapotRenderer();
   virtual void Init(AAssetManager* amgr) = 0;
-  virtual GLint GetTextureType(void) = 0;
   virtual void Render();
   void Update(float dTime);
   bool Bind(ndk_helper::TapCamera* camera);
