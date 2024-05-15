@@ -22,6 +22,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "NDK Samples"
 include(":audio-echo:app")
+include(":base")
 include(":bitmap-plasma:app")
 include(":camera:basic")
 include(":camera:texture-view")

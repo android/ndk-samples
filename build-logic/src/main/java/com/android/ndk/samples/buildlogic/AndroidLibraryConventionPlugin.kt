@@ -28,6 +28,18 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     sourceCompatibility = Versions.JAVA
                     targetCompatibility = Versions.JAVA
                 }
+
+                // Studio will not automatically pass logcat through ndk-stack, so we need to avoid
+                // stripping debug binaries if we want the crash trace to be readable.
+                buildTypes {
+                    debug {
+                        packaging {
+                            jniLibs {
+                                keepDebugSymbols += "**/*.so"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
