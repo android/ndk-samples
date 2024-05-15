@@ -82,6 +82,20 @@ properties of the app.
 The settings.gradle (or settings.gradle.kts) file configures repositories for
 fetching dependencies, and declares each app module.
 
+### CMake
+
+Contains CMake modules used by the samples. See [CMake/README.md] for details.
+
+[CMake/README.md]: CMake/README.md
+
+### third_party
+
+Contains third-party code used by the samples. These should be kept to a minimum
+to avoid the samples being too difficult to reuse. See [third_party/README.md]
+for more information.
+
+[third_party/README.md]: third_party/README.md
+
 ### Metadata directories
 
 #### .github

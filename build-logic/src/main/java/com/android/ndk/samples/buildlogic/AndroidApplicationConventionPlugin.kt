@@ -8,6 +8,7 @@ import org.gradle.kotlin.dsl.configure
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+        val modulePath = target.rootProject.rootDir.resolve("CMake")
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
@@ -19,6 +20,12 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 defaultConfig {
                     minSdk = Versions.MIN_SDK
                     targetSdk = Versions.TARGET_SDK
+
+                    externalNativeBuild {
+                        cmake {
+                            arguments.add("-DCMAKE_MODULE_PATH=$modulePath")
+                        }
+                    }
                 }
                 compileOptions {
                     sourceCompatibility = Versions.JAVA
