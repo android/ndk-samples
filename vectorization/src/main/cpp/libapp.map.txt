@@ -1,0 +1,6 @@
+LIBAPP {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};
