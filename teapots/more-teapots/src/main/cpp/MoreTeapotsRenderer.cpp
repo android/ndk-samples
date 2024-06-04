@@ -25,6 +25,8 @@
 
 #include <string.h>
 
+#include <vector>
+
 //--------------------------------------------------------------------------------
 // Teapot model data
 //--------------------------------------------------------------------------------
@@ -152,15 +154,17 @@ void MoreTeapotsRenderer::Init(const int32_t numX, const int32_t numY,
       int32_t num_indices;
       glGetActiveUniformBlockiv(shader_param_.program_, blockIndex,
                                 GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &num_indices);
-      GLint i[num_indices];
-      GLint stride[num_indices];
+      std::vector<GLint> indices(num_indices);
+      std::vector<GLint> strides(num_indices);
       glGetActiveUniformBlockiv(shader_param_.program_, blockIndex,
-                                GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, i);
-      glGetActiveUniformsiv(shader_param_.program_, num_indices, (GLuint*)i,
-                            GL_UNIFORM_ARRAY_STRIDE, stride);
+                                GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES,
+                                indices.data());
+      glGetActiveUniformsiv(shader_param_.program_, num_indices,
+                            (GLuint*)indices.data(), GL_UNIFORM_ARRAY_STRIDE,
+                            strides.data());
 
-      ubo_matrix_stride_ = stride[0] / sizeof(float);
-      ubo_vector_stride_ = stride[2] / sizeof(float);
+      ubo_matrix_stride_ = strides.at(0) / sizeof(float);
+      ubo_vector_stride_ = strides.at(2) / sizeof(float);
 
       glGenBuffers(1, &ubo_);
       glBindBuffer(GL_UNIFORM_BUFFER, ubo_);

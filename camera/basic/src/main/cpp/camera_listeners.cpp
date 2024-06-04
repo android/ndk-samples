@@ -157,7 +157,8 @@ void NDKCamera::OnSessionState(ACameraCaptureSession* ses,
     return;
   }
 
-  ASSERT(state < CaptureSessionState::MAX_STATE, "Wrong state %d", state);
+  ASSERT(state < CaptureSessionState::MAX_STATE, "Wrong state %d",
+         static_cast<int>(state));
 
   captureSessionState_ = state;
 }
