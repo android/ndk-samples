@@ -19,6 +19,7 @@
 #include <jni.h>
 
 #include <cstdlib>
+#include <functional>
 #include <string>
 #include <vector>
 
