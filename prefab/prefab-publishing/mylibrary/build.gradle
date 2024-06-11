@@ -15,7 +15,7 @@
  */
 
 plugins {
-   id  'ndksamples.android.library'
+    id 'ndksamples.android.library'
 }
 
 android {
@@ -47,13 +47,14 @@ android {
             headers "src/main/cpp/include"
         }
     }
-
-    // Avoid packing the unnecessary libraries into final AAR. For details
-    // refer to https://issuetracker.google.com/issues/168777344#comment5
-    // Note that if your AAR also contains Java/Kotlin APIs, you should not
-    // exclude libraries that are used by those APIs.
     packagingOptions {
-        exclude("**/libmylibrary.so")
-        exclude("**/libc++_shared.so")
+        // Avoid packing the unnecessary libraries into final AAR. For details
+        // refer to https://issuetracker.google.com/issues/168777344#comment5
+        // Note that if your AAR also contains Java/Kotlin APIs, you should not
+        // exclude libraries that are used by those APIs.
+        jniLibs {
+            excludes += ['**/libmylibrary.so', '**/libc++_shared.so']
+        }
     }
+
 }

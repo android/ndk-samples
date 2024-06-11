@@ -24,14 +24,14 @@ android {
         viewBinding true
         prefab true
     }
-
     packagingOptions {
         // Libraries that are wrongly included in the junit-gtest AAR that will
         // end up in our APK if we don't explicitly exclude them.
-        exclude "**/libadder.so"
-        exclude "**/libapptest.so"
-        exclude "**/libc++_shared.so"
+        jniLibs {
+            excludes += ['**/libadder.so', '**/libapptest.so', '**/libc++_shared.so']
+        }
     }
+
 }
 
 dependencies {
