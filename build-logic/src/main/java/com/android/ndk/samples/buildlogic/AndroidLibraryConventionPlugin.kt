@@ -23,6 +23,11 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     testOptions {
                         targetSdk = Versions.TARGET_SDK
                     }
+                    externalNativeBuild {
+                        cmake {
+                            arguments.add("-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON")
+                        }
+                    }
                 }
                 compileOptions {
                     sourceCompatibility = Versions.JAVA
