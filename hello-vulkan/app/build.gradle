@@ -21,7 +21,7 @@ plugins {
 
 android {
     namespace 'com.android.hellovk'
-    
+
     defaultConfig {
         applicationId 'com.android.hellovk'
         // TODO: Figure out why this isn't 24.
@@ -52,4 +52,5 @@ android {
 dependencies {
     implementation libs.appcompat
     implementation libs.androidx.games.gameactivity
+    debugImplementation(libs.vulkan.validationLayers)
 }

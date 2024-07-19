@@ -32,18 +32,6 @@ features such as:
 
 ![Vulkan Triangle example](documentation-assets/example-triangle.png)
 
-## Validation layers
-
-As the validation layer is a sizeable download, we chose to not ship them within
-the apk. As such in order to enable validation layer, please follow the simple
-steps below:
-
-1. Download the latest android binaries from:
-   https://github.com/KhronosGroup/Vulkan-ValidationLayers/releases
-1. Place them in their respective ABI folders located in: app/src/main/jniLibs
-1. Go to hellovk.h, search for 'bool enableValidationLayers = false' and toggle
-   that to true.
-
 ## Extra information:
 
 As Vulkan is well documented we will not provide detailed instructions regarding
