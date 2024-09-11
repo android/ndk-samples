@@ -15,6 +15,13 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 compileSdk = Versions.COMPILE_SDK
                 ndkVersion = Versions.NDK
+
+                externalNativeBuild {
+                    cmake {
+                        version = Versions.CMAKE
+                    }
+                }
+
                 defaultConfig {
                     minSdk = Versions.MIN_SDK
                     lint {

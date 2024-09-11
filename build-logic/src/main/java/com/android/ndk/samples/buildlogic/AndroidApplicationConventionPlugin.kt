@@ -16,6 +16,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
                 compileSdk = Versions.COMPILE_SDK
                 ndkVersion = Versions.NDK
+
+                externalNativeBuild {
+                    cmake {
+                        version = Versions.CMAKE
+                    }
+                }
+
                 defaultConfig {
                     minSdk = Versions.MIN_SDK
                     targetSdk = Versions.TARGET_SDK
