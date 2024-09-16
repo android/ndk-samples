@@ -21,6 +21,8 @@ jobs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+      with:
+        packages: "cmake;4.1.0"
 
     - name: build samples
       run: |
