@@ -1,13 +1,13 @@
 # Android NDK Samples
 
-[![build](https://github.com/android/ndk-samples/actions/workflows/build.yml/badge.svg)](https://github.com/android/ndk-samples/actions)
-
 This repository contains sample apps that use the [Android NDK].
 
 For an explanation of the layout of this repository, see
 [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Build and run
+
+[![build](https://github.com/android/ndk-samples/actions/workflows/build.yml/badge.svg)](https://github.com/android/ndk-samples/actions)
 
 1. Clone the repository
 2. Open the whole project in Android Studio
