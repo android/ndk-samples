@@ -12,11 +12,21 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/DanAlbert/Vulkan-ValidationLayers")
+            // This is apparently required even for public packages. Should probably push these to
+            // Maven Central instead...
+            credentials {
+                username = settings.ext.find("gpr.user") ?: System.getenv("USERNAME")
+                password = settings.ext.find("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
     }
 }
 
