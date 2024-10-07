@@ -24,14 +24,20 @@ android {
         viewBinding true
         prefab true
     }
+
     packagingOptions {
-        // Libraries that are wrongly included in the junit-gtest AAR that will
-        // end up in our APK if we don't explicitly exclude them.
         jniLibs {
-            excludes += ['**/libadder.so', '**/libapptest.so', '**/libc++_shared.so']
+            // Gradle has no way of knowing which of the libraries in our
+            // CMakeLists.txt are for the app and which are for tests, so we
+            // have to tell it which libraries are test libraries. Without
+            // this, the test libraries will end up packaged in the real API
+            // and not just the test APK.
+            //
+            // If you copy this project, be sure to update this to specify the
+            // names of your own test libraries.
+            testOnly += ["**/libapp_tests.so"]
         }
     }
-
 }
 
 dependencies {
