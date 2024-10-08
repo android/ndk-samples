@@ -7,6 +7,6 @@ object Versions {
     const val TARGET_SDK = 34
     const val MIN_SDK = 21
     const val NDK = "27.1.12297006" // r27b
-    const val CMAKE = "3.22.1"
+    const val CMAKE = "3.30.3"
     val JAVA = JavaVersion.VERSION_1_8
 }
