@@ -206,6 +206,7 @@ void Java_com_example_nativemidi_AppMidiManager_startWritingMidi(
  */
 void Java_com_example_nativemidi_AppMidiManager_stopWritingMidi(JNIEnv*,
                                                                 jobject) {
+  AMidiInputPort_close(sMidiInputPort); //Close InputPort to make switching MidiDevices work!
   /*media_status_t status =*/AMidiDevice_release(sNativeSendDevice);
   sNativeSendDevice = NULL;
 }
