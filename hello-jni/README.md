@@ -16,8 +16,8 @@ with C++ support. For how to use Android Studio, refer to
 
 1. [Download Android Studio](http://developer.android.com/sdk/index.html)
 1. Launch Android Studio.
-1. Open the sample directory.
-1. Click *Run/Run 'app'*.
+1. Open the ndk-samples directory.
+1. Click *Run* and select *hello-jni.app* from the list.
 
 ## Screenshots
 
