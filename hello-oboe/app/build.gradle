@@ -5,13 +5,18 @@ plugins {
 
 android {
     namespace 'com.google.example.hellooboe'
-    
+
     defaultConfig {
         applicationId "com.google.example.hellooboe"
         versionCode 1
         versionName "1.0"
         externalNativeBuild.cmake {
-            arguments  "-DANDROID_STL=c++_shared"
+            arguments "-DANDROID_STL=c++_shared"
+        }
+
+        ndk {
+            // Oboe doesn't currently (August 2025) include riscv64 libraries.
+            abiFilters.remove("riscv64")
         }
     }
 

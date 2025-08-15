@@ -4,11 +4,23 @@ plugins {
 
 android {
     namespace 'com.example.helloneon'
-    
+
     defaultConfig {
         applicationId "com.example.helloneon"
         versionCode 1
         versionName "1.0"
+
+        ndk {
+            // rv64 doesn't support Neon intrinsics. You shouldn't really use
+            // those anyway, since they're just a non-portable wrapper around
+            // the portable Clang vector intrinsics:
+            //
+            // https://clang.llvm.org/docs/LanguageExtensions.html#vectors-and-extended-vectors
+            //
+            // TODO: Delete this sample in favor of a better one.
+            // https://github.com/android/ndk-samples/issues/1011
+            abiFilters.remove("riscv64")
+        }
     }
 
     externalNativeBuild {

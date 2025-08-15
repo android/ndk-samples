@@ -35,6 +35,21 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                             arguments.add("-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON")
                         }
                     }
+                    ndk {
+                        // riscv64 isn't a supported Android ABI yet (August 2025), but we're
+                        // enabling it here as part of that experiment. Until it's a supported ABI,
+                        // don't include this in your app, as Play will block uploads of APKs which
+                        // contain riscv64 libraries.
+                        abiFilters.addAll(
+                            listOf(
+                                "arm64-v8a",
+                                "armeabi-v7a",
+                                "riscv64",
+                                "x86",
+                                "x86_64",
+                            )
+                        )
+                    }
                 }
                 compileOptions {
                     sourceCompatibility = Versions.JAVA

@@ -21,7 +21,7 @@ plugins {
 
 android {
     namespace 'com.android.hellovk'
-    
+
     defaultConfig {
         applicationId 'com.android.hellovk'
         // TODO: Figure out why this isn't 24.
@@ -34,6 +34,11 @@ android {
         }
         shaders {
             glslcArgs.addAll(['-c'])
+        }
+        ndk {
+            // GameActivity doesn't currently (August 2025) include riscv64
+            // libraries.
+            abiFilters.remove("riscv64")
         }
     }
 

@@ -14,6 +14,12 @@ android {
                 arguments '-DANDROID_STL=c++_static'
             }
         }
+
+        ndk {
+            // This sample relies on prebuilt libraries, and we haven't built
+            // rv64 versions of those libraries yet.
+            abiFilters.remove("riscv64")
+        }
     }
 
     externalNativeBuild {

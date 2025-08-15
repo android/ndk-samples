@@ -16,9 +16,59 @@ android {
         minSdk 21
         versionCode 1
         versionName "1.0"
+
+        // The sanitizers aren't all mutually compatible, so this sample is
+        // split into a buildType per sanitizer below. For most of those
+        // sanitizers, we support every ABI. The HWASan buildType is the
+        // exception, where we want to enable only arm64-v8a.
+        //
+        // Unfortunately, the convention plugin enables every ABI using
+        // defaultConfig.ndk.abiFilters, which apparently overrides anything we
+        // do in buildTypes. To be able to control which ABIs get built here
+        // using buildTypes, we have to undo the work done by the convention
+        // plugin by clearing the defaultConfig abiFilters. Instead, we enable
+        // all the ABIs in the debug and release buildTypes below, inherit from
+        // those for most of the sanitizers, but then again reset the list for
+        // HWASan to enable only arm64-v8a.
+        //
+        // We could instead change the convention plugin to use buildType
+        // instead, but then all the samples that need to disable rv64 would
+        // have to do it twice (once for release and once for debug). Since the
+        // sanitizers sample is the only one that needs this behavior, I'd
+        // rather keep the mess here rather than spread it around.
+        ndk {
+            abiFilters.clear()
+        }
     }
 
     buildTypes {
+        // Now that the defaultConfig abiFilters have been cleared, the
+        // buildType abiFilters will actually have an effect. Enable all ABIs,
+        // since that's what we want for most of the sanitizers.
+        debug {
+            ndk {
+                abiFilters(
+                    "arm64-v8a",
+                    "armeabi-v7a",
+                    "riscv64",
+                    "x86",
+                    "x86_64",
+                )
+            }
+        }
+
+        release {
+            ndk {
+                abiFilters(
+                    "arm64-v8a",
+                    "armeabi-v7a",
+                    "riscv64",
+                    "x86",
+                    "x86_64",
+                )
+            }
+        }
+
         // HWASan for devices starting from Android 14. Does no longer require a special system image.
         // See https://developer.android.com/ndk/guides/hwasan.
         hwasan {
@@ -36,6 +86,11 @@ android {
                 }
             }
             ndk {
+                // The defaultConfig's abiFilters were cleared above, but then
+                // we also populated the debug buildType's abiFilters with all
+                // ABIs, which the hwasan buildType inherits. We only want
+                // arm64-v8a here.
+                abiFilters.clear()
                 abiFilters "arm64-v8a"
             }
         }
