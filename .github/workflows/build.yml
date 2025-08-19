@@ -1,27 +1,85 @@
-name: build
+name: NS Invoice
 
-on:
-  workflow_dispatch:
-  push:
-  pull_request:
 
-jobs:
-  build:
+import React, { useState } from "react";
 
-    runs-on: ubuntu-latest
+export default function InvoiceApp() {
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState({ name: "", qty: 1, price: 0 });
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: set up JDK 21
-      uses: actions/setup-java@v1
-      with:
-        java-version: 21
+  const addItem = () => {
+    if (!newItem.name || newItem.qty <= 0 || newItem.price < 0) return;
+    setItems([...items, newItem]);
+    setNewItem({ name: "", qty: 1, price: 0 });
+  };
 
-    - uses: pre-commit/action@v3.0.0
+  const subtotal = items.reduce((sum, i) => sum + i.qty * i.price, 0);
+  const tax = subtotal * 0.1; // 10% tax
+  const total = subtotal + tax;
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+  return (
+    <div className="p-6 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">🧾 Simple Invoice App</h1>
 
-    - name: build samples
-      run: |
-        ./gradlew build
+      {/* Add Item Form */}
+      <div className="grid grid-cols-4 gap-2 mb-4">
+        <input
+          type="text"
+          placeholder="Item name"
+          className="border p-2 rounded col-span-2"
+          value={newItem.name}
+          onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+        />
+        <input
+          type="number"
+          placeholder="Qty"
+          className="border p-2 rounded"
+          value={newItem.qty}
+          onChange={(e) => setNewItem({ ...newItem, qty: Number(e.target.value) })}
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          className="border p-2 rounded"
+          value={newItem.price}
+          onChange={(e) => setNewItem({ ...newItem, price: Number(e.target.value) })}
+        />
+      </div>
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded mb-6"
+        onClick={addItem}
+      >
+        ➕ Add Item
+      </button>
+
+      {/* Invoice Table */}
+      <table className="w-full border mb-6">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2">Item</th>
+            <th className="border p-2">Qty</th>
+            <th className="border p-2">Price</th>
+            <th className="border p-2">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, index) => (
+            <tr key={index}>
+              <td className="border p-2">{item.name}</td>
+              <td className="border p-2 text-center">{item.qty}</td>
+              <td className="border p-2">${item.price.toFixed(2)}</td>
+              <td className="border p-2">${(item.qty * item.price).toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Totals */}
+      <div className="text-right space-y-1">
+        <p>Subtotal: ${subtotal.toFixed(2)}</p>
+        <p>Tax (10%): ${tax.toFixed(2)}</p>
+        <p className="font-bold text-lg">Total: ${total.toFixed(2)}</p>
+      </div>
+    </div>
+  );
+}
