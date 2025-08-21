@@ -57,4 +57,5 @@ android {
 dependencies {
     implementation libs.appcompat
     implementation libs.androidx.games.gameactivity
+    debugImplementation(libs.vulkan.validationLayers)
 }
