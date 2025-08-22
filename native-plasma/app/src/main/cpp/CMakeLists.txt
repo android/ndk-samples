@@ -15,6 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.22.1)
+project(NativePlasma LANGUAGES C)
 
 # build native_app_glue as a static lib
 add_library(native_app_glue STATIC

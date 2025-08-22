@@ -16,6 +16,7 @@
 #
 
 cmake_minimum_required(VERSION 3.22.1)
+project(HelloLibs LANGUAGES CXX)
 
 # configure import libs
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../distribution)
@@ -34,14 +35,17 @@ set_target_properties(lib_gperf PROPERTIES IMPORTED_LOCATION
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 add_library(hello-libs SHARED
-            hello-libs.cpp)
+    hello-libs.cpp
+)
 
 target_include_directories(hello-libs PRIVATE
-                           ${distribution_DIR}/gmath/include
-                           ${distribution_DIR}/gperf/include)
+    ${distribution_DIR}/gmath/include
+    ${distribution_DIR}/gperf/include
+)
 
 target_link_libraries(hello-libs
-                      android
-                      lib_gmath
-                      lib_gperf
-                      log)
+    android
+    lib_gmath
+    lib_gperf
+    log
+)

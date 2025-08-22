@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.22.1)
+project(SensorGraph LANGUAGES CXX)
 
 # TODO: Remove -Wno-unused-variable
 # That warning is ignore for now because those are release config only issues
@@ -6,11 +7,11 @@ cmake_minimum_required(VERSION 3.22.1)
 # importing absl or libbase first.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wno-unused-variable")
 
-add_library(accelerometergraph SHARED
-            sensorgraph.cpp)
+add_library(accelerometergraph SHARED sensorgraph.cpp)
 
 # Include libraries needed for accelerometergraph lib
 target_link_libraries(accelerometergraph
-                      android
-                      GLESv2
-                      log)
+    android
+    GLESv2
+    log
+)

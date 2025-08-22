@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.22.1)
+project(HelloNeon LANGUAGES C)
 
 # build cpufeatures as a static lib
 add_library(cpufeatures STATIC
-            ${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c)
+    ${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c
+)
 
 # build app's shared lib
 
@@ -13,12 +15,12 @@ add_library(cpufeatures STATIC
 # [This example only build for armeabi-v7a, x86 could be done the same way]
 #
 if (${ANDROID_ABI} STREQUAL "armeabi-v7a")
-  # make a list of neon files and add neon compiling flags to them
-  set(neon_SRCS helloneon-intrinsics.c)
+    # make a list of neon files and add neon compiling flags to them
+    set(neon_SRCS helloneon-intrinsics.c)
 
-  set_property(SOURCE ${neon_SRCS}
-               APPEND_STRING PROPERTY COMPILE_FLAGS " -mfpu=neon")
-  add_definitions("-DHAVE_NEON=1")
+    set_property(SOURCE ${neon_SRCS}
+        APPEND_STRING PROPERTY COMPILE_FLAGS " -mfpu=neon")
+    add_definitions("-DHAVE_NEON=1")
 elseif (${ANDROID_ABI} STREQUAL "x86")
     set(neon_SRCS helloneon-intrinsics.c)
     set_property(SOURCE ${neon_SRCS} APPEND_STRING PROPERTY COMPILE_FLAGS

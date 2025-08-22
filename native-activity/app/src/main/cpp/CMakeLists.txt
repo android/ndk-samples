@@ -15,6 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.22.1)
+project(NativeActivity LANGUAGES C CXX)
 
 # build native_app_glue as a static lib
 set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")

@@ -15,6 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.22.1)
+project(CameraBasic LANGUAGES C CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(COMMON_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../common)
