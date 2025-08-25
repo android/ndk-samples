@@ -43,5 +43,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/activity_hello_jnicallback"
         tools:layout_constraintBottom_creator="0" />
 
+    <Button
+        android:id="@+id/pauseBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:onClick="onPauseBtn"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tickView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

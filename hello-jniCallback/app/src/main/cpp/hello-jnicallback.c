@@ -278,11 +278,11 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env,
  *    we need to hold and make sure our native thread has finished before return
  *    for a clean shutdown. The caller is from onPause
  */
-JNIEXPORT void JNICALL Java_com_example_hellojnicallback_MainActivity_StopTicks(
-    JNIEnv *env, jobject instance) {
-  pthread_mutex_lock(&g_ctx.lock);
-  g_ctx.done = 1;
-  pthread_mutex_unlock(&g_ctx.lock);
+JNIEXPORT void JNICALL
+Java_com_example_hellojnicallback_MainActivity_stopTicks(JNIEnv *env, jobject instance) {
+    pthread_mutex_lock(&g_ctx.lock);
+    g_ctx.done = 1;
+    pthread_mutex_unlock(&g_ctx.lock);
 
   // waiting for ticking thread to flip the done flag
   struct timespec sleepTime;
