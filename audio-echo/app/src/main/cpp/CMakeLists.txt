@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(echo LANGUAGES C CXX)
 
+add_compile_options(-Wall -Wextra -Werror)
+
 add_library(echo
     SHARED
     audio_main.cpp
@@ -17,12 +19,6 @@ target_link_libraries(echo
     android
     log
     atomic)
-
-target_compile_options(echo
-    PRIVATE
-    -Wall
-    -Werror
-)
 
 if (ANDROID_ABI STREQUAL riscv64)
     # This sample uses OpenSLES, which was deprecated in API 26. Our

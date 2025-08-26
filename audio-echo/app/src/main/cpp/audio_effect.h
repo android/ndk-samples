@@ -50,7 +50,7 @@ class AudioDelay : public AudioFormat {
   size_t getDelayTime(void) const;
   void setDecayWeight(float weight);
   float getDecayWeight(void) const;
-  void process(int16_t* liveAudio, int32_t numFrames);
+  void process(int16_t* liveAudio, uint32_t numFrames);
 
  private:
   size_t delayTime_ = 0;

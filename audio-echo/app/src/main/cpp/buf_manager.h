@@ -50,39 +50,6 @@ class ProducerConsumerQueue {
     });
   }
 
-  // get() is idempotent between calls to commit().
-  T* getWriteablePtr() {
-    T* result = nullptr;
-
-    bool check __attribute__((unused));  //= false;
-
-    check = push([&](T* head) -> bool {
-      result = head;
-      return false;  // don't increment
-    });
-
-    // if there's no space, result should not have been set, and vice versa
-    assert(check == (result != nullptr));
-
-    return result;
-  }
-
-  bool commitWriteablePtr(T* ptr) {
-    bool result = push([&](T* head) -> bool {
-      // this writer func does nothing, because we assume that the caller
-      // has already written to *ptr after acquiring it from a call to get().
-      // So just double-check that ptr is actually at the write head, and
-      // return true to indicate that it's safe to advance.
-
-      // if this isn't the same pointer we got from a call to get(), then
-      // something has gone terribly wrong. Either there was an intervening
-      // call to push() or commit(), or the pointer is spurious.
-      assert(ptr == head);
-      return true;
-    });
-    return result;
-  }
-
   // writer() can return false, which indicates that the caller
   // of push() changed its mind while writing (e.g. ran out of bytes)
   template <typename F>

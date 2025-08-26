@@ -130,7 +130,7 @@ float AudioDelay::getDecayWeight(void) const { return decayWeight_; }
  * @param channelCount for liveAudio, must be 2 for stereo
  * @param numFrames is length of liveAudio in Frames ( not in byte )
  */
-void AudioDelay::process(int16_t* liveAudio, int32_t numFrames) {
+void AudioDelay::process(int16_t* liveAudio, uint32_t numFrames) {
   if (feedbackFactor_ == 0 || bufSize_ < numFrames) {
     return;
   }
@@ -144,7 +144,7 @@ void AudioDelay::process(int16_t* liveAudio, int32_t numFrames) {
   }
 
   // process every sample
-  int32_t sampleCount = channelCount_ * numFrames;
+  auto sampleCount = channelCount_ * numFrames;
   int16_t* samples = &static_cast<int16_t*>(buffer_)[curPos_ * channelCount_];
   for (size_t idx = 0; idx < sampleCount; idx++) {
 #if 1
