@@ -43,7 +43,7 @@ static void _init() {
   _init_done = true;
 
   // look up the AMotionEvent_getAxisValue function
-  void *lib_android;
+  void* lib_android;
   LOGD("Trying to dlopen libandroid.so");
   if ((lib_android = dlopen("libandroid.so", 0))) {
     LOGD("Opened libandroid.so, looking for AMotionEvent_getAxisValue.");
@@ -105,7 +105,7 @@ static void _report_key_states_from_axes(float x, float y,
   _report_key_state(OURKEY_DOWN, y > 0.5f, callback);
 }
 
-static bool _process_keys(bool isJoy, AInputEvent *event,
+static bool _process_keys(bool isJoy, AInputEvent* event,
                           CookedEventCallback callback) {
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
     int action = AKeyEvent_getAction(event);
@@ -138,12 +138,12 @@ static bool _process_keys(bool isJoy, AInputEvent *event,
   return false;
 }
 
-static void _look_up_motion_range(int deviceId, int source, float *outMinX,
-                                  float *outMaxX, float *outMinY,
-                                  float *outMaxY) {
+static void _look_up_motion_range(int deviceId, int source, float* outMinX,
+                                  float* outMaxX, float* outMinY,
+                                  float* outMaxY) {
   int i;
   for (i = 0; i < _motion_range_cache_items; i++) {
-    DeviceMotionRange *item = &_motion_range_cache[i];
+    DeviceMotionRange* item = &_motion_range_cache[i];
     if (item->deviceId == deviceId && item->source == source) {
       *outMinX = item->minX;
       *outMaxX = item->maxX;
@@ -153,7 +153,7 @@ static void _look_up_motion_range(int deviceId, int source, float *outMinX,
     }
   }
 
-  DeviceMotionRange *newItem;
+  DeviceMotionRange* newItem;
   if (_motion_range_cache_items >= MOTION_RANGE_CACHE_MAX) {
     static bool warned = false;
     if (!warned) {
@@ -191,7 +191,7 @@ static void _look_up_motion_range(int deviceId, int source, float *outMinX,
   *outMaxY = newItem->maxY;
 }
 
-static bool CookEvent_Joy(AInputEvent *event, CookedEventCallback callback) {
+static bool CookEvent_Joy(AInputEvent* event, CookedEventCallback callback) {
   struct CookedEvent ev;
   memset(&ev, 0, sizeof(ev));
   ev.type = COOKED_EVENT_TYPE_JOY;
@@ -201,7 +201,7 @@ static bool CookEvent_Joy(AInputEvent *event, CookedEventCallback callback) {
   return callback(&ev);
 }
 
-static bool CookEvent_Motion(AInputEvent *event, CookedEventCallback callback) {
+static bool CookEvent_Motion(AInputEvent* event, CookedEventCallback callback) {
   int src = AInputEvent_getSource(event);
   int action = AMotionEvent_getAction(event);
   int actionMasked = action & AMOTION_EVENT_ACTION_MASK;
@@ -258,7 +258,7 @@ static bool CookEvent_Motion(AInputEvent *event, CookedEventCallback callback) {
   return (src != SOURCE_TOUCH_NAVIGATION);
 }
 
-bool CookEvent(AInputEvent *event, CookedEventCallback callback) {
+bool CookEvent(AInputEvent* event, CookedEventCallback callback) {
   int type = AInputEvent_getType(event);
   int src = AInputEvent_getSource(event);
   bool isJoy = (type == AINPUT_EVENT_TYPE_MOTION) &&

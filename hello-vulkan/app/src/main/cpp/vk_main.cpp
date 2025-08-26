@@ -40,8 +40,8 @@
  *
  */
 struct VulkanEngine {
-  struct android_app *app;
-  vkt::HelloVK *app_backend;
+  struct android_app* app;
+  vkt::HelloVK* app_backend;
   bool canRender = false;
 };
 
@@ -49,8 +49,8 @@ struct VulkanEngine {
  * Called by the Android runtime whenever events happen so the
  * app can react to it.
  */
-static void HandleCmd(struct android_app *app, int32_t cmd) {
-  auto *engine = (VulkanEngine *)app->userData;
+static void HandleCmd(struct android_app* app, int32_t cmd) {
+  auto* engine = (VulkanEngine*)app->userData;
   switch (cmd) {
     case APP_CMD_START:
       if (engine->app->window != nullptr) {
@@ -89,10 +89,10 @@ static void HandleCmd(struct android_app *app, int32_t cmd) {
  * not use/process any input events, return false for all input events so system
  * can still process them.
  */
-extern "C" bool VulkanKeyEventFilter(const GameActivityKeyEvent *event) {
+extern "C" bool VulkanKeyEventFilter(const GameActivityKeyEvent* event) {
   return false;
 }
-extern "C" bool VulkanMotionEventFilter(const GameActivityMotionEvent *event) {
+extern "C" bool VulkanMotionEventFilter(const GameActivityMotionEvent* event) {
   return false;
 }
 
@@ -102,7 +102,7 @@ extern "C" bool VulkanMotionEventFilter(const GameActivityMotionEvent *event) {
  * reported "handled" to OS. For details, refer to:
  * d.android.com/games/agdk/game-activity/get-started#handle-events
  */
-static void HandleInputEvents(struct android_app *app) {
+static void HandleInputEvents(struct android_app* app) {
   auto inputBuf = android_app_swap_input_buffers(app);
   if (inputBuf == nullptr) {
     return;
@@ -121,7 +121,7 @@ static void HandleInputEvents(struct android_app *app) {
  * This can also be achieved more verbosely by manually declaring JNI functions
  * and calling them from the Android application layer.
  */
-void android_main(struct android_app *state) {
+void android_main(struct android_app* state) {
   VulkanEngine engine{};
   vkt::HelloVK vulkanBackend{};
 
@@ -134,9 +134,9 @@ void android_main(struct android_app *state) {
   android_app_set_motion_event_filter(state, VulkanMotionEventFilter);
 
   while (!state->destroyRequested) {
-    android_poll_source *source;
+    android_poll_source* source;
     auto result = ALooper_pollOnce(engine.canRender ? 0 : -1, nullptr, nullptr,
-                                   (void **)&source);
+                                   (void**)&source);
     if (result == ALOOPER_POLL_ERROR) {
       LOGE("ALooper_pollOnce returned an error");
       std::abort();

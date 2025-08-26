@@ -17,7 +17,7 @@
 
 #include "util.hpp"
 
-void RenderBackgroundAnimation(ShapeRenderer *r) {
+void RenderBackgroundAnimation(ShapeRenderer* r) {
   float aspect = SceneManager::GetInstance()->GetScreenAspect();
   static const int BG_RECTS = 50;
   static const float RECT_W = 0.3f;

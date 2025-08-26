@@ -15,7 +15,7 @@
  */
 #include "vertexbuf.hpp"
 
-VertexBuf::VertexBuf(GLfloat *geomData, int dataSize, int stride) {
+VertexBuf::VertexBuf(GLfloat* geomData, int dataSize, int stride) {
   MY_ASSERT(dataSize % stride == 0);
 
   mPrimitive = GL_TRIANGLES;

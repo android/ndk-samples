@@ -31,8 +31,8 @@
  * File names are incrementally appended an index number as
  *     capture0.jpg, capture1.jpg, capture2.jpg
  */
-static const char *kDirName = "/sdcard/DCIM/Camera/";
-static const char *kFileName = "capture";
+static const char* kDirName = "/sdcard/DCIM/Camera/";
+static const char* kFileName = "capture";
 
 /**
  * MAX_BUF_COUNT:
@@ -50,14 +50,14 @@ static const char *kFileName = "capture";
  * we could release ( skip ) some frames by AImageReader_getNextImage() and
  * AImageReader_delete().
  */
-void OnImageCallback(void *ctx, AImageReader *reader) {
-  reinterpret_cast<ImageReader *>(ctx)->ImageCallback(reader);
+void OnImageCallback(void* ctx, AImageReader* reader) {
+  reinterpret_cast<ImageReader*>(ctx)->ImageCallback(reader);
 }
 
 /**
  * Constructor
  */
-ImageReader::ImageReader(ImageFormat *res, enum AIMAGE_FORMATS format)
+ImageReader::ImageReader(ImageFormat* res, enum AIMAGE_FORMATS format)
     : presentRotation_(0), reader_(nullptr) {
   callback_ = nullptr;
   callbackCtx_ = nullptr;
@@ -79,17 +79,17 @@ ImageReader::~ImageReader() {
 }
 
 void ImageReader::RegisterCallback(
-    void *ctx, std::function<void(void *ctx, const char *fileName)> func) {
+    void* ctx, std::function<void(void* ctx, const char* fileName)> func) {
   callbackCtx_ = ctx;
   callback_ = func;
 }
 
-void ImageReader::ImageCallback(AImageReader *reader) {
+void ImageReader::ImageCallback(AImageReader* reader) {
   int32_t format;
   media_status_t status = AImageReader_getFormat(reader, &format);
   ASSERT(status == AMEDIA_OK, "Failed to get the media format");
   if (format == AIMAGE_FORMAT_JPEG) {
-    AImage *image = nullptr;
+    AImage* image = nullptr;
     media_status_t status = AImageReader_acquireNextImage(reader, &image);
     ASSERT(status == AMEDIA_OK && image, "Image is not available");
 
@@ -99,9 +99,9 @@ void ImageReader::ImageCallback(AImageReader *reader) {
   }
 }
 
-ANativeWindow *ImageReader::GetNativeWindow(void) {
+ANativeWindow* ImageReader::GetNativeWindow(void) {
   if (!reader_) return nullptr;
-  ANativeWindow *nativeWindow;
+  ANativeWindow* nativeWindow;
   media_status_t status = AImageReader_getWindow(reader_, &nativeWindow);
   ASSERT(status == AMEDIA_OK, "Could not get ANativeWindow");
 
@@ -113,8 +113,8 @@ ANativeWindow *ImageReader::GetNativeWindow(void) {
  *   Retrieve the next image in ImageReader's bufferQueue, NOT the last image so
  * no image is skipped. Recommended for batch/background processing.
  */
-AImage *ImageReader::GetNextImage(void) {
-  AImage *image;
+AImage* ImageReader::GetNextImage(void) {
+  AImage* image;
   media_status_t status = AImageReader_acquireNextImage(reader_, &image);
   if (status != AMEDIA_OK) {
     return nullptr;
@@ -127,8 +127,8 @@ AImage *ImageReader::GetNextImage(void) {
  *   Retrieve the last image in ImageReader's bufferQueue, deleting images in
  * in front of it on the queue. Recommended for real-time processing.
  */
-AImage *ImageReader::GetLatestImage(void) {
-  AImage *image;
+AImage* ImageReader::GetLatestImage(void) {
+  AImage* image;
   media_status_t status = AImageReader_acquireLatestImage(reader_, &image);
   if (status != AMEDIA_OK) {
     return nullptr;
@@ -140,7 +140,7 @@ AImage *ImageReader::GetLatestImage(void) {
  * Delete Image
  * @param image {@link AImage} instance to be deleted
  */
-void ImageReader::DeleteImage(AImage *image) {
+void ImageReader::DeleteImage(AImage* image) {
   if (image) AImage_delete(image);
 }
 
@@ -207,7 +207,7 @@ static inline uint32_t YUV2RGB(int nY, int nU, int nV) {
  * @param image a {@link AImage} instance, source of image conversion.
  *            it will be deleted via {@link AImage_delete}
  */
-bool ImageReader::DisplayImage(ANativeWindow_Buffer *buf, AImage *image) {
+bool ImageReader::DisplayImage(ANativeWindow_Buffer* buf, AImage* image) {
   ASSERT(buf->format == WINDOW_FORMAT_RGBX_8888 ||
              buf->format == WINDOW_FORMAT_RGBA_8888,
          "Not supported buffer format");
@@ -248,7 +248,7 @@ bool ImageReader::DisplayImage(ANativeWindow_Buffer *buf, AImage *image) {
  *   Refer to:
  * https://mathbits.com/MathBits/TISection/Geometry/Transformations2.htm
  */
-void ImageReader::PresentImage(ANativeWindow_Buffer *buf, AImage *image) {
+void ImageReader::PresentImage(ANativeWindow_Buffer* buf, AImage* image) {
   AImageCropRect srcRect;
   AImage_getCropRect(image, &srcRect);
 
@@ -266,13 +266,13 @@ void ImageReader::PresentImage(ANativeWindow_Buffer *buf, AImage *image) {
   int32_t height = MIN(buf->height, (srcRect.bottom - srcRect.top));
   int32_t width = MIN(buf->width, (srcRect.right - srcRect.left));
 
-  uint32_t *out = static_cast<uint32_t *>(buf->bits);
+  uint32_t* out = static_cast<uint32_t*>(buf->bits);
   for (int32_t y = 0; y < height; y++) {
-    const uint8_t *pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
+    const uint8_t* pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
 
     int32_t uv_row_start = uvStride * ((y + srcRect.top) >> 1);
-    const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
-    const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pU = uPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pV = vPixel + uv_row_start + (srcRect.left >> 1);
 
     for (int32_t x = 0; x < width; x++) {
       const int32_t uv_offset = (x >> 1) * uvPixelStride;
@@ -287,7 +287,7 @@ void ImageReader::PresentImage(ANativeWindow_Buffer *buf, AImage *image) {
  *   Converting YUV to RGB
  *   Rotation image anti-clockwise 90 degree -- (x, y) --> (-y, x)
  */
-void ImageReader::PresentImage90(ANativeWindow_Buffer *buf, AImage *image) {
+void ImageReader::PresentImage90(ANativeWindow_Buffer* buf, AImage* image) {
   AImageCropRect srcRect;
   AImage_getCropRect(image, &srcRect);
 
@@ -305,14 +305,14 @@ void ImageReader::PresentImage90(ANativeWindow_Buffer *buf, AImage *image) {
   int32_t height = MIN(buf->width, (srcRect.bottom - srcRect.top));
   int32_t width = MIN(buf->height, (srcRect.right - srcRect.left));
 
-  uint32_t *out = static_cast<uint32_t *>(buf->bits);
+  uint32_t* out = static_cast<uint32_t*>(buf->bits);
   out += height - 1;
   for (int32_t y = 0; y < height; y++) {
-    const uint8_t *pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
+    const uint8_t* pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
 
     int32_t uv_row_start = uvStride * ((y + srcRect.top) >> 1);
-    const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
-    const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pU = uPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pV = vPixel + uv_row_start + (srcRect.left >> 1);
 
     for (int32_t x = 0; x < width; x++) {
       const int32_t uv_offset = (x >> 1) * uvPixelStride;
@@ -328,7 +328,7 @@ void ImageReader::PresentImage90(ANativeWindow_Buffer *buf, AImage *image) {
  *   Converting yuv to RGB
  *   Rotate image 180 degree: (x, y) --> (-x, -y)
  */
-void ImageReader::PresentImage180(ANativeWindow_Buffer *buf, AImage *image) {
+void ImageReader::PresentImage180(ANativeWindow_Buffer* buf, AImage* image) {
   AImageCropRect srcRect;
   AImage_getCropRect(image, &srcRect);
 
@@ -346,14 +346,14 @@ void ImageReader::PresentImage180(ANativeWindow_Buffer *buf, AImage *image) {
   int32_t height = MIN(buf->height, (srcRect.bottom - srcRect.top));
   int32_t width = MIN(buf->width, (srcRect.right - srcRect.left));
 
-  uint32_t *out = static_cast<uint32_t *>(buf->bits);
+  uint32_t* out = static_cast<uint32_t*>(buf->bits);
   out += (height - 1) * buf->stride;
   for (int32_t y = 0; y < height; y++) {
-    const uint8_t *pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
+    const uint8_t* pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
 
     int32_t uv_row_start = uvStride * ((y + srcRect.top) >> 1);
-    const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
-    const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pU = uPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pV = vPixel + uv_row_start + (srcRect.left >> 1);
 
     for (int32_t x = 0; x < width; x++) {
       const int32_t uv_offset = (x >> 1) * uvPixelStride;
@@ -370,7 +370,7 @@ void ImageReader::PresentImage180(ANativeWindow_Buffer *buf, AImage *image) {
  *   Converting image from YUV to RGB
  *   Rotate Image counter-clockwise 270 degree: (x, y) --> (y, x)
  */
-void ImageReader::PresentImage270(ANativeWindow_Buffer *buf, AImage *image) {
+void ImageReader::PresentImage270(ANativeWindow_Buffer* buf, AImage* image) {
   AImageCropRect srcRect;
   AImage_getCropRect(image, &srcRect);
 
@@ -388,13 +388,13 @@ void ImageReader::PresentImage270(ANativeWindow_Buffer *buf, AImage *image) {
   int32_t height = MIN(buf->width, (srcRect.bottom - srcRect.top));
   int32_t width = MIN(buf->height, (srcRect.right - srcRect.left));
 
-  uint32_t *out = static_cast<uint32_t *>(buf->bits);
+  uint32_t* out = static_cast<uint32_t*>(buf->bits);
   for (int32_t y = 0; y < height; y++) {
-    const uint8_t *pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
+    const uint8_t* pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
 
     int32_t uv_row_start = uvStride * ((y + srcRect.top) >> 1);
-    const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
-    const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pU = uPixel + uv_row_start + (srcRect.left >> 1);
+    const uint8_t* pV = vPixel + uv_row_start + (srcRect.left >> 1);
 
     for (int32_t x = 0; x < width; x++) {
       const int32_t uv_offset = (x >> 1) * uvPixelStride;
@@ -412,16 +412,16 @@ void ImageReader::SetPresentRotation(int32_t angle) {
  * Write out jpeg files to kDirName directory
  * @param image point capture jpg image
  */
-void ImageReader::WriteFile(AImage *image) {
+void ImageReader::WriteFile(AImage* image) {
   int planeCount;
   media_status_t status = AImage_getNumberOfPlanes(image, &planeCount);
   ASSERT(status == AMEDIA_OK && planeCount == 1,
          "Error: getNumberOfPlanes() planeCount = %d", planeCount);
-  uint8_t *data = nullptr;
+  uint8_t* data = nullptr;
   int len = 0;
   AImage_getPlaneData(image, 0, &data, &len);
 
-  DIR *dir = opendir(kDirName);
+  DIR* dir = opendir(kDirName);
   if (dir) {
     closedir(dir);
   } else {
@@ -444,7 +444,7 @@ void ImageReader::WriteFile(AImage *image) {
               std::to_string(localTime.tm_hour) +
               std::to_string(localTime.tm_min) +
               std::to_string(localTime.tm_sec) + ".jpg";
-  FILE *file = fopen(fileName.c_str(), "wb");
+  FILE* file = fopen(fileName.c_str(), "wb");
   if (file && data && len) {
     fwrite(data, 1, len, file);
     fclose(file);

@@ -15,7 +15,7 @@
  */
 #include "indexbuf.hpp"
 
-IndexBuf::IndexBuf(GLushort *data, int dataSizeBytes) {
+IndexBuf::IndexBuf(GLushort* data, int dataSizeBytes) {
   mCount = dataSizeBytes / sizeof(GLushort);
 
   glGenBuffers(1, &mIbo);

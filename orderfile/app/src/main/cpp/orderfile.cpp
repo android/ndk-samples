@@ -8,12 +8,12 @@
 const char kLogTag[] = "orderfiledemo";
 
 #ifdef GENERATE_PROFILES
-extern "C" int __llvm_profile_set_filename(const char *);
+extern "C" int __llvm_profile_set_filename(const char*);
 extern "C" int __llvm_profile_initialize_file(void);
 extern "C" int __llvm_orderfile_dump(void);
 #endif
 
-void DumpProfileDataIfNeeded(const char *temp_dir) {
+void DumpProfileDataIfNeeded(const char* temp_dir) {
 #ifdef GENERATE_PROFILES
   char profile_location[PATH_MAX] = {};
   snprintf(profile_location, sizeof(profile_location), "%s/demo.output",
@@ -47,7 +47,7 @@ void DumpProfileDataIfNeeded(const char *temp_dir) {
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_example_orderfiledemo_MainActivity_runWorkload(JNIEnv *env,
+Java_com_example_orderfiledemo_MainActivity_runWorkload(JNIEnv* env,
                                                         jobject /* this */,
                                                         jstring temp_dir) {
   DumpProfileDataIfNeeded(env->GetStringUTFChars(temp_dir, 0));

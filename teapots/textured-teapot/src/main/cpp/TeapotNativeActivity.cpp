@@ -409,17 +409,17 @@ void android_main(android_app* state) {
     // If animating, we loop until all events are read, then continue
     // to draw the next frame of animation.
     android_poll_source* source = nullptr;
-    auto result = ALooper_pollOnce(g_engine.IsReady() ? 0 : -1, nullptr, nullptr,
-                                 (void**)&source);
+    auto result = ALooper_pollOnce(g_engine.IsReady() ? 0 : -1, nullptr,
+                                   nullptr, (void**)&source);
     if (result == ALOOPER_POLL_ERROR) {
       LOGE("ALooper_pollOnce returned an error");
       std::abort();
     }
 
-      // Process this event.
-      if (source != NULL) source->process(state, source);
+    // Process this event.
+    if (source != NULL) source->process(state, source);
 
-      g_engine.ProcessSensors(result);
+    g_engine.ProcessSensors(result);
 
     if (g_engine.IsReady()) {
       // Drawing is throttled to the screen update rate, so there

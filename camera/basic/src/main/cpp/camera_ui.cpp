@@ -27,9 +27,9 @@
 int CameraEngine::GetDisplayRotation() {
   ASSERT(app_, "Application is not initialized");
 
-  JNIEnv *env;
-  ANativeActivity *activity = app_->activity;
-  activity->vm->GetEnv((void **)&env, JNI_VERSION_1_6);
+  JNIEnv* env;
+  ANativeActivity* activity = app_->activity;
+  activity->vm->GetEnv((void**)&env, JNI_VERSION_1_6);
 
   activity->vm->AttachCurrentThread(&env, NULL);
 
@@ -55,7 +55,7 @@ int CameraEngine::GetDisplayRotation() {
  */
 const int kInitDataLen = 6;
 void CameraEngine::EnableUI(void) {
-  JNIEnv *jni;
+  JNIEnv* jni;
   app_->activity->vm->AttachCurrentThread(&jni, NULL);
   int64_t range[3];
 
@@ -91,8 +91,8 @@ void CameraEngine::OnTakePhoto() {
   }
 }
 
-void CameraEngine::OnPhotoTaken(const char *fileName) {
-  JNIEnv *jni;
+void CameraEngine::OnPhotoTaken(const char* fileName) {
+  JNIEnv* jni;
   app_->activity->vm->AttachCurrentThread(&jni, NULL);
 
   // Default class retrieval
@@ -128,14 +128,14 @@ void CameraEngine::OnCameraPermission(jboolean granted) {
  */
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_camera_basic_CameraActivity_notifyCameraPermission(
-    JNIEnv *env, jclass type, jboolean permission) {
+    JNIEnv* env, jclass type, jboolean permission) {
   std::thread permissionHandler(&CameraEngine::OnCameraPermission,
                                 GetAppEngine(), permission);
   permissionHandler.detach();
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_sample_camera_basic_CameraActivity_TakePhoto(JNIEnv *env,
+Java_com_sample_camera_basic_CameraActivity_TakePhoto(JNIEnv* env,
                                                       jclass type) {
   std::thread takePhotoHandler(&CameraEngine::OnTakePhoto, GetAppEngine());
   takePhotoHandler.detach();
@@ -143,14 +143,14 @@ Java_com_sample_camera_basic_CameraActivity_TakePhoto(JNIEnv *env,
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_camera_basic_CameraActivity_OnExposureChanged(
-    JNIEnv *env, jobject instance, jlong exposurePercent) {
+    JNIEnv* env, jobject instance, jlong exposurePercent) {
   GetAppEngine()->OnCameraParameterChanged(ACAMERA_SENSOR_EXPOSURE_TIME,
                                            exposurePercent);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_camera_basic_CameraActivity_OnSensitivityChanged(
-    JNIEnv *env, jobject instance, jlong sensitivity) {
+    JNIEnv* env, jobject instance, jlong sensitivity) {
   GetAppEngine()->OnCameraParameterChanged(ACAMERA_SENSOR_SENSITIVITY,
                                            sensitivity);
 }

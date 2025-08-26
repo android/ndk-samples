@@ -26,7 +26,7 @@ namespace jsonparse {
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_prefabdependency_MainActivity_getJsonValue(
-    JNIEnv *env, jobject /* this */, jstring jsonFromJava,
+    JNIEnv* env, jobject /* this */, jstring jsonFromJava,
     jstring keyFromJava) {
   if (jsonFromJava == nullptr) {
     logging::FatalError(env, "jsonFromJava argument cannot be null");

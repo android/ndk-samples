@@ -32,7 +32,7 @@
  *   app/src/main/java/com/example/hellolibs/MainActivity.java
  */
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_example_hellolibs_MainActivity_measureTicks(JNIEnv *env,
+Java_com_example_hellolibs_MainActivity_measureTicks(JNIEnv* env,
                                                      jobject thiz) {
   auto ticks = GetTicks();
 

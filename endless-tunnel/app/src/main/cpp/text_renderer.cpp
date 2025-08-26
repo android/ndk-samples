@@ -26,7 +26,7 @@
 
 #define CORRECTION_Y -0.02f
 
-TextRenderer::TextRenderer(TrivialShader *t) {
+TextRenderer::TextRenderer(TrivialShader* t) {
   mTrivialShader = t;
   memset(mCharGeom, 0, sizeof(mCharGeom));
   mFontScale = 1.0f;
@@ -50,12 +50,12 @@ TextRenderer::~TextRenderer() {
   }
 }
 
-TextRenderer *TextRenderer::SetFontScale(float scale) {
+TextRenderer* TextRenderer::SetFontScale(float scale) {
   mFontScale = scale;
   return this;
 }
 
-static void _count_rows_cols(const char *p, int *outCols, int *outRows) {
+static void _count_rows_cols(const char* p, int* outCols, int* outRows) {
   int textCols = 0, textRows = 1;
   int curCols = 0;
   for (; *p; ++p) {
@@ -73,14 +73,14 @@ static void _count_rows_cols(const char *p, int *outCols, int *outRows) {
   *outRows = textRows;
 }
 
-TextRenderer *TextRenderer::SetMatrix(glm::mat4 m) {
+TextRenderer* TextRenderer::SetMatrix(glm::mat4 m) {
   mMatrix = m;
   return this;
 }
 
-void TextRenderer::MeasureText(const char *str, float fontScale,
-                               float *outWidth,
-                               float *outHeight) {  // static!
+void TextRenderer::MeasureText(const char* str, float fontScale,
+                               float* outWidth,
+                               float* outHeight) {  // static!
   int rows, cols;
   _count_rows_cols(str, &cols, &rows);
   if (outWidth) {
@@ -91,7 +91,7 @@ void TextRenderer::MeasureText(const char *str, float fontScale,
   }
 }
 
-TextRenderer *TextRenderer::RenderText(const char *str, float centerX,
+TextRenderer* TextRenderer::RenderText(const char* str, float centerX,
                                        float centerY) {
   float aspect = SceneManager::GetInstance()->GetScreenAspect();
   glm::mat4 orthoMat = glm::ortho(0.0f, aspect, 0.0f, 1.0f);

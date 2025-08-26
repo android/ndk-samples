@@ -21,15 +21,15 @@
 #define BUF_SAMPLES_MAX SAMPLES_PER_SEC * 5  // 5 seconds
 #define DEFAULT_VOLUME 0.9f
 
-static SfxMan *_instance = new SfxMan();
+static SfxMan* _instance = new SfxMan();
 static short _sample_buf[BUF_SAMPLES_MAX];
 static volatile bool _bufferActive = false;
 
-SfxMan *SfxMan::GetInstance() {
+SfxMan* SfxMan::GetInstance() {
   return _instance ? _instance : (_instance = new SfxMan());
 }
 
-static bool _checkError(SLresult r, const char *what) {
+static bool _checkError(SLresult r, const char* what) {
   if (r != SL_RESULT_SUCCESS) {
     LOGW("SfxMan: Error %s (result %lu)", what, (long unsigned int)r);
     LOGW("DISABLING SOUND!");
@@ -38,7 +38,7 @@ static bool _checkError(SLresult r, const char *what) {
   return false;
 }
 
-static void _bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context) {
+static void _bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void* context) {
   _bufferActive = false;
 }
 
@@ -166,7 +166,7 @@ SfxMan::SfxMan() {
 
 bool SfxMan::IsIdle() { return !_bufferActive; }
 
-static const char *_parseInt(const char *s, int *result) {
+static const char* _parseInt(const char* s, int* result) {
   *result = 0;
   while (*s >= '0' && *s <= '9') {
     *result = *result * 10 + (*s - '0');
@@ -176,7 +176,7 @@ static const char *_parseInt(const char *s, int *result) {
 }
 
 static int _synth(int frequency, int duration, float amplitude,
-                  short *sample_buf, int samples) {
+                  short* sample_buf, int samples) {
   int i;
 
   for (i = 0; i < samples; i++) {
@@ -203,7 +203,7 @@ static int _synth(int frequency, int duration, float amplitude,
   return i;
 }
 
-static void _taper(short *sample_buf, int samples) {
+static void _taper(short* sample_buf, int samples) {
   int i;
   const float TAPER_SAMPLES_FRACTION = 0.1f;
   int taper_samples = (int)(TAPER_SAMPLES_FRACTION * samples);
@@ -218,7 +218,7 @@ static void _taper(short *sample_buf, int samples) {
   }
 }
 
-void SfxMan::PlayTone(const char *tone) {
+void SfxMan::PlayTone(const char* tone) {
   if (!mInitOk) {
     LOGW("SfxMan: not playing sound because initialization failed.");
     return;

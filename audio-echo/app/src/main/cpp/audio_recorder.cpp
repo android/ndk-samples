@@ -22,8 +22,8 @@
  * bqRecorderCallback(): called for every buffer is full;
  *                       pass directly to handler
  */
-void bqRecorderCallback(SLAndroidSimpleBufferQueueItf bq, void *rec) {
-  (static_cast<AudioRecorder *>(rec))->ProcessSLCallback(bq);
+void bqRecorderCallback(SLAndroidSimpleBufferQueueItf bq, void* rec) {
+  (static_cast<AudioRecorder*>(rec))->ProcessSLCallback(bq);
 }
 
 void AudioRecorder::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
@@ -31,7 +31,7 @@ void AudioRecorder::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
   recLog_->logTime();
 #endif
   assert(bq == recBufQueueItf_);
-  sample_buf *dataBuf = NULL;
+  sample_buf* dataBuf = NULL;
   devShadowQueue_->front(&dataBuf);
   devShadowQueue_->pop();
   dataBuf->size_ = dataBuf->cap_;  // device only calls us when it is really
@@ -40,7 +40,7 @@ void AudioRecorder::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
   callback_(ctx_, ENGINE_SERVICE_MSG_RECORDED_AUDIO_AVAILABLE, dataBuf);
   recQueue_->push(dataBuf);
 
-  sample_buf *freeBuf;
+  sample_buf* freeBuf;
   while (freeQueue_->front(&freeBuf) && devShadowQueue_->push(freeBuf)) {
     freeQueue_->pop();
     SLresult result = (*bq)->Enqueue(bq, freeBuf->buf_, freeBuf->cap_);
@@ -55,7 +55,7 @@ void AudioRecorder::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
   }
 }
 
-AudioRecorder::AudioRecorder(SampleFormat *sampleFormat, SLEngineItf slEngine)
+AudioRecorder::AudioRecorder(SampleFormat* sampleFormat, SLEngineItf slEngine)
     : freeQueue_(nullptr),
       recQueue_(nullptr),
       devShadowQueue_(nullptr),
@@ -138,7 +138,7 @@ SLboolean AudioRecorder::Start(void) {
   SLASSERT(result);
 
   for (int i = 0; i < RECORD_DEVICE_KICKSTART_BUF_COUNT; i++) {
-    sample_buf *buf = NULL;
+    sample_buf* buf = NULL;
     if (!freeQueue_->front(&buf)) {
       LOGE("=====OutOfFreeBuffers @ startingRecording @ (%d)", i);
       break;
@@ -185,7 +185,7 @@ AudioRecorder::~AudioRecorder() {
   }
 
   if (devShadowQueue_) {
-    sample_buf *buf = NULL;
+    sample_buf* buf = NULL;
     while (devShadowQueue_->front(&buf)) {
       devShadowQueue_->pop();
       freeQueue_->push(buf);
@@ -199,13 +199,13 @@ AudioRecorder::~AudioRecorder() {
 #endif
 }
 
-void AudioRecorder::SetBufQueues(AudioQueue *freeQ, AudioQueue *recQ) {
+void AudioRecorder::SetBufQueues(AudioQueue* freeQ, AudioQueue* recQ) {
   assert(freeQ && recQ);
   freeQueue_ = freeQ;
   recQueue_ = recQ;
 }
 
-void AudioRecorder::RegisterCallback(ENGINE_CALLBACK cb, void *ctx) {
+void AudioRecorder::RegisterCallback(ENGINE_CALLBACK cb, void* ctx) {
   callback_ = cb;
   ctx_ = ctx;
 }

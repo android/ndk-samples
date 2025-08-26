@@ -15,7 +15,7 @@
  */
 #include "tex_quad.hpp"
 
-static void _put_vertex(float *v, float x, float y, float tex_u, float tex_v) {
+static void _put_vertex(float* v, float x, float y, float tex_u, float tex_v) {
   // position
   v[0] = x;
   v[1] = y;
@@ -37,9 +37,9 @@ void TexQuad::CreateGeom(float umin, float vmin, float umax, float vmax) {
       9;  // 3 for coords, 4 for color, 2 for tex coordinates
   const int stride_bytes = stride_floats * sizeof(GLfloat);
   int vertices = stride_floats * 4;  // 4 vertices
-  GLfloat *geom = new GLfloat[vertices];
+  GLfloat* geom = new GLfloat[vertices];
   int geom_size = sizeof(GLfloat) * vertices;
-  GLushort *indices = new GLushort[6];  // 6 indices
+  GLushort* indices = new GLushort[6];  // 6 indices
   int indices_size = sizeof(GLushort) * 6;
   float left = -mAspect * 0.5f;
   float right = mAspect * 0.5f;
@@ -66,10 +66,10 @@ void TexQuad::CreateGeom(float umin, float vmin, float umax, float vmax) {
   indices[5] = 3;
 
   // prepare geometry
-  VertexBuf *vbuf = new VertexBuf(geom, geom_size, stride_bytes);
+  VertexBuf* vbuf = new VertexBuf(geom, geom_size, stride_bytes);
   vbuf->SetColorsOffset(3 * sizeof(GLfloat));
   vbuf->SetTexCoordsOffset(7 * sizeof(GLfloat));
-  IndexBuf *ibuf = new IndexBuf(indices, indices_size);
+  IndexBuf* ibuf = new IndexBuf(indices, indices_size);
   mGeom = new SimpleGeom(vbuf, ibuf);
 
   // clean up our temporary buffers
@@ -79,7 +79,7 @@ void TexQuad::CreateGeom(float umin, float vmin, float umax, float vmax) {
   indices = NULL;
 }
 
-void TexQuad::Render(glm::mat4 *transform) {
+void TexQuad::Render(glm::mat4* transform) {
   float aspect = SceneManager::GetInstance()->GetScreenAspect();
   glm::mat4 orthoMat = glm::ortho(0.0f, aspect, 0.0f, 1.0f);
   glm::mat4 modelMat, mat;

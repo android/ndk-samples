@@ -46,7 +46,7 @@ class PerfMonitor {
   PerfMonitor();
   virtual ~PerfMonitor();
 
-  bool Update(float &fFPS);
+  bool Update(float& fFPS);
 
   static double GetCurrentTime() {
     struct timeval time;

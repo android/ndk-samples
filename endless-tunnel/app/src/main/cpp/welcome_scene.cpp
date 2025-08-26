@@ -53,7 +53,7 @@ void WelcomeScene::RenderBackground() {
 }
 
 void WelcomeScene::OnButtonClicked(int id) {
-  SceneManager *mgr = SceneManager::GetInstance();
+  SceneManager* mgr = SceneManager::GetInstance();
 
   if (id == mPlayButtonId) {
     mgr->RequestNewScene(new PlayScene());

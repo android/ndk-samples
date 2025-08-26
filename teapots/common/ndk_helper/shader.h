@@ -48,8 +48,8 @@ namespace shader {
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader(GLuint *shader, const GLenum type,
-                   std::vector<uint8_t> &data);
+bool CompileShader(GLuint* shader, const GLenum type,
+                   std::vector<uint8_t>& data);
 
 /******************************************************************
  * CompileShader() with buffer
@@ -62,7 +62,7 @@ bool CompileShader(GLuint *shader, const GLenum type,
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader(GLuint *shader, const GLenum type, const GLchar *source,
+bool CompileShader(GLuint* shader, const GLenum type, const GLchar* source,
                    const int32_t iSize);
 
 /******************************************************************
@@ -75,7 +75,7 @@ bool CompileShader(GLuint *shader, const GLenum type, const GLchar *source,
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader(GLuint *shader, const GLenum type, const char *strFileName);
+bool CompileShader(GLuint* shader, const GLenum type, const char* strFileName);
 
 /******************************************************************
  * CompileShader() with std::map helps patching on a shader on the fly.
@@ -90,8 +90,8 @@ bool CompileShader(GLuint *shader, const GLenum type, const char *strFileName);
  * return: true if a shader compilation succeeded, false if it failed
  *
  */
-bool CompileShader(GLuint *shader, const GLenum type, const char *str_file_name,
-                   const std::map<std::string, std::string> &map_parameters);
+bool CompileShader(GLuint* shader, const GLenum type, const char* str_file_name,
+                   const std::map<std::string, std::string>& map_parameters);
 
 /******************************************************************
  * LinkProgram()

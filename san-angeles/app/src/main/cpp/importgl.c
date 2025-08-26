@@ -44,7 +44,7 @@ static HMODULE sGLESDLL = NULL;
 #ifdef LINUX
 #include <dlfcn.h>
 #include <stdlib.h>
-static void *sGLESSO = NULL;
+static void* sGLESSO = NULL;
 #endif  // LINUX
 
 #endif /* DISABLE_IMPORTGL */
@@ -78,11 +78,11 @@ int importGLInit() {
      * void * results in warnings with VC warning level 4, which
      * could be fixed by casting to the true type for each fetch.
      */
-#define IMPORT_FUNC(funcName)                                            \
-  do {                                                                   \
-    void *procAddress = (void *)GetProcAddress(sGLESDLL, _T(#funcName)); \
-    if (procAddress == NULL) result = 0;                                 \
-    *((void **)&FNPTR(funcName)) = procAddress;                          \
+#define IMPORT_FUNC(funcName)                                           \
+  do {                                                                  \
+    void* procAddress = (void*)GetProcAddress(sGLESDLL, _T(#funcName)); \
+    if (procAddress == NULL) result = 0;                                \
+    *((void**)&FNPTR(funcName)) = procAddress;                          \
   } while (0)
 #endif  // WIN32
 
@@ -96,11 +96,11 @@ int importGLInit() {
   if (sGLESSO == NULL)
     return 0;  // Cannot find OpenGL ES Common or Common Lite SO.
 
-#define IMPORT_FUNC(funcName)                              \
-  do {                                                     \
-    void *procAddress = (void *)dlsym(sGLESSO, #funcName); \
-    if (procAddress == NULL) result = 0;                   \
-    *((void **)&FNPTR(funcName)) = procAddress;            \
+#define IMPORT_FUNC(funcName)                             \
+  do {                                                    \
+    void* procAddress = (void*)dlsym(sGLESSO, #funcName); \
+    if (procAddress == NULL) result = 0;                  \
+    *((void**)&FNPTR(funcName)) = procAddress;            \
   } while (0)
 #endif  // LINUX
 

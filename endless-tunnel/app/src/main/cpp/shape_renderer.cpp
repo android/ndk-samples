@@ -29,16 +29,16 @@ static GLfloat RECT_VERTICES[] = {
 // indices
 static GLushort RECT_INDICES[] = {0, 1, 2, 0, 2, 3};
 
-ShapeRenderer::ShapeRenderer(TrivialShader *ts) {
+ShapeRenderer::ShapeRenderer(TrivialShader* ts) {
   mTrivialShader = ts;
   mColor[0] = mColor[1] = mColor[2] = 1.0f;
   mGeom = NULL;
 
   // create geometry
-  VertexBuf *vbuf =
+  VertexBuf* vbuf =
       new VertexBuf(RECT_VERTICES, sizeof(RECT_VERTICES), 7 * sizeof(GLfloat));
   vbuf->SetColorsOffset(3 * sizeof(GLfloat));
-  IndexBuf *ibuf = new IndexBuf(RECT_INDICES, sizeof(RECT_INDICES));
+  IndexBuf* ibuf = new IndexBuf(RECT_INDICES, sizeof(RECT_INDICES));
   mGeom = new SimpleGeom(vbuf, ibuf);
 }
 

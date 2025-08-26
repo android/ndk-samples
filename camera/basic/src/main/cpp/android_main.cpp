@@ -66,7 +66,7 @@ extern "C" void android_main(struct android_app* state) {
   // loop waiting for stuff to do.
   while (!state->destroyRequested) {
     struct android_poll_source* source = nullptr;
-    auto result  = ALooper_pollOnce(0, NULL, nullptr, (void**)&source);
+    auto result = ALooper_pollOnce(0, NULL, nullptr, (void**)&source);
     ASSERT(result != ALOOPER_POLL_ERROR, "ALooper_pollOnce returned an error");
     if (source != NULL) {
       source->process(state, source);

@@ -61,11 +61,11 @@ typedef int32_t Fixed;
 #define FIXED_FROM_INT(x) ((x) << FIXED_BITS)
 #define FIXED_TO_INT(x) ((x) >> FIXED_BITS)
 
-#define FIXED_FROM_FLOAT(x) ((Fixed)((x)*FIXED_ONE))
+#define FIXED_FROM_FLOAT(x) ((Fixed)((x) * FIXED_ONE))
 #define FIXED_TO_FLOAT(x) ((x) / (1. * FIXED_ONE))
 
 #define FIXED_MUL(x, y) (((int64_t)(x) * (y)) >> FIXED_BITS)
-#define FIXED_DIV(x, y) (((int64_t)(x)*FIXED_ONE) / (y))
+#define FIXED_DIV(x, y) (((int64_t)(x) * FIXED_ONE) / (y))
 
 #define FIXED_DIV2(x) ((x) >> 1)
 #define FIXED_AVERAGE(x, y) (((x) + (y)) >> 1)
@@ -88,8 +88,8 @@ typedef int32_t Angle;
 #define ANGLE_PI2 (1 << (ANGLE_BITS - 2))
 #define ANGLE_PI4 (1 << (ANGLE_BITS - 3))
 
-#define ANGLE_FROM_FLOAT(x) (Angle)((x)*ANGLE_PI / M_PI)
-#define ANGLE_TO_FLOAT(x) ((x)*M_PI / ANGLE_PI)
+#define ANGLE_FROM_FLOAT(x) (Angle)((x) * ANGLE_PI / M_PI)
+#define ANGLE_TO_FLOAT(x) ((x) * M_PI / ANGLE_PI)
 
 #if ANGLE_BITS <= FIXED_BITS
 #define ANGLE_FROM_FIXED(x) (Angle)((x) >> (FIXED_BITS - ANGLE_BITS))
@@ -459,7 +459,7 @@ void android_main(struct android_app* state) {
     // to draw the next frame of animation.
     struct android_poll_source* source = NULL;
     int result = ALooper_pollOnce(engine.animating ? 0 : -1, NULL, NULL,
-                                    (void**)&source);
+                                  (void**)&source);
     if (result == ALOOPER_POLL_ERROR) {
       LOGE("ALooper_pollOnce returned an error");
       abort();

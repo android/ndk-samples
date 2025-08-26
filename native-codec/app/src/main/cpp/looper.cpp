@@ -39,13 +39,13 @@ typedef struct loopermessage loopermessage;
 
 struct loopermessage {
   int what;
-  void *obj;
-  loopermessage *next;
+  void* obj;
+  loopermessage* next;
   bool quit;
 };
 
-void *looper::trampoline(void *p) {
-  ((looper *)p)->loop();
+void* looper::trampoline(void* p) {
+  ((looper*)p)->loop();
   return NULL;
 }
 
@@ -68,8 +68,8 @@ looper::~looper() {
   }
 }
 
-void looper::post(int what, void *data, bool flush) {
-  loopermessage *msg = new loopermessage();
+void looper::post(int what, void* data, bool flush) {
+  loopermessage* msg = new loopermessage();
   msg->what = what;
   msg->obj = data;
   msg->next = NULL;
@@ -77,13 +77,13 @@ void looper::post(int what, void *data, bool flush) {
   addmsg(msg, flush);
 }
 
-void looper::addmsg(loopermessage *msg, bool flush) {
+void looper::addmsg(loopermessage* msg, bool flush) {
   sem_wait(&headwriteprotect);
-  loopermessage *h = head;
+  loopermessage* h = head;
 
   if (flush) {
     while (h) {
-      loopermessage *next = h->next;
+      loopermessage* next = h->next;
       delete h;
       h = next;
     }
@@ -109,7 +109,7 @@ void looper::loop() {
 
     // get next available message
     sem_wait(&headwriteprotect);
-    loopermessage *msg = head;
+    loopermessage* msg = head;
     if (msg == NULL) {
       LOGV("no msg");
       sem_post(&headwriteprotect);
@@ -131,19 +131,19 @@ void looper::loop() {
 
 void looper::quit() {
   LOGV("quit");
-  loopermessage *msg = new loopermessage();
+  loopermessage* msg = new loopermessage();
   msg->what = 0;
   msg->obj = NULL;
   msg->next = NULL;
   msg->quit = true;
   addmsg(msg, false);
-  void *retval;
+  void* retval;
   pthread_join(worker, &retval);
   sem_destroy(&headdataavailable);
   sem_destroy(&headwriteprotect);
   running = false;
 }
 
-void looper::handle(int what, void *obj) {
+void looper::handle(int what, void* obj) {
   LOGV("dropping msg %d %p", what, obj);
 }

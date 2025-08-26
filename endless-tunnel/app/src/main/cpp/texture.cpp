@@ -18,7 +18,7 @@
 #include "common.hpp"
 
 void Texture::InitFromRawRGB(int width, int height, bool hasAlpha,
-                             const unsigned char *data) {
+                             const unsigned char* data) {
   GLenum format = hasAlpha ? GL_RGBA : GL_RGB;
 
   glGenTextures(1, &mTextureH);

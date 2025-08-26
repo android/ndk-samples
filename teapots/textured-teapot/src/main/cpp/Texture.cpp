@@ -54,8 +54,8 @@ Texture::Texture(std::vector<std::string>& asset_paths,
     fileBits.clear();
     AssetReadFile(asset_manager, asset_paths[i], fileBits);
 
-    // tga/bmp asset_paths are saved as vertical mirror images ( at least more than
-    // half ).
+    // tga/bmp asset_paths are saved as vertical mirror images ( at least more
+    // than half ).
     stbi_set_flip_vertically_on_load(1);
 
     uint8_t* imageBits =
@@ -100,7 +100,7 @@ bool Texture::Activate(void) {
   Cubemap just used one sampler at unit 0 with "samplerObj" as its name.
  */
 void Texture::GetActiveSamplerInfo(std::vector<std::string>& names,
-                                          std::vector<GLint>& units) {
+                                   std::vector<GLint>& units) {
   names.clear();
   names.push_back(std::string("samplerObj"));
   units.clear();

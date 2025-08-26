@@ -33,12 +33,12 @@
 // max # of GL errors to print before giving up
 #define MAX_GL_ERRORS 200
 
-static NativeEngine *_singleton = NULL;
+static NativeEngine* _singleton = NULL;
 
 // workaround for internal bug b/149866792
 static NativeEngineSavedState appState = {false};
 
-NativeEngine::NativeEngine(struct android_app *app) {
+NativeEngine::NativeEngine(struct android_app* app) {
   LOGD("NativeEngine: initializing.");
   mApp = app;
   mHasFocus = mIsVisible = mHasWindow = false;
@@ -55,7 +55,7 @@ NativeEngine::NativeEngine(struct android_app *app) {
 
   if (app->savedState != NULL) {
     // we are starting with previously saved state -- restore it
-    mState = *(struct NativeEngineSavedState *)app->savedState;
+    mState = *(struct NativeEngineSavedState*)app->savedState;
   }
 
   // only one instance of NativeEngine may exist!
@@ -66,7 +66,7 @@ NativeEngine::NativeEngine(struct android_app *app) {
   LOGD("NativeEngine: API version %d.", mApiVersion);
 }
 
-NativeEngine *NativeEngine::GetInstance() {
+NativeEngine* NativeEngine::GetInstance() {
   MY_ASSERT(_singleton != NULL);
   return _singleton;
 }
@@ -83,13 +83,13 @@ NativeEngine::~NativeEngine() {
   _singleton = NULL;
 }
 
-static void _handle_cmd_proxy(struct android_app *app, int32_t cmd) {
-  NativeEngine *engine = (NativeEngine *)app->userData;
+static void _handle_cmd_proxy(struct android_app* app, int32_t cmd) {
+  NativeEngine* engine = (NativeEngine*)app->userData;
   engine->HandleCommand(cmd);
 }
 
-static int _handle_input_proxy(struct android_app *app, AInputEvent *event) {
-  NativeEngine *engine = (NativeEngine *)app->userData;
+static int _handle_input_proxy(struct android_app* app, AInputEvent* event) {
+  NativeEngine* engine = (NativeEngine*)app->userData;
   return engine->HandleInput(event) ? 1 : 0;
 }
 
@@ -104,9 +104,9 @@ void NativeEngine::GameLoop() {
 
   while (!mApp->destroyRequested) {
     // If not animating, block until we get an event; if animating, don't block.
-    struct android_poll_source *source = nullptr;
+    struct android_poll_source* source = nullptr;
     auto result = ALooper_pollOnce(IsAnimating() ? 0 : -1, NULL, nullptr,
-                            (void **)&source);
+                                   (void**)&source);
     MY_ASSERT(result != ALOOPER_POLL_ERROR);
     // process event
     if (source != NULL) {
@@ -119,7 +119,7 @@ void NativeEngine::GameLoop() {
   }
 }
 
-JNIEnv *NativeEngine::GetJniEnv() {
+JNIEnv* NativeEngine::GetJniEnv() {
   if (!mJniEnv) {
     LOGD("Attaching current thread to JNI.");
     if (0 != mApp->activity->vm->AttachCurrentThread(&mJniEnv, NULL)) {
@@ -134,7 +134,7 @@ JNIEnv *NativeEngine::GetJniEnv() {
 }
 
 void NativeEngine::HandleCommand(int32_t cmd) {
-  SceneManager *mgr = SceneManager::GetInstance();
+  SceneManager* mgr = SceneManager::GetInstance();
 
   VLOGD("NativeEngine: handling command %d.", cmd);
   switch (cmd) {
@@ -143,7 +143,7 @@ void NativeEngine::HandleCommand(int32_t cmd) {
       VLOGD("NativeEngine: APP_CMD_SAVE_STATE");
       mState.mHasFocus = mHasFocus;
       mApp->savedState = malloc(sizeof(mState));
-      *((NativeEngineSavedState *)mApp->savedState) = mState;
+      *((NativeEngineSavedState*)mApp->savedState) = mState;
       mApp->savedStateSize = sizeof(mState);
       break;
     case APP_CMD_INIT_WINDOW:
@@ -153,7 +153,7 @@ void NativeEngine::HandleCommand(int32_t cmd) {
         mHasWindow = true;
         if (mApp->savedStateSize == sizeof(mState) &&
             mApp->savedState != nullptr) {
-          mState = *((NativeEngineSavedState *)mApp->savedState);
+          mState = *((NativeEngineSavedState*)mApp->savedState);
           mHasFocus = mState.mHasFocus;
         } else {
           // Workaround APP_CMD_GAINED_FOCUS issue where the focus state is not
@@ -225,8 +225,8 @@ void NativeEngine::HandleCommand(int32_t cmd) {
         mEglContext, mEglConfig);
 }
 
-static bool _cooked_event_callback(struct CookedEvent *event) {
-  SceneManager *mgr = SceneManager::GetInstance();
+static bool _cooked_event_callback(struct CookedEvent* event) {
+  SceneManager* mgr = SceneManager::GetInstance();
   PointerCoords coords;
   memset(&coords, 0, sizeof(coords));
   coords.x = event->motionX;
@@ -263,7 +263,7 @@ static bool _cooked_event_callback(struct CookedEvent *event) {
   }
 }
 
-bool NativeEngine::HandleInput(AInputEvent *event) {
+bool NativeEngine::HandleInput(AInputEvent* event) {
   return CookEvent(event, _cooked_event_callback);
 }
 
@@ -410,7 +410,7 @@ bool NativeEngine::PrepareToRender() {
 
 void NativeEngine::KillGLObjects() {
   if (mHasGLObjects) {
-    SceneManager *mgr = SceneManager::GetInstance();
+    SceneManager* mgr = SceneManager::GetInstance();
     mgr->KillGraphics();
     mHasGLObjects = false;
   }
@@ -516,7 +516,7 @@ void NativeEngine::DoFrame() {
     return;
   }
 
-  SceneManager *mgr = SceneManager::GetInstance();
+  SceneManager* mgr = SceneManager::GetInstance();
 
   // how big is the surface? We query every frame because it's cheap, and some
   // strange devices out there change the surface size without calling any
@@ -565,11 +565,11 @@ void NativeEngine::DoFrame() {
   }
 }
 
-android_app *NativeEngine::GetAndroidApp() { return mApp; }
+android_app* NativeEngine::GetAndroidApp() { return mApp; }
 
 bool NativeEngine::InitGLObjects() {
   if (!mHasGLObjects) {
-    SceneManager *mgr = SceneManager::GetInstance();
+    SceneManager* mgr = SceneManager::GetInstance();
     mgr->StartGraphics();
     _log_opengl_error(glGetError());
     mHasGLObjects = true;

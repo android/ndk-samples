@@ -409,8 +409,8 @@ void android_main(android_app* state) {
     // If animating, we loop until all events are read, then continue
     // to draw the next frame of animation.
     android_poll_source* source = nullptr;
-    auto result = ALooper_pollOnce(g_engine.IsReady() ? 0 : -1, nullptr, nullptr,
-                                 (void**)&source);
+    auto result = ALooper_pollOnce(g_engine.IsReady() ? 0 : -1, nullptr,
+                                   nullptr, (void**)&source);
 
     if (result == ALOOPER_POLL_ERROR) {
       LOGE("ALooper_pollOnce returned an error");

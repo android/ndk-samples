@@ -42,10 +42,10 @@ const float SENSOR_FILTER_ALPHA = 0.1f;
  *    for Android-N and before, when compiling with NDK-r15
  */
 #include <dlfcn.h>
-const char *kPackageName = "com.android.accelerometergraph";
-ASensorManager *AcquireASensorManagerInstance(void) {
-  typedef ASensorManager *(*PF_GETINSTANCEFORPACKAGE)(const char *name);
-  void *androidHandle = dlopen("libandroid.so", RTLD_NOW);
+const char* kPackageName = "com.android.accelerometergraph";
+ASensorManager* AcquireASensorManagerInstance(void) {
+  typedef ASensorManager* (*PF_GETINSTANCEFORPACKAGE)(const char* name);
+  void* androidHandle = dlopen("libandroid.so", RTLD_NOW);
   PF_GETINSTANCEFORPACKAGE getInstanceForPackageFunc =
       (PF_GETINSTANCEFORPACKAGE)dlsym(androidHandle,
                                       "ASensorManager_getInstanceForPackage");
@@ -53,7 +53,7 @@ ASensorManager *AcquireASensorManagerInstance(void) {
     return getInstanceForPackageFunc(kPackageName);
   }
 
-  typedef ASensorManager *(*PF_GETINSTANCE)();
+  typedef ASensorManager* (*PF_GETINSTANCE)();
   PF_GETINSTANCE getInstanceFunc =
       (PF_GETINSTANCE)dlsym(androidHandle, "ASensorManager_getInstance");
   // by all means at this point, ASensorManager_getInstance should be available
@@ -64,10 +64,10 @@ ASensorManager *AcquireASensorManagerInstance(void) {
 class sensorgraph {
   std::string vertexShaderSource;
   std::string fragmentShaderSource;
-  ASensorManager *sensorManager;
-  const ASensor *accelerometer;
-  ASensorEventQueue *accelerometerEventQueue;
-  ALooper *looper;
+  ASensorManager* sensorManager;
+  const ASensor* accelerometer;
+  ASensorEventQueue* accelerometerEventQueue;
+  ALooper* looper;
 
   GLuint shaderProgram;
   GLuint vPositionHandle;
@@ -87,24 +87,24 @@ class sensorgraph {
  public:
   sensorgraph() : sensorDataIndex(0) {}
 
-  void init(AAssetManager *assetManager) {
-    AAsset *vertexShaderAsset =
+  void init(AAssetManager* assetManager) {
+    AAsset* vertexShaderAsset =
         AAssetManager_open(assetManager, "shader.glslv", AASSET_MODE_BUFFER);
     assert(vertexShaderAsset != NULL);
-    const void *vertexShaderBuf = AAsset_getBuffer(vertexShaderAsset);
+    const void* vertexShaderBuf = AAsset_getBuffer(vertexShaderAsset);
     assert(vertexShaderBuf != NULL);
     off_t vertexShaderLength = AAsset_getLength(vertexShaderAsset);
     vertexShaderSource =
-        std::string((const char *)vertexShaderBuf, (size_t)vertexShaderLength);
+        std::string((const char*)vertexShaderBuf, (size_t)vertexShaderLength);
     AAsset_close(vertexShaderAsset);
 
-    AAsset *fragmentShaderAsset =
+    AAsset* fragmentShaderAsset =
         AAssetManager_open(assetManager, "shader.glslf", AASSET_MODE_BUFFER);
     assert(fragmentShaderAsset != NULL);
-    const void *fragmentShaderBuf = AAsset_getBuffer(fragmentShaderAsset);
+    const void* fragmentShaderBuf = AAsset_getBuffer(fragmentShaderAsset);
     assert(fragmentShaderBuf != NULL);
     off_t fragmentShaderLength = AAsset_getLength(fragmentShaderAsset);
-    fragmentShaderSource = std::string((const char *)fragmentShaderBuf,
+    fragmentShaderSource = std::string((const char*)fragmentShaderBuf,
                                        (size_t)fragmentShaderLength);
     AAsset_close(fragmentShaderAsset);
 
@@ -161,8 +161,8 @@ class sensorgraph {
     }
   }
 
-  GLuint createProgram(const std::string &pVertexSource,
-                       const std::string &pFragmentSource) {
+  GLuint createProgram(const std::string& pVertexSource,
+                       const std::string& pFragmentSource) {
     GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
     GLuint program = glCreateProgram();
@@ -178,10 +178,10 @@ class sensorgraph {
     return program;
   }
 
-  GLuint loadShader(GLenum shaderType, const std::string &pSource) {
+  GLuint loadShader(GLenum shaderType, const std::string& pSource) {
     GLuint shader = glCreateShader(shaderType);
     assert(shader != 0);
-    const char *sourceBuf = pSource.c_str();
+    const char* sourceBuf = pSource.c_str();
     glShaderSource(shader, 1, &sourceBuf, NULL);
     glCompileShader(shader);
     GLint shaderCompiled = 0;
@@ -255,15 +255,15 @@ sensorgraph gSensorGraph;
 extern "C" {
 JNIEXPORT void JNICALL
 Java_com_android_accelerometergraph_AccelerometerGraphJNI_init(
-    JNIEnv *env, jclass type, jobject assetManager) {
+    JNIEnv* env, jclass type, jobject assetManager) {
   (void)type;
-  AAssetManager *nativeAssetManager = AAssetManager_fromJava(env, assetManager);
+  AAssetManager* nativeAssetManager = AAssetManager_fromJava(env, assetManager);
   gSensorGraph.init(nativeAssetManager);
 }
 
 JNIEXPORT void JNICALL
 Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceCreated(
-    JNIEnv *env, jclass type) {
+    JNIEnv* env, jclass type) {
   (void)env;
   (void)type;
   gSensorGraph.surfaceCreated();
@@ -271,7 +271,7 @@ Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceCreated(
 
 JNIEXPORT void JNICALL
 Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceChanged(
-    JNIEnv *env, jclass type, jint width, jint height) {
+    JNIEnv* env, jclass type, jint width, jint height) {
   (void)env;
   (void)type;
   gSensorGraph.surfaceChanged(width, height);
@@ -279,7 +279,7 @@ Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceChanged(
 
 JNIEXPORT void JNICALL
 Java_com_android_accelerometergraph_AccelerometerGraphJNI_drawFrame(
-    JNIEnv *env, jclass type) {
+    JNIEnv* env, jclass type) {
   (void)env;
   (void)type;
   gSensorGraph.update();
@@ -287,7 +287,7 @@ Java_com_android_accelerometergraph_AccelerometerGraphJNI_drawFrame(
 }
 
 JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_pause(JNIEnv *env,
+Java_com_android_accelerometergraph_AccelerometerGraphJNI_pause(JNIEnv* env,
                                                                 jclass type) {
   (void)env;
   (void)type;
@@ -295,7 +295,7 @@ Java_com_android_accelerometergraph_AccelerometerGraphJNI_pause(JNIEnv *env,
 }
 
 JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_resume(JNIEnv *env,
+Java_com_android_accelerometergraph_AccelerometerGraphJNI_resume(JNIEnv* env,
                                                                  jclass type) {
   (void)env;
   (void)type;

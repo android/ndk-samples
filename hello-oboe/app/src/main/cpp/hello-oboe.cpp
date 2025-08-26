@@ -19,7 +19,7 @@
 
 #include "OboeSinePlayer.h"
 
-static OboeSinePlayer *oboePlayer = nullptr;
+static OboeSinePlayer* oboePlayer = nullptr;
 
 extern "C" {
 /* Create Oboe playback stream
@@ -28,14 +28,14 @@ extern "C" {
  */
 JNIEXPORT jint JNICALL
 Java_com_google_example_hellooboe_MainActivity_createStream(
-    JNIEnv * /* env */, jobject /* this */) {
+    JNIEnv* /* env */, jobject /* this */) {
   oboePlayer = new OboeSinePlayer();
 
   return oboePlayer ? 0 : -1;
 }
 JNIEXPORT void JNICALL
 Java_com_google_example_hellooboe_MainActivity_destroyStream(
-    JNIEnv * /* env */, jobject /* this */) {
+    JNIEnv* /* env */, jobject /* this */) {
   if (oboePlayer) {
     delete oboePlayer;
     oboePlayer = nullptr;
@@ -47,7 +47,7 @@ Java_com_google_example_hellooboe_MainActivity_destroyStream(
  *          -1  - failed (stream has not created yet )
  */
 JNIEXPORT jint JNICALL Java_com_google_example_hellooboe_MainActivity_playSound(
-    JNIEnv * /* env */, jobject /* this */, jboolean enable) {
+    JNIEnv* /* env */, jobject /* this */, jboolean enable) {
   jint result = 0;
   if (oboePlayer) {
     oboePlayer->enable(enable);

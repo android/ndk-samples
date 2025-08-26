@@ -38,7 +38,7 @@ double PerfMonitor::UpdateTick(double currentTick) {
   return ((double)ticksum_ / kNumSamples);
 }
 
-bool PerfMonitor::Update(float &fFPS) {
+bool PerfMonitor::Update(float& fFPS) {
   struct timeval Time;
   gettimeofday(&Time, NULL);
 

@@ -32,7 +32,7 @@ namespace {
 // 1. Allocate a large-enough shared memory to hold the model data;
 // 2. Copy the asset file to the shared memory;
 // 3. Create the NNAPI memory with the file descriptor of the shared memory.
-ANeuralNetworksMemory *createMemoryFromAsset(AAsset *asset) {
+ANeuralNetworksMemory* createMemoryFromAsset(AAsset* asset) {
   // Allocate a large-enough shared memory to hold the model data.
   off_t length = AAsset_getLength(asset);
   int fd = ASharedMemory_create("model_data", length);
@@ -43,7 +43,7 @@ ANeuralNetworksMemory *createMemoryFromAsset(AAsset *asset) {
   }
 
   // Copy the asset file to the shared memory.
-  void *data = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  void* data = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   if (data == nullptr) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
                         "Failed to map a shared memory");
@@ -54,7 +54,7 @@ ANeuralNetworksMemory *createMemoryFromAsset(AAsset *asset) {
   munmap(data, length);
 
   // Create the NNAPI memory with the file descriptor of the shared memory.
-  ANeuralNetworksMemory *memory;
+  ANeuralNetworksMemory* memory;
   int status = ANeuralNetworksMemory_createFromFd(
       length, PROT_READ | PROT_WRITE, fd, 0, &memory);
 
@@ -77,7 +77,7 @@ ANeuralNetworksMemory *createMemoryFromAsset(AAsset *asset) {
  *
  * Initialize the member variables, including the shared memory objects.
  */
-SimpleModel::SimpleModel(AAsset *asset)
+SimpleModel::SimpleModel(AAsset* asset)
     : model_(nullptr), compilation_(nullptr), dimLength_(TENSOR_SIZE) {
   tensorSize_ = dimLength_;
   inputTensor1_.resize(tensorSize_);
@@ -422,7 +422,7 @@ bool SimpleModel::CreateCompiledModel() {
  *    inputValue2:   The values to fill tensor3
  * @return  computed result, or 0.0f if there is error.
  */
-bool SimpleModel::Compute(float inputValue1, float inputValue2, float *result) {
+bool SimpleModel::Compute(float inputValue1, float inputValue2, float* result) {
   if (!result) {
     return false;
   }
@@ -434,7 +434,7 @@ bool SimpleModel::Compute(float inputValue1, float inputValue2, float *result) {
   //   2. Multiple concurrent execution instances could be created from the same
   //   compiled model.
   // This sample only uses one execution of the compiled model.
-  ANeuralNetworksExecution *execution;
+  ANeuralNetworksExecution* execution;
   int32_t status = ANeuralNetworksExecution_create(compilation_, &execution);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
@@ -462,7 +462,7 @@ bool SimpleModel::Compute(float inputValue1, float inputValue2, float *result) {
   // Set the values of the second input operand (tensor3) to be inputValue2.
   // In reality, the values in the shared memory region will be manipulated by
   // other modules or processes.
-  float *inputTensor2Ptr = reinterpret_cast<float *>(
+  float* inputTensor2Ptr = reinterpret_cast<float*>(
       mmap(nullptr, tensorSize_ * sizeof(float), PROT_READ | PROT_WRITE,
            MAP_SHARED, inputTensor2Fd_, 0));
   for (int i = 0; i < tensorSize_; i++) {
@@ -499,7 +499,7 @@ bool SimpleModel::Compute(float inputValue1, float inputValue2, float *result) {
   // Start the execution of the model.
   // Note that the execution here is asynchronous, and an ANeuralNetworksEvent
   // object will be created to monitor the status of the execution.
-  ANeuralNetworksEvent *event = nullptr;
+  ANeuralNetworksEvent* event = nullptr;
   status = ANeuralNetworksExecution_startCompute(execution, &event);
   if (status != ANEURALNETWORKS_NO_ERROR) {
     __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,
@@ -522,9 +522,9 @@ bool SimpleModel::Compute(float inputValue1, float inputValue2, float *result) {
 
   // Validate the results.
   const float goldenRef = (inputValue1 + 0.5f) * (inputValue2 + 0.5f);
-  float *outputTensorPtr = reinterpret_cast<float *>(
-      mmap(nullptr, tensorSize_ * sizeof(float), PROT_READ, MAP_SHARED,
-           outputTensorFd_, 0));
+  float* outputTensorPtr =
+      reinterpret_cast<float*>(mmap(nullptr, tensorSize_ * sizeof(float),
+                                    PROT_READ, MAP_SHARED, outputTensorFd_, 0));
   for (int32_t idx = 0; idx < tensorSize_; idx++) {
     float delta = outputTensorPtr[idx] - goldenRef;
     delta = (delta < 0.0f) ? (-delta) : delta;

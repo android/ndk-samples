@@ -40,7 +40,7 @@ static const float OBS_COLORS[] = {0.0f, 0.0f, 0.0f,  // style 0 (not used)
                                    0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
                                    1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
 
-static const char *TONE_BONUS[] = {
+static const char* TONE_BONUS[] = {
     "d70 f150. f250. f350. f450.", "d70 f200. f300. f400. f500.",
     "d70 f250. f350. f450. f550.", "d70 f300. f400. f500. f600.",
     "d70 f350. f450. f550. f650.", "d70 f400. f500. f600. f700.",
@@ -111,7 +111,7 @@ PlayScene::PlayScene() : Scene() {
   /*
    * where do I put the program???
    */
-  const char *savePath = "/mnt/sdcard/com.google.example.games.tunnel.fix";
+  const char* savePath = "/mnt/sdcard/com.google.example.games.tunnel.fix";
   int len = strlen(savePath) + strlen(SAVE_FILE_NAME) + 3;
   mSaveFileName = new char[len];
   strcpy(mSaveFileName, savePath);
@@ -132,7 +132,7 @@ void PlayScene::LoadProgress() {
   mSavedCheckpoint = 0;
 
   LOGD("Attempting to load: %s", mSaveFileName);
-  FILE *f = fopen(mSaveFileName, "r");
+  FILE* f = fopen(mSaveFileName, "r");
   bool hasLocalFile = false;
   if (f) {
     hasLocalFile = true;
@@ -174,7 +174,7 @@ void PlayScene::LoadProgress() {
 
 void PlayScene::WriteSaveFile(int level) {
   LOGD("Saving progress (level %d) to file: %s", level, mSaveFileName);
-  FILE *f = fopen(mSaveFileName, "w");
+  FILE* f = fopen(mSaveFileName, "w");
   if (!f) {
     LOGE("Error writing to save game file.");
     return;
@@ -215,9 +215,9 @@ void PlayScene::SaveProgress() {
   mCheckpointSignPending = true;
 }
 
-static unsigned char *_gen_wall_texture() {
+static unsigned char* _gen_wall_texture() {
   static unsigned char pixel_data[WALL_TEXTURE_SIZE * WALL_TEXTURE_SIZE * 3];
-  unsigned char *p;
+  unsigned char* p;
   int x, y;
   for (y = 0, p = pixel_data; y < WALL_TEXTURE_SIZE; y++) {
     for (x = 0; x < WALL_TEXTURE_SIZE; x++, p += 3) {
@@ -413,7 +413,7 @@ static float GetSectionEndY(int i) {
   return GetSectionCenterY(i) + 0.5f * TUNNEL_SECTION_LENGTH;
 }
 
-static void _get_obs_color(int style, float *r, float *g, float *b) {
+static void _get_obs_color(int style, float* r, float* g, float* b) {
   style = Clamp(style, 1, 6);
   *r = OBS_COLORS[style * 3];
   *g = OBS_COLORS[style * 3 + 1];
@@ -433,7 +433,7 @@ void PlayScene::RenderTunnel() {
     modelMat = glm::translate(glm::mat4(1.0), glm::vec3(0.0, segCenterY, 0.0));
     mvpMat = mProjMat * mViewMat * modelMat;
 
-    Obstacle *o = oi >= mObstacleCount ? NULL : GetObstacleAt(oi);
+    Obstacle* o = oi >= mObstacleCount ? NULL : GetObstacleAt(oi);
 
     // the point light is given in model coordinates, which is 0,0,0 is ok
     // (center of tunnel section)
@@ -463,7 +463,7 @@ void PlayScene::RenderObstacles() {
   mOurShader->SetTexture(mWallTexture);
 
   for (i = 0; i < mObstacleCount; i++) {
-    Obstacle *o = GetObstacleAt(i);
+    Obstacle* o = GetObstacleAt(i);
     float posY = GetSectionCenterY(mFirstSection + i);
 
     if (o->style == Obstacle::STYLE_NULL) {
@@ -549,7 +549,7 @@ void PlayScene::UpdateMenuSelFromTouch(float x, float y) {
 }
 
 void PlayScene::OnPointerDown(int pointerId,
-                              const struct PointerCoords *coords) {
+                              const struct PointerCoords* coords) {
   float x = coords->x, y = coords->y;
   if (mMenu) {
     if (coords->isScreen) {
@@ -566,7 +566,7 @@ void PlayScene::OnPointerDown(int pointerId,
   }
 }
 
-void PlayScene::OnPointerUp(int pointerId, const struct PointerCoords *coords) {
+void PlayScene::OnPointerUp(int pointerId, const struct PointerCoords* coords) {
   if (mMenu && mMenuTouchActive) {
     if (coords->isScreen) {
       mMenuTouchActive = false;
@@ -578,7 +578,7 @@ void PlayScene::OnPointerUp(int pointerId, const struct PointerCoords *coords) {
 }
 
 void PlayScene::OnPointerMove(int pointerId,
-                              const struct PointerCoords *coords) {
+                              const struct PointerCoords* coords) {
   float rangeY = coords->isScreen
                      ? SceneManager::GetInstance()->GetScreenHeight()
                      : (coords->maxY - coords->minY);
@@ -678,7 +678,7 @@ void PlayScene::RenderMenu() {
 }
 
 void PlayScene::DetectCollisions(float previousY) {
-  Obstacle *o = GetObstacleAt(0);
+  Obstacle* o = GetObstacleAt(0);
   float obsCenter = GetSectionCenterY(mFirstSection);
   float obsMin = obsCenter - OBS_BOX_SIZE;
   float curY = mPlayerPos.y;
@@ -734,8 +734,8 @@ void PlayScene::DetectCollisions(float previousY) {
     } else {
       int tone = (score % SCORE_PER_LEVEL) / BONUS_POINTS - 1;
       tone = tone < 0 ? 0
-             : tone >= static_cast<int>(sizeof(TONE_BONUS) / sizeof(char *))
-                 ? static_cast<int>(sizeof(TONE_BONUS) / sizeof(char *) - 1)
+             : tone >= static_cast<int>(sizeof(TONE_BONUS) / sizeof(char*))
+                 ? static_cast<int>(sizeof(TONE_BONUS) / sizeof(char*) - 1)
                  : tone;
       SfxMan::GetInstance()->PlayTone(TONE_BONUS[tone]);
     }
@@ -872,7 +872,7 @@ void PlayScene::OnScreenResized(int width, int height) {
 }
 
 void PlayScene::UpdateProjectionMatrix() {
-  SceneManager *mgr = SceneManager::GetInstance();
+  SceneManager* mgr = SceneManager::GetInstance();
   mProjMat = glm::perspective(RENDER_FOV, mgr->GetScreenAspect(),
                               RENDER_NEAR_CLIP, RENDER_FAR_CLIP);
 }

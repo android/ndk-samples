@@ -63,7 +63,7 @@ static XAVolumeItf playerVolItf = NULL;
   3  // XAAndroidBufferQueueItf, XAStreamInformationItf and XAPlayItf
 
 // video sink for the player
-static ANativeWindow *theNativeWindow;
+static ANativeWindow* theNativeWindow;
 
 // number of buffers in our buffer queue, an arbitrary number
 #define NB_BUFFERS 8
@@ -83,7 +83,7 @@ static ANativeWindow *theNativeWindow;
 static char dataCache[BUFFER_SIZE * NB_BUFFERS];
 
 // handle of the file to play
-static FILE *file;
+static FILE* file;
 static jobject android_java_asset_manager = NULL;
 
 // has the app reached the end of the file
@@ -109,12 +109,12 @@ static jboolean enqueueInitialBuffers(jboolean discontinuity);
 // AndroidBufferQueueItf callback to supply MPEG-2 TS packets to the media
 // player
 static XAresult AndroidBufferQueueCallback(
-    XAAndroidBufferQueueItf caller, void *pCallbackContext, /* input */
-    void *pBufferContext,                                   /* input */
-    void *pBufferData,                                      /* input */
+    XAAndroidBufferQueueItf caller, void* pCallbackContext, /* input */
+    void* pBufferContext,                                   /* input */
+    void* pBufferData,                                      /* input */
     XAuint32 dataSize,                                      /* input */
     XAuint32 dataUsed,                                      /* input */
-    const XAAndroidBufferItem *pItems,                      /* input */
+    const XAAndroidBufferItem* pItems,                      /* input */
     XAuint32 itemsLength /* input */) {
   XAresult res;
   int ok;
@@ -151,7 +151,7 @@ static XAresult AndroidBufferQueueCallback(
   }
 
   if ((pBufferData == NULL) && (pBufferContext != NULL)) {
-    const int processedCommand = *(int *)pBufferContext;
+    const int processedCommand = *(int*)pBufferContext;
     if (kEosBufferCntxt == processedCommand) {
       LOGV("EOS was processed\n");
       // our buffer with the EOS message has been consumed
@@ -162,9 +162,9 @@ static XAresult AndroidBufferQueueCallback(
 
   // pBufferData is a pointer to a buffer that we previously Enqueued
   assert((dataSize > 0) && ((dataSize % MPEG2_TS_PACKET_SIZE) == 0));
-  assert(dataCache <= (char *)pBufferData &&
-         (char *)pBufferData < &dataCache[BUFFER_SIZE * NB_BUFFERS]);
-  assert(0 == (((char *)pBufferData - dataCache) % BUFFER_SIZE));
+  assert(dataCache <= (char*)pBufferData &&
+         (char*)pBufferData < &dataCache[BUFFER_SIZE * NB_BUFFERS]);
+  assert(0 == (((char*)pBufferData - dataCache) % BUFFER_SIZE));
 
   // don't bother trying to read more data once we've hit EOF
   if (reachedEof) {
@@ -192,9 +192,9 @@ static XAresult AndroidBufferQueueCallback(
     // EOS message has no parameters, so the total size of the message is the
     // size of the key
     //   plus the size if itemSize, both XAuint32
-    res = (*caller)->Enqueue(
-        caller, (void *)&kEosBufferCntxt /*pBufferContext*/, NULL /*pData*/,
-        0 /*dataLength*/, msgEos /*pMsg*/, sizeof(XAuint32) * 2 /*msgLength*/);
+    res = (*caller)->Enqueue(caller, (void*)&kEosBufferCntxt /*pBufferContext*/,
+                             NULL /*pData*/, 0 /*dataLength*/, msgEos /*pMsg*/,
+                             sizeof(XAuint32) * 2 /*msgLength*/);
     assert(XA_RESULT_SUCCESS == res);
     reachedEof = JNI_TRUE;
   }
@@ -208,7 +208,7 @@ exit:
 // callback invoked whenever there is new or changed stream information
 static void StreamChangeCallback(XAStreamInformationItf caller,
                                  XAuint32 eventId, XAuint32 streamIndex,
-                                 void *pEventData, void *pContext) {
+                                 void* pEventData, void* pContext) {
   LOGV("StreamChangeCallback called for stream %u", streamIndex);
   // pContext was specified as NULL at RegisterStreamChangeCallback and is
   // unused here
@@ -250,7 +250,7 @@ static void StreamChangeCallback(XAStreamInformationItf caller,
 }
 
 // create the engine and output mix objects
-void Java_com_example_nativemedia_NativeMedia_createEngine(JNIEnv *env,
+void Java_com_example_nativemedia_NativeMedia_createEngine(JNIEnv* env,
                                                            jclass clazz) {
   XAresult res;
 
@@ -336,14 +336,14 @@ static jboolean enqueueInitialBuffers(jboolean discontinuity) {
 
 // create streaming media player
 jboolean Java_com_example_nativemedia_NativeMedia_createStreamingMediaPlayer(
-    JNIEnv *env, jclass clazz, jobject assetMgr, jstring filename) {
+    JNIEnv* env, jclass clazz, jobject assetMgr, jstring filename) {
   XAresult res;
 
   android_java_asset_manager = (*env)->NewGlobalRef(env, assetMgr);
   android_fopen_set_asset_manager(
       AAssetManager_fromJava(env, android_java_asset_manager));
   // convert Java string to UTF-8
-  const char *utf8 = (*env)->GetStringUTFChars(env, filename, NULL);
+  const char* utf8 = (*env)->GetStringUTFChars(env, filename, NULL);
   assert(NULL != utf8);
 
   // open the file to play
@@ -369,7 +369,7 @@ jboolean Java_com_example_nativemedia_NativeMedia_createStreamingMediaPlayer(
       XA_DATALOCATOR_NATIVEDISPLAY,  // locatorType
       // the video sink must be an ANativeWindow created from a Surface or
       // SurfaceTexture
-      (void *)theNativeWindow,  // hWindow
+      (void*)theNativeWindow,  // hWindow
       // must be NULL
       NULL  // hDisplay
   };
@@ -458,7 +458,7 @@ jboolean Java_com_example_nativemedia_NativeMedia_createStreamingMediaPlayer(
 
 // set the playing state for the streaming media player
 void Java_com_example_nativemedia_NativeMedia_setPlayingStreamingMediaPlayer(
-    JNIEnv *env, jclass clazz, jboolean isPlaying) {
+    JNIEnv* env, jclass clazz, jboolean isPlaying) {
   XAresult res;
 
   // make sure the streaming media player was created
@@ -472,7 +472,7 @@ void Java_com_example_nativemedia_NativeMedia_setPlayingStreamingMediaPlayer(
 }
 
 // shut down the native media system
-void Java_com_example_nativemedia_NativeMedia_shutdown(JNIEnv *env,
+void Java_com_example_nativemedia_NativeMedia_shutdown(JNIEnv* env,
                                                        jclass clazz) {
   // destroy streaming media player object, and invalidate all associated
   // interfaces
@@ -516,7 +516,7 @@ void Java_com_example_nativemedia_NativeMedia_shutdown(JNIEnv *env,
 }
 
 // set the surface
-void Java_com_example_nativemedia_NativeMedia_setSurface(JNIEnv *env,
+void Java_com_example_nativemedia_NativeMedia_setSurface(JNIEnv* env,
                                                          jclass clazz,
                                                          jobject surface) {
   // obtain a native window from a Java surface
@@ -525,7 +525,7 @@ void Java_com_example_nativemedia_NativeMedia_setSurface(JNIEnv *env,
 
 // rewind the streaming media player
 void Java_com_example_nativemedia_NativeMedia_rewindStreamingMediaPlayer(
-    JNIEnv *env, jclass clazz) {
+    JNIEnv* env, jclass clazz) {
   XAresult res;
   XAuint32 state;
 

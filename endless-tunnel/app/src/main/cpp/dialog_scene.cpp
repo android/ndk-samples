@@ -42,7 +42,7 @@ DialogScene::DialogScene() {
 DialogScene::~DialogScene() {}
 
 void DialogScene::CreateWidgetsSetText() {
-  const char *text = mText;
+  const char* text = mText;
   float center = 0.5f * SceneManager::GetInstance()->GetScreenAspect();
 
   if (mTextBoxId < 0) {
@@ -59,7 +59,7 @@ void DialogScene::CreateWidgetsSetText() {
 }
 
 void DialogScene::CreateWidgetsSingleButton() {
-  const char *text = mLeftButtonText;
+  const char* text = mLeftButtonText;
   int action = mLeftButtonAction;
   float center = 0.5f * SceneManager::GetInstance()->GetScreenAspect();
   mLeftButtonId = NewWidget()
@@ -77,9 +77,9 @@ void DialogScene::CreateWidgetsSingleButton() {
 }
 
 void DialogScene::CreateWidgetsTwoButtons() {
-  const char *leftText = mLeftButtonText;
+  const char* leftText = mLeftButtonText;
   int leftAction = mLeftButtonAction;
-  const char *rightText = mRightButtonText;
+  const char* rightText = mRightButtonText;
   int rightAction = mRightButtonAction;
 
   float center = 0.5f * SceneManager::GetInstance()->GetScreenAspect();
@@ -131,13 +131,13 @@ void DialogScene::RenderBackground() {
 }
 
 bool DialogScene::OnBackKeyPressed() {
-  SceneManager *mgr = SceneManager::GetInstance();
+  SceneManager* mgr = SceneManager::GetInstance();
   mgr->RequestNewScene(new WelcomeScene());
   return true;
 }
 
 void DialogScene::OnButtonClicked(int id) {
-  SceneManager *mgr = SceneManager::GetInstance();
+  SceneManager* mgr = SceneManager::GetInstance();
 
   int action;
   if (id == mLeftButtonId) {

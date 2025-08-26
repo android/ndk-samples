@@ -138,7 +138,7 @@ void Shader::BindShader() {
 void Shader::UnbindShader() { glUseProgram(0); }
 
 // To be called by child classes only.
-void Shader::PushMVPMatrix(glm::mat4 *mat) {
+void Shader::PushMVPMatrix(glm::mat4* mat) {
   MY_ASSERT(mMVPMatrixLoc >= 0);
   glUniformMatrix4fv(mMVPMatrixLoc, 1, GL_FALSE, glm::value_ptr(*mat));
 }
@@ -151,7 +151,7 @@ void Shader::PushPositions(int vbo_offset, int stride) {
   glEnableVertexAttribArray(mPositionAttribLoc);
 }
 
-void Shader::BeginRender(VertexBuf *vbuf) {
+void Shader::BeginRender(VertexBuf* vbuf) {
   // Activate shader
   BindShader();
 
@@ -165,7 +165,7 @@ void Shader::BeginRender(VertexBuf *vbuf) {
   mPreparedVertexBuf = vbuf;
 }
 
-void Shader::Render(IndexBuf *ibuf, glm::mat4 *mvpMat) {
+void Shader::Render(IndexBuf* ibuf, glm::mat4* mvpMat) {
   MY_ASSERT(mPreparedVertexBuf != NULL);
 
   // push MVP matrix to shader
@@ -215,7 +215,7 @@ void TrivialShader::Compile() {
   UnbindShader();
 }
 
-const char *TrivialShader::GetVertShaderSource() {
+const char* TrivialShader::GetVertShaderSource() {
   return "uniform mat4 u_MVP;            \n"
          "uniform vec4 u_Tint;           \n"
          "attribute vec4 a_Position;     \n"
@@ -229,7 +229,7 @@ const char *TrivialShader::GetVertShaderSource() {
          "}                              \n";
 }
 
-const char *TrivialShader::GetFragShaderSource() {
+const char* TrivialShader::GetFragShaderSource() {
   return "precision mediump float;       \n"
          "varying vec4 v_Color;          \n"
          "void main()                    \n"
@@ -240,7 +240,7 @@ const char *TrivialShader::GetFragShaderSource() {
 
 int TrivialShader::GetColorAttribLoc() { return mColorLoc; }
 
-const char *TrivialShader::GetShaderName() { return "TrivialShader"; }
+const char* TrivialShader::GetShaderName() { return "TrivialShader"; }
 
 void TrivialShader::ResetTintColor() { SetTintColor(1.0f, 1.0f, 1.0f); }
 
@@ -256,7 +256,7 @@ void TrivialShader::SetTintColor(float r, float g, float b) {
   }
 }
 
-void TrivialShader::BeginRender(VertexBuf *geom) {
+void TrivialShader::BeginRender(VertexBuf* geom) {
   // let superclass do the basic work
   Shader::BeginRender(geom);
 

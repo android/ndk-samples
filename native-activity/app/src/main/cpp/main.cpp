@@ -34,8 +34,9 @@
 
 #define LOG_TAG "native-activity"
 
-#define _LOG(priority, fmt, ...) \
-  ((void)__android_log_print((priority), (LOG_TAG), (fmt)__VA_OPT__(, ) __VA_ARGS__))
+#define _LOG(priority, fmt, ...)                    \
+  ((void)__android_log_print((priority), (LOG_TAG), \
+                             (fmt)__VA_OPT__(, ) __VA_ARGS__))
 
 #define LOGE(fmt, ...) _LOG(ANDROID_LOG_ERROR, (fmt)__VA_OPT__(, ) __VA_ARGS__)
 #define LOGW(fmt, ...) _LOG(ANDROID_LOG_WARN, (fmt)__VA_OPT__(, ) __VA_ARGS__)
@@ -305,8 +306,7 @@ static void engine_term_display(Engine* engine) {
 /**
  * Process the next input event.
  */
-static int32_t engine_handle_input(android_app* app,
-                                   AInputEvent* event) {
+static int32_t engine_handle_input(android_app* app, AInputEvent* event) {
   auto* engine = (Engine*)app->userData;
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
     engine->state.x = AMotionEvent_getX(event, 0);
@@ -388,7 +388,7 @@ int OnSensorEvent(int /* fd */, int /* events */, void* data) {
  * event loop for receiving input events and doing other things.
  */
 void android_main(android_app* state) {
-  Engine engine {};
+  Engine engine{};
 
   memset(&engine, 0, sizeof(engine));
   state->userData = &engine;

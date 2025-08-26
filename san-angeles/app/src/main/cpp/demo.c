@@ -68,9 +68,9 @@ typedef struct {
    * components per color with GL_UNSIGNED_BYTE datatype and stride 0.
    * Normal array is supposed to use GL_FIXED datatype and stride 0.
    */
-  GLfixed *vertexArray;
-  GLubyte *colorArray;
-  GLfixed *normalArray;
+  GLfixed* vertexArray;
+  GLubyte* colorArray;
+  GLfixed* normalArray;
   GLint vertexComponents;
   GLsizei count;
 } GLOBJECT;
@@ -82,14 +82,14 @@ static int sCurrentCamTrack = 0;
 static long sCurrentCamTrackStartTick = 0;
 static long sNextCamTrackStartTick = 0x7fffffff;
 
-static GLOBJECT *sSuperShapeObjects[SUPERSHAPE_COUNT] = {NULL};
-static GLOBJECT *sGroundPlane = NULL;
+static GLOBJECT* sSuperShapeObjects[SUPERSHAPE_COUNT] = {NULL};
+static GLOBJECT* sGroundPlane = NULL;
 
 typedef struct {
   float x, y, z;
 } VECTOR3;
 
-static void freeGLObject(GLOBJECT *object) {
+static void freeGLObject(GLOBJECT* object) {
   if (object == NULL) return;
   free(object->normalArray);
   free(object->colorArray);
@@ -97,18 +97,18 @@ static void freeGLObject(GLOBJECT *object) {
   free(object);
 }
 
-static GLOBJECT *newGLObject(long vertices, int vertexComponents,
+static GLOBJECT* newGLObject(long vertices, int vertexComponents,
                              int useNormalArray) {
-  GLOBJECT *result;
-  result = (GLOBJECT *)malloc(sizeof(GLOBJECT));
+  GLOBJECT* result;
+  result = (GLOBJECT*)malloc(sizeof(GLOBJECT));
   if (result == NULL) return NULL;
   result->count = vertices;
   result->vertexComponents = vertexComponents;
   result->vertexArray =
-      (GLfixed *)malloc(vertices * vertexComponents * sizeof(GLfixed));
-  result->colorArray = (GLubyte *)malloc(vertices * 4 * sizeof(GLubyte));
+      (GLfixed*)malloc(vertices * vertexComponents * sizeof(GLfixed));
+  result->colorArray = (GLubyte*)malloc(vertices * 4 * sizeof(GLubyte));
   if (useNormalArray) {
-    result->normalArray = (GLfixed *)malloc(vertices * 3 * sizeof(GLfixed));
+    result->normalArray = (GLfixed*)malloc(vertices * 3 * sizeof(GLfixed));
   } else
     result->normalArray = NULL;
   if (result->vertexArray == NULL || result->colorArray == NULL ||
@@ -119,7 +119,7 @@ static GLOBJECT *newGLObject(long vertices, int vertexComponents,
   return result;
 }
 
-static void drawGLObject(GLOBJECT *object) {
+static void drawGLObject(GLOBJECT* object) {
   assert(object != NULL);
 
   glVertexPointer(object->vertexComponents, GL_FIXED, 0, object->vertexArray);
@@ -137,13 +137,13 @@ static void drawGLObject(GLOBJECT *object) {
   glDrawArrays(GL_TRIANGLES, 0, object->count);
 }
 
-static void vector3Sub(VECTOR3 *dest, VECTOR3 *v1, VECTOR3 *v2) {
+static void vector3Sub(VECTOR3* dest, VECTOR3* v1, VECTOR3* v2) {
   dest->x = v1->x - v2->x;
   dest->y = v1->y - v2->y;
   dest->z = v1->z - v2->z;
 }
 
-static void superShapeMap(VECTOR3 *point, float r1, float r2, float t,
+static void superShapeMap(VECTOR3* point, float r1, float r2, float t,
                           float p) {
   // sphere-mapping of supershape parameters
   point->x = (float)(cos(t) * cos(p) / r1 / r2);
@@ -151,7 +151,7 @@ static void superShapeMap(VECTOR3 *point, float r1, float r2, float t,
   point->z = (float)(sin(p) / r2);
 }
 
-static float ssFunc(const float t, const float *p) {
+static float ssFunc(const float t, const float* p) {
   return (float)(pow(pow(fabs(cos(p[0] * t / 4)) / p[1], p[4]) +
                          pow(fabs(sin(p[0] * t / 4)) / p[2], p[5]),
                      1 / p[3]));
@@ -160,7 +160,7 @@ static float ssFunc(const float t, const float *p) {
 // Creates and returns a supershape object.
 // Based on Paul Bourke's POV-Ray implementation.
 // http://astronomy.swin.edu.au/~pbourke/povray/supershape/
-static GLOBJECT *createSuperShape(const float *params) {
+static GLOBJECT* createSuperShape(const float* params) {
   const int resol1 = (int)params[SUPERSHAPE_PARAMS - 3];
   const int resol2 = (int)params[SUPERSHAPE_PARAMS - 2];
   // latitude 0 to pi/2 for no mirrored bottom
@@ -171,7 +171,7 @@ static GLOBJECT *createSuperShape(const float *params) {
   const int latitudeCount = latitudeEnd - latitudeBegin;
   const long triangleCount = longitudeCount * latitudeCount * 2;
   const long vertices = triangleCount * 3;
-  GLOBJECT *result;
+  GLOBJECT* result;
   float baseColor[3];
   int a, longitude, latitude;
   long currentVertex;
@@ -283,7 +283,7 @@ static GLOBJECT *createSuperShape(const float *params) {
         ++currentVertex;
       }  // r0 && r1 && r2 && r3
     }  // latitude
-  }    // longitude
+  }  // longitude
 
   // Set number of vertices in object to the actual amount created.
   result->count = currentVertex;
@@ -291,13 +291,13 @@ static GLOBJECT *createSuperShape(const float *params) {
   return result;
 }
 
-static GLOBJECT *createGroundPlane() {
+static GLOBJECT* createGroundPlane() {
   const int scale = 4;
   const int yBegin = -15, yEnd = 15;  // ends are non-inclusive
   const int xBegin = -15, xEnd = 15;
   const long triangleCount = (yEnd - yBegin) * (xEnd - xBegin) * 2;
   const long vertices = triangleCount * 3;
-  GLOBJECT *result;
+  GLOBJECT* result;
   int x, y;
   long currentVertex;
 
@@ -608,7 +608,7 @@ static void camTrack() {
   float lerp[5];
   float eX, eY, eZ, cX, cY, cZ;
   float trackPos;
-  CAMTRACK *cam;
+  CAMTRACK* cam;
   long currentCamTick;
   int a;
 

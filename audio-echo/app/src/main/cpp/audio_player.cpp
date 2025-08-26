@@ -28,8 +28,8 @@
  * very regular, you could buffer much less audio samples between
  * recorder and player, hence lower latency.
  */
-void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *ctx) {
-  (static_cast<AudioPlayer *>(ctx))->ProcessSLCallback(bq);
+void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void* ctx) {
+  (static_cast<AudioPlayer*>(ctx))->ProcessSLCallback(bq);
 }
 void AudioPlayer::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
 #ifdef ENABLE_LOG
@@ -39,7 +39,7 @@ void AudioPlayer::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
 
   // retrieve the finished device buf and put onto the free queue
   // so recorder could re-use it
-  sample_buf *buf;
+  sample_buf* buf;
   if (!devShadowQueue_->front(&buf)) {
     /*
      * This should not happen: we got a callback,
@@ -87,7 +87,7 @@ void AudioPlayer::ProcessSLCallback(SLAndroidSimpleBufferQueueItf bq) {
   }
 }
 
-AudioPlayer::AudioPlayer(SampleFormat *sampleFormat, SLEngineItf slEngine)
+AudioPlayer::AudioPlayer(SampleFormat* sampleFormat, SLEngineItf slEngine)
     : freeQueue_(nullptr),
       playQueue_(nullptr),
       devShadowQueue_(nullptr),
@@ -176,7 +176,7 @@ AudioPlayer::~AudioPlayer() {
     (*playerObjectItf_)->Destroy(playerObjectItf_);
   }
   // Consume all non-completed audio buffers
-  sample_buf *buf = NULL;
+  sample_buf* buf = NULL;
   while (devShadowQueue_->front(&buf)) {
     buf->size_ = 0;
     devShadowQueue_->pop();
@@ -200,7 +200,7 @@ AudioPlayer::~AudioPlayer() {
   delete[] silentBuf_.buf_;
 }
 
-void AudioPlayer::SetBufQueue(AudioQueue *playQ, AudioQueue *freeQ) {
+void AudioPlayer::SetBufQueue(AudioQueue* playQ, AudioQueue* freeQ) {
   playQueue_ = playQ;
   freeQueue_ = freeQ;
 }
@@ -251,7 +251,7 @@ void AudioPlayer::Stop(void) {
 #endif
 }
 
-void AudioPlayer::RegisterCallback(ENGINE_CALLBACK cb, void *ctx) {
+void AudioPlayer::RegisterCallback(ENGINE_CALLBACK cb, void* ctx) {
   callback_ = cb;
   ctx_ = ctx;
 }

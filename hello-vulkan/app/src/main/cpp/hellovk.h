@@ -72,14 +72,14 @@ struct SwapChainSupportDetails {
 };
 
 struct ANativeWindowDeleter {
-  void operator()(ANativeWindow *window) { ANativeWindow_release(window); }
+  void operator()(ANativeWindow* window) { ANativeWindow_release(window); }
 };
 
-std::vector<uint8_t> LoadBinaryFileToVector(const char *file_path,
-                                            AAssetManager *assetManager) {
+std::vector<uint8_t> LoadBinaryFileToVector(const char* file_path,
+                                            AAssetManager* assetManager) {
   std::vector<uint8_t> file_content;
   assert(assetManager);
-  AAsset *file =
+  AAsset* file =
       AAssetManager_open(assetManager, file_path, AASSET_MODE_BUFFER);
   size_t file_length = AAsset_getLength(file);
 
@@ -90,7 +90,7 @@ std::vector<uint8_t> LoadBinaryFileToVector(const char *file_path,
   return file_content;
 }
 
-const char *toStringMessageSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT s) {
+const char* toStringMessageSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT s) {
   switch (s) {
     case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
       return "VERBOSE";
@@ -104,7 +104,7 @@ const char *toStringMessageSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT s) {
       return "UNKNOWN";
   }
 }
-const char *toStringMessageType(VkDebugUtilsMessageTypeFlagsEXT s) {
+const char* toStringMessageType(VkDebugUtilsMessageTypeFlagsEXT s) {
   if (s == (VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
             VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
             VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT))
@@ -128,8 +128,8 @@ const char *toStringMessageType(VkDebugUtilsMessageTypeFlagsEXT s) {
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
               VkDebugUtilsMessageTypeFlagsEXT messageType,
-              const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-              void * /* pUserData */) {
+              const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+              void* /* pUserData */) {
   auto ms = toStringMessageSeverity(messageSeverity);
   auto mt = toStringMessageType(messageType);
   printf("[%s: %s]\n%s\n", ms, mt, pCallbackData->pMessage);
@@ -138,7 +138,7 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 }
 
 static void populateDebugMessengerCreateInfo(
-    VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
+    VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
   createInfo = {};
   createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
   createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
@@ -151,9 +151,9 @@ static void populateDebugMessengerCreateInfo(
 }
 
 static VkResult CreateDebugUtilsMessengerEXT(
-    VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
-    const VkAllocationCallbacks *pAllocator,
-    VkDebugUtilsMessengerEXT *pDebugMessenger) {
+    VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+    const VkAllocationCallbacks* pAllocator,
+    VkDebugUtilsMessengerEXT* pDebugMessenger) {
   auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
       instance, "vkCreateDebugUtilsMessengerEXT");
   if (func != nullptr) {
@@ -165,7 +165,7 @@ static VkResult CreateDebugUtilsMessengerEXT(
 
 static void DestroyDebugUtilsMessengerEXT(
     VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
-    const VkAllocationCallbacks *pAllocator) {
+    const VkAllocationCallbacks* pAllocator) {
   auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
       instance, "vkDestroyDebugUtilsMessengerEXT");
   if (func != nullptr) {
@@ -179,7 +179,7 @@ class HelloVK {
   void render();
   void cleanup();
   void cleanupSwapChain();
-  void reset(ANativeWindow *newWindow, AAssetManager *newManager);
+  void reset(ANativeWindow* newWindow, AAssetManager* newManager);
   bool initialized = false;
 
  private:
@@ -202,18 +202,18 @@ class HelloVK {
   bool checkDeviceExtensionSupport(VkPhysicalDevice device);
   bool isDeviceSuitable(VkPhysicalDevice device);
   bool checkValidationLayerSupport();
-  std::vector<const char *> getRequiredExtensions(bool enableValidation);
+  std::vector<const char*> getRequiredExtensions(bool enableValidation);
   SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-  VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
-  VkShaderModule createShaderModule(const std::vector<uint8_t> &code);
+  VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+  VkShaderModule createShaderModule(const std::vector<uint8_t>& code);
   void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
   void recreateSwapChain();
   void onOrientationChange();
   uint32_t findMemoryType(uint32_t typeFilter,
                           VkMemoryPropertyFlags properties);
   void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-                    VkMemoryPropertyFlags properties, VkBuffer &buffer,
-                    VkDeviceMemory &bufferMemory);
+                    VkMemoryPropertyFlags properties, VkBuffer& buffer,
+                    VkDeviceMemory& bufferMemory);
   void createUniformBuffers();
   void updateUniformBuffer(uint32_t currentImage);
   void createDescriptorPool();
@@ -230,12 +230,12 @@ class HelloVK {
    */
   bool enableValidationLayers = false;
 
-  const std::vector<const char *> validationLayers = {
+  const std::vector<const char*> validationLayers = {
       "VK_LAYER_KHRONOS_validation"};
-  const std::vector<const char *> deviceExtensions = {
+  const std::vector<const char*> deviceExtensions = {
       VK_KHR_SWAPCHAIN_EXTENSION_NAME};
   std::unique_ptr<ANativeWindow, ANativeWindowDeleter> window;
-  AAssetManager *assetManager;
+  AAssetManager* assetManager;
 
   VkInstance instance;
   VkDebugUtilsMessengerEXT debugMessenger;
@@ -306,8 +306,8 @@ void HelloVK::initVulkan() {
  *  satisfied by the device in use in order to be created.
  */
 void HelloVK::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-                           VkMemoryPropertyFlags properties, VkBuffer &buffer,
-                           VkDeviceMemory &bufferMemory) {
+                           VkMemoryPropertyFlags properties, VkBuffer& buffer,
+                           VkDeviceMemory& bufferMemory) {
   VkBufferCreateInfo bufferInfo{};
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
   bufferInfo.size = size;
@@ -382,7 +382,7 @@ void HelloVK::createDescriptorSetLayout() {
                                        &descriptorSetLayout));
 }
 
-void HelloVK::reset(ANativeWindow *newWindow, AAssetManager *newManager) {
+void HelloVK::reset(ANativeWindow* newWindow, AAssetManager* newManager) {
   window.reset(newWindow);
   assetManager = newManager;
   if (initialized) {
@@ -468,9 +468,9 @@ void HelloVK::render() {
  * getPrerotationMatrix handles screen rotation with 3 hardcoded rotation
  * matrices (detailed below). We skip the 180 degrees rotation.
  */
-void getPrerotationMatrix(const VkSurfaceCapabilitiesKHR &capabilities,
-                          const VkSurfaceTransformFlagBitsKHR &pretransformFlag,
-                          std::array<float, 16> &mat) {
+void getPrerotationMatrix(const VkSurfaceCapabilitiesKHR& capabilities,
+                          const VkSurfaceTransformFlagBitsKHR& pretransformFlag,
+                          std::array<float, 16>& mat) {
   // mat is initialized to the identity matrix
   mat = {1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.};
   if (pretransformFlag & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) {
@@ -535,7 +535,7 @@ void HelloVK::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
   getPrerotationMatrix(swapChainSupport.capabilities, pretransformFlag,
                        ubo.mvp);
-  void *data;
+  void* data;
   vkMapMemory(device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0,
               &data);
   memcpy(data, &ubo, sizeof(ubo));
@@ -657,9 +657,9 @@ bool HelloVK::checkValidationLayerSupport() {
   std::vector<VkLayerProperties> availableLayers(layerCount);
   vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-  for (const char *layerName : validationLayers) {
+  for (const char* layerName : validationLayers) {
     bool layerFound = false;
-    for (const auto &layerProperties : availableLayers) {
+    for (const auto& layerProperties : availableLayers) {
       if (strcmp(layerName, layerProperties.layerName) == 0) {
         layerFound = true;
         break;
@@ -673,9 +673,9 @@ bool HelloVK::checkValidationLayerSupport() {
   return true;
 }
 
-std::vector<const char *> HelloVK::getRequiredExtensions(
+std::vector<const char*> HelloVK::getRequiredExtensions(
     bool enableValidationLayers) {
-  std::vector<const char *> extensions;
+  std::vector<const char*> extensions;
   extensions.push_back("VK_KHR_surface");
   extensions.push_back("VK_KHR_android_surface");
   if (enableValidationLayers) {
@@ -711,7 +711,7 @@ void HelloVK::createInstance() {
         static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
     populateDebugMessengerCreateInfo(debugCreateInfo);
-    createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
+    createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
   } else {
     createInfo.enabledLayerCount = 0;
     createInfo.pNext = nullptr;
@@ -724,7 +724,7 @@ void HelloVK::createInstance() {
   vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
                                          extensions.data());
   LOGI("available extensions");
-  for (const auto &extension : extensions) {
+  for (const auto& extension : extensions) {
     LOGI("\t %s", extension.extensionName);
   }
 }
@@ -763,7 +763,7 @@ QueueFamilyIndices HelloVK::findQueueFamilies(VkPhysicalDevice device) {
                                            queueFamilies.data());
 
   int i = 0;
-  for (const auto &queueFamily : queueFamilies) {
+  for (const auto& queueFamily : queueFamilies) {
     if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
       indices.graphicsFamily = i;
     }
@@ -795,7 +795,7 @@ bool HelloVK::checkDeviceExtensionSupport(VkPhysicalDevice device) {
   std::set<std::string> requiredExtensions(deviceExtensions.begin(),
                                            deviceExtensions.end());
 
-  for (const auto &extension : availableExtensions) {
+  for (const auto& extension : availableExtensions) {
     requiredExtensions.erase(extension.extensionName);
   }
 
@@ -851,7 +851,7 @@ void HelloVK::pickPhysicalDevice() {
   std::vector<VkPhysicalDevice> devices(deviceCount);
   vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
-  for (const auto &device : devices) {
+  for (const auto& device : devices) {
     if (isDeviceSuitable(device)) {
       physicalDevice = device;
       break;
@@ -903,7 +903,7 @@ void HelloVK::createLogicalDeviceAndQueue() {
 }
 
 VkExtent2D HelloVK::chooseSwapExtent(
-    const VkSurfaceCapabilitiesKHR &capabilities) {
+    const VkSurfaceCapabilitiesKHR& capabilities) {
   if (capabilities.currentExtent.width !=
       std::numeric_limits<uint32_t>::max()) {
     return capabilities.currentExtent;
@@ -945,8 +945,8 @@ void HelloVK::createSwapChain() {
       querySwapChainSupport(physicalDevice);
 
   auto chooseSwapSurfaceFormat =
-      [](const std::vector<VkSurfaceFormatKHR> &availableFormats) {
-        for (const auto &availableFormat : availableFormats) {
+      [](const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+        for (const auto& availableFormat : availableFormats) {
           if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
               availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return availableFormat;
@@ -1231,14 +1231,14 @@ void HelloVK::createGraphicsPipeline() {
   vkDestroyShaderModule(device, vertShaderModule, nullptr);
 }
 
-VkShaderModule HelloVK::createShaderModule(const std::vector<uint8_t> &code) {
+VkShaderModule HelloVK::createShaderModule(const std::vector<uint8_t>& code) {
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
 
   // Satisifies alignment requirements since the allocator
   // in vector ensures worst case requirements
-  createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
+  createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
   VkShaderModule shaderModule;
   VK_CHECK(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule));
 

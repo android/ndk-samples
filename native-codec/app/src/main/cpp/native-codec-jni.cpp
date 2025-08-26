@@ -52,9 +52,9 @@
 
 typedef struct {
   int fd;
-  ANativeWindow *window;
-  AMediaExtractor *ex;
-  AMediaCodec *codec;
+  ANativeWindow* window;
+  AMediaExtractor* ex;
+  AMediaCodec* codec;
   int64_t renderstart;
   bool sawInputEOS;
   bool sawOutputEOS;
@@ -74,10 +74,10 @@ enum {
 };
 
 class mylooper : public looper {
-  virtual void handle(int what, void *obj);
+  virtual void handle(int what, void* obj);
 };
 
-static mylooper *mlooper = NULL;
+static mylooper* mlooper = NULL;
 
 int64_t systemnanotime() {
   timespec now;
@@ -85,7 +85,7 @@ int64_t systemnanotime() {
   return now.tv_sec * 1000000000LL + now.tv_nsec;
 }
 
-void doCodecWork(workerdata *d) {
+void doCodecWork(workerdata* d) {
   ssize_t bufidx = -1;
   if (!d->sawInputEOS) {
     bufidx = AMediaCodec_dequeueInputBuffer(d->codec, 2000);
@@ -147,14 +147,14 @@ void doCodecWork(workerdata *d) {
   }
 }
 
-void mylooper::handle(int what, void *obj) {
+void mylooper::handle(int what, void* obj) {
   switch (what) {
     case kMsgCodecBuffer:
-      doCodecWork((workerdata *)obj);
+      doCodecWork((workerdata*)obj);
       break;
 
     case kMsgDecodeDone: {
-      workerdata *d = (workerdata *)obj;
+      workerdata* d = (workerdata*)obj;
       AMediaCodec_stop(d->codec);
       AMediaCodec_delete(d->codec);
       AMediaExtractor_delete(d->ex);
@@ -163,7 +163,7 @@ void mylooper::handle(int what, void *obj) {
     } break;
 
     case kMsgSeek: {
-      workerdata *d = (workerdata *)obj;
+      workerdata* d = (workerdata*)obj;
       AMediaExtractor_seekTo(d->ex, 0, AMEDIAEXTRACTOR_SEEK_NEXT_SYNC);
       AMediaCodec_flush(d->codec);
       d->renderstart = -1;
@@ -177,7 +177,7 @@ void mylooper::handle(int what, void *obj) {
     } break;
 
     case kMsgPause: {
-      workerdata *d = (workerdata *)obj;
+      workerdata* d = (workerdata*)obj;
       if (d->isPlaying) {
         // flush all outstanding codecbuffer messages with a no-op message
         d->isPlaying = false;
@@ -186,7 +186,7 @@ void mylooper::handle(int what, void *obj) {
     } break;
 
     case kMsgResume: {
-      workerdata *d = (workerdata *)obj;
+      workerdata* d = (workerdata*)obj;
       if (!d->isPlaying) {
         d->renderstart = -1;
         d->isPlaying = true;
@@ -199,11 +199,11 @@ void mylooper::handle(int what, void *obj) {
 extern "C" {
 
 jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
-    JNIEnv *env, jclass clazz, jobject assetMgr, jstring filename) {
+    JNIEnv* env, jclass clazz, jobject assetMgr, jstring filename) {
   LOGV("@@@ create");
 
   // convert Java string to UTF-8
-  const char *utf8 = env->GetStringUTFChars(filename, NULL);
+  const char* utf8 = env->GetStringUTFChars(filename, NULL);
   LOGV("opening %s", utf8);
 
   off_t outStart, outLen;
@@ -219,9 +219,9 @@ jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
 
   data.fd = fd;
 
-  workerdata *d = &data;
+  workerdata* d = &data;
 
-  AMediaExtractor *ex = AMediaExtractor_new();
+  AMediaExtractor* ex = AMediaExtractor_new();
   media_status_t err = AMediaExtractor_setDataSourceFd(
       ex, d->fd, static_cast<off64_t>(outStart), static_cast<off64_t>(outLen));
   close(d->fd);
@@ -232,14 +232,14 @@ jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
 
   int numtracks = AMediaExtractor_getTrackCount(ex);
 
-  AMediaCodec *codec = NULL;
+  AMediaCodec* codec = NULL;
 
   LOGV("input has %d tracks", numtracks);
   for (int i = 0; i < numtracks; i++) {
-    AMediaFormat *format = AMediaExtractor_getTrackFormat(ex, i);
-    const char *s = AMediaFormat_toString(format);
+    AMediaFormat* format = AMediaExtractor_getTrackFormat(ex, i);
+    const char* s = AMediaFormat_toString(format);
     LOGV("track %d format: %s", i, s);
-    const char *mime;
+    const char* mime;
     if (!AMediaFormat_getString(format, AMEDIAFORMAT_KEY_MIME, &mime)) {
       LOGV("no mime type");
       return JNI_FALSE;
@@ -269,7 +269,7 @@ jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
 
 // set the playing state for the streaming media player
 void Java_com_example_nativecodec_NativeCodec_setPlayingStreamingMediaPlayer(
-    JNIEnv *env, jclass clazz, jboolean isPlaying) {
+    JNIEnv* env, jclass clazz, jboolean isPlaying) {
   LOGV("@@@ playpause: %d", isPlaying);
   if (mlooper) {
     if (isPlaying) {
@@ -281,7 +281,7 @@ void Java_com_example_nativecodec_NativeCodec_setPlayingStreamingMediaPlayer(
 }
 
 // shut down the native media system
-void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv *env,
+void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv* env,
                                                        jclass clazz) {
   LOGV("@@@ shutdown");
   if (mlooper) {
@@ -297,7 +297,7 @@ void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv *env,
 }
 
 // set the surface
-void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv *env,
+void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv* env,
                                                          jclass clazz,
                                                          jobject surface) {
   // obtain a native window from a Java surface
@@ -311,7 +311,7 @@ void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv *env,
 
 // rewind the streaming media player
 void Java_com_example_nativecodec_NativeCodec_rewindStreamingMediaPlayer(
-    JNIEnv *env, jclass clazz) {
+    JNIEnv* env, jclass clazz) {
   LOGV("@@@ rewind");
   if (mlooper) {
     mlooper->post(kMsgSeek, &data);

@@ -42,15 +42,15 @@ enum ORIENTATION {
  *
  */
 class SensorManager {
-  ASensorManager *sensorManager_;
-  const ASensor *accelerometerSensor_;
-  ASensorEventQueue *sensorEventQueue_;
+  ASensorManager* sensorManager_;
+  const ASensor* accelerometerSensor_;
+  ASensorEventQueue* sensorEventQueue_;
 
  protected:
  public:
   SensorManager();
   ~SensorManager();
-  void Init(android_app *state);
+  void Init(android_app* state);
   void Suspend();
   void Resume();
 };
@@ -60,6 +60,6 @@ class SensorManager {
  *    Workaround ASensorManager_getInstance() deprecation false alarm
  *    for Android-N and before, when compiling with NDK-r15
  */
-ASensorManager *AcquireASensorManagerInstance(android_app *app);
+ASensorManager* AcquireASensorManagerInstance(android_app* app);
 }  // namespace ndk_helper
 #endif /* SENSORMANAGER_H_ */

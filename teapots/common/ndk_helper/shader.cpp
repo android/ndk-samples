@@ -27,8 +27,8 @@ namespace ndk_helper {
 #define DEBUG (1)
 
 bool shader::CompileShader(
-    GLuint *shader, const GLenum type, const char *str_file_name,
-    const std::map<std::string, std::string> &map_parameters) {
+    GLuint* shader, const GLenum type, const char* str_file_name,
+    const std::map<std::string, std::string>& map_parameters) {
   std::vector<uint8_t> data;
   if (!JNIHelper::GetInstance()->ReadFile(str_file_name, &data)) {
     LOGI("Can not open a file:%s", str_file_name);
@@ -70,8 +70,8 @@ bool shader::CompileShader(
   return shader::CompileShader(shader, type, v);
 }
 
-bool shader::CompileShader(GLuint *shader, const GLenum type,
-                           const GLchar *source, const int32_t iSize) {
+bool shader::CompileShader(GLuint* shader, const GLenum type,
+                           const GLchar* source, const int32_t iSize) {
   if (source == NULL || iSize <= 0) return false;
 
   *shader = glCreateShader(type);
@@ -84,7 +84,7 @@ bool shader::CompileShader(GLuint *shader, const GLenum type,
   GLint logLength;
   glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0) {
-    GLchar *log = (GLchar *)malloc(logLength);
+    GLchar* log = (GLchar*)malloc(logLength);
     glGetShaderInfoLog(*shader, logLength, &logLength, log);
     LOGI("Shader compile log:\n%s", log);
     free(log);
@@ -101,17 +101,17 @@ bool shader::CompileShader(GLuint *shader, const GLenum type,
   return true;
 }
 
-bool shader::CompileShader(GLuint *shader, const GLenum type,
-                           std::vector<uint8_t> &data) {
+bool shader::CompileShader(GLuint* shader, const GLenum type,
+                           std::vector<uint8_t>& data) {
   if (!data.size()) return false;
 
-  const GLchar *source = (GLchar *)&data[0];
+  const GLchar* source = (GLchar*)&data[0];
   int32_t iSize = data.size();
   return shader::CompileShader(shader, type, source, iSize);
 }
 
-bool shader::CompileShader(GLuint *shader, const GLenum type,
-                           const char *strFileName) {
+bool shader::CompileShader(GLuint* shader, const GLenum type,
+                           const char* strFileName) {
   std::vector<uint8_t> data;
   bool b = JNIHelper::GetInstance()->ReadFile(strFileName, &data);
   if (!b) {
@@ -131,7 +131,7 @@ bool shader::LinkProgram(const GLuint prog) {
   GLint logLength;
   glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0) {
-    GLchar *log = (GLchar *)malloc(logLength);
+    GLchar* log = (GLchar*)malloc(logLength);
     glGetProgramInfoLog(prog, logLength, &logLength, log);
     LOGI("Program link log:\n%s", log);
     free(log);
@@ -153,7 +153,7 @@ bool shader::ValidateProgram(const GLuint prog) {
   glValidateProgram(prog);
   glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0) {
-    GLchar *log = (GLchar *)malloc(logLength);
+    GLchar* log = (GLchar*)malloc(logLength);
     glGetProgramInfoLog(prog, logLength, &logLength, log);
     LOGI("Program validate log:\n%s", log);
     free(log);

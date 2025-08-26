@@ -18,14 +18,14 @@
 #define GEOM_DEBUG LOGD
 // #define GEOM_DEBUG
 
-SimpleGeom *AsciiArtToGeom(const char *art, float scale) {
+SimpleGeom* AsciiArtToGeom(const char* art, float scale) {
   // figure out width and height
   LOGD("Creating geometry from ASCII art.");
   GEOM_DEBUG("Ascii art source:\n%s", art);
   int rows = 1;
   int curCols = 0, cols = 0;
   int r, c;
-  const char *p;
+  const char* p;
   for (p = art; *p; ++p) {
     if (*p == '\n') {
       rows++;
@@ -40,7 +40,7 @@ SimpleGeom *AsciiArtToGeom(const char *art, float scale) {
   GEOM_DEBUG("Making working array.");
 
   // allocate a rows x cols array that we will use as working space
-  unsigned int **v = new unsigned int *[rows];
+  unsigned int** v = new unsigned int*[rows];
   for (r = 0; r < rows; r++) {
     v[r] = new unsigned int[cols];
     memset(v[r], 0, cols * sizeof(unsigned int));
@@ -97,8 +97,8 @@ SimpleGeom *AsciiArtToGeom(const char *art, float scale) {
   // allocate arrays for the vertices and lines
   const int VERTICES_STRIDE = sizeof(GLfloat) * 7;
   const int VERTICES_COLOR_OFFSET = sizeof(GLfloat) * 3;
-  GLfloat *verticesArray = new GLfloat[vertices * VERTICES_STRIDE];
-  GLushort *indicesArray = new GLushort[indices];
+  GLfloat* verticesArray = new GLfloat[vertices * VERTICES_STRIDE];
+  GLushort* indicesArray = new GLushort[indices];
   vertices = indices = 0;  // current count of vertices and lines
 
   float left = (-cols / 2) * scale;
@@ -216,7 +216,7 @@ SimpleGeom *AsciiArtToGeom(const char *art, float scale) {
   // create the buffers
   GEOM_DEBUG("Creating output VBO (%d vertices) and IBO (%d indices).",
              vertices, indices);
-  SimpleGeom *out = new SimpleGeom(
+  SimpleGeom* out = new SimpleGeom(
       new VertexBuf(verticesArray, vertices * sizeof(GLfloat) * VERTICES_STRIDE,
                     VERTICES_STRIDE),
       new IndexBuf(indicesArray, indices * sizeof(GLushort)));

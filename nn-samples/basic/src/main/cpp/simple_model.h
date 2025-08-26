@@ -40,18 +40,18 @@
  */
 class SimpleModel {
  public:
-  explicit SimpleModel(AAsset *asset);
+  explicit SimpleModel(AAsset* asset);
   ~SimpleModel();
 
   bool CreateCompiledModel();
-  bool Compute(float inputValue1, float inputValue2, float *result);
+  bool Compute(float inputValue1, float inputValue2, float* result);
 
  private:
-  ANeuralNetworksModel *model_;
-  ANeuralNetworksCompilation *compilation_;
-  ANeuralNetworksMemory *memoryModel_;
-  ANeuralNetworksMemory *memoryInput2_;
-  ANeuralNetworksMemory *memoryOutput_;
+  ANeuralNetworksModel* model_;
+  ANeuralNetworksCompilation* compilation_;
+  ANeuralNetworksMemory* memoryModel_;
+  ANeuralNetworksMemory* memoryInput2_;
+  ANeuralNetworksMemory* memoryOutput_;
 
   uint32_t dimLength_;
   uint32_t tensorSize_;

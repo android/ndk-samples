@@ -32,12 +32,12 @@ SceneManager::SceneManager() {
   mHasGraphics = false;
 }
 
-void SceneManager::RequestNewScene(Scene *newScene) {
+void SceneManager::RequestNewScene(Scene* newScene) {
   LOGD("SceneManager: requesting new scene %p", newScene);
   mSceneToInstall = newScene;
 }
 
-void SceneManager::InstallScene(Scene *newScene) {
+void SceneManager::InstallScene(Scene* newScene) {
   LOGD("SceneManager: installing scene %p.", newScene);
 
   // kill graphics, if we have them.
@@ -65,7 +65,7 @@ void SceneManager::InstallScene(Scene *newScene) {
   }
 }
 
-Scene *SceneManager::GetScene() { return mCurScene; }
+Scene* SceneManager::GetScene() { return mCurScene; }
 
 void SceneManager::DoFrame() {
   if (mSceneToInstall) {
@@ -110,24 +110,24 @@ void SceneManager::SetScreenSize(int width, int height) {
   }
 }
 
-SceneManager *SceneManager::GetInstance() { return &_sceneManager; }
+SceneManager* SceneManager::GetInstance() { return &_sceneManager; }
 
 void SceneManager::OnPointerDown(int pointerId,
-                                 const struct PointerCoords *coords) {
+                                 const struct PointerCoords* coords) {
   if (mHasGraphics && mCurScene) {
     mCurScene->OnPointerDown(pointerId, coords);
   }
 }
 
 void SceneManager::OnPointerUp(int pointerId,
-                               const struct PointerCoords *coords) {
+                               const struct PointerCoords* coords) {
   if (mHasGraphics && mCurScene) {
     mCurScene->OnPointerUp(pointerId, coords);
   }
 }
 
 void SceneManager::OnPointerMove(int pointerId,
-                                 const struct PointerCoords *coords) {
+                                 const struct PointerCoords* coords) {
   if (mHasGraphics && mCurScene) {
     mCurScene->OnPointerMove(pointerId, coords);
   }

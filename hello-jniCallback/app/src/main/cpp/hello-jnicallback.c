@@ -22,7 +22,7 @@
 #include <string.h>
 
 // Android log function wrappers
-static const char *kTAG = "hello-jniCallback";
+static const char* kTAG = "hello-jniCallback";
 #define LOGI(...) \
   ((void)__android_log_print(ANDROID_LOG_INFO, kTAG, __VA_ARGS__))
 #define LOGW(...) \
@@ -32,7 +32,7 @@ static const char *kTAG = "hello-jniCallback";
 
 // processing callback to handler class
 typedef struct tick_context {
-  JavaVM *javaVM;
+  JavaVM* javaVM;
   jclass jniHandlerClz;
   jobject jniHandlerObj;
   jclass mainActivityClz;
@@ -49,7 +49,7 @@ TickContext g_ctx;
  *   hello-jniCallback/app/src/main/java/com/example/hellojnicallback/MainActivity.java
  */
 JNIEXPORT jstring JNICALL
-Java_com_example_hellojnicallback_MainActivity_stringFromJNI(JNIEnv *env,
+Java_com_example_hellojnicallback_MainActivity_stringFromJNI(JNIEnv* env,
                                                              jobject thiz) {
 #if defined(__arm__)
 #if defined(__ARM_ARCH_7A__)
@@ -93,7 +93,7 @@ Java_com_example_hellojnicallback_MainActivity_stringFromJNI(JNIEnv *env,
  *  The trivial implementation for these functions are inside file
  *     JniHandler.java
  */
-void queryRuntimeInfo(JNIEnv *env, jobject instance) {
+void queryRuntimeInfo(JNIEnv* env, jobject instance) {
   // Find out which OS we are running on. It does not matter for this app
   // just to demo how to call static functions.
   // Our java JniHandler class id and instance are initialized when this
@@ -108,7 +108,7 @@ void queryRuntimeInfo(JNIEnv *env, jobject instance) {
   }
   jstring buildVersion =
       (*env)->CallStaticObjectMethod(env, g_ctx.jniHandlerClz, versionFunc);
-  const char *version = (*env)->GetStringUTFChars(env, buildVersion, NULL);
+  const char* version = (*env)->GetStringUTFChars(env, buildVersion, NULL);
   if (!version) {
     LOGE("Unable to get version string @ line %d", __LINE__);
     return;
@@ -144,12 +144,12 @@ void queryRuntimeInfo(JNIEnv *env, jobject instance) {
  *     we rely on system to free all global refs when it goes away;
  *     the pairing function JNI_OnUnload() never gets called at all.
  */
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
-  JNIEnv *env;
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
+  JNIEnv* env;
   memset(&g_ctx, 0, sizeof(g_ctx));
 
   g_ctx.javaVM = vm;
-  if ((*vm)->GetEnv(vm, (void **)&env, JNI_VERSION_1_6) != JNI_OK) {
+  if ((*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_6) != JNI_OK) {
     return JNI_ERR;  // JNI version not supported.
   }
 
@@ -173,8 +173,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
  * JNI allow us to call this function via an instance even it is
  * private function.
  */
-void sendJavaMsg(JNIEnv *env, jobject instance, jmethodID func,
-                 const char *msg) {
+void sendJavaMsg(JNIEnv* env, jobject instance, jmethodID func,
+                 const char* msg) {
   jstring javaMsg = (*env)->NewStringUTF(env, msg);
   (*env)->CallVoidMethod(env, instance, func, javaMsg);
   (*env)->DeleteLocalRef(env, javaMsg);
@@ -185,11 +185,11 @@ void sendJavaMsg(JNIEnv *env, jobject instance, jmethodID func,
  *     calling back to MainActivity::updateTimer() to display ticks on UI
  *     calling back to JniHandler::updateStatus(String msg) for msg
  */
-void *UpdateTicks(void *context) {
-  TickContext *pctx = (TickContext *)context;
-  JavaVM *javaVM = pctx->javaVM;
-  JNIEnv *env;
-  jint res = (*javaVM)->GetEnv(javaVM, (void **)&env, JNI_VERSION_1_6);
+void* UpdateTicks(void* context) {
+  TickContext* pctx = (TickContext*)context;
+  JavaVM* javaVM = pctx->javaVM;
+  JNIEnv* env;
+  jint res = (*javaVM)->GetEnv(javaVM, (void**)&env, JNI_VERSION_1_6);
   if (res != JNI_OK) {
     res = (*javaVM)->AttachCurrentThread(javaVM, &env, NULL);
     if (JNI_OK != res) {
@@ -251,7 +251,7 @@ void *UpdateTicks(void *context) {
  * Interface to Java side to start ticks, caller is from onResume()
  */
 JNIEXPORT void JNICALL
-Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env,
+Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv* env,
                                                           jobject instance) {
   pthread_t threadInfo_;
   pthread_attr_t threadAttr_;
@@ -279,7 +279,7 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env,
  *    for a clean shutdown. The caller is from onPause
  */
 JNIEXPORT void JNICALL Java_com_example_hellojnicallback_MainActivity_StopTicks(
-    JNIEnv *env, jobject instance) {
+    JNIEnv* env, jobject instance) {
   pthread_mutex_lock(&g_ctx.lock);
   g_ctx.done = 1;
   pthread_mutex_unlock(&g_ctx.lock);

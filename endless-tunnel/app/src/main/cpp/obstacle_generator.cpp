@@ -18,7 +18,7 @@
 
 #include "game_consts.hpp"
 
-void ObstacleGenerator::Generate(Obstacle *result) {
+void ObstacleGenerator::Generate(Obstacle* result) {
   static const int PROB_TABLE[] = {
       // EASY   MED  INT  HARD
       100, 0,   0,   0,   // difficulty 0
@@ -55,22 +55,22 @@ void ObstacleGenerator::Generate(Obstacle *result) {
   result->PutRandomBonus();
 }
 
-void ObstacleGenerator::FillRow(Obstacle *result, int row) {
+void ObstacleGenerator::FillRow(Obstacle* result, int row) {
   for (int i = 0; i < OBS_GRID_SIZE; ++i) {
     result->grid[i][row] = true;
   }
 }
 
-void ObstacleGenerator::FillCol(Obstacle *result, int col) {
+void ObstacleGenerator::FillCol(Obstacle* result, int col) {
   for (int i = 0; i < OBS_GRID_SIZE; ++i) {
     result->grid[col][i] = true;
   }
 }
 
-void ObstacleGenerator::GenEasy(Obstacle *result) {
+void ObstacleGenerator::GenEasy(Obstacle* result) {
   int n = Random(4);
   int i, j;
-  Obstacle *o = result;  // shorthand
+  Obstacle* o = result;  // shorthand
   switch (n) {
     case 0:
       i = Random(1, OBS_GRID_SIZE - 1);           // i is the row of the bonus
@@ -95,7 +95,7 @@ void ObstacleGenerator::GenEasy(Obstacle *result) {
   }
 }
 
-void ObstacleGenerator::GenMedium(Obstacle *result) {
+void ObstacleGenerator::GenMedium(Obstacle* result) {
   int n = Random(3);
   int i;
   switch (n) {
@@ -117,7 +117,7 @@ void ObstacleGenerator::GenMedium(Obstacle *result) {
   }
 }
 
-void ObstacleGenerator::GenIntermediate(Obstacle *result) {
+void ObstacleGenerator::GenIntermediate(Obstacle* result) {
   int n = Random(3);
   int i;
   switch (n) {
@@ -142,7 +142,7 @@ void ObstacleGenerator::GenIntermediate(Obstacle *result) {
   }
 }
 
-void ObstacleGenerator::GenHard(Obstacle *result) {
+void ObstacleGenerator::GenHard(Obstacle* result) {
   int n = Random(4);
   int i;
   int j;
