@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
-project(BitmapPlasma LANGUAGES C)
+project(BitmapPlasma LANGUAGES CXX)
 
 add_compile_options(-Wall -Wextra -Werror)
 
-add_library(plasma SHARED plasma.c)
+add_library(plasma SHARED plasma.cpp)
 
 # Include libraries needed for plasma lib
 target_link_libraries(plasma

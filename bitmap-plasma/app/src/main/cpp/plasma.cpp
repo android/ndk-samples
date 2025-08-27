@@ -328,8 +328,7 @@ static void stats_endFrame(Stats* s) {
 }
 
 JNIEXPORT void JNICALL Java_com_example_plasma_PlasmaView_renderPlasma(
-    JNIEnv* env, jobject __attribute__((unused)) obj, jobject bitmap,
-    jlong time_ms) {
+    JNIEnv* env, jclass, jobject bitmap, jlong time_ms) {
   AndroidBitmapInfo info;
   void* pixels;
   int ret;
