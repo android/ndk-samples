@@ -108,14 +108,8 @@ static __inline__ Fixed angle_sin(Angle a) {
   return angle_sin_tab[(uint32_t)a & (ANGLE_2PI - 1)];
 }
 
-static __inline__ Fixed angle_cos(Angle a) { return angle_sin(a + ANGLE_PI2); }
-
 static __inline__ Fixed fixed_sin(Fixed f) {
   return angle_sin(ANGLE_FROM_FIXED(f));
-}
-
-static __inline__ Fixed fixed_cos(Fixed f) {
-  return angle_cos(ANGLE_FROM_FIXED(f));
 }
 
 /* Color palette used for rendering the plasma */
@@ -180,8 +174,7 @@ static void fill_plasma(AndroidBitmapInfo* info, void* pixels, double t) {
 #define YT1_INCR FIXED_FROM_FLOAT(1 / 100.)
 #define YT2_INCR FIXED_FROM_FLOAT(1 / 163.)
 
-  int yy;
-  for (yy = 0; yy < info->height; yy++) {
+  for (uint32_t yy = 0; yy < info->height; yy++) {
     uint16_t* line = (uint16_t*)pixels;
     Fixed base = fixed_sin(yt1) + fixed_sin(yt2);
     Fixed xt1 = xt10;
@@ -335,7 +328,8 @@ static void stats_endFrame(Stats* s) {
 }
 
 JNIEXPORT void JNICALL Java_com_example_plasma_PlasmaView_renderPlasma(
-    JNIEnv* env, jobject obj, jobject bitmap, jlong time_ms) {
+    JNIEnv* env, jobject __attribute__((unused)) obj, jobject bitmap,
+    jlong time_ms) {
   AndroidBitmapInfo info;
   void* pixels;
   int ret;

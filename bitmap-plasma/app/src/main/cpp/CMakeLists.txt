@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(BitmapPlasma LANGUAGES C)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wno-unused-function")
+add_compile_options(-Wall -Wextra -Werror)
 
 add_library(plasma SHARED plasma.c)
 
