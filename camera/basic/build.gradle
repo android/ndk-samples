@@ -6,7 +6,7 @@ android {
     namespace 'com.sample.camera.basic'
     defaultConfig {
         applicationId 'com.sample.camera.basic'
-        minSdkVersion  24
+        minSdkVersion 24
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
@@ -18,8 +18,13 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+
+    buildFeatures {
+        prefab true
+    }
 }
 
 dependencies {
     implementation libs.appcompat
+    implementation project(":camera:camera-utils")
 }

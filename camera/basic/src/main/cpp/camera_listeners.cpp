@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #include <camera/NdkCameraManager.h>
+#include <ndksamples/camera/camera_utils.h>
+#include <ndksamples/camera/native_debug.h>
 
 #include <cinttypes>
 #include <queue>
@@ -21,8 +23,6 @@
 #include <utility>
 
 #include "camera_manager.h"
-#include "utils/camera_utils.h"
-#include "utils/native_debug.h"
 
 /*
  * Camera Manager Listener object

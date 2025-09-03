@@ -20,10 +20,10 @@
 
 #include "camera_engine.h"
 
+#include <ndksamples/camera/native_debug.h>
+
 #include <cstdio>
 #include <cstring>
-
-#include "utils/native_debug.h"
 
 CameraAppEngine::CameraAppEngine(JNIEnv* env, jobject instance, jint w, jint h)
     : env_(env),

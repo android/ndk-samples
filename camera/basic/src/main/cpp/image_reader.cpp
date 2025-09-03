@@ -16,14 +16,13 @@
 #include "image_reader.h"
 
 #include <dirent.h>
+#include <ndksamples/camera/native_debug.h>
 
 #include <cstdlib>
 #include <ctime>
 #include <functional>
 #include <string>
 #include <thread>
-
-#include "utils/native_debug.h"
 
 /*
  * For JPEG capture, captured files are saved under

@@ -18,12 +18,9 @@ cmake_minimum_required(VERSION 3.22.1)
 project(CameraBasic LANGUAGES C CXX)
 
 include(AppLibrary)
+find_package(camera-utils REQUIRED CONFIG)
 
-set(COMMON_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../common)
-
-# build native_app_glue as a static lib
-include_directories(${ANDROID_NDK}/sources/android/native_app_glue
-    ${COMMON_SOURCE_DIR})
+include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 
 add_library(app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
@@ -40,10 +37,11 @@ add_app_library(ndk_camera SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/camera_listeners.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/image_reader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/camera_ui.cpp
-    ${COMMON_SOURCE_DIR}/utils/camera_utils.cpp)
+)
 
 # add lib dependencies
 target_link_libraries(ndk_camera
+    camera-utils::camera-utils
     android
     log
     m

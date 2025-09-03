@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include <utils/native_debug.h>
+#include <ndksamples/camera/native_debug.h>
 
 #include "camera_engine.h"
 

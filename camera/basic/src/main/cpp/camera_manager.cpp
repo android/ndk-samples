@@ -16,14 +16,13 @@
 #include "camera_manager.h"
 
 #include <camera/NdkCameraManager.h>
+#include <ndksamples/camera/camera_utils.h>
+#include <ndksamples/camera/native_debug.h>
 #include <unistd.h>
 
 #include <cinttypes>
 #include <queue>
 #include <utility>
-
-#include "utils/camera_utils.h"
-#include "utils/native_debug.h"
 
 /**
  * Range of Camera Exposure Time:

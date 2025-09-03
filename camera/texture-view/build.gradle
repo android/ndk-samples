@@ -19,8 +19,13 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+
+    buildFeatures {
+        prefab true
+    }
 }
 
 dependencies {
     implementation libs.androidx.core
+    implementation project(":camera:camera-utils")
 }

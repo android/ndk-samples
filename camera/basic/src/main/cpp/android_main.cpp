@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+#include <ndksamples/camera/native_debug.h>
+
 #include "camera_engine.h"
-#include "utils/native_debug.h"
 
 /*
  * SampleEngine global object

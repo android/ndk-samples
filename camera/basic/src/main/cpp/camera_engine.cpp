@@ -20,9 +20,9 @@
 
 #include "camera_engine.h"
 
-#include <cstdio>
+#include <ndksamples/camera/native_debug.h>
 
-#include "utils/native_debug.h"
+#include <cstdio>
 
 /**
  * constructor and destructor for main application class

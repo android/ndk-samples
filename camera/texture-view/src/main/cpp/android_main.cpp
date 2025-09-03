@@ -23,7 +23,7 @@
  *         Google Pixel and Nexus 6 phones
  */
 #include <jni.h>
-#include <utils/native_debug.h>
+#include <ndksamples/camera/native_debug.h>
 
 #include <cstring>
 
