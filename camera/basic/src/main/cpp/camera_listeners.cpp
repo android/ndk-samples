@@ -212,7 +212,7 @@ ACameraCaptureSession_captureCallbacks* NDKCamera::GetCaptureCallback() {
  * @param request the capture request that failed
  * @param failure for additional fail info.
  */
-void NDKCamera::OnCaptureFailed(ACameraCaptureSession* session,
+void NDKCamera::OnCaptureFailed(ACameraCaptureSession*,
                                 ACaptureRequest* request,
                                 ACameraCaptureFailure* failure) {
   if (valid_ && request == requests_[JPG_CAPTURE_REQUEST_IDX].request_) {
@@ -230,8 +230,8 @@ void NDKCamera::OnCaptureFailed(ACameraCaptureSession* session,
  *
  * If this is jpg capture, turn back on preview after a catpure.
  */
-void NDKCamera::OnCaptureSequenceEnd(ACameraCaptureSession* session,
-                                     int sequenceId, int64_t frameNumber) {
+void NDKCamera::OnCaptureSequenceEnd(ACameraCaptureSession*, int sequenceId,
+                                     int64_t) {
   if (sequenceId != requests_[JPG_CAPTURE_REQUEST_IDX].sessionSequenceId_)
     return;
 

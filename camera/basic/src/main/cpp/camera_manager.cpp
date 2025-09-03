@@ -31,8 +31,8 @@
  *     on camera. For this sample purpose, clamp to a range showing visible
  *     video on preview: 100000ns ~ 250000000ns
  */
-static const uint64_t kMinExposureTime = static_cast<uint64_t>(1000000);
-static const uint64_t kMaxExposureTime = static_cast<uint64_t>(250000000);
+static const int64_t kMinExposureTime = 1000000;
+static const int64_t kMaxExposureTime = 250000000;
 
 NDKCamera::NDKCamera()
     : cameraMgr_(nullptr),
@@ -64,9 +64,7 @@ NDKCamera::NDKCamera()
   ACameraMetadata* metadataObj;
   CALL_MGR(getCameraCharacteristics(cameraMgr_, activeCameraId_.c_str(),
                                     &metadataObj));
-  ACameraMetadata_const_entry val = {
-      0,
-  };
+  ACameraMetadata_const_entry val = {};
   camera_status_t status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE, &val);
   if (status == ACAMERA_OK) {
@@ -186,7 +184,7 @@ bool NDKCamera::MatchCaptureSizeRequest(ANativeWindow* display,
   DisplayDimension foundRes(4000, 4000);
   DisplayDimension maxJPG(0, 0);
 
-  for (int i = 0; i < entry.count; i += 4) {
+  for (uint32_t i = 0; i < entry.count; i += 4) {
     int32_t input = entry.data.i32[i + 3];
     int32_t format = entry.data.i32[i + 0];
     if (input) continue;
@@ -323,9 +321,7 @@ void NDKCamera::EnumerateCamera() {
     ACameraMetadata_getAllTags(metadataObj, &count, &tags);
     for (int tagIdx = 0; tagIdx < count; ++tagIdx) {
       if (ACAMERA_LENS_FACING == tags[tagIdx]) {
-        ACameraMetadata_const_entry lensInfo = {
-            0,
-        };
+        ACameraMetadata_const_entry lensInfo = {};
         CALL_METADATA(getConstEntry(metadataObj, tags[tagIdx], &lensInfo));
         CameraId cam(id);
         cam.facing_ = static_cast<acamera_metadata_enum_android_lens_facing_t>(

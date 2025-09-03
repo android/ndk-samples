@@ -378,9 +378,7 @@ void PrintCameras(ACameraManager* cmrMgr) {
     ACameraMetadata_getAllTags(metadataObj, &count, &tags);
 
     for (int tagIdx = 0; tagIdx < count; ++tagIdx) {
-      ACameraMetadata_const_entry val = {
-          0,
-      };
+      ACameraMetadata_const_entry val = {};
       camera_status_t status =
           ACameraMetadata_getConstEntry(metadataObj, tags[tagIdx], &val);
       if (status != ACAMERA_OK) {

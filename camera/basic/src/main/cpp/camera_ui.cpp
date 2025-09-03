@@ -128,29 +128,28 @@ void CameraEngine::OnCameraPermission(jboolean granted) {
  */
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_camera_basic_CameraActivity_notifyCameraPermission(
-    JNIEnv* env, jclass type, jboolean permission) {
+    JNIEnv*, jclass, jboolean permission) {
   std::thread permissionHandler(&CameraEngine::OnCameraPermission,
                                 GetAppEngine(), permission);
   permissionHandler.detach();
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_sample_camera_basic_CameraActivity_TakePhoto(JNIEnv* env,
-                                                      jclass type) {
+Java_com_sample_camera_basic_CameraActivity_TakePhoto(JNIEnv*, jclass) {
   std::thread takePhotoHandler(&CameraEngine::OnTakePhoto, GetAppEngine());
   takePhotoHandler.detach();
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_camera_basic_CameraActivity_OnExposureChanged(
-    JNIEnv* env, jobject instance, jlong exposurePercent) {
+    JNIEnv*, jobject, jlong exposurePercent) {
   GetAppEngine()->OnCameraParameterChanged(ACAMERA_SENSOR_EXPOSURE_TIME,
                                            exposurePercent);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_camera_basic_CameraActivity_OnSensitivityChanged(
-    JNIEnv* env, jobject instance, jlong sensitivity) {
+    JNIEnv*, jobject, jlong sensitivity) {
   GetAppEngine()->OnCameraParameterChanged(ACAMERA_SENSOR_SENSITIVITY,
                                            sensitivity);
 }
