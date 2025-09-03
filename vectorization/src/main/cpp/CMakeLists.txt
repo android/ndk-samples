@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(Vectorization LANGUAGES CXX)
 
-add_compile_options(-Wall -Wextra -Werror)
-
+include(AppLibrary)
 find_package(base REQUIRED CONFIG)
 
-add_library(app
+add_app_library(app
     SHARED
     benchmark.cpp
     jni.cpp

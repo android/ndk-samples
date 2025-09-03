@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(Base LANGUAGES CXX)
 
-add_compile_options(-Wall -Werror -Wextra)
+include(AppLibrary)
 
-add_library(base
+add_app_library(base
     STATIC
     logging.cpp
 )

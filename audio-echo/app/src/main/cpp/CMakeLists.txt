@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(echo LANGUAGES C CXX)
 
-add_compile_options(-Wall -Wextra -Werror)
+include(AppLibrary)
 
-add_library(echo
+add_app_library(echo
     SHARED
     audio_main.cpp
     audio_player.cpp

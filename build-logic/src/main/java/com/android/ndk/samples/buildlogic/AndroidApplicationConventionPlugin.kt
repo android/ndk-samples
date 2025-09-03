@@ -30,6 +30,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     externalNativeBuild {
                         cmake {
                             arguments.add("-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON")
+                            arguments.add("-DCMAKE_MODULE_PATH=${rootDir.resolve("cmake")}")
                         }
                     }
 
