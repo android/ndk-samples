@@ -140,10 +140,10 @@ class Matrix {
 template <size_t Rows, size_t Columns, typename T>
 Matrix(T (&&)[Rows][Columns]) -> Matrix<Rows, Columns, T>;
 
-#if __NDK_MAJOR__ >= 28
-#error "TODO: `template <typename T = float>` each of these"
-#endif
-using Mat4 = Matrix<4, 4>;
-using Vec4 = Matrix<4, 1>;
+template <typename T = float>
+using Mat4 = Matrix<4, 4, T>;
+
+template <typename T = float>
+using Vec4 = Matrix<4, 1, T>;
 
 }  // namespace samples::vectorization

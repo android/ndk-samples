@@ -48,8 +48,8 @@ Vec4 result;
  * @return The average duration per call in nanoseconds.
  */
 [[nodiscard, clang::noinline]] std::chrono::nanoseconds Benchmark(
-    Vec4& position, Mat4& translation,
-    std::function<Vec4(const Vec4&, const Mat4&)> func) {
+    Vec4<>& position, Mat4<>& translation,
+    std::function<Vec4<>(const Vec4<>&, const Mat4<>&)> func) {
   // TODO: Move to a unit test.
   auto test = func(position, translation);
   auto expected = Vec4{{20, 10, 10, 1}};
@@ -82,11 +82,11 @@ BenchmarkMatrixMultiplication(Backend backend) {
   switch (backend) {
     case Backend::kAutoVectorization:
       LOG(INFO) << "Benchmarking auto-vectorization";
-      return Benchmark(position, translation, [](Vec4 p, Mat4 t) {
+      return Benchmark(position, translation, [](Vec4<> p, Mat4<> t) {
         return MultiplyWithAutoVectorization(t, p);
       });
     case Backend::kCxxSimd:
-#if __NDK_MAJOR__ >= 28
+#if __NDK_MAJOR__ >= 29
 #error check if std::simd works yet
 #endif
       // The libc++ in NDK r27 has only a skeleton implementation of std::simd.
@@ -96,19 +96,20 @@ BenchmarkMatrixMultiplication(Backend backend) {
       return std::unexpected{BenchmarkError::kNotImplemented};
     case Backend::kClangVector:
       LOG(INFO) << "Benchmarking Clang vectors";
-      return Benchmark(position, translation, [](Vec4 p, Mat4 t) {
+      return Benchmark(position, translation, [](Vec4<> p, Mat4<> t) {
         return MultiplyWithClangVectors(t, p);
       });
     case Backend::kClangMatrix:
       LOG(INFO) << "Benchmarking Clang matrices";
-      return Benchmark(position, translation, [](Vec4 p, Mat4 t) {
+      return Benchmark(position, translation, [](Vec4<> p, Mat4<> t) {
         // This is the default implementation since it's the fastest.
         return t * p;
       });
     case Backend::kOpenMp:
       LOG(INFO) << "Benchmarking OpenMP SIMD";
-      return Benchmark(position, translation,
-                       [](Vec4 p, Mat4 t) { return MultiplyWithOpenMP(t, p); });
+      return Benchmark(position, translation, [](Vec4<> p, Mat4<> t) {
+        return MultiplyWithOpenMP(t, p);
+      });
     default:
       return std::unexpected{BenchmarkError::kUnknownBackend};
   }
