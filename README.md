@@ -11,9 +11,11 @@ For an explanation of the layout of this repository, see
 
 1. Clone the repository
 2. Open the whole project in Android Studio
-3. Select the sample you want to run in the top bar (you may need to sync gradle
+3. Install CMake 4.1.0 via the SDK Manager (must be done manually until
+   https://issuetracker.google.com/443137057 is fixed).
+4. Select the sample you want to run in the top bar (you may need to sync gradle
    first)
-4. Click the play button to run the sample
+5. Click the play button to run the sample
 
 You can also build the samples from the command line if you prefer. Use
 `./gradlew build` to build everything (if you're on Windows, use `.\gradlew.bat`
