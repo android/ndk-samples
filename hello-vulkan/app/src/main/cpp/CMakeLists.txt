@@ -14,14 +14,11 @@
  limitations under the License.
 #]]
 
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 4.1.0)
 project(hellovkjni)
 
 # Include the GameActivity static lib to the project.
 find_package(game-activity REQUIRED CONFIG)
-set(CMAKE_SHARED_LINKER_FLAGS
-    "${CMAKE_SHARED_LINKER_FLAGS} -u \
-    Java_com_google_androidgamesdk_GameActivity_initializeNativeCode")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -36,6 +33,6 @@ add_library(${PROJECT_NAME} SHARED
 # add lib dependencies
 target_link_libraries(${PROJECT_NAME} PUBLIC
     vulkan
-    game-activity::game-activity_static
+    $<LINK_LIBRARY:WHOLE_ARCHIVE,game-activity::game-activity_static>
     android
     log)
