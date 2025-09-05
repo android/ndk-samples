@@ -240,8 +240,8 @@ JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_step(JNIEnv* env,
 static GLboolean gl3stubInit() { return GL_TRUE; }
 #endif
 
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_init(JNIEnv* env,
-                                                                  jobject obj) {
+JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_init(JNIEnv*,
+                                                                  jobject) {
   if (g_renderer) {
     delete g_renderer;
     g_renderer = NULL;
@@ -263,14 +263,14 @@ JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_init(JNIEnv* env,
 }
 
 JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_resize(
-    JNIEnv* env, jobject obj, jint width, jint height) {
+    JNIEnv*, jobject, jint width, jint height) {
   if (g_renderer) {
     g_renderer->resize(width, height);
   }
 }
 
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_step(JNIEnv* env,
-                                                                  jobject obj) {
+JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_step(JNIEnv*,
+                                                                  jobject) {
   if (g_renderer) {
     g_renderer->render();
   }
