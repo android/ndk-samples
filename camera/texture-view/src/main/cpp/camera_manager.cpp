@@ -65,9 +65,7 @@ NDKCamera::NDKCamera()
   ACameraMetadata* metadataObj;
   CALL_MGR(getCameraCharacteristics(cameraMgr_, activeCameraId_.c_str(),
                                     &metadataObj));
-  ACameraMetadata_const_entry val = {
-      0,
-  };
+  ACameraMetadata_const_entry val = {};
   camera_status_t status = ACameraMetadata_getConstEntry(
       metadataObj, ACAMERA_SENSOR_INFO_EXPOSURE_TIME_RANGE, &val);
   if (status == ACAMERA_OK) {
@@ -344,9 +342,7 @@ void NDKCamera::EnumerateCamera() {
     ACameraMetadata_getAllTags(metadataObj, &count, &tags);
     for (int tagIdx = 0; tagIdx < count; ++tagIdx) {
       if (ACAMERA_LENS_FACING == tags[tagIdx]) {
-        ACameraMetadata_const_entry lensInfo = {
-            0,
-        };
+        ACameraMetadata_const_entry lensInfo = {};
         CALL_METADATA(getConstEntry(metadataObj, tags[tagIdx], &lensInfo));
         CameraId cam(id);
         cam.facing_ = static_cast<acamera_metadata_enum_android_lens_facing_t>(

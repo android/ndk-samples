@@ -50,10 +50,9 @@ CameraAppEngine* pEngineObj = nullptr;
  * @return application object instance ( not used in this sample )
  */
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_sample_textureview_ViewActivity_createCamera(JNIEnv* env,
-                                                      jobject instance,
+Java_com_sample_textureview_ViewActivity_createCamera(JNIEnv* env, jobject,
                                                       jint width, jint height) {
-  pEngineObj = new CameraAppEngine(env, instance, width, height);
+  pEngineObj = new CameraAppEngine(env, width, height);
   return reinterpret_cast<jlong>(pEngineObj);
 }
 
@@ -63,8 +62,7 @@ Java_com_sample_textureview_ViewActivity_createCamera(JNIEnv* env,
  *   triggers native camera object be released
  */
 extern "C" JNIEXPORT void JNICALL
-Java_com_sample_textureview_ViewActivity_deleteCamera(JNIEnv* env,
-                                                      jobject instance,
+Java_com_sample_textureview_ViewActivity_deleteCamera(JNIEnv*, jobject,
                                                       jlong ndkCameraObj) {
   if (!pEngineObj || !ndkCameraObj) {
     return;
@@ -91,7 +89,7 @@ Java_com_sample_textureview_ViewActivity_deleteCamera(JNIEnv* env,
  */
 extern "C" JNIEXPORT jobject JNICALL
 Java_com_sample_textureview_ViewActivity_getMinimumCompatiblePreviewSize(
-    JNIEnv* env, jobject instance, jlong ndkCameraObj) {
+    JNIEnv* env, jobject, jlong ndkCameraObj) {
   if (!ndkCameraObj) {
     return nullptr;
   }
@@ -111,7 +109,7 @@ Java_com_sample_textureview_ViewActivity_getMinimumCompatiblePreviewSize(
  */
 extern "C" JNIEXPORT jint JNICALL
 Java_com_sample_textureview_ViewActivity_getCameraSensorOrientation(
-    JNIEnv* env, jobject instance, jlong ndkCameraObj) {
+    JNIEnv*, jobject, jlong ndkCameraObj) {
   ASSERT(ndkCameraObj, "NativeObject should not be null Pointer");
   CameraAppEngine* pApp = reinterpret_cast<CameraAppEngine*>(ndkCameraObj);
   return pApp->GetCameraSensorOrientation(ACAMERA_LENS_FACING_BACK);
@@ -125,7 +123,7 @@ Java_com_sample_textureview_ViewActivity_getCameraSensorOrientation(
  */
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_textureview_ViewActivity_onPreviewSurfaceCreated(
-    JNIEnv* env, jobject instance, jlong ndkCameraObj, jobject surface) {
+    JNIEnv*, jobject, jlong ndkCameraObj, jobject surface) {
   ASSERT(ndkCameraObj && (jlong)pEngineObj == ndkCameraObj,
          "NativeObject should not be null Pointer");
   CameraAppEngine* pApp = reinterpret_cast<CameraAppEngine*>(ndkCameraObj);
@@ -141,7 +139,7 @@ Java_com_sample_textureview_ViewActivity_onPreviewSurfaceCreated(
  */
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_textureview_ViewActivity_onPreviewSurfaceDestroyed(
-    JNIEnv* env, jobject instance, jlong ndkCameraObj, jobject surface) {
+    JNIEnv* env, jobject, jlong ndkCameraObj, jobject surface) {
   CameraAppEngine* pApp = reinterpret_cast<CameraAppEngine*>(ndkCameraObj);
   ASSERT(ndkCameraObj && pEngineObj == pApp,
          "NativeObject should not be null Pointer");

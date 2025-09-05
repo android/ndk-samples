@@ -25,9 +25,8 @@
 #include <cstdio>
 #include <cstring>
 
-CameraAppEngine::CameraAppEngine(JNIEnv* env, jobject instance, jint w, jint h)
+CameraAppEngine::CameraAppEngine(JNIEnv* env, jint w, jint h)
     : env_(env),
-      javaInstance_(instance),
       requestWidth_(w),
       requestHeight_(h),
       surface_(nullptr),

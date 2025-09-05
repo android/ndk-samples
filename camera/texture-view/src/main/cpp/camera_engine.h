@@ -32,7 +32,7 @@
  */
 class CameraAppEngine {
  public:
-  explicit CameraAppEngine(JNIEnv* env, jobject instance, jint w, jint h);
+  explicit CameraAppEngine(JNIEnv* env, jint w, jint h);
   ~CameraAppEngine();
 
   // Manage NDKCamera Object
@@ -44,7 +44,6 @@ class CameraAppEngine {
 
  private:
   JNIEnv* env_;
-  jobject javaInstance_;
   int32_t requestWidth_;
   int32_t requestHeight_;
   jobject surface_;
