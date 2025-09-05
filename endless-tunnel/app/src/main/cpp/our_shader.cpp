@@ -105,12 +105,12 @@ void OurShader::BeginRender(VertexBuf* geom) {
 
   // push color data
   glVertexAttribPointer(mColorLoc, 3, GL_FLOAT, GL_FALSE, geom->GetStride(),
-                        BUFFER_OFFSET(geom->GetColorsOffset()));
+                        reinterpret_cast<void*>(geom->GetColorsOffset()));
   glEnableVertexAttribArray(mColorLoc);
 
   // push texture coordinates
   glVertexAttribPointer(mTexCoordLoc, 2, GL_FLOAT, GL_FALSE, geom->GetStride(),
-                        BUFFER_OFFSET(geom->GetTexCoordsOffset()));
+                        reinterpret_cast<void*>(geom->GetTexCoordsOffset()));
   glEnableVertexAttribArray(mTexCoordLoc);
 
   // set neutral tint color (white) as a default

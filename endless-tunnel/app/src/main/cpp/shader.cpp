@@ -147,7 +147,7 @@ void Shader::PushMVPMatrix(glm::mat4* mat) {
 void Shader::PushPositions(int vbo_offset, int stride) {
   MY_ASSERT(mPositionAttribLoc >= 0);
   glVertexAttribPointer(mPositionAttribLoc, 3, GL_FLOAT, GL_FALSE, stride,
-                        BUFFER_OFFSET(vbo_offset));
+                        reinterpret_cast<void*>(vbo_offset));
   glEnableVertexAttribArray(mPositionAttribLoc);
 }
 
@@ -175,7 +175,7 @@ void Shader::Render(IndexBuf* ibuf, glm::mat4* mvpMat) {
     // draw with index buffer
     ibuf->BindBuffer();
     glDrawElements(mPreparedVertexBuf->GetPrimitive(), ibuf->GetCount(),
-                   GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
+                   GL_UNSIGNED_SHORT, nullptr);
     ibuf->UnbindBuffer();
   } else {
     // draw straight from vertex buffer
@@ -266,7 +266,7 @@ void TrivialShader::BeginRender(VertexBuf* geom) {
 
   // push colors to shader
   glVertexAttribPointer(mColorLoc, 3, GL_FLOAT, GL_FALSE, geom->GetStride(),
-                        BUFFER_OFFSET(geom->GetColorsOffset()));
+                        reinterpret_cast<void*>(geom->GetColorsOffset()));
   glEnableVertexAttribArray(mColorLoc);
 
   // push tint color to shader

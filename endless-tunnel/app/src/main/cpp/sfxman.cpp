@@ -38,7 +38,7 @@ static bool _checkError(SLresult r, const char* what) {
   return false;
 }
 
-static void _bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void* context) {
+static void _bqPlayerCallback(SLAndroidSimpleBufferQueueItf, void*) {
   _bufferActive = false;
 }
 
@@ -175,8 +175,8 @@ static const char* _parseInt(const char* s, int* result) {
   return s;
 }
 
-static int _synth(int frequency, int duration, float amplitude,
-                  short* sample_buf, int samples) {
+static int _synth(int frequency, float amplitude, short* sample_buf,
+                  int samples) {
   int i;
 
   for (i = 0; i < samples; i++) {
@@ -261,8 +261,8 @@ void SfxMan::PlayTone(const char* tone) {
         if (num_samples > (BUF_SAMPLES_MAX - total_samples - 1)) {
           num_samples = BUF_SAMPLES_MAX - total_samples - 1;
         }
-        num_samples = _synth(frequency, duration, amplitude,
-                             _sample_buf + total_samples, num_samples);
+        num_samples = _synth(frequency, amplitude, _sample_buf + total_samples,
+                             num_samples);
         total_samples += num_samples;
         tone++;
         break;

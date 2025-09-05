@@ -37,7 +37,7 @@ class Obstacle {
                      -TUNNEL_HALF_H + (gridRow + 0.5f) * OBS_CELL_SIZE);
   }
 
-  glm::vec3 GetBoxSize(int gridCol, int gridRow) {
+  glm::vec3 GetBoxSize() {
     return glm::vec3(OBS_BOX_SIZE, OBS_BOX_SIZE, OBS_BOX_SIZE);
   }
 

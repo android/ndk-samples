@@ -55,8 +55,6 @@ extern "C" {
     }                                      \
   }
 
-#define BUFFER_OFFSET(i) ((char*)NULL + (i))
-
 #include "our_key_codes.hpp"
 
 #endif

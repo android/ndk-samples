@@ -122,7 +122,6 @@ class UiWidget {
   const char* mIconArt;
   float mIconScale;
   float mFontScale;
-  bool mHasGraphics;
   int mTransition;
 
   // only exists between StartGraphics() and KillGraphics()
@@ -150,7 +149,6 @@ class UiWidget {
     mTextColor[0] = mTextColor[1] = mTextColor[2] = 1.0f;
     mText = NULL;
     mIconGeom = NULL;
-    mHasGraphics = false;
     mEnabled = true;
     mHasBorder = false;
     mTransparent = false;
@@ -164,14 +162,8 @@ class UiWidget {
   ~UiWidget() { CleanUp(&mIconGeom); }
 
   int GetId() { return mId; }
-  float GetCenterX() { return mCenterX; }
-  float GetCenterY() { return mCenterY; }
-  float GetWidth() { return mWidth; }
-  float GetHeight() { return mHeight; }
   bool IsButton() { return mIsButton; }
   int GetNav(int dir) { return dir >= 0 && dir < 4 ? mNav[dir] : -1; }
-  bool IsEnabled() { return mEnabled; }
-  bool IsVisible() { return mVisible; }
 
   UiWidget* SetNav(int dir, int id) {
     if (dir >= 0 && dir < 4) {
@@ -179,42 +171,33 @@ class UiWidget {
     }
     return this;
   }
+
   UiWidget* SetTransition(int trans) {
     mTransition = trans;
     return this;
   }
-  UiWidget* SetEnabled(bool enabled) {
-    mEnabled = enabled;
-    return this;
-  }
-  UiWidget* SetVisible(bool visible) {
-    mVisible = visible;
-    return this;
-  }
+
   UiWidget* SetCenter(float x, float y) {
     mCenterX = x;
     mCenterY = y;
     return this;
   }
+
   UiWidget* SetSize(float w, float h) {
     mWidth = w;
     mHeight = h;
     return this;
   }
+
   UiWidget* SetText(const char* text) {
     mText = text;
     return this;
   }
+
   UiWidget* SetTextColor(float r, float g, float b) {
     mTextColor[0] = r;
     mTextColor[1] = g;
     mTextColor[2] = b;
-    return this;
-  }
-  UiWidget* SetTextColor(const float* color) {
-    mTextColor[0] = color[0];
-    mTextColor[1] = color[1];
-    mTextColor[2] = color[2];
     return this;
   }
 
@@ -223,44 +206,20 @@ class UiWidget {
     return this;
   }
 
-  UiWidget* SetBackColor(float r, float g, float b) {
-    mBackColor[0] = r;
-    mBackColor[1] = g;
-    mBackColor[2] = b;
-    return this;
-  }
-  UiWidget* SetTransparent(bool transp) {
-    mTransparent = true;
-    return this;
-  }
   UiWidget* SetIsButton(bool isButton) {
     mIsButton = isButton;
     mHasBorder = true;
     return this;
   }
-  UiWidget* SetHasBorder(bool border) {
-    mHasBorder = border;
-    return this;
-  }
-  UiWidget* SetIconFromAsciiArt(const char* asciiArt, float scale) {
-    mIconArt = asciiArt;
-    mIconScale = scale;
-    if (mHasGraphics) {
-      CleanUp(&mIconGeom);
-      mIconGeom = AsciiArtToGeom(mIconArt, mIconScale);
-    }
-    return this;
-  }
+
   void StartGraphics() {
     if (mIconArt) {
       mIconGeom = AsciiArtToGeom(mIconArt, mIconScale);
     }
-    mHasGraphics = true;
   }
-  void KillGraphics() {
-    CleanUp(&mIconGeom);
-    mHasGraphics = false;
-  }
+
+  void KillGraphics() { CleanUp(&mIconGeom); }
+
   bool PointBelongs(float x, float y) {
     float dx = fabsf(x - mCenterX);
     float dy = fabsf(y - mCenterY);

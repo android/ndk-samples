@@ -23,14 +23,14 @@ void Scene::DoFrame() {}
 void Scene::OnUninstall() {}
 void Scene::OnStartGraphics() {}
 void Scene::OnKillGraphics() {}
-void Scene::OnPointerDown(int pointerId, const struct PointerCoords* coords) {}
-void Scene::OnPointerUp(int pointerId, const struct PointerCoords* coords) {}
-void Scene::OnPointerMove(int pointerId, const struct PointerCoords* coords) {}
+void Scene::OnPointerDown(int, const struct PointerCoords*) {}
+void Scene::OnPointerUp(int, const struct PointerCoords*) {}
+void Scene::OnPointerMove(int, const struct PointerCoords*) {}
 bool Scene::OnBackKeyPressed() { return false; }
-void Scene::OnKeyDown(int ourKeycode) {}
-void Scene::OnKeyUp(int ourKeycode) {}
-void Scene::OnJoy(float x, float y) {}
-void Scene::OnScreenResized(int width, int height) {}
+void Scene::OnKeyDown(int) {}
+void Scene::OnKeyUp(int) {}
+void Scene::OnJoy(float, float) {}
+void Scene::OnScreenResized(int, int) {}
 void Scene::OnPause() {}
 void Scene::OnResume() {}
 Scene::~Scene() {}

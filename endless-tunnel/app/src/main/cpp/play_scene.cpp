@@ -478,7 +478,7 @@ void PlayScene::RenderObstacles() {
           // set up matrices
           modelMat =
               glm::translate(glm::mat4(1.0f), o->GetBoxCenter(c, r, posY));
-          modelMat = glm::scale(modelMat, o->GetBoxSize(c, r));
+          modelMat = glm::scale(modelMat, o->GetBoxSize());
           mvpMat = mProjMat * mViewMat * modelMat;
 
           // set up color
@@ -542,7 +542,12 @@ void PlayScene::ShiftIfNeeded() {
   }
 }
 
-void PlayScene::UpdateMenuSelFromTouch(float x, float y) {
+void PlayScene::UpdateMenuSelFromTouch(float, float y) {
+  // The main menu doesn't go through this code, only the pause menu and game
+  // load menus do. Each only has two buttons ("Resume" and "Quit" or "Start
+  // over" and "Start from checkpoint"), listed vertically. This code doesn't
+  // bother trying to precisely determine which button was hit, only which half
+  // of the screen was pushed.
   float sh = SceneManager::GetInstance()->GetScreenHeight();
   int item = (int)floor((y / sh) * (mMenuItemCount));
   mMenuSel = Clamp(item, 0, mMenuItemCount - 1);
@@ -867,9 +872,7 @@ void PlayScene::OnPause() {
   }
 }
 
-void PlayScene::OnScreenResized(int width, int height) {
-  UpdateProjectionMatrix();
-}
+void PlayScene::OnScreenResized(int, int) { UpdateProjectionMatrix(); }
 
 void PlayScene::UpdateProjectionMatrix() {
   SceneManager* mgr = SceneManager::GetInstance();
