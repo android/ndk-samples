@@ -48,7 +48,7 @@ TickContext g_ctx;
  *
  *   hello-jniCallback/app/src/main/java/com/example/hellojnicallback/MainActivity.java
  */
-JNIEXPORT jstring JNICALL
+extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_hellojnicallback_MainActivity_stringFromJNI(JNIEnv* env,
                                                              jobject thiz) {
 #if defined(__arm__)
@@ -82,8 +82,7 @@ Java_com_example_hellojnicallback_MainActivity_stringFromJNI(JNIEnv* env,
 #else
 #define ABI "unknown"
 #endif
-  return (*env)->NewStringUTF(env,
-                              "Hello from JNI !  Compiled with ABI " ABI ".");
+  return env->NewStringUTF("Hello from JNI !  Compiled with ABI " ABI ".");
 }
 
 /*
@@ -100,35 +99,35 @@ void queryRuntimeInfo(JNIEnv* env, jobject instance) {
   // shared lib got loaded, we just directly use them
   //    static function does not need instance, so we just need to feed
   //    class and method id to JNI
-  jmethodID versionFunc = (*env)->GetStaticMethodID(
-      env, g_ctx.jniHandlerClz, "getBuildVersion", "()Ljava/lang/String;");
+  jmethodID versionFunc = env->GetStaticMethodID(
+      g_ctx.jniHandlerClz, "getBuildVersion", "()Ljava/lang/String;");
   if (!versionFunc) {
     LOGE("Failed to retrieve getBuildVersion() methodID @ line %d", __LINE__);
     return;
   }
-  jstring buildVersion =
-      (*env)->CallStaticObjectMethod(env, g_ctx.jniHandlerClz, versionFunc);
-  const char* version = (*env)->GetStringUTFChars(env, buildVersion, NULL);
+  jstring buildVersion = reinterpret_cast<jstring>(
+      env->CallStaticObjectMethod(g_ctx.jniHandlerClz, versionFunc));
+  const char* version = env->GetStringUTFChars(buildVersion, NULL);
   if (!version) {
     LOGE("Unable to get version string @ line %d", __LINE__);
     return;
   }
   LOGI("Android Version - %s", version);
-  (*env)->ReleaseStringUTFChars(env, buildVersion, version);
+  env->ReleaseStringUTFChars(buildVersion, version);
 
   // we are called from JNI_OnLoad, so got to release LocalRef to avoid leaking
-  (*env)->DeleteLocalRef(env, buildVersion);
+  env->DeleteLocalRef(buildVersion);
 
   // Query available memory size from a non-static public function
   // we need use an instance of JniHandler class to call JNI
-  jmethodID memFunc = (*env)->GetMethodID(env, g_ctx.jniHandlerClz,
-                                          "getRuntimeMemorySize", "()J");
+  jmethodID memFunc =
+      env->GetMethodID(g_ctx.jniHandlerClz, "getRuntimeMemorySize", "()J");
   if (!memFunc) {
     LOGE("Failed to retrieve getRuntimeMemorySize() methodID @ line %d",
          __LINE__);
     return;
   }
-  jlong result = (*env)->CallLongMethod(env, instance, memFunc);
+  jlong result = env->CallLongMethod(instance, memFunc);
   LOGI("Runtime free memory size: %" PRId64, result);
   (void)result;  // silence the compiler warning
 }
@@ -149,18 +148,17 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
   memset(&g_ctx, 0, sizeof(g_ctx));
 
   g_ctx.javaVM = vm;
-  if ((*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_6) != JNI_OK) {
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
     return JNI_ERR;  // JNI version not supported.
   }
 
-  jclass clz =
-      (*env)->FindClass(env, "com/example/hellojnicallback/JniHandler");
-  g_ctx.jniHandlerClz = (*env)->NewGlobalRef(env, clz);
+  jclass clz = env->FindClass("com/example/hellojnicallback/JniHandler");
+  g_ctx.jniHandlerClz = reinterpret_cast<jclass>(env->NewGlobalRef(clz));
 
   jmethodID jniHandlerCtor =
-      (*env)->GetMethodID(env, g_ctx.jniHandlerClz, "<init>", "()V");
-  jobject handler = (*env)->NewObject(env, g_ctx.jniHandlerClz, jniHandlerCtor);
-  g_ctx.jniHandlerObj = (*env)->NewGlobalRef(env, handler);
+      env->GetMethodID(g_ctx.jniHandlerClz, "<init>", "()V");
+  jobject handler = env->NewObject(g_ctx.jniHandlerClz, jniHandlerCtor);
+  g_ctx.jniHandlerObj = env->NewGlobalRef(handler);
   queryRuntimeInfo(env, g_ctx.jniHandlerObj);
 
   g_ctx.done = 0;
@@ -175,9 +173,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
  */
 void sendJavaMsg(JNIEnv* env, jobject instance, jmethodID func,
                  const char* msg) {
-  jstring javaMsg = (*env)->NewStringUTF(env, msg);
-  (*env)->CallVoidMethod(env, instance, func, javaMsg);
-  (*env)->DeleteLocalRef(env, javaMsg);
+  jstring javaMsg = env->NewStringUTF(msg);
+  env->CallVoidMethod(instance, func, javaMsg);
+  env->DeleteLocalRef(javaMsg);
 }
 
 /*
@@ -189,23 +187,23 @@ void* UpdateTicks(void* context) {
   TickContext* pctx = (TickContext*)context;
   JavaVM* javaVM = pctx->javaVM;
   JNIEnv* env;
-  jint res = (*javaVM)->GetEnv(javaVM, (void**)&env, JNI_VERSION_1_6);
+  jint res = javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
   if (res != JNI_OK) {
-    res = (*javaVM)->AttachCurrentThread(javaVM, &env, NULL);
+    res = javaVM->AttachCurrentThread(&env, NULL);
     if (JNI_OK != res) {
       LOGE("Failed to AttachCurrentThread, ErrorCode = %d", res);
       return NULL;
     }
   }
 
-  jmethodID statusId = (*env)->GetMethodID(
-      env, pctx->jniHandlerClz, "updateStatus", "(Ljava/lang/String;)V");
+  jmethodID statusId = env->GetMethodID(pctx->jniHandlerClz, "updateStatus",
+                                        "(Ljava/lang/String;)V");
   sendJavaMsg(env, pctx->jniHandlerObj, statusId,
               "TickerThread status: initializing...");
 
   // get mainActivity updateTimer function
   jmethodID timerId =
-      (*env)->GetMethodID(env, pctx->mainActivityClz, "updateTimer", "()V");
+      env->GetMethodID(pctx->mainActivityClz, "updateTimer", "()V");
 
   struct timeval beginTime, curTime, usedTime, leftTime;
   const struct timeval kOneSecond = {(__kernel_time_t)1,
@@ -224,7 +222,7 @@ void* UpdateTicks(void* context) {
     if (done) {
       break;
     }
-    (*env)->CallVoidMethod(env, pctx->mainActivityObj, timerId);
+    env->CallVoidMethod(pctx->mainActivityObj, timerId);
 
     gettimeofday(&curTime, NULL);
     timersub(&curTime, &beginTime, &usedTime);
@@ -243,14 +241,14 @@ void* UpdateTicks(void* context) {
 
   sendJavaMsg(env, pctx->jniHandlerObj, statusId,
               "TickerThread status: ticking stopped");
-  (*javaVM)->DetachCurrentThread(javaVM);
+  javaVM->DetachCurrentThread();
   return context;
 }
 
 /*
  * Interface to Java side to start ticks, caller is from onResume()
  */
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv* env,
                                                           jobject instance) {
   pthread_t threadInfo_;
@@ -261,9 +259,9 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv* env,
 
   pthread_mutex_init(&g_ctx.lock, NULL);
 
-  jclass clz = (*env)->GetObjectClass(env, instance);
-  g_ctx.mainActivityClz = (*env)->NewGlobalRef(env, clz);
-  g_ctx.mainActivityObj = (*env)->NewGlobalRef(env, instance);
+  jclass clz = env->GetObjectClass(instance);
+  g_ctx.mainActivityClz = reinterpret_cast<jclass>(env->NewGlobalRef(clz));
+  g_ctx.mainActivityObj = env->NewGlobalRef(instance);
 
   int result = pthread_create(&threadInfo_, &threadAttr_, UpdateTicks, &g_ctx);
   assert(result == 0);
@@ -278,8 +276,9 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv* env,
  *    we need to hold and make sure our native thread has finished before return
  *    for a clean shutdown. The caller is from onPause
  */
-JNIEXPORT void JNICALL Java_com_example_hellojnicallback_MainActivity_StopTicks(
-    JNIEnv* env, jobject instance) {
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv* env,
+                                                         jobject instance) {
   pthread_mutex_lock(&g_ctx.lock);
   g_ctx.done = 1;
   pthread_mutex_unlock(&g_ctx.lock);
@@ -293,8 +292,8 @@ JNIEXPORT void JNICALL Java_com_example_hellojnicallback_MainActivity_StopTicks(
   }
 
   // release object we allocated from StartTicks() function
-  (*env)->DeleteGlobalRef(env, g_ctx.mainActivityClz);
-  (*env)->DeleteGlobalRef(env, g_ctx.mainActivityObj);
+  env->DeleteGlobalRef(g_ctx.mainActivityClz);
+  env->DeleteGlobalRef(g_ctx.mainActivityObj);
   g_ctx.mainActivityObj = NULL;
   g_ctx.mainActivityClz = NULL;
 
