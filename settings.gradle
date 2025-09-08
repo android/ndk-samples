@@ -33,13 +33,6 @@ include(":gles3jni:app")
 include(":hello-gl2:app")
 include(":hello-jni:app")
 include(":hello-jniCallback:app")
-include(":hello-libs:app")
-// To generate libs used in this sample:
-//   1) enable the gen-libs at end of this file
-//   2) enable module build dependency in app/build.gradle
-//   3) build the app's APK in Android Studio or on command line
-//   4) undo step 1) and 2) above
-// include(":hello-libs:gen-libs")
 include(":hello-oboe:app")
 include(":hello-vulkan:app")
 include(":native-activity:app")
