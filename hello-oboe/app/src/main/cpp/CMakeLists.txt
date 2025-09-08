@@ -16,13 +16,15 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(hello-oboe LANGUAGES CXX)
 
+include(AppLibrary)
+
 # add oboe pre-release lib hosted at https://maven.google.com/web/index.html
 # under com.google.oboe:oboe. For documentation about oboe pre-built lib, refer to
 # https://github.com/google/oboe/blob/master/docs/GettingStarted.md#option-1-using-pre-built-binaries-and-headers
 find_package(oboe REQUIRED CONFIG)
 
 # build application with the oboe lib
-add_library(${PROJECT_NAME} SHARED  hello-oboe.cpp)
+add_app_library(${PROJECT_NAME} SHARED hello-oboe.cpp)
 target_link_libraries(${PROJECT_NAME} oboe::oboe android log)
 
 # Enable optimization flags: if having problems with source level debugging,

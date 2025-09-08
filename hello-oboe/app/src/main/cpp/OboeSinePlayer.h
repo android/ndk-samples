@@ -50,8 +50,7 @@ class OboeSinePlayer : public oboe::AudioStreamCallback {
 
   // This class will also be used for the callback
   // For more complicated callbacks create a separate class
-  oboe::DataCallbackResult onAudioReady(oboe::AudioStream* oboeStream,
-                                        void* audioData,
+  oboe::DataCallbackResult onAudioReady(oboe::AudioStream*, void* audioData,
                                         int32_t numFrames) override {
     float* floatData = static_cast<float*>(audioData);
     if (isOn) {
