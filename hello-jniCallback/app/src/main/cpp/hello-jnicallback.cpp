@@ -50,7 +50,7 @@ TickContext g_ctx;
  */
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_hellojnicallback_MainActivity_stringFromJNI(JNIEnv* env,
-                                                             jobject thiz) {
+                                                             jobject) {
 #if defined(__arm__)
 #if defined(__ARM_ARCH_7A__)
 #if defined(__ARM_NEON__)
@@ -105,7 +105,7 @@ void queryRuntimeInfo(JNIEnv* env, jobject instance) {
     LOGE("Failed to retrieve getBuildVersion() methodID @ line %d", __LINE__);
     return;
   }
-  jstring buildVersion = reinterpret_cast<jstring>(
+  jstring buildVersion = static_cast<jstring>(
       env->CallStaticObjectMethod(g_ctx.jniHandlerClz, versionFunc));
   const char* version = env->GetStringUTFChars(buildVersion, NULL);
   if (!version) {
@@ -143,7 +143,7 @@ void queryRuntimeInfo(JNIEnv* env, jobject instance) {
  *     we rely on system to free all global refs when it goes away;
  *     the pairing function JNI_OnUnload() never gets called at all.
  */
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*) {
   JNIEnv* env;
   memset(&g_ctx, 0, sizeof(g_ctx));
 
@@ -153,7 +153,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
   }
 
   jclass clz = env->FindClass("com/example/hellojnicallback/JniHandler");
-  g_ctx.jniHandlerClz = reinterpret_cast<jclass>(env->NewGlobalRef(clz));
+  g_ctx.jniHandlerClz = static_cast<jclass>(env->NewGlobalRef(clz));
 
   jmethodID jniHandlerCtor =
       env->GetMethodID(g_ctx.jniHandlerClz, "<init>", "()V");
@@ -260,7 +260,7 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv* env,
   pthread_mutex_init(&g_ctx.lock, NULL);
 
   jclass clz = env->GetObjectClass(instance);
-  g_ctx.mainActivityClz = reinterpret_cast<jclass>(env->NewGlobalRef(clz));
+  g_ctx.mainActivityClz = static_cast<jclass>(env->NewGlobalRef(clz));
   g_ctx.mainActivityObj = env->NewGlobalRef(instance);
 
   int result = pthread_create(&threadInfo_, &threadAttr_, UpdateTicks, &g_ctx);
@@ -277,8 +277,7 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv* env,
  *    for a clean shutdown. The caller is from onPause
  */
 extern "C" JNIEXPORT void JNICALL
-Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv* env,
-                                                         jobject instance) {
+Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv* env, jobject) {
   pthread_mutex_lock(&g_ctx.lock);
   g_ctx.done = 1;
   pthread_mutex_unlock(&g_ctx.lock);
