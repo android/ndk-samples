@@ -199,7 +199,7 @@ void mylooper::handle(int what, void* obj) {
 extern "C" {
 
 jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
-    JNIEnv* env, jclass clazz, jobject assetMgr, jstring filename) {
+    JNIEnv* env, jclass, jobject assetMgr, jstring filename) {
   LOGV("@@@ create");
 
   // convert Java string to UTF-8
@@ -269,7 +269,7 @@ jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
 
 // set the playing state for the streaming media player
 void Java_com_example_nativecodec_NativeCodec_setPlayingStreamingMediaPlayer(
-    JNIEnv* env, jclass clazz, jboolean isPlaying) {
+    JNIEnv*, jclass, jboolean isPlaying) {
   LOGV("@@@ playpause: %d", isPlaying);
   if (mlooper) {
     if (isPlaying) {
@@ -281,8 +281,7 @@ void Java_com_example_nativecodec_NativeCodec_setPlayingStreamingMediaPlayer(
 }
 
 // shut down the native media system
-void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv* env,
-                                                       jclass clazz) {
+void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv*, jclass) {
   LOGV("@@@ shutdown");
   if (mlooper) {
     mlooper->post(kMsgDecodeDone, &data, true /* flush */);
@@ -297,8 +296,7 @@ void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv* env,
 }
 
 // set the surface
-void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv* env,
-                                                         jclass clazz,
+void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv* env, jclass,
                                                          jobject surface) {
   // obtain a native window from a Java surface
   if (data.window) {
@@ -311,7 +309,7 @@ void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv* env,
 
 // rewind the streaming media player
 void Java_com_example_nativecodec_NativeCodec_rewindStreamingMediaPlayer(
-    JNIEnv* env, jclass clazz) {
+    JNIEnv*, jclass) {
   LOGV("@@@ rewind");
   if (mlooper) {
     mlooper->post(kMsgSeek, &data);
