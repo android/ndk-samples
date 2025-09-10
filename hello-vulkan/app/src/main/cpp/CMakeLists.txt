@@ -15,23 +15,22 @@
 #]]
 
 cmake_minimum_required(VERSION 4.1.0)
-project(hellovkjni)
+project(HelloVulkan LANGUAGES CXX)
 
 include(AppLibrary)
-
-# Include the GameActivity static lib to the project.
 find_package(game-activity REQUIRED CONFIG)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+add_app_library(hellovkjni SHARED
+    vk_main.cpp
+)
 
-add_definitions(-DVK_USE_PLATFORM_ANDROID_KHR=1)
+target_compile_definitions(hellovkjni PRIVATE
+    VK_USE_PLATFORM_ANDROID_KHR=1
+)
 
-add_app_library(${PROJECT_NAME} SHARED
-    vk_main.cpp)
-
-# add lib dependencies
-target_link_libraries(${PROJECT_NAME} PUBLIC
+target_link_libraries(hellovkjni PUBLIC
     vulkan
     $<LINK_LIBRARY:WHOLE_ARCHIVE,game-activity::game-activity_static>
     android
-    log)
+    log
+)
