@@ -17,17 +17,16 @@
 cmake_minimum_required(VERSION 4.1.0)
 project(hellovkjni)
 
+include(AppLibrary)
+
 # Include the GameActivity static lib to the project.
 find_package(game-activity REQUIRED CONFIG)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Now build app's shared lib
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-
 add_definitions(-DVK_USE_PLATFORM_ANDROID_KHR=1)
 
-add_library(${PROJECT_NAME} SHARED
+add_app_library(${PROJECT_NAME} SHARED
     vk_main.cpp)
 
 # add lib dependencies

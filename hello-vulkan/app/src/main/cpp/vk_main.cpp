@@ -89,10 +89,10 @@ static void HandleCmd(struct android_app* app, int32_t cmd) {
  * not use/process any input events, return false for all input events so system
  * can still process them.
  */
-extern "C" bool VulkanKeyEventFilter(const GameActivityKeyEvent* event) {
+extern "C" bool VulkanKeyEventFilter(const GameActivityKeyEvent*) {
   return false;
 }
-extern "C" bool VulkanMotionEventFilter(const GameActivityMotionEvent* event) {
+extern "C" bool VulkanMotionEventFilter(const GameActivityMotionEvent*) {
   return false;
 }
 

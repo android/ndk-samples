@@ -468,8 +468,7 @@ void HelloVK::render() {
  * getPrerotationMatrix handles screen rotation with 3 hardcoded rotation
  * matrices (detailed below). We skip the 180 degrees rotation.
  */
-void getPrerotationMatrix(const VkSurfaceCapabilitiesKHR& capabilities,
-                          const VkSurfaceTransformFlagBitsKHR& pretransformFlag,
+void getPrerotationMatrix(const VkSurfaceTransformFlagBitsKHR& pretransformFlag,
                           std::array<float, 16>& mat) {
   // mat is initialized to the identity matrix
   mat = {1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.};
@@ -533,8 +532,7 @@ void HelloVK::updateUniformBuffer(uint32_t currentImage) {
   SwapChainSupportDetails swapChainSupport =
       querySwapChainSupport(physicalDevice);
   UniformBufferObject ubo{};
-  getPrerotationMatrix(swapChainSupport.capabilities, pretransformFlag,
-                       ubo.mvp);
+  getPrerotationMatrix(pretransformFlag, ubo.mvp);
   void* data;
   vkMapMemory(device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0,
               &data);
