@@ -234,8 +234,9 @@ void bqRecorderCallback(SLAndroidSimpleBufferQueueItf bq, void* context) {
 }
 
 // create the engine and output mix objects
-JNIEXPORT void JNICALL Java_com_example_nativeaudio_NativeAudio_createEngine(
-    JNIEnv* env, jclass clazz) {
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_nativeaudio_NativeAudio_createEngine(JNIEnv* env,
+                                                      jclass clazz) {
   SLresult result;
 
   // create engine
@@ -286,7 +287,7 @@ JNIEXPORT void JNICALL Java_com_example_nativeaudio_NativeAudio_createEngine(
 }
 
 // create buffer queue audio player
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_createBufferQueueAudioPlayer(
     JNIEnv* env, jclass clazz, jint sampleRate, jint bufSize) {
   SLresult result;
@@ -395,14 +396,14 @@ Java_com_example_nativeaudio_NativeAudio_createBufferQueueAudioPlayer(
 }
 
 // create URI audio player
-JNIEXPORT jboolean JNICALL
+extern "C" JNIEXPORT jboolean JNICALL
 Java_com_example_nativeaudio_NativeAudio_createUriAudioPlayer(JNIEnv* env,
                                                               jclass clazz,
                                                               jstring uri) {
   SLresult result;
 
   // convert Java string to UTF-8
-  const char* utf8 = (*env)->GetStringUTFChars(env, uri, NULL);
+  const char* utf8 = env->GetStringUTFChars(uri, NULL);
   assert(NULL != utf8);
 
   // configure audio source
@@ -429,7 +430,7 @@ Java_com_example_nativeaudio_NativeAudio_createUriAudioPlayer(JNIEnv* env,
   (void)result;
 
   // release the Java string and UTF-8
-  (*env)->ReleaseStringUTFChars(env, uri, utf8);
+  env->ReleaseStringUTFChars(uri, utf8);
 
   // realize the player
   result = (*uriPlayerObject)->Realize(uriPlayerObject, SL_BOOLEAN_FALSE);
@@ -471,7 +472,7 @@ Java_com_example_nativeaudio_NativeAudio_createUriAudioPlayer(JNIEnv* env,
 
 // set the playing state for the URI audio player
 // to PLAYING (true) or PAUSED (false)
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setPlayingUriAudioPlayer(
     JNIEnv* env, jclass clazz, jboolean isPlaying) {
   SLresult result;
@@ -488,7 +489,7 @@ Java_com_example_nativeaudio_NativeAudio_setPlayingUriAudioPlayer(
 }
 
 // set the whole file looping state for the URI audio player
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setLoopingUriAudioPlayer(
     JNIEnv* env, jclass clazz, jboolean isLooping) {
   SLresult result;
@@ -515,7 +516,7 @@ static SLMuteSoloItf getMuteSolo() {
     return bqPlayerMuteSolo;
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setChannelMuteUriAudioPlayer(
     JNIEnv* env, jclass clazz, jint chan, jboolean mute) {
   SLresult result;
@@ -527,7 +528,7 @@ Java_com_example_nativeaudio_NativeAudio_setChannelMuteUriAudioPlayer(
   }
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setChannelSoloUriAudioPlayer(
     JNIEnv* env, jclass clazz, jint chan, jboolean solo) {
   SLresult result;
@@ -539,7 +540,7 @@ Java_com_example_nativeaudio_NativeAudio_setChannelSoloUriAudioPlayer(
   }
 }
 
-JNIEXPORT jint JNICALL
+extern "C" JNIEXPORT jint JNICALL
 Java_com_example_nativeaudio_NativeAudio_getNumChannelsUriAudioPlayer(
     JNIEnv* env, jclass clazz) {
   SLuint8 numChannels;
@@ -570,7 +571,7 @@ static SLVolumeItf getVolume() {
     return bqPlayerVolume;
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setVolumeUriAudioPlayer(
     JNIEnv* env, jclass clazz, jint millibel) {
   SLresult result;
@@ -582,7 +583,7 @@ Java_com_example_nativeaudio_NativeAudio_setVolumeUriAudioPlayer(
   }
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setMuteUriAudioPlayer(JNIEnv* env,
                                                                jclass clazz,
                                                                jboolean mute) {
@@ -595,7 +596,7 @@ Java_com_example_nativeaudio_NativeAudio_setMuteUriAudioPlayer(JNIEnv* env,
   }
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_enableStereoPositionUriAudioPlayer(
     JNIEnv* env, jclass clazz, jboolean enable) {
   SLresult result;
@@ -607,7 +608,7 @@ Java_com_example_nativeaudio_NativeAudio_enableStereoPositionUriAudioPlayer(
   }
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setStereoPositionUriAudioPlayer(
     JNIEnv* env, jclass clazz, jint permille) {
   SLresult result;
@@ -620,7 +621,7 @@ Java_com_example_nativeaudio_NativeAudio_setStereoPositionUriAudioPlayer(
 }
 
 // enable reverb on the buffer queue player
-JNIEXPORT jboolean JNICALL
+extern "C" JNIEXPORT jboolean JNICALL
 Java_com_example_nativeaudio_NativeAudio_enableReverb(JNIEnv* env, jclass clazz,
                                                       jboolean enabled) {
   SLresult result;
@@ -650,8 +651,9 @@ Java_com_example_nativeaudio_NativeAudio_enableReverb(JNIEnv* env, jclass clazz,
 }
 
 // select the desired clip and play count, and enqueue the first buffer if idle
-JNIEXPORT jboolean JNICALL Java_com_example_nativeaudio_NativeAudio_selectClip(
-    JNIEnv* env, jclass clazz, jint which, jint count) {
+extern "C" JNIEXPORT jboolean JNICALL
+Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv* env, jclass clazz,
+                                                    jint which, jint count) {
   if (pthread_mutex_trylock(&audioEngineLock)) {
     // If we could not acquire audio engine lock, reject this request and client
     // should re-try
@@ -722,13 +724,13 @@ JNIEXPORT jboolean JNICALL Java_com_example_nativeaudio_NativeAudio_selectClip(
 }
 
 // create asset audio player
-JNIEXPORT jboolean JNICALL
+extern "C" JNIEXPORT jboolean JNICALL
 Java_com_example_nativeaudio_NativeAudio_createAssetAudioPlayer(
     JNIEnv* env, jclass clazz, jobject assetManager, jstring filename) {
   SLresult result;
 
   // convert Java string to UTF-8
-  const char* utf8 = (*env)->GetStringUTFChars(env, filename, NULL);
+  const char* utf8 = env->GetStringUTFChars(filename, NULL);
   assert(NULL != utf8);
 
   // use asset manager to open asset by filename
@@ -737,7 +739,7 @@ Java_com_example_nativeaudio_NativeAudio_createAssetAudioPlayer(
   AAsset* asset = AAssetManager_open(mgr, utf8, AASSET_MODE_UNKNOWN);
 
   // release the Java string and UTF-8
-  (*env)->ReleaseStringUTFChars(env, filename, utf8);
+  env->ReleaseStringUTFChars(filename, utf8);
 
   // the asset might not be found
   if (NULL == asset) {
@@ -811,7 +813,7 @@ Java_com_example_nativeaudio_NativeAudio_createAssetAudioPlayer(
 }
 
 // set the playing state for the asset audio player
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_setPlayingAssetAudioPlayer(
     JNIEnv* env, jclass clazz, jboolean isPlaying) {
   SLresult result;
@@ -830,7 +832,7 @@ Java_com_example_nativeaudio_NativeAudio_setPlayingAssetAudioPlayer(
 // create audio recorder: recorder is not in fast path
 //    like to avoid excessive re-sampling while playing back from Hello &
 //    Android clip
-JNIEXPORT jboolean JNICALL
+extern "C" JNIEXPORT jboolean JNICALL
 Java_com_example_nativeaudio_NativeAudio_createAudioRecorder(JNIEnv* env,
                                                              jclass clazz) {
   SLresult result;
@@ -892,8 +894,9 @@ Java_com_example_nativeaudio_NativeAudio_createAudioRecorder(JNIEnv* env,
 }
 
 // set the recording state for the audio recorder
-JNIEXPORT void JNICALL Java_com_example_nativeaudio_NativeAudio_startRecording(
-    JNIEnv* env, jclass clazz) {
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_nativeaudio_NativeAudio_startRecording(JNIEnv* env,
+                                                        jclass clazz) {
   SLresult result;
 
   if (pthread_mutex_trylock(&audioEngineLock)) {
@@ -930,7 +933,7 @@ JNIEXPORT void JNICALL Java_com_example_nativeaudio_NativeAudio_startRecording(
 }
 
 // shut down the native audio system
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_nativeaudio_NativeAudio_shutdown(JNIEnv* env, jclass clazz) {
   // destroy buffer queue audio player object, and invalidate all associated
   // interfaces

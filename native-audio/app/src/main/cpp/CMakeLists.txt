@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.22.1)
-project(NativeAudio LANGUAGES C)
+project(NativeAudio LANGUAGES CXX)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
 add_library(native-audio-jni SHARED
-    native-audio-jni.c
+    native-audio-jni.cpp
 )
 
 # Include libraries needed for native-audio-jni lib
