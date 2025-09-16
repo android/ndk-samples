@@ -15,20 +15,18 @@
  *
  */
 
-#include <EGL/egl.h>
-#include <GLES/gl.h>
 #include <android/choreographer.h>
+#include <android/hardware_buffer.h>
 #include <android/log.h>
+#include <android/native_window.h>
 #include <android/set_abort_message.h>
 #include <android_native_app_glue.h>
-#include <jni.h>
 
-#include <cassert>
-#include <cerrno>
+#include <chrono>
 #include <cstdlib>
-#include <cstring>
-#include <initializer_list>
 #include <memory>
+
+using namespace std::literals::chrono_literals;
 
 #define LOG_TAG "native-activity"
 
@@ -64,27 +62,34 @@
     }                                                                   \
   } while (false)
 
-/**
- * Our saved state data.
- */
-struct SavedState {
-  float angle;
-  int32_t x;
-  int32_t y;
+// Note: little endian, the opposite of normal hex color codes. ABGR, rather
+// than RGBA.
+enum class Color : uint32_t {
+  kRed = 0x000000ff,
+  kGreen = 0x0000ff00,
+  kBlue = 0x00ff0000,
 };
 
 /**
  * Shared state for our app.
  */
-struct Engine {
-  android_app* app;
+class Engine {
+ public:
+  explicit Engine(android_app* app) : app_(app) {}
 
-  EGLDisplay display;
-  EGLSurface surface;
-  EGLContext context;
-  int32_t width;
-  int32_t height;
-  SavedState state;
+  void AttachWindow() {
+    if (ANativeWindow_setBuffersGeometry(
+            app_->window, 0, 0, AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM) < 0) {
+      LOGE("Unable to set window buffer geometry");
+      window_initialized = false;
+      return;
+    }
+    window_initialized = true;
+    color_ = Color::kRed;
+    last_update_ = std::chrono::steady_clock::now();
+  }
+
+  void DetachWindow() { window_initialized = false; }
 
   /// Resumes ticking the application.
   void Resume() {
@@ -102,7 +107,11 @@ struct Engine {
   void Pause() { running_ = false; }
 
  private:
-  bool running_;
+  android_app* app_;
+  bool window_initialized = false;
+  bool running_ = false;
+  Color color_ = Color::kRed;
+  std::chrono::time_point<std::chrono::steady_clock> last_update_;
 
   void ScheduleNextTick() {
     AChoreographer_postFrameCallback(AChoreographer_getInstance(), Tick, this);
@@ -138,147 +147,56 @@ struct Engine {
   }
 
   void Update() {
-    state.angle += .01f;
-    if (state.angle > 1) {
-      state.angle = 0;
+    auto now = std::chrono::steady_clock::now();
+    if (now - last_update_ > 1s) {
+      switch (color_) {
+        case Color::kRed:
+          color_ = Color::kGreen;
+          break;
+        case Color::kGreen:
+          color_ = Color::kBlue;
+          break;
+        case Color::kBlue:
+          color_ = Color::kRed;
+          break;
+        default:
+          fatal("unexpected color %08x", static_cast<uint32_t>(color_));
+      }
+      last_update_ = now;
     }
   }
 
-  void DrawFrame() {
-    if (display == nullptr) {
-      // No display.
+  void DrawFrame() const {
+    if (app_->window == nullptr) {
+      LOGE("Attempted to draw frame but there is no window attached");
       return;
     }
 
-    // Just fill the screen with a color.
-    glClearColor(((float)state.x) / width, state.angle,
-                 ((float)state.y) / height, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    ANativeWindow_Buffer buffer;
+    if (ANativeWindow_lock(app_->window, &buffer, nullptr) < 0) {
+      LOGE("Unable to lock window buffer");
+      return;
+    }
 
-    eglSwapBuffers(display, surface);
+    if (!window_initialized) {
+      // If for some reason we were not able to initialize the window geometry,
+      // then we can't assume the buffer format. We could detect the buffer's
+      // format and adjust our buffer fill here to accommodate that, but's a bit
+      // beyond the scope of this sample.
+      return;
+    }
+
+    for (auto y = 0; y < buffer.height; y++) {
+      for (auto x = 0; x < buffer.width; x++) {
+        size_t pixel_idx = y * buffer.stride + x;
+        reinterpret_cast<uint32_t*>(buffer.bits)[pixel_idx] =
+            static_cast<uint32_t>(color_);
+      }
+    }
+
+    ANativeWindow_unlockAndPost(app_->window);
   }
 };
-
-/**
- * Initialize an EGL context for the current display.
- */
-static int engine_init_display(Engine* engine) {
-  // initialize OpenGL ES and EGL
-
-  /*
-   * Here specify the attributes of the desired configuration.
-   * Below, we select an EGLConfig with at least 8 bits per color
-   * component compatible with on-screen windows
-   */
-  const EGLint attribs[] = {EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                            EGL_BLUE_SIZE,    8,
-                            EGL_GREEN_SIZE,   8,
-                            EGL_RED_SIZE,     8,
-                            EGL_NONE};
-  EGLint w, h, format;
-  EGLint numConfigs;
-  EGLConfig config = nullptr;
-  EGLSurface surface;
-  EGLContext context;
-
-  EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-  eglInitialize(display, nullptr, nullptr);
-
-  /* Here, the application chooses the configuration it desires.
-   * find the best match if possible, otherwise use the very first one
-   */
-  eglChooseConfig(display, attribs, nullptr, 0, &numConfigs);
-  std::unique_ptr<EGLConfig[]> supportedConfigs(new EGLConfig[numConfigs]);
-  assert(supportedConfigs);
-  eglChooseConfig(display, attribs, supportedConfigs.get(), numConfigs,
-                  &numConfigs);
-  assert(numConfigs);
-  auto i = 0;
-  for (; i < numConfigs; i++) {
-    auto& cfg = supportedConfigs[i];
-    EGLint r, g, b, d;
-    if (eglGetConfigAttrib(display, cfg, EGL_RED_SIZE, &r) &&
-        eglGetConfigAttrib(display, cfg, EGL_GREEN_SIZE, &g) &&
-        eglGetConfigAttrib(display, cfg, EGL_BLUE_SIZE, &b) &&
-        eglGetConfigAttrib(display, cfg, EGL_DEPTH_SIZE, &d) && r == 8 &&
-        g == 8 && b == 8 && d == 0) {
-      config = supportedConfigs[i];
-      break;
-    }
-  }
-  if (i == numConfigs) {
-    config = supportedConfigs[0];
-  }
-
-  if (config == nullptr) {
-    LOGW("Unable to initialize EGLConfig");
-    return -1;
-  }
-
-  /* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
-   * guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
-   * As soon as we picked a EGLConfig, we can safely reconfigure the
-   * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
-  eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
-  surface =
-      eglCreateWindowSurface(display, config, engine->app->window, nullptr);
-
-  /* A version of OpenGL has not been specified here.  This will default to
-   * OpenGL 1.0.  You will need to change this if you want to use the newer
-   * features of OpenGL like shaders. */
-  context = eglCreateContext(display, config, nullptr, nullptr);
-
-  if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
-    LOGW("Unable to eglMakeCurrent");
-    return -1;
-  }
-
-  eglQuerySurface(display, surface, EGL_WIDTH, &w);
-  eglQuerySurface(display, surface, EGL_HEIGHT, &h);
-
-  engine->display = display;
-  engine->context = context;
-  engine->surface = surface;
-  engine->width = w;
-  engine->height = h;
-  engine->state.angle = 0;
-
-  // Check openGL on the system
-  auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
-  for (auto name : opengl_info) {
-    auto info = glGetString(name);
-    LOGI("OpenGL Info: %s", info);
-  }
-  // Initialize GL state.
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  glEnable(GL_CULL_FACE);
-  glShadeModel(GL_SMOOTH);
-  glDisable(GL_DEPTH_TEST);
-
-  return 0;
-}
-
-/**
- * Tear down the EGL context currently associated with the display.
- */
-static void engine_term_display(Engine* engine) {
-  if (engine->display != EGL_NO_DISPLAY) {
-    eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE,
-                   EGL_NO_CONTEXT);
-    if (engine->context != EGL_NO_CONTEXT) {
-      eglDestroyContext(engine->display, engine->context);
-    }
-    if (engine->surface != EGL_NO_SURFACE) {
-      eglDestroySurface(engine->display, engine->surface);
-    }
-    eglTerminate(engine->display);
-  }
-  engine->Pause();
-  engine->display = EGL_NO_DISPLAY;
-  engine->context = EGL_NO_CONTEXT;
-  engine->surface = EGL_NO_SURFACE;
-}
 
 /**
  * Process the next main command.
@@ -286,21 +204,11 @@ static void engine_term_display(Engine* engine) {
 static void engine_handle_cmd(android_app* app, int32_t cmd) {
   auto* engine = (Engine*)app->userData;
   switch (cmd) {
-    case APP_CMD_SAVE_STATE:
-      // The system has asked us to save our current state.  Do so.
-      engine->app->savedState = malloc(sizeof(SavedState));
-      *((SavedState*)engine->app->savedState) = engine->state;
-      engine->app->savedStateSize = sizeof(SavedState);
-      break;
     case APP_CMD_INIT_WINDOW:
-      // The window is being shown, get it ready.
-      if (engine->app->window != nullptr) {
-        engine_init_display(engine);
-      }
+      engine->AttachWindow();
       break;
     case APP_CMD_TERM_WINDOW:
-      // The window is being hidden or closed, clean it up.
-      engine_term_display(engine);
+      engine->DetachWindow();
       break;
     case APP_CMD_GAINED_FOCUS:
       engine->Resume();
@@ -319,17 +227,10 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
  * event loop for receiving input events and doing other things.
  */
 void android_main(android_app* state) {
-  Engine engine{};
+  Engine engine{state};
 
-  memset(&engine, 0, sizeof(engine));
   state->userData = &engine;
   state->onAppCmd = engine_handle_cmd;
-  engine.app = state;
-
-  if (state->savedState != nullptr) {
-    // We are starting with a previous saved state; restore from it.
-    engine.state = *(SavedState*)state->savedState;
-  }
 
   while (!state->destroyRequested) {
     // Our input, sensor, and update/render logic is all driven by callbacks, so
@@ -345,6 +246,4 @@ void android_main(android_app* state) {
       source->process(state, source);
     }
   }
-
-  engine_term_display(&engine);
 }
