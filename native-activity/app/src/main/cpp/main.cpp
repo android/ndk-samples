@@ -15,7 +15,6 @@
  *
  */
 
-// BEGIN_INCLUDE(all)
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 #include <android/choreographer.h>
@@ -349,4 +348,3 @@ void android_main(android_app* state) {
 
   engine_term_display(&engine);
 }
-// END_INCLUDE(all)
