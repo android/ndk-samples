@@ -20,7 +20,6 @@
 #include <GLES/gl.h>
 #include <android/choreographer.h>
 #include <android/log.h>
-#include <android/sensor.h>
 #include <android/set_abort_message.h>
 #include <android_native_app_glue.h>
 #include <jni.h>
@@ -81,30 +80,12 @@ struct SavedState {
 struct Engine {
   android_app* app;
 
-  ASensorManager* sensorManager;
-  const ASensor* accelerometerSensor;
-  ASensorEventQueue* sensorEventQueue;
-
   EGLDisplay display;
   EGLSurface surface;
   EGLContext context;
   int32_t width;
   int32_t height;
   SavedState state;
-
-  void CreateSensorListener(ALooper_callbackFunc callback) {
-    CHECK_NOT_NULL(app);
-
-    sensorManager = ASensorManager_getInstance();
-    if (sensorManager == nullptr) {
-      return;
-    }
-
-    accelerometerSensor = ASensorManager_getDefaultSensor(
-        sensorManager, ASENSOR_TYPE_ACCELEROMETER);
-    sensorEventQueue = ASensorManager_createEventQueue(
-        sensorManager, app->looper, ALOOPER_POLL_CALLBACK, callback, this);
-  }
 
   /// Resumes ticking the application.
   void Resume() {
@@ -149,9 +130,6 @@ struct Engine {
     if (!running_) {
       return;
     }
-
-    // Input and sensor feedback is handled via their own callbacks.
-    // Choreographer ensures that those callbacks run before this callback does.
 
     // Choreographer does not continuously schedule the callback. We have to re-
     // register the callback each time we're ticked.
@@ -304,19 +282,6 @@ static void engine_term_display(Engine* engine) {
 }
 
 /**
- * Process the next input event.
- */
-static int32_t engine_handle_input(android_app* app, AInputEvent* event) {
-  auto* engine = (Engine*)app->userData;
-  if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-    engine->state.x = AMotionEvent_getX(event, 0);
-    engine->state.y = AMotionEvent_getY(event, 0);
-    return 1;
-  }
-  return 0;
-}
-
-/**
  * Process the next main command.
  */
 static void engine_handle_cmd(android_app* app, int32_t cmd) {
@@ -339,47 +304,14 @@ static void engine_handle_cmd(android_app* app, int32_t cmd) {
       engine_term_display(engine);
       break;
     case APP_CMD_GAINED_FOCUS:
-      // When our app gains focus, we start monitoring the accelerometer.
-      if (engine->accelerometerSensor != nullptr) {
-        ASensorEventQueue_enableSensor(engine->sensorEventQueue,
-                                       engine->accelerometerSensor);
-        // We'd like to get 60 events per second (in us).
-        ASensorEventQueue_setEventRate(engine->sensorEventQueue,
-                                       engine->accelerometerSensor,
-                                       (1000L / 60) * 1000);
-      }
       engine->Resume();
       break;
     case APP_CMD_LOST_FOCUS:
-      // When our app loses focus, we stop monitoring the accelerometer.
-      // This is to avoid consuming battery while not being used.
-      if (engine->accelerometerSensor != nullptr) {
-        ASensorEventQueue_disableSensor(engine->sensorEventQueue,
-                                        engine->accelerometerSensor);
-      }
       engine->Pause();
       break;
     default:
       break;
   }
-}
-
-int OnSensorEvent(int /* fd */, int /* events */, void* data) {
-  CHECK_NOT_NULL(data);
-  Engine* engine = reinterpret_cast<Engine*>(data);
-
-  CHECK_NOT_NULL(engine->accelerometerSensor);
-  ASensorEvent event;
-  while (ASensorEventQueue_getEvents(engine->sensorEventQueue, &event, 1) > 0) {
-    LOGI("accelerometer: x=%f y=%f z=%f", event.acceleration.x,
-         event.acceleration.y, event.acceleration.z);
-  }
-
-  // From the docs:
-  //
-  // Implementations should return 1 to continue receiving callbacks, or 0 to
-  // have this file descriptor and callback unregistered from the looper.
-  return 1;
 }
 
 /**
@@ -393,11 +325,7 @@ void android_main(android_app* state) {
   memset(&engine, 0, sizeof(engine));
   state->userData = &engine;
   state->onAppCmd = engine_handle_cmd;
-  state->onInputEvent = engine_handle_input;
   engine.app = state;
-
-  // Prepare to monitor accelerometer
-  engine.CreateSensorListener(OnSensorEvent);
 
   if (state->savedState != nullptr) {
     // We are starting with a previous saved state; restore from it.
