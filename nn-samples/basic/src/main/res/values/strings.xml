@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">NN API Demo: basic</string>
-    <string name="compute">Compute</string>
-    <string name="result">Result: </string>
-    <string name="label0">Augend0: </string>
-    <string name="label2">Augend2: </string>
-    <string name="none">None</string>
-</resources>
