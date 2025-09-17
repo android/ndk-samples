@@ -2,10 +2,11 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 include(AndroidNdkModules)
+include(AppLibrary)
 android_ndk_import_module_native_app_glue()
 
-add_library(NdkHelper
-  STATIC
+add_app_library(NdkHelper
+    STATIC
     gestureDetector.cpp
     gl3stub.cpp
     GLContext.cpp
@@ -24,11 +25,11 @@ add_library(NdkHelper
 # the teapots samples are getting their native_app_glue. They should depend on
 # it explicitly.
 set_target_properties(NdkHelper
-  PROPERTIES
+    PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES $<TARGET_PROPERTY:NdkHelper,INCLUDE_DIRECTORIES>
 )
 target_include_directories(NdkHelper
-  PUBLIC
+    PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -37,7 +38,7 @@ target_include_directories(NdkHelper
 # dependenices of the various teapot samples. Those samples should link their
 # dependencies explicitly.
 target_link_libraries(NdkHelper
-  PUBLIC
+    PUBLIC
     native_app_glue
     GLESv2
     EGL

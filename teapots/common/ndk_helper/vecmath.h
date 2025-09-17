@@ -59,11 +59,6 @@ class Vec2 {
     y_ = fY;
   }
 
-  Vec2(const Vec2& vec) {
-    x_ = vec.x_;
-    y_ = vec.y_;
-  }
-
   Vec2(const float* pVec) {
     x_ = (*pVec++);
     y_ = (*pVec++);
@@ -221,12 +216,6 @@ class Vec3 {
     x_ = fX;
     y_ = fY;
     z_ = fZ;
-  }
-
-  Vec3(const Vec3& vec) {
-    x_ = vec.x_;
-    y_ = vec.y_;
-    z_ = vec.z_;
   }
 
   Vec3(const float* pVec) {
@@ -633,6 +622,7 @@ class Mat4 {
   friend class Quaternion;
 
   Mat4();
+  Mat4(const Mat4&);
   Mat4(const float*);
 
   Mat4 operator*(const Mat4& rhs) const;

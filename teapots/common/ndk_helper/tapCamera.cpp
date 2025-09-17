@@ -170,7 +170,7 @@ Mat4& TapCamera::GetRotationMatrix() { return mat_rotation_; }
 
 Mat4& TapCamera::GetTransformMatrix() { return mat_transform_; }
 
-void TapCamera::Reset(const bool bAnimate) {
+void TapCamera::Reset(const bool) {
   InitParameters();
   Update();
 }

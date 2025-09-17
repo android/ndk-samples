@@ -52,6 +52,8 @@ Mat4::Mat4() {
   f_[0] = f_[5] = f_[10] = f_[15] = 1.0f;
 }
 
+Mat4::Mat4(const Mat4& other) { *this = other; }
+
 Mat4::Mat4(const float* mIn) {
   for (int32_t i = 0; i < 16; ++i) f_[i] = mIn[i];
 }

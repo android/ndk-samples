@@ -281,7 +281,7 @@ uint32_t JNIHelper::LoadTexture(const char* file_name, int32_t* outWidth,
 
 uint32_t JNIHelper::LoadCubemapTexture(const char* file_name,
                                        const int32_t face,
-                                       const int32_t miplevel, const bool sRGB,
+                                       const int32_t miplevel, const bool,
                                        int32_t* outWidth, int32_t* outHeight,
                                        bool* hasAlpha) {
   if (activity_ == NULL) {
@@ -757,7 +757,7 @@ void JNIHelper::RunOnUiThread(std::function<void()> callback) {
 // This JNI function is invoked from UIThread asynchronously
 extern "C" {
 JNIEXPORT void Java_com_sample_helper_NDKHelper_RunOnUiThreadHandler(
-    JNIEnv* env, jobject thiz, int64_t pointer) {
+    JNIEnv*, jobject, int64_t pointer) {
   std::function<void()>* pCallback = (std::function<void()>*)pointer;
   (*pCallback)();
 
