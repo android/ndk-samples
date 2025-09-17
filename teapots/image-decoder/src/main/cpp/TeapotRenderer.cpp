@@ -127,7 +127,7 @@ void TeapotRenderer::Unload() {
   }
 }
 
-void TeapotRenderer::Update(float fTime) {
+void TeapotRenderer::Update(float) {
   const float CAM_X = 0.f;
   const float CAM_Y = 0.f;
   const float CAM_Z = 700.f;
@@ -155,12 +155,11 @@ void TeapotRenderer::Render() {
 
   int32_t iStride = sizeof(TEAPOT_VERTEX);
   // Pass the vertex data
-  glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, iStride,
-                        BUFFER_OFFSET(0));
+  glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, iStride, nullptr);
   glEnableVertexAttribArray(ATTRIB_VERTEX);
 
   glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, iStride,
-                        BUFFER_OFFSET(3 * sizeof(GLfloat)));
+                        reinterpret_cast<void*>(3 * sizeof(GLfloat)));
   glEnableVertexAttribArray(ATTRIB_NORMAL);
 
   // Bind the IB
@@ -192,8 +191,7 @@ void TeapotRenderer::Render() {
   glUniformMatrix4fv(shader_param_.matrix_view_, 1, GL_FALSE, mat_view_.Ptr());
   glUniform3f(shader_param_.light0_, 100.f, -200.f, -600.f);
 
-  glDrawElements(GL_TRIANGLES, num_indices_, GL_UNSIGNED_SHORT,
-                 BUFFER_OFFSET(0));
+  glDrawElements(GL_TRIANGLES, num_indices_, GL_UNSIGNED_SHORT, nullptr);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

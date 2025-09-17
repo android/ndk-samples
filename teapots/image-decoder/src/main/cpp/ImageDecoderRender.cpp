@@ -101,7 +101,7 @@ void ImageDecoderRender::Init(AAssetManager* assetMgr) {
                  coords.data(), GL_STATIC_DRAW);
 #endif
     glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
-                          kCoordElementCount * sizeof(float), BUFFER_OFFSET(0));
+                          kCoordElementCount * sizeof(float), nullptr);
     glEnableVertexAttribArray(ATTRIB_UV);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);

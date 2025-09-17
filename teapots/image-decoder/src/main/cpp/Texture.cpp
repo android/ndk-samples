@@ -76,7 +76,8 @@ static bool Load2DTextureFromAsset(std::string& assetFile, AAssetManager* mgr,
   // by design, ImageDecoder decode the image into packed format, no padding.
   // Let's make sure there is no padding; otherwise it would be bug, and app
   // need to pack.
-  ASSERT(stride == imgWidth * 4, "ImageDecoder padded  decoded image");
+  ASSERT(stride == static_cast<uint32_t>(imgWidth) * 4,
+         "ImageDecoder padded  decoded image");
 
   imgBits.clear();
   imgBits.resize(imgHeight * stride);
