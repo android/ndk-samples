@@ -17,18 +17,17 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(ChoreographerNativeActivity LANGUAGES C CXX)
 
-# set up common compile options
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Werror -fno-exceptions -fno-rtti")
+include(AppLibrary)
 
 # build the ndk-helper library
 get_filename_component(commonDir ${CMAKE_CURRENT_SOURCE_DIR}/../../../../common ABSOLUTE)
 get_filename_component(ndkHelperSrc ${commonDir}/ndk_helper ABSOLUTE)
 add_subdirectory(${ndkHelperSrc}
-        ${commonDir}/ndkHelperBin/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
+    ${commonDir}/ndkHelperBin/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
 
 # now build app's shared lib
-add_library(${PROJECT_NAME}
-  SHARED
+add_app_library(${PROJECT_NAME}
+    SHARED
     ChoreographerNativeActivity.cpp
     TeapotRenderer.cpp
 )
@@ -36,11 +35,11 @@ add_library(${PROJECT_NAME}
 # Export ANativeActivity_onCreate(),
 # Refer to: https://github.com/android-ndk/ndk/issues/381.
 set_target_properties(${PROJECT_NAME}
-  PROPERTIES  LINK_FLAGS "-u ANativeActivity_onCreate")
+    PROPERTIES LINK_FLAGS "-u ANativeActivity_onCreate")
 
 # add lib dependencies
 target_link_libraries(${PROJECT_NAME}
-  PRIVATE
+    PRIVATE
     NdkHelper
 )
 

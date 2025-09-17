@@ -305,7 +305,7 @@ void Engine::SynchInCallback(jlong frameTimeInNanos) {
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_sample_choreographer_ChoreographerNativeActivity_choregrapherCallback(
-    JNIEnv* env, jobject instance, jlong frameTimeInNanos) {
+    JNIEnv*, jobject, jlong frameTimeInNanos) {
   g_engine.SynchInCallback(frameTimeInNanos);
 }
 
