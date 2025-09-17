@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(sanitizers LANGUAGES CXX)
 
-add_library(sanitizers SHARED native-lib.cpp)
+include(AppLibrary)
+
+add_app_library(sanitizers SHARED native-lib.cpp)
 target_link_libraries(sanitizers PRIVATE log)
 
 if(SANITIZE)

@@ -12,7 +12,7 @@ Java_com_example_sanitizers_MainActivity_stringFromJNI(JNIEnv* env,
   *foo = 4;
 
   // Signed integer overflow. Undefined behavior caught by ubsan.
-  int k = 0x7fffffff;
+  [[maybe_unused]] int k = 0x7fffffff;
   k += 1;
 
   std::string hello = "Hello from C++";
