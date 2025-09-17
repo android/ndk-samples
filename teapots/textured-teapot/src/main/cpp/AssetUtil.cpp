@@ -17,6 +17,7 @@
 #include "AssetUtil.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include "android_debug.h"
 
@@ -64,11 +65,21 @@ bool AssetReadFile(AAssetManager* assetManager, std::string& assetName,
       AAssetManager_open(assetManager, assetName.c_str(), AASSET_MODE_BUFFER);
   ASSERT(assetDescriptor, "%s does not exist in %s", assetName.c_str(),
          __FUNCTION__);
-  size_t fileLength = AAsset_getLength(assetDescriptor);
+  size_t remaining = AAsset_getLength(assetDescriptor);
 
-  buf.resize(fileLength);
-  int64_t readSize = AAsset_read(assetDescriptor, buf.data(), buf.size());
+  buf.resize(remaining);
+  size_t idx = 0;
+
+  while (remaining > 0) {
+    int readSize = AAsset_read(assetDescriptor, &buf[idx], remaining);
+    if (readSize < 0) {
+      LOGE("AAsset_read of %s failed", assetName.c_str());
+      return false;
+    }
+    idx += readSize;
+    remaining -= readSize;
+  }
 
   AAsset_close(assetDescriptor);
-  return (readSize == buf.size());
+  return true;
 }
