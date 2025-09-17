@@ -244,7 +244,7 @@ class sensorgraph {
 
   void resume() {
     ASensorEventQueue_enableSensor(accelerometerEventQueue, accelerometer);
-    auto status = ASensorEventQueue_setEventRate(
+    [[maybe_unused]] auto status = ASensorEventQueue_setEventRate(
         accelerometerEventQueue, accelerometer, SENSOR_REFRESH_PERIOD_US);
     assert(status >= 0);
   }
