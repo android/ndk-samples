@@ -1,4 +1,5 @@
 #include <android/log.h>
+#include <base/macros.h>
 #include <errno.h>
 #include <jni.h>
 #include <linux/limits.h>
@@ -46,9 +47,26 @@ void DumpProfileDataIfNeeded(const char* temp_dir) {
 #endif
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_orderfiledemo_MainActivity_runWorkload(JNIEnv* env,
-                                                        jobject /* this */,
-                                                        jstring temp_dir) {
+void RunWorkload(JNIEnv* env, jobject /* this */, jstring temp_dir) {
   DumpProfileDataIfNeeded(env->GetStringUTFChars(temp_dir, 0));
+}
+
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* _Nonnull vm,
+                                             void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/example/orderfiledemo/MainActivity");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"runWorkload", "(Ljava/lang/String;)V",
+       reinterpret_cast<void*>(RunWorkload)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }

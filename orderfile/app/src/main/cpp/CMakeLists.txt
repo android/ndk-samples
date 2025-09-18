@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(OrderfileDemo CXX)
 
 include(AppLibrary)
+find_package(base CONFIG REQUIRED)
 
 # We have setup build variables that you can just comment or uncomment to use.
 # Make sure to have only one build variable uncommented at a time.
@@ -13,7 +14,7 @@ set(GENERATE_PROFILES ON)
 #set(USE_PROFILE "${CMAKE_SOURCE_DIR}/demo.orderfile")
 
 add_app_library(orderfiledemo SHARED orderfile.cpp)
-target_link_libraries(orderfiledemo log)
+target_link_libraries(orderfiledemo PRIVATE base::base log)
 
 if(GENERATE_PROFILES)
     # Generating profiles requires any optimization flag aside from -O0.
