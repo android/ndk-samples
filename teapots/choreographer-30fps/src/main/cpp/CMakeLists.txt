@@ -18,6 +18,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(ChoreographerNativeActivity LANGUAGES C CXX)
 
 include(AppLibrary)
+find_package(base CONFIG REQUIRED)
 
 # build the ndk-helper library
 get_filename_component(commonDir ${CMAKE_CURRENT_SOURCE_DIR}/../../../../common ABSOLUTE)
@@ -40,6 +41,6 @@ set_target_properties(${PROJECT_NAME}
 # add lib dependencies
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
+    base::base
     NdkHelper
 )
-

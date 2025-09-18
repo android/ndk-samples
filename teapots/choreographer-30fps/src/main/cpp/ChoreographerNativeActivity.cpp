@@ -20,6 +20,7 @@
 #include <EGL/egl.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
+#include <base/macros.h>
 #include <dlfcn.h>
 
 #include <condition_variable>
@@ -303,9 +304,7 @@ void Engine::SynchInCallback(jlong frameTimeInNanos) {
   }
 };
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_choreographer_ChoreographerNativeActivity_choregrapherCallback(
-    JNIEnv*, jobject, jlong frameTimeInNanos) {
+void ChoregrapherCallback(JNIEnv*, jobject, jlong frameTimeInNanos) {
   g_engine.SynchInCallback(frameTimeInNanos);
 }
 
@@ -611,4 +610,25 @@ void android_main(android_app* state) {
   }
 
   g_engine.TermDisplay();
+}
+
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* _Nonnull vm,
+                                             void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c =
+      env->FindClass("com/sample/choreographer/ChoreographerNativeActivity");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"choregrapherCallback", "(J)V",
+       reinterpret_cast<void*>(ChoregrapherCallback)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }
