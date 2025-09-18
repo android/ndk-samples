@@ -19,9 +19,11 @@ android {
 
     buildFeatures {
         buildConfig = true
+        prefab = true
     }
 }
 
 dependencies {
+    implementation project(":base")
     implementation libs.appcompat
 }

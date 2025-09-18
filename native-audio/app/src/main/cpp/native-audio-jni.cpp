@@ -22,6 +22,7 @@
  */
 
 #include <assert.h>
+#include <base/macros.h>
 #include <jni.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -234,8 +235,7 @@ void bqRecorderCallback([[maybe_unused]] SLAndroidSimpleBufferQueueItf bq,
 }
 
 // create the engine and output mix objects
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_createEngine(JNIEnv*, jclass) {
+void CreateEngine(JNIEnv*, jclass) {
   SLresult result;
 
   // create engine
@@ -286,9 +286,8 @@ Java_com_example_nativeaudio_NativeAudio_createEngine(JNIEnv*, jclass) {
 }
 
 // create buffer queue audio player
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_createBufferQueueAudioPlayer(
-    JNIEnv*, jclass, jint sampleRate, jint bufSize) {
+void CreateBufferQueueAudioPlayer(JNIEnv*, jclass, jint sampleRate,
+                                  jint bufSize) {
   SLresult result;
   if (sampleRate >= 0 && bufSize >= 0) {
     bqPlayerSampleRate = sampleRate * 1000;
@@ -395,10 +394,7 @@ Java_com_example_nativeaudio_NativeAudio_createBufferQueueAudioPlayer(
 }
 
 // create URI audio player
-extern "C" JNIEXPORT jboolean JNICALL
-Java_com_example_nativeaudio_NativeAudio_createUriAudioPlayer(JNIEnv* env,
-                                                              jclass,
-                                                              jstring uri) {
+jboolean CreateUriAudioPlayer(JNIEnv* env, jclass, jstring uri) {
   SLresult result;
 
   // convert Java string to UTF-8
@@ -471,9 +467,7 @@ Java_com_example_nativeaudio_NativeAudio_createUriAudioPlayer(JNIEnv* env,
 
 // set the playing state for the URI audio player
 // to PLAYING (true) or PAUSED (false)
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setPlayingUriAudioPlayer(
-    JNIEnv*, jclass, jboolean isPlaying) {
+void SetPlayingUriAudioPlayer(JNIEnv*, jclass, jboolean isPlaying) {
   SLresult result;
 
   // make sure the URI audio player was created
@@ -488,9 +482,7 @@ Java_com_example_nativeaudio_NativeAudio_setPlayingUriAudioPlayer(
 }
 
 // set the whole file looping state for the URI audio player
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setLoopingUriAudioPlayer(
-    JNIEnv*, jclass, jboolean isLooping) {
+void SetLoopingUriAudioPlayer(JNIEnv*, jclass, jboolean isLooping) {
   SLresult result;
 
   // make sure the URI audio player was created
@@ -515,9 +507,7 @@ static SLMuteSoloItf getMuteSolo() {
     return bqPlayerMuteSolo;
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setChannelMuteUriAudioPlayer(
-    JNIEnv*, jclass, jint chan, jboolean mute) {
+void SetChannelMuteUriAudioPlayer(JNIEnv*, jclass, jint chan, jboolean mute) {
   SLresult result;
   SLMuteSoloItf muteSoloItf = getMuteSolo();
   if (NULL != muteSoloItf) {
@@ -527,9 +517,7 @@ Java_com_example_nativeaudio_NativeAudio_setChannelMuteUriAudioPlayer(
   }
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setChannelSoloUriAudioPlayer(
-    JNIEnv*, jclass, jint chan, jboolean solo) {
+void SetChannelSoloUriAudioPlayer(JNIEnv*, jclass, jint chan, jboolean solo) {
   SLresult result;
   SLMuteSoloItf muteSoloItf = getMuteSolo();
   if (NULL != muteSoloItf) {
@@ -539,9 +527,7 @@ Java_com_example_nativeaudio_NativeAudio_setChannelSoloUriAudioPlayer(
   }
 }
 
-extern "C" JNIEXPORT jint JNICALL
-Java_com_example_nativeaudio_NativeAudio_getNumChannelsUriAudioPlayer(JNIEnv*,
-                                                                      jclass) {
+jint GetNumChannelsUriAudioPlayer(JNIEnv*, jclass) {
   SLuint8 numChannels;
   SLresult result;
   SLMuteSoloItf muteSoloItf = getMuteSolo();
@@ -570,9 +556,7 @@ static SLVolumeItf getVolume() {
     return bqPlayerVolume;
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setVolumeUriAudioPlayer(
-    JNIEnv*, jclass, jint millibel) {
+void SetVolumeUriAudioPlayer(JNIEnv*, jclass, jint millibel) {
   SLresult result;
   SLVolumeItf volumeItf = getVolume();
   if (NULL != volumeItf) {
@@ -582,9 +566,7 @@ Java_com_example_nativeaudio_NativeAudio_setVolumeUriAudioPlayer(
   }
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setMuteUriAudioPlayer(JNIEnv*, jclass,
-                                                               jboolean mute) {
+void SetMuteUriAudioPlayer(JNIEnv*, jclass, jboolean mute) {
   SLresult result;
   SLVolumeItf volumeItf = getVolume();
   if (NULL != volumeItf) {
@@ -594,9 +576,7 @@ Java_com_example_nativeaudio_NativeAudio_setMuteUriAudioPlayer(JNIEnv*, jclass,
   }
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_enableStereoPositionUriAudioPlayer(
-    JNIEnv*, jclass, jboolean enable) {
+void EnableStereoPositionUriAudioPlayer(JNIEnv*, jclass, jboolean enable) {
   SLresult result;
   SLVolumeItf volumeItf = getVolume();
   if (NULL != volumeItf) {
@@ -606,9 +586,7 @@ Java_com_example_nativeaudio_NativeAudio_enableStereoPositionUriAudioPlayer(
   }
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setStereoPositionUriAudioPlayer(
-    JNIEnv*, jclass, jint permille) {
+void SetStereoPositionUriAudioPlayer(JNIEnv*, jclass, jint permille) {
   SLresult result;
   SLVolumeItf volumeItf = getVolume();
   if (NULL != volumeItf) {
@@ -619,9 +597,7 @@ Java_com_example_nativeaudio_NativeAudio_setStereoPositionUriAudioPlayer(
 }
 
 // enable reverb on the buffer queue player
-extern "C" JNIEXPORT jboolean JNICALL
-Java_com_example_nativeaudio_NativeAudio_enableReverb(JNIEnv*, jclass,
-                                                      jboolean enabled) {
+jboolean EnableReverb(JNIEnv*, jclass, jboolean enabled) {
   SLresult result;
 
   // we might not have been able to add environmental reverb to the output mix
@@ -649,9 +625,7 @@ Java_com_example_nativeaudio_NativeAudio_enableReverb(JNIEnv*, jclass,
 }
 
 // select the desired clip and play count, and enqueue the first buffer if idle
-extern "C" JNIEXPORT jboolean JNICALL
-Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv*, jclass, jint which,
-                                                    jint count) {
+jboolean SelectClip(JNIEnv*, jclass, jint which, jint count) {
   if (pthread_mutex_trylock(&audioEngineLock)) {
     // If we could not acquire audio engine lock, reject this request and client
     // should re-try
@@ -722,9 +696,8 @@ Java_com_example_nativeaudio_NativeAudio_selectClip(JNIEnv*, jclass, jint which,
 }
 
 // create asset audio player
-extern "C" JNIEXPORT jboolean JNICALL
-Java_com_example_nativeaudio_NativeAudio_createAssetAudioPlayer(
-    JNIEnv* env, jclass, jobject assetManager, jstring filename) {
+jboolean CreateAssetAudioPlayer(JNIEnv* env, jclass, jobject assetManager,
+                                jstring filename) {
   SLresult result;
 
   // convert Java string to UTF-8
@@ -811,9 +784,7 @@ Java_com_example_nativeaudio_NativeAudio_createAssetAudioPlayer(
 }
 
 // set the playing state for the asset audio player
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_setPlayingAssetAudioPlayer(
-    JNIEnv*, jclass, jboolean isPlaying) {
+void SetPlayingAssetAudioPlayer(JNIEnv*, jclass, jboolean isPlaying) {
   SLresult result;
 
   // make sure the asset audio player was created
@@ -830,8 +801,7 @@ Java_com_example_nativeaudio_NativeAudio_setPlayingAssetAudioPlayer(
 // create audio recorder: recorder is not in fast path
 //    like to avoid excessive re-sampling while playing back from Hello &
 //    Android clip
-extern "C" JNIEXPORT jboolean JNICALL
-Java_com_example_nativeaudio_NativeAudio_createAudioRecorder(JNIEnv*, jclass) {
+jboolean CreateAudioRecorder(JNIEnv*, jclass) {
   SLresult result;
 
   // configure audio source
@@ -891,8 +861,7 @@ Java_com_example_nativeaudio_NativeAudio_createAudioRecorder(JNIEnv*, jclass) {
 }
 
 // set the recording state for the audio recorder
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_startRecording(JNIEnv*, jclass) {
+void StartRecording(JNIEnv*, jclass) {
   SLresult result;
 
   if (pthread_mutex_trylock(&audioEngineLock)) {
@@ -929,8 +898,7 @@ Java_com_example_nativeaudio_NativeAudio_startRecording(JNIEnv*, jclass) {
 }
 
 // shut down the native audio system
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_nativeaudio_NativeAudio_shutdown(JNIEnv*, jclass) {
+void Shutdown(JNIEnv*, jclass) {
   // destroy buffer queue audio player object, and invalidate all associated
   // interfaces
   if (bqPlayerObject != NULL) {
@@ -987,4 +955,56 @@ Java_com_example_nativeaudio_NativeAudio_shutdown(JNIEnv*, jclass) {
   }
 
   pthread_mutex_destroy(&audioEngineLock);
+}
+
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* _Nonnull vm,
+                                             void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/example/nativeaudio/NativeAudio");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"createEngine", "()V", reinterpret_cast<void*>(CreateEngine)},
+      {"createBufferQueueAudioPlayer", "(II)V",
+       reinterpret_cast<void*>(CreateBufferQueueAudioPlayer)},
+      {"createUriAudioPlayer", "(Ljava/lang/String;)Z",
+       reinterpret_cast<void*>(CreateUriAudioPlayer)},
+      {"setPlayingUriAudioPlayer", "(Z)V",
+       reinterpret_cast<void*>(SetPlayingUriAudioPlayer)},
+      {"setLoopingUriAudioPlayer", "(Z)V",
+       reinterpret_cast<void*>(SetLoopingUriAudioPlayer)},
+      {"setChannelMuteUriAudioPlayer", "(IZ)V",
+       reinterpret_cast<void*>(SetChannelMuteUriAudioPlayer)},
+      {"setChannelSoloUriAudioPlayer", "(IZ)V",
+       reinterpret_cast<void*>(SetChannelSoloUriAudioPlayer)},
+      {"getNumChannelsUriAudioPlayer", "()I",
+       reinterpret_cast<void*>(GetNumChannelsUriAudioPlayer)},
+      {"setVolumeUriAudioPlayer", "(I)V",
+       reinterpret_cast<void*>(SetVolumeUriAudioPlayer)},
+      {"setMuteUriAudioPlayer", "(Z)V",
+       reinterpret_cast<void*>(SetMuteUriAudioPlayer)},
+      {"enableStereoPositionUriAudioPlayer", "(Z)V",
+       reinterpret_cast<void*>(EnableStereoPositionUriAudioPlayer)},
+      {"setStereoPositionUriAudioPlayer", "(I)V",
+       reinterpret_cast<void*>(SetStereoPositionUriAudioPlayer)},
+      {"enableReverb", "(Z)Z", reinterpret_cast<void*>(EnableReverb)},
+      {"selectClip", "(II)Z", reinterpret_cast<void*>(SelectClip)},
+      {"createAssetAudioPlayer",
+       "(Landroid/content/res/AssetManager;Ljava/lang/String;)Z",
+       reinterpret_cast<void*>(CreateAssetAudioPlayer)},
+      {"setPlayingAssetAudioPlayer", "(Z)V",
+       reinterpret_cast<void*>(SetPlayingAssetAudioPlayer)},
+      {"createAudioRecorder", "()Z",
+       reinterpret_cast<void*>(CreateAudioRecorder)},
+      {"startRecording", "()V", reinterpret_cast<void*>(StartRecording)},
+      {"shutdown", "()V", reinterpret_cast<void*>(Shutdown)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }
