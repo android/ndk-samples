@@ -19,6 +19,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <android/log.h>
+#include <base/macros.h>
 #include <jni.h>
 #include <math.h>
 #include <stdio.h>
@@ -163,15 +164,27 @@ void renderFrame() {
   checkGlError("glDrawArrays");
 }
 
-extern "C" {
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv*, jobject,
-                                                              jint width,
-                                                              jint height) {
+void Init(JNIEnv*, jclass, jint width, jint height) {
   setupGraphics(width, height);
 }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv*,
-                                                              jobject) {
-  renderFrame();
-}
+void Step(JNIEnv*, jclass) { renderFrame(); }
+
+extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* _Nonnull vm, void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/android/gl2jni/GL2JNILib");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"init", "(II)V", reinterpret_cast<void*>(Init)},
+      {"step", "()V", reinterpret_cast<void*>(Step)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }
