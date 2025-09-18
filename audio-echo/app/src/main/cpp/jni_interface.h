@@ -13,42 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef JNI_INTERFACE_H
-#define JNI_INTERFACE_H
+
+#pragma once
 
 #include <jni.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+void CreateSlEngine(JNIEnv* env, jclass, jint, jint, jlong delayInMs,
+                    jfloat decay);
+void DeleteSlEngine(JNIEnv* env, jclass type);
+jboolean CreateSlBufferQueueAudioPlayer(JNIEnv* env, jclass);
+void DeleteSlBufferQueueAudioPlayer(JNIEnv* env, jclass type);
 
-JNIEXPORT void JNICALL Java_com_google_sample_echo_MainActivity_createSLEngine(
-    JNIEnv* env, jclass, jint, jint, jlong delayInMs, jfloat decay);
-JNIEXPORT void JNICALL Java_com_google_sample_echo_MainActivity_deleteSLEngine(
-    JNIEnv* env, jclass type);
-JNIEXPORT jboolean JNICALL
-Java_com_google_sample_echo_MainActivity_createSLBufferQueueAudioPlayer(
-    JNIEnv* env, jclass);
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_MainActivity_deleteSLBufferQueueAudioPlayer(
-    JNIEnv* env, jclass type);
-
-JNIEXPORT jboolean JNICALL
-Java_com_google_sample_echo_MainActivity_createAudioRecorder(JNIEnv* env,
-                                                             jclass type);
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_MainActivity_deleteAudioRecorder(JNIEnv* env,
-                                                             jclass type);
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_MainActivity_startPlay(JNIEnv* env, jclass type);
-JNIEXPORT void JNICALL
-Java_com_google_sample_echo_MainActivity_stopPlay(JNIEnv* env, jclass type);
-JNIEXPORT jboolean JNICALL
-Java_com_google_sample_echo_MainActivity_configureEcho(JNIEnv* env, jclass type,
-                                                       jint delayInMs,
-                                                       jfloat decay);
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // JNI_INTERFACE_H
+jboolean CreateAudioRecorder(JNIEnv* env, jclass type);
+void DeleteAudioRecorder(JNIEnv* env, jclass type);
+void StartPlay(JNIEnv* env, jclass type);
+void StopPlay(JNIEnv* env, jclass type);
+jboolean ConfigureEcho(JNIEnv* env, jclass type, jint delayInMs, jfloat decay);

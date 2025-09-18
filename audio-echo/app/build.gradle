@@ -19,8 +19,13 @@ android {
         }
     }
     namespace 'com.google.sample.echo'
+
+    buildFeatures {
+        prefab true
+    }
 }
 
 dependencies {
     implementation libs.appcompat
+    implementation project(":base")
 }
