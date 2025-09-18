@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.22.1)
 project(sanitizers LANGUAGES CXX)
 
 include(AppLibrary)
+find_package(base CONFIG REQUIRED)
 
 add_app_library(sanitizers SHARED native-lib.cpp)
-target_link_libraries(sanitizers PRIVATE log)
+target_link_libraries(sanitizers PRIVATE base::base log)
 
 if(SANITIZE)
     # For asan and ubsan, we need to copy some files from the NDK into our APK.

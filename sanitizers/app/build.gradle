@@ -55,6 +55,10 @@ android {
                     "x86_64",
                 )
             }
+
+            // Allows buildTypes which inherit from debug to match dependencies
+            // with the debug buildType.
+            matchingFallbacks = ["debug"]
         }
 
         release {
@@ -136,6 +140,7 @@ android {
     }
 
     buildFeatures {
+        prefab true
         viewBinding true
     }
 
@@ -147,6 +152,7 @@ android {
 }
 
 dependencies {
+    implementation project(":base")
     implementation libs.appcompat
     implementation libs.material
     implementation libs.androidx.constraintlayout
