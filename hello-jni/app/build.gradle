@@ -21,9 +21,14 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    buildFeatures {
+        prefab true
+    }
 }
 
 dependencies {
+    implementation project(":base")
     implementation libs.appcompat
     implementation libs.androidx.constraintlayout
 }
