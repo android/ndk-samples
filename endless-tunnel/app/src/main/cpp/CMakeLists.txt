@@ -18,16 +18,9 @@ cmake_minimum_required(VERSION 3.22.1)
 project(EndlessTunnel LANGUAGES C CXX)
 
 include(AppLibrary)
+include(AndroidNdkModules)
 
-# build native_app_glue as a static lib
-add_library(native_app_glue STATIC
-    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
-)
-
-# Export ANativeActivity_onCreate(),
-# Refer to: https://github.com/android-ndk/ndk/issues/381.
-set(CMAKE_SHARED_LINKER_FLAGS
-    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+android_ndk_import_module_native_app_glue()
 
 # Set common compiler options
 add_definitions("-DGLM_FORCE_SIZE_T_LENGTH -DGLM_FORCE_RADIANS")
@@ -63,7 +56,7 @@ add_app_library(game SHARED
     welcome_scene.cpp
 )
 
-if (ANDROID_ABI STREQUAL riscv64)
+if(ANDROID_ABI STREQUAL riscv64)
     # This sample uses OpenSLES, which was deprecated in API 26. Our
     # minSdkVersion is 21, but we also build for riscv64, which isn't a
     # supported ABI yet and so that configuration is built for the latest API
@@ -71,18 +64,17 @@ if (ANDROID_ABI STREQUAL riscv64)
     #
     # Longer term, this sample should migrate to Oboe.
     target_compile_options(game PRIVATE -Wno-deprecated-declarations)
-endif ()
+endif()
 
 target_include_directories(game PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/data
-    ${ANDROID_NDK}/sources/android/native_app_glue
 )
 
 # add lib dependencies
 target_link_libraries(game
     android
-    native_app_glue
+    $<LINK_LIBRARY:WHOLE_ARCHIVE,native_app_glue>
     atomic
     EGL
     GLESv2

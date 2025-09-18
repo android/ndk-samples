@@ -18,17 +18,10 @@ cmake_minimum_required(VERSION 3.22.1)
 project(CameraBasic LANGUAGES C CXX)
 
 include(AppLibrary)
+include(AndroidNdkModules)
 find_package(camera-utils REQUIRED CONFIG)
 
-include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
-
-add_library(app_glue STATIC
-    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
-
-# Export ANativeActivity_onCreate(),
-# Refer to: https://github.com/android-ndk/ndk/issues/381.
-set(CMAKE_SHARED_LINKER_FLAGS
-    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+android_ndk_import_module_native_app_glue()
 
 add_app_library(ndk_camera SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/android_main.cpp
@@ -39,12 +32,13 @@ add_app_library(ndk_camera SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/camera_ui.cpp
 )
 
-# add lib dependencies
 target_link_libraries(ndk_camera
+    PRIVATE
     camera-utils::camera-utils
     android
     log
     m
-    app_glue
+    $<LINK_LIBRARY:WHOLE_ARCHIVE,native_app_glue>
     camera2ndk
-    mediandk)
+    mediandk
+)

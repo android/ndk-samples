@@ -18,16 +18,11 @@ cmake_minimum_required(VERSION 4.1.0)
 project(NativeActivity LANGUAGES C CXX)
 
 include(AppLibrary)
+include(AndroidNdkModules)
 
-add_library(native_app_glue STATIC
-    ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
-)
+android_ndk_import_module_native_app_glue()
 
 add_app_library(native-activity SHARED main.cpp)
-
-target_include_directories(native-activity PRIVATE
-    ${ANDROID_NDK}/sources/android/native_app_glue
-)
 
 target_link_libraries(native-activity
     android
