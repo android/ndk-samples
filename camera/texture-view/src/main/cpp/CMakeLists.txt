@@ -18,12 +18,8 @@ cmake_minimum_required(VERSION 3.22.1)
 project(CameraTextureView LANGUAGES CXX)
 
 include(AppLibrary)
+find_package(base REQUIRED CONFIG)
 find_package(camera-utils REQUIRED CONFIG)
-
-# Export ANativeActivity_onCreate(),
-# Refer to: https://github.com/android-ndk/ndk/issues/381.
-set(CMAKE_SHARED_LINKER_FLAGS
-    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
 add_app_library(camera_textureview SHARED
     android_main.cpp
@@ -32,9 +28,9 @@ add_app_library(camera_textureview SHARED
     camera_listeners.cpp
 )
 
-# add lib dependencies
 target_link_libraries(camera_textureview
     PRIVATE
+    base::base
     camera-utils::camera-utils
     dl
     android

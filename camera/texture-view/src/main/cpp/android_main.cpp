@@ -22,6 +22,7 @@
  *     Tested:
  *         Google Pixel and Nexus 6 phones
  */
+#include <base/macros.h>
 #include <jni.h>
 #include <ndksamples/camera/native_debug.h>
 
@@ -49,9 +50,7 @@ CameraAppEngine* pEngineObj = nullptr;
  * portrait mode.
  * @return application object instance ( not used in this sample )
  */
-extern "C" JNIEXPORT jlong JNICALL
-Java_com_sample_textureview_ViewActivity_createCamera(JNIEnv* env, jobject,
-                                                      jint width, jint height) {
+jlong CreateCamera(JNIEnv* env, jobject, jint width, jint height) {
   pEngineObj = new CameraAppEngine(env, width, height);
   return reinterpret_cast<jlong>(pEngineObj);
 }
@@ -61,9 +60,7 @@ Java_com_sample_textureview_ViewActivity_createCamera(JNIEnv* env, jobject,
  *   releases native application object, which
  *   triggers native camera object be released
  */
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_textureview_ViewActivity_deleteCamera(JNIEnv*, jobject,
-                                                      jlong ndkCameraObj) {
+void DeleteCamera(JNIEnv*, jobject, jlong ndkCameraObj) {
   if (!pEngineObj || !ndkCameraObj) {
     return;
   }
@@ -87,9 +84,8 @@ Java_com_sample_textureview_ViewActivity_deleteCamera(JNIEnv*, jobject,
  *   3) textureView size is stretched when previewing image
  *      on display device
  */
-extern "C" JNIEXPORT jobject JNICALL
-Java_com_sample_textureview_ViewActivity_getMinimumCompatiblePreviewSize(
-    JNIEnv* env, jobject, jlong ndkCameraObj) {
+jobject GetMinimumCompatiblePreviewSize(JNIEnv* env, jobject,
+                                        jlong ndkCameraObj) {
   if (!ndkCameraObj) {
     return nullptr;
   }
@@ -103,27 +99,13 @@ Java_com_sample_textureview_ViewActivity_getMinimumCompatiblePreviewSize(
 }
 
 /**
- * getCameraSensorOrientation()
- * @ return camera sensor orientation angle relative to Android device's
- * display orientation. This sample only deal to back facing camera.
- */
-extern "C" JNIEXPORT jint JNICALL
-Java_com_sample_textureview_ViewActivity_getCameraSensorOrientation(
-    JNIEnv*, jobject, jlong ndkCameraObj) {
-  ASSERT(ndkCameraObj, "NativeObject should not be null Pointer");
-  CameraAppEngine* pApp = reinterpret_cast<CameraAppEngine*>(ndkCameraObj);
-  return pApp->GetCameraSensorOrientation(ACAMERA_LENS_FACING_BACK);
-}
-
-/**
  * OnPreviewSurfaceCreated()
  *   Notification to native camera that java TextureView is ready
  *   to preview video. Simply create cameraSession and
  *   start camera preview
  */
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_textureview_ViewActivity_onPreviewSurfaceCreated(
-    JNIEnv*, jobject, jlong ndkCameraObj, jobject surface) {
+void OnPreviewSurfaceCreated(JNIEnv*, jobject, jlong ndkCameraObj,
+                             jobject surface) {
   ASSERT(ndkCameraObj && (jlong)pEngineObj == ndkCameraObj,
          "NativeObject should not be null Pointer");
   CameraAppEngine* pApp = reinterpret_cast<CameraAppEngine*>(ndkCameraObj);
@@ -137,9 +119,8 @@ Java_com_sample_textureview_ViewActivity_onPreviewSurfaceCreated(
  *   Native camera would:
  *      * stop preview
  */
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_textureview_ViewActivity_onPreviewSurfaceDestroyed(
-    JNIEnv* env, jobject, jlong ndkCameraObj, jobject surface) {
+void OnPreviewSurfaceDestroyed(JNIEnv* env, jobject, jlong ndkCameraObj,
+                               jobject surface) {
   CameraAppEngine* pApp = reinterpret_cast<CameraAppEngine*>(ndkCameraObj);
   ASSERT(ndkCameraObj && pEngineObj == pApp,
          "NativeObject should not be null Pointer");
@@ -161,4 +142,30 @@ Java_com_sample_textureview_ViewActivity_onPreviewSurfaceDestroyed(
   env->ReleaseStringUTFChars(appObjStr, appObjName);
 
   pApp->StartPreview(false);
+}
+
+extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* _Nonnull vm, void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/sample/textureview/ViewActivity");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"createCamera", "(II)J", reinterpret_cast<void*>(CreateCamera)},
+      {"deleteCamera", "(JLandroid/view/Surface;)V",
+       reinterpret_cast<void*>(DeleteCamera)},
+      {"getMinimumCompatiblePreviewSize", "(J)Landroid/util/Size;",
+       reinterpret_cast<void*>(GetMinimumCompatiblePreviewSize)},
+      {"onPreviewSurfaceCreated", "(JLandroid/view/Surface;)V",
+       reinterpret_cast<void*>(OnPreviewSurfaceCreated)},
+      {"onPreviewSurfaceDestroyed", "(JLandroid/view/Surface;)V",
+       reinterpret_cast<void*>(OnPreviewSurfaceDestroyed)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }
