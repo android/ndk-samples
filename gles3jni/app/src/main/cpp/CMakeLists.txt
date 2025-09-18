@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(Gles3Jni LANGUAGES CXX)
 
 include(AppLibrary)
+find_package(base CONFIG REQUIRED)
 
 add_app_library(gles3jni SHARED
     ${GL3STUB_SRC}
@@ -10,8 +11,8 @@ add_app_library(gles3jni SHARED
     RendererES3.cpp
 )
 
-# Include libraries needed for gles3jni lib
 target_link_libraries(gles3jni
+    base::base
     GLESv3
     android
     EGL

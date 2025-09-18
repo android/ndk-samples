@@ -16,6 +16,7 @@
 
 #include "gles3jni.h"
 
+#include <base/macros.h>
 #include <jni.h>
 #include <stdlib.h>
 #include <string.h>
@@ -227,21 +228,11 @@ void Renderer::render() {
 
 static Renderer* g_renderer = NULL;
 
-extern "C" {
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_init(JNIEnv* env,
-                                                                  jobject obj);
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_resize(
-    JNIEnv* env, jobject obj, jint width, jint height);
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_step(JNIEnv* env,
-                                                                  jobject obj);
-};
-
 #if !defined(DYNAMIC_ES3)
 static GLboolean gl3stubInit() { return GL_TRUE; }
 #endif
 
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_init(JNIEnv*,
-                                                                  jobject) {
+void Init(JNIEnv*, jclass) {
   if (g_renderer) {
     delete g_renderer;
     g_renderer = NULL;
@@ -262,16 +253,34 @@ JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_init(JNIEnv*,
   }
 }
 
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_resize(
-    JNIEnv*, jobject, jint width, jint height) {
+void Resize(JNIEnv*, jclass, jint width, jint height) {
   if (g_renderer) {
     g_renderer->resize(width, height);
   }
 }
 
-JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_step(JNIEnv*,
-                                                                  jobject) {
+void Step(JNIEnv*, jclass) {
   if (g_renderer) {
     g_renderer->render();
   }
+}
+
+extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* _Nonnull vm, void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/android/gles3jni/GLES3JNILib");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"init", "()V", reinterpret_cast<void*>(Init)},
+      {"resize", "(II)V", reinterpret_cast<void*>(Resize)},
+      {"step", "()V", reinterpret_cast<void*>(Step)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }
