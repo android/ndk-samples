@@ -41,6 +41,7 @@ const float SENSOR_FILTER_ALPHA = 0.1f;
  *    Workaround AsensorManager_getInstance() deprecation false alarm
  *    for Android-N and before, when compiling with NDK-r15
  */
+#include <base/macros.h>
 #include <dlfcn.h>
 const char* kPackageName = "com.android.accelerometergraph";
 ASensorManager* AcquireASensorManagerInstance(void) {
@@ -252,53 +253,48 @@ class sensorgraph {
 
 sensorgraph gSensorGraph;
 
-extern "C" {
-JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_init(
-    JNIEnv* env, jclass type, jobject assetManager) {
-  (void)type;
+void Init(JNIEnv* env, jclass, jobject assetManager) {
   AAssetManager* nativeAssetManager = AAssetManager_fromJava(env, assetManager);
   gSensorGraph.init(nativeAssetManager);
 }
 
-JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceCreated(
-    JNIEnv* env, jclass type) {
-  (void)env;
-  (void)type;
-  gSensorGraph.surfaceCreated();
-}
+void SurfaceCreated(JNIEnv*, jclass) { gSensorGraph.surfaceCreated(); }
 
-JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_surfaceChanged(
-    JNIEnv* env, jclass type, jint width, jint height) {
-  (void)env;
-  (void)type;
+void SurfaceChanged(JNIEnv*, jclass, jint width, jint height) {
   gSensorGraph.surfaceChanged(width, height);
 }
 
-JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_drawFrame(
-    JNIEnv* env, jclass type) {
-  (void)env;
-  (void)type;
+void DrawFrame(JNIEnv*, jclass) {
   gSensorGraph.update();
   gSensorGraph.render();
 }
 
-JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_pause(JNIEnv* env,
-                                                                jclass type) {
-  (void)env;
-  (void)type;
-  gSensorGraph.pause();
-}
+void Pause(JNIEnv*, jclass) { gSensorGraph.pause(); }
 
-JNIEXPORT void JNICALL
-Java_com_android_accelerometergraph_AccelerometerGraphJNI_resume(JNIEnv* env,
-                                                                 jclass type) {
-  (void)env;
-  (void)type;
-  gSensorGraph.resume();
-}
+void Resume(JNIEnv*, jclass) { gSensorGraph.resume(); }
+
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* _Nonnull vm,
+                                             void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c =
+      env->FindClass("com/android/accelerometergraph/AccelerometerGraphJNI");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"init", "(Landroid/content/res/AssetManager;)V",
+       reinterpret_cast<void*>(Init)},
+      {"surfaceCreated", "()V", reinterpret_cast<void*>(SurfaceCreated)},
+      {"surfaceChanged", "(II)V", reinterpret_cast<void*>(SurfaceChanged)},
+      {"drawFrame", "()V", reinterpret_cast<void*>(DrawFrame)},
+      {"pause", "()V", reinterpret_cast<void*>(Pause)},
+      {"resume", "()V", reinterpret_cast<void*>(Resume)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }

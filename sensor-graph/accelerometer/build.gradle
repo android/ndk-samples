@@ -19,4 +19,12 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+
+    buildFeatures {
+        prefab true
+    }
+}
+
+dependencies {
+    implementation project(":base")
 }
