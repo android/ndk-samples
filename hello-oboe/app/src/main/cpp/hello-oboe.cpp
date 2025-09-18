@@ -15,27 +15,23 @@
  *
  */
 
+#include <base/macros.h>
 #include <jni.h>
 
 #include "OboeSinePlayer.h"
 
 static OboeSinePlayer* oboePlayer = nullptr;
 
-extern "C" {
 /* Create Oboe playback stream
  * Returns:  0 - success
  *          -1 - failed
  */
-JNIEXPORT jint JNICALL
-Java_com_google_example_hellooboe_MainActivity_createStream(
-    JNIEnv* /* env */, jobject /* this */) {
+jint CreateStream(JNIEnv* /* env */, jobject /* this */) {
   oboePlayer = new OboeSinePlayer();
 
   return oboePlayer ? 0 : -1;
 }
-JNIEXPORT void JNICALL
-Java_com_google_example_hellooboe_MainActivity_destroyStream(
-    JNIEnv* /* env */, jobject /* this */) {
+void DestroyStream(JNIEnv* /* env */, jobject /* this */) {
   if (oboePlayer) {
     delete oboePlayer;
     oboePlayer = nullptr;
@@ -46,8 +42,7 @@ Java_com_google_example_hellooboe_MainActivity_destroyStream(
  * returns:  0  - success
  *          -1  - failed (stream has not created yet )
  */
-JNIEXPORT jint JNICALL Java_com_google_example_hellooboe_MainActivity_playSound(
-    JNIEnv* /* env */, jobject /* this */, jboolean enable) {
+jint PlaySound(JNIEnv* /* env */, jobject /* this */, jboolean enable) {
   jint result = 0;
   if (oboePlayer) {
     oboePlayer->enable(enable);
@@ -56,4 +51,23 @@ JNIEXPORT jint JNICALL Java_com_google_example_hellooboe_MainActivity_playSound(
   }
   return result;
 }
+
+extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* _Nonnull vm, void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/google/example/hellooboe/MainActivity");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"createStream", "()I", reinterpret_cast<void*>(CreateStream)},
+      {"destroyStream", "()V", reinterpret_cast<void*>(DestroyStream)},
+      {"playSound", "(Z)I", reinterpret_cast<void*>(PlaySound)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }
