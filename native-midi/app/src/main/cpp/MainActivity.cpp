@@ -14,9 +14,8 @@
  * limitations under the License.
  *
  */
+#include <base/macros.h>
 #include <jni.h>
-
-extern "C" {
 
 // Data callback stuff
 JavaVM* theJvm;
@@ -27,8 +26,7 @@ jmethodID midDataCallback;
  * Initializes JNI interface stuff, specifically the info needed to call back
  * into the Java layer when MIDI data is received.
  */
-JNICALL void Java_com_example_nativemidi_MainActivity_initNative(
-    JNIEnv* env, jobject instance) {
+void InitNative(JNIEnv* env, jobject instance) {
   env->GetJavaVM(&theJvm);
 
   // Setup the receive data callback (into Java)
@@ -39,4 +37,21 @@ JNICALL void Java_com_example_nativemidi_MainActivity_initNative(
       env->GetMethodID(clsMainActivity, "onNativeMessageReceive", "([B)V");
 }
 
-}  // extern "C"
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* _Nonnull vm,
+                                             void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/example/nativemidi/MainActivity");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"initNative", "()V", reinterpret_cast<void*>(InitNative)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
+}

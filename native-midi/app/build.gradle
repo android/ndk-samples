@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.example.nativemidi'
-    
+
     defaultConfig {
         applicationId "com.example.nativemidi"
         minSdkVersion 29
@@ -22,9 +22,14 @@ android {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
+
+    buildFeatures {
+        prefab true
+    }
 }
 
 dependencies {
+    implementation project(":base")
     implementation libs.appcompat
     implementation libs.androidx.constraintlayout
 }
