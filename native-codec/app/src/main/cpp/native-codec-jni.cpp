@@ -49,6 +49,7 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <android/native_window_jni.h>
+#include <base/macros.h>
 
 typedef struct {
   int fd;
@@ -196,10 +197,8 @@ void mylooper::handle(int what, void* obj) {
   }
 }
 
-extern "C" {
-
-jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
-    JNIEnv* env, jclass, jobject assetMgr, jstring filename) {
+jboolean CreateStreamingMediaPlayer(JNIEnv* env, jclass, jobject assetMgr,
+                                    jstring filename) {
   LOGV("@@@ create");
 
   // convert Java string to UTF-8
@@ -268,8 +267,7 @@ jboolean Java_com_example_nativecodec_NativeCodec_createStreamingMediaPlayer(
 }
 
 // set the playing state for the streaming media player
-void Java_com_example_nativecodec_NativeCodec_setPlayingStreamingMediaPlayer(
-    JNIEnv*, jclass, jboolean isPlaying) {
+void SetPlayingStreamingMediaPlayer(JNIEnv*, jclass, jboolean isPlaying) {
   LOGV("@@@ playpause: %d", isPlaying);
   if (mlooper) {
     if (isPlaying) {
@@ -281,7 +279,7 @@ void Java_com_example_nativecodec_NativeCodec_setPlayingStreamingMediaPlayer(
 }
 
 // shut down the native media system
-void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv*, jclass) {
+void Shutdown(JNIEnv*, jclass) {
   LOGV("@@@ shutdown");
   if (mlooper) {
     mlooper->post(kMsgDecodeDone, &data, true /* flush */);
@@ -296,8 +294,7 @@ void Java_com_example_nativecodec_NativeCodec_shutdown(JNIEnv*, jclass) {
 }
 
 // set the surface
-void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv* env, jclass,
-                                                         jobject surface) {
+void SetSurface(JNIEnv* env, jclass, jobject surface) {
   // obtain a native window from a Java surface
   if (data.window) {
     ANativeWindow_release(data.window);
@@ -308,11 +305,37 @@ void Java_com_example_nativecodec_NativeCodec_setSurface(JNIEnv* env, jclass,
 }
 
 // rewind the streaming media player
-void Java_com_example_nativecodec_NativeCodec_rewindStreamingMediaPlayer(
-    JNIEnv*, jclass) {
+void RewindStreamingMediaPlayer(JNIEnv*, jclass) {
   LOGV("@@@ rewind");
   if (mlooper) {
     mlooper->post(kMsgSeek, &data);
   }
 }
+
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* _Nonnull vm,
+                                             void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/example/nativecodec/NativeCodec");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"createStreamingMediaPlayer",
+       "(Landroid/content/res/AssetManager;Ljava/lang/String;)Z",
+       reinterpret_cast<void*>(CreateStreamingMediaPlayer)},
+      {"setPlayingStreamingMediaPlayer", "(Z)V",
+       reinterpret_cast<void*>(SetPlayingStreamingMediaPlayer)},
+      {"shutdown", "()V", reinterpret_cast<void*>(Shutdown)},
+      {"setSurface", "(Landroid/view/Surface;)V",
+       reinterpret_cast<void*>(SetSurface)},
+      {"rewindStreamingMediaPlayer", "()V",
+       reinterpret_cast<void*>(RewindStreamingMediaPlayer)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }
