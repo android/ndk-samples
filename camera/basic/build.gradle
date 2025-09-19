@@ -25,6 +25,7 @@ android {
 }
 
 dependencies {
+    implementation project(":base")
     implementation libs.appcompat
     implementation project(":camera:camera-utils")
 }

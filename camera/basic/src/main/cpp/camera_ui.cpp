@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#include <base/macros.h>
 #include <ndksamples/camera/native_debug.h>
 
 #include "camera_engine.h"
@@ -126,30 +127,46 @@ void CameraEngine::OnCameraPermission(jboolean granted) {
  *      exposure and sensitivity SeekBars
  *      takePhoto button
  */
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_camera_basic_CameraActivity_notifyCameraPermission(
-    JNIEnv*, jclass, jboolean permission) {
+void notifyCameraPermission(JNIEnv*, jclass, jboolean permission) {
   std::thread permissionHandler(&CameraEngine::OnCameraPermission,
                                 GetAppEngine(), permission);
   permissionHandler.detach();
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_camera_basic_CameraActivity_TakePhoto(JNIEnv*, jclass) {
+void TakePhoto(JNIEnv*, jclass) {
   std::thread takePhotoHandler(&CameraEngine::OnTakePhoto, GetAppEngine());
   takePhotoHandler.detach();
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_camera_basic_CameraActivity_OnExposureChanged(
-    JNIEnv*, jobject, jlong exposurePercent) {
+void OnExposureChanged(JNIEnv*, jobject, jlong exposurePercent) {
   GetAppEngine()->OnCameraParameterChanged(ACAMERA_SENSOR_EXPOSURE_TIME,
                                            exposurePercent);
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_sample_camera_basic_CameraActivity_OnSensitivityChanged(
-    JNIEnv*, jobject, jlong sensitivity) {
+void OnSensitivityChanged(JNIEnv*, jobject, jlong sensitivity) {
   GetAppEngine()->OnCameraParameterChanged(ACAMERA_SENSOR_SENSITIVITY,
                                            sensitivity);
+}
+
+extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* _Nonnull vm, void* _Nullable) {
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass c = env->FindClass("com/sample/camera/basic/CameraActivity");
+  if (c == nullptr) return JNI_ERR;
+
+  static const JNINativeMethod methods[] = {
+      {"notifyCameraPermission", "(Z)V",
+       reinterpret_cast<void*>(notifyCameraPermission)},
+      {"TakePhoto", "()V", reinterpret_cast<void*>(TakePhoto)},
+      {"OnExposureChanged", "(J)V", reinterpret_cast<void*>(OnExposureChanged)},
+      {"OnSensitivityChanged", "(J)V",
+       reinterpret_cast<void*>(OnSensitivityChanged)},
+  };
+  int rc = env->RegisterNatives(c, methods, arraysize(methods));
+  if (rc != JNI_OK) return rc;
+
+  return JNI_VERSION_1_6;
 }

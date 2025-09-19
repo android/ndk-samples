@@ -19,6 +19,7 @@ project(CameraBasic LANGUAGES C CXX)
 
 include(AppLibrary)
 include(AndroidNdkModules)
+find_package(base REQUIRED CONFIG)
 find_package(camera-utils REQUIRED CONFIG)
 
 android_ndk_import_module_native_app_glue()
@@ -34,6 +35,7 @@ add_app_library(ndk_camera SHARED
 
 target_link_libraries(ndk_camera
     PRIVATE
+    base::base
     camera-utils::camera-utils
     android
     log
