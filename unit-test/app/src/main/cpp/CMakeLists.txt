@@ -28,7 +28,7 @@ target_link_libraries( # Specifies the target library.
     log
 )
 
-add_app_library(app_tests SHARED adder_test.cpp)
+add_app_library(app_tests NO_VERSION_SCRIPT SHARED adder_test.cpp)
 target_link_libraries(app_tests
     PRIVATE
     $<TARGET_OBJECTS:adder>

@@ -1,0 +1,6 @@
+LIBNATIVEAUDIOJNI {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

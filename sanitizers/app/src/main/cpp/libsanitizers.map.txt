@@ -1,0 +1,6 @@
+LIBSANITIZERS {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

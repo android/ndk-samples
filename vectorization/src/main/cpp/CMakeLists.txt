@@ -18,14 +18,3 @@ target_link_libraries(app
     base::base
     log
 )
-
-target_link_options(app
-    PRIVATE
-    -flto
-    -Wl,--version-script,${CMAKE_SOURCE_DIR}/libapp.map.txt
-)
-
-set_target_properties(app
-    PROPERTIES
-    LINK_DEPENDS ${CMAKE_SOURCE_DIR}/libapp.map.txt
-)

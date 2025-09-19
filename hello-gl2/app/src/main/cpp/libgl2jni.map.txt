@@ -1,0 +1,6 @@
+LIBGL2JNI {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

@@ -1,0 +1,6 @@
+LIBGLES3JNI {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

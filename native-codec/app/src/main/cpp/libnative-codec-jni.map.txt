@@ -1,0 +1,6 @@
+LIBNATIVECODECJNI {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

@@ -1,0 +1,6 @@
+LIBGAME {
+  global:
+    ANativeActivity_onCreate;
+  local:
+    *;
+};

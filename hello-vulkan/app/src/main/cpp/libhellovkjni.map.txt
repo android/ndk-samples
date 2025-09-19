@@ -1,0 +1,6 @@
+LIBHELLOVKJNI {
+  global:
+    Java_com_google_androidgamesdk_GameActivity_initializeNativeCode;
+  local:
+    *;
+};

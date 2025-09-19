@@ -1,0 +1,6 @@
+LIBPLASMA {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

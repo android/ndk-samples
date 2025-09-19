@@ -1,0 +1,6 @@
+LIBEXCEPTIONS {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

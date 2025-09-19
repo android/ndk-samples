@@ -86,6 +86,26 @@ above:
 5. Android Studio can warn you and auto-fix common mistakes in class names and
    function signatures.
 
+### Version scripts
+
+All of the app libraries shown here are built using a version script. This is a
+file that explicitly lists which symbols should be exported from the library,
+and hides all the others. Version scripts function similarly to
+`-fvisibility=hidden`, but can go a step further and are capable of hiding
+symbols in static libraries that are used by your app. Hiding as many symbols as
+possible results in smaller binaries that load faster, as there are fewer
+relocations required and LTO can do a better job. They also run faster as
+same-library function calls do not need to be made through the PLT. There are no
+good reasons to not use a version script for your NDK code. See the NDK
+documentation on [controlling symbol visibility] for more information.
+
+You can find these in each sample as the `lib<name>.map.txt` file (where
+`<name>` is the name of the library passed to `add_app_library()` in the
+`CMakeLists.txt` file). The build plumbing that uses the version scripts is in
+the definition of `add_app_library()` in `cmake/AppLibrary.cmake`.
+
+[controlling symbol visibility]: https://developer.android.com/ndk/guides/symbol-visibility
+
 ## Additional documentation
 
 - [Add Native Code to Your Project](https://developer.android.com/studio/projects/add-native-code.html)

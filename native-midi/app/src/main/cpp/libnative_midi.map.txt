@@ -1,0 +1,6 @@
+LIBNATIVE_MIDI {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

@@ -1,0 +1,6 @@
+LIBUNITTEST {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

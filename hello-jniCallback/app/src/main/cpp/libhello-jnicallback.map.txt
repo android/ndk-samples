@@ -1,0 +1,6 @@
+LIBJNICALLBACK {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

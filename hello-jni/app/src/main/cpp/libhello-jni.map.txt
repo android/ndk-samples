@@ -1,0 +1,6 @@
+LIBHELLOJNI {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

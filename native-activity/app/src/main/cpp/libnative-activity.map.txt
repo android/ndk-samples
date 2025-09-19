@@ -1,0 +1,6 @@
+LIBNATIVEACTIVITY {
+  global:
+    ANativeActivity_onCreate;
+  local:
+    *;
+};

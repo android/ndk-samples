@@ -1,0 +1,6 @@
+LIBCAMERA_TEXTUREVIEW {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

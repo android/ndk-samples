@@ -1,0 +1,6 @@
+LIBACCELEROMETERGRAPH {
+  global:
+    JNI_OnLoad;
+  local:
+    *;
+};

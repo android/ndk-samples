@@ -1,0 +1,6 @@
+LIBNDK_CAMERA {
+  global:
+    ANativeActivity_onCreate;
+  local:
+    *;
+};
