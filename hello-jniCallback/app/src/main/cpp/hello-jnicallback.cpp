@@ -49,9 +49,7 @@ TickContext g_ctx;
  *
  *   hello-jniCallback/app/src/main/java/com/example/hellojnicallback/MainActivity.java
  */
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_hellojnicallback_MainActivity_stringFromJNI(JNIEnv* env,
-                                                             jobject) {
+jstring StringFromJni(JNIEnv* env, jobject) {
 #if defined(__arm__)
 #if defined(__ARM_ARCH_7A__)
 #if defined(__ARM_NEON__)
@@ -288,6 +286,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*) {
   if (c == nullptr) return JNI_ERR;
 
   static const JNINativeMethod methods[] = {
+      {"stringFromJNI", "()Ljava/lang/String;",
+       reinterpret_cast<void*>(StringFromJni)},
       {"startTicks", "()V", reinterpret_cast<void*>(StartTicks)},
       {"StopTicks", "()V", reinterpret_cast<void*>(StopTicks)},
   };
