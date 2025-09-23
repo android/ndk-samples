@@ -146,7 +146,7 @@ For questions about using the NDK or the platform APIs, you can ask on:
 
 ## License
 
-Copyright 2018 The Android Open Source Project, Inc.
+Copyright 2015 The Android Open Source Project, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements. See the NOTICE file distributed with this work for

@@ -6,35 +6,12 @@ there is a optimized audio path that is tuned up for low latency purpose. The
 sample creates player/recorder to work in this highly optimized audio
 path(sometimes called native audio path,
 [low latency path](http://stackoverflow.com/questions/14842803/low-latency-audio-playback-on-android?rq=1),
-or fast audio path). The application is validated against the following
-configurations:
-
-- Android L AndroidOne
-- Android M Nexus 5, Nexus 9
-
-This sample uses the new Android Studio with CMake support, and shows how to use
-shared stl lib with android studio version 2.2.0, see CMakeLists.txt for details
+or fast audio path).
 
 ***Note that OpenSL ES is
 [deprecated from Android 11](https://developer.android.com/preview/features#deprecate-opensl),
 developers are recommended to use [Oboe](https://github.com/google/oboe) library
 instead.***
-
-## Pre-requisites
-
-- Android Studio 2.2+ with [NDK](https://developer.android.com/ndk/) bundle.
-
-## Getting Started
-
-1. [Download Android Studio](http://developer.android.com/sdk/index.html)
-1. Launch Android Studio.
-1. Open the sample directory.
-1. Open *File/Project Structure...*
-
-- Click *Download* or *Select NDK location*.
-
-1. Click *Tools/Android/Sync Project with Gradle Files*.
-1. Click *Run/Run 'app'*.
 
 ## Usage
 
@@ -98,40 +75,3 @@ A couple of knobs in the code for lower latency purpose:
   playback audio experience. The app capture and playback on the same device
   \[most of times the same chip\], capture and playback clocks are assumed
   synchronized naturally \[so we are not dealing with it\]
-
-## Credits
-
-- The sample is greatly inspired by native-audio sample
-- Don Turner @ Google for the helping of low latency path
-- Ian Ni-Lewis @ Google for producer/consumer queue and many others
-
-## Support
-
-If you've found an error in these samples, please
-[file an issue](https://github.com/googlesamples/android-ndk/issues/new).
-
-Patches are encouraged, and may be submitted by
-[forking this project](https://github.com/googlesamples/android-ndk/fork) and
-submitting a pull request through GitHub. Please see
-[CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
-
-- [Stack Overflow](http://stackoverflow.com/questions/tagged/android-ndk)
-- [Android Tools Feedbacks](http://tools.android.com/feedback)
-
-## License
-
-Copyright 2015 Google, Inc.
-
-Licensed to the Apache Software Foundation (ASF) under one or more contributor
-license agreements. See the NOTICE file distributed with this work for
-additional information regarding copyright ownership. The ASF licenses this file
-to you under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed
-under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-CONDITIONS OF ANY KIND, either express or implied. See the License for the
-specific language governing permissions and limitations under the License.
