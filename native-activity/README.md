@@ -19,7 +19,3 @@ clear.
 
 [GameActivity]: https://developer.android.com/games/agdk/game-activity
 [NativeActivity]: http://developer.android.com/reference/android/app/NativeActivity.html
-
-## Screenshots
-
-![screenshot](screenshot.png)
