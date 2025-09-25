@@ -1,5 +1,10 @@
 LIBNATIVEACTIVITY {
   global:
+    # When using NativeActivity and you don't need any of your own JNI
+    # functions this is the only symbol that should be exported. If your app
+    # needs additional JNI functions (and most apps will), then you'll need to
+    # include JNI_OnLoad (or your individual Java_... functions if you're not
+    # using RegisterNatives) here.
     ANativeActivity_onCreate;
   local:
     *;
