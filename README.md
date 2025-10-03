@@ -51,40 +51,15 @@ discuss those here.
 
 ### `RegisterNatives`
 
-We prefer using `RegisterNatives` via `JNI_OnLoad` over the name-based matching
-that Studio's New Project Wizard will typically create, e.g. JNI functions that
-follow the pattern `JNIEXPORT void JNICALL Java_com_etc_ClassName_methodName`.
-That approach to matching C/C++ functions to their Java `native` function (or
-Kotlin `external fun`) makes for a shorter demo when there are only a small
-number of functions, but it has a number of disadvantages:
+We prefer using `RegisterNatives()` via `JNI_OnLoad()` over the name-based
+matching that Studio's New Project Wizard will typically create, e.g. JNI
+functions that follow the pattern `JNIEXPORT void JNICALL
+Java_com_etc_ClassName_methodName()`. That approach to matching C/C++ functions
+to their Java `native` function (or Kotlin `external fun`) makes for a shorter
+demo when there are only a small number of functions, but it has a number of
+disadvantages. See the [JNI tips] guide for details.
 
-1. Mistakes are uncovered late. An incorrectly named function will not cause an
-   error until called by Java, so it's easier to ship bugs if your testing does
-   not cover all JNI methods.
-2. All JNI symbols must be exported, leading to more relocations, larger
-   binaries, and less effective link-time optimization (LTO).
-3. The first call to a JNI function will be slower than subsequent calls, as the
-   Java call will first need to find a matching implementation.
-4. If you want to rename the function in Java, you have to also rename the C/C++
-   function.
-5. Android Studio cannot auto-fix typos in your native function names, although
-   it can auto-generate new ones.
-
-Instead, most apps should use `RegisterNatives` via `JNI_OnLoad`. This performs
-up-front registration of native methods with an explicit mapping. It takes a
-little bit more up-front-work, but doing so counters all of the disadvantages
-above:
-
-1. Mistakes are caught early. An incorrectly named function will cause an error
-   during library load.
-2. The only symbol that typically must be exported is `JNI_OnLoad`. Some use
-   cases may additionally need `ANativeActivty_OnCreate` or similar.
-3. No lookup required for the first call to each native function, so performance
-   overhead is consistent.
-4. The Java or C/C++ functions can be renamed at will, and only the map needs to
-   be updated to match.
-5. Android Studio can warn you and auto-fix common mistakes in class names and
-   function signatures.
+[JNI tips]: https://developer.android.com/ndk/guides/jni-tips#native-libraries
 
 ### Version scripts
 
