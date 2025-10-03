@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">Hello Oboe</string>
-    <string name="prompt_msg">Tap to play!</string>
-    <string name="error_msg">Error: unable to create Oboe stream
-                           \nPlease report issue @ https://github.com/google/oboe</string>
-</resources>

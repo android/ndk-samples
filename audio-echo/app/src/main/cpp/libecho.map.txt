@@ -1,6 +1,0 @@
-LIBECHO {
-  global:
-    JNI_OnLoad;
-  local:
-    *;
-};
