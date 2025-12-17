@@ -4,6 +4,7 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import java.lang.System.getProperty
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -33,7 +34,14 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     externalNativeBuild {
                         cmake {
                             arguments.add("-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON")
-                            arguments.add("-DCMAKE_MODULE_PATH=${rootDir.resolve("cmake")}")
+                            // Determine if the OS is Windows
+                            val isWindows = getProperty("os.name").lowercase().contains("win")
+                            val cmakeModulePath = if (isWindows) {
+                                rootDir.resolve("cmake").toString().replace('\\', '/')
+                            } else {
+                                rootDir.resolve("cmake").toString()
+                            }
+                            arguments.add("-DCMAKE_MODULE_PATH=$cmakeModulePath")
                         }
                     }
                     ndk {
