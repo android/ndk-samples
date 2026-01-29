@@ -68,11 +68,22 @@ void OnDeviceStateChanges(void* ctx, ACameraDevice* dev) {
 void OnDeviceErrorChanges(void* ctx, ACameraDevice* dev, int err) {
   reinterpret_cast<NDKCamera*>(ctx)->OnDeviceError(dev, err);
 }
+
+#if __NDK_MAJOR__ >= 30
+void OnClientSharedAccessPriorityChanged(void *,
+                                         ACameraDevice *, bool) {
+    // TODO: Implement this.
+}
+#endif
+
 ACameraDevice_stateCallbacks* NDKCamera::GetDeviceListener() {
   static ACameraDevice_stateCallbacks cameraDeviceListener = {
       .context = this,
       .onDisconnected = ::OnDeviceStateChanges,
       .onError = ::OnDeviceErrorChanges,
+#if __NDK_MAJOR__ >= 30
+      .onClientSharedAccessPriorityChanged = ::OnClientSharedAccessPriorityChanged
+#endif
   };
   return &cameraDeviceListener;
 }
