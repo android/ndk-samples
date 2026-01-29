@@ -70,8 +70,8 @@ void OnDeviceErrorChanges(void* ctx, ACameraDevice* dev, int err) {
 }
 
 #if __NDK_MAJOR__ >= 30
-void OnClientSharedAccessPriorityChanged(void *,
-                                         ACameraDevice *, bool) {
+void OnClientSharedAccessPriorityChanged(void*,
+                                         ACameraDevice*, bool) {
     // TODO: Implement this.
 }
 #endif
