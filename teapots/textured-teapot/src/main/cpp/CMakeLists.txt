@@ -31,7 +31,7 @@ endif()
 # build the ndk-helper library
 get_filename_component(ndkHelperSrc ${commonDir}/ndk_helper ABSOLUTE)
 add_subdirectory(${ndkHelperSrc}
-    ${commonDir}/ndkHelperBin/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
+    ndkHelperBin/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
 
 # now build app's shared lib
 add_app_library(${PROJECT_NAME}
