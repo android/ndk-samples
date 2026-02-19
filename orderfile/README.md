@@ -43,7 +43,7 @@ adb pull /data/local/tmp/demo.profraw .
    find `liborderfiledemo.so` and run `nm`
 
 ```
-mv demo.orderfile orderfile/app/src/main/cpp
+mv demo.orderfile app/src/main/cpp
 nm -n liborderfiledemo.so
 ```
 

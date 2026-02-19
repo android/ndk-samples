@@ -3,5 +3,4 @@
 JNI_OnLoad
 _Z11RunWorkloadP7_JNIEnvP8_jobjectP8_jstring
 _Z23DumpProfileDataIfNeededPKc
-# /Users/sharjeelkhan/Desktop/ndk-samples/orderfile/app/src/main/cpp/orderfile.cpp
 _ZL8snprintfPcU17pass_object_size1mPKcz
