@@ -1,0 +1,7 @@
+# Ordered 4 functions
+# Warning: Mach-O may prefix symbols with "_" depending on the linkage and this output does not take that into account. Some post-processing may be required before passing to the linker via -order_file.
+JNI_OnLoad
+_Z11RunWorkloadP7_JNIEnvP8_jobjectP8_jstring
+_Z23DumpProfileDataIfNeededPKc
+# /Users/sharjeelkhan/Desktop/ndk-samples/orderfile/app/src/main/cpp/orderfile.cpp
+_ZL8snprintfPcU17pass_object_size1mPKcz

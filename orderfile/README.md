@@ -20,29 +20,17 @@ cold-start.
    sure `set(GENERATE_PROFILES ON)` is not commented. You need to pass any
    optimization flag except `-O0`. The mapping file is not generated and the
    profile instrumentation does not work without an optimization flag.
-1. Run the app on Android Studio. You can either run it on a physical or virtual
+2. Run the app on Android Studio. You can either run it on a physical or virtual
    device. You will see "Hello World" on the screen.
-1. To pull the data from the device, you'll need to move it from an app-writable
-   directory to a shell readable directory for adb pull. We also need to
-   transfer the output into hexadecimal format.
+3. To pull the data from the device, you'll need to move it from an app-writable
+   directory to a shell readable directory for adb pull.
+4. Use `llvm-profdata` to merge all the raw files and create an orderfile.
 
 ```
-adb shell "run-as com.example.orderfiledemo sh -c 'cat /data/user/0/com.example.orderfiledemo/cache/demo.output.order' | cat > /data/local/tmp/demo.output.order"
-adb pull /data/local/tmp/demo.output.order .
-
-# Convert to hexdeciaml format on Linux, Mac, or ChromeOS
-hexdump -C demo.output.order > demo.prof
-
-# Convert to hexdecimal format on Windows
-certutil -f -encodeHex demo.output.order demo.prof
-```
-
-4. Once you get both mapping file and profile file, you can use
-   [this script](https://android.googlesource.com/toolchain/pgo-profiles/+/refs/heads/main/scripts/create_orderfile.py)
-   to create the order file:
-
-```
-python3 create_orderfile.py --profile-file demo.prof --mapping-file mapping.txt --output app/src/main/cpp/demo.orderfile
+adb shell "run-as com.example.orderfiledemo sh -c 'cat /data/user/0/com.example.orderfiledemo/cache/demo.profraw' | cat > /data/local/tmp/demo.profraw"
+adb pull /data/local/tmp/demo.profraw .
+<NDK_PATH>/toolchains/llvm/prebuilt/<ARCH>/bin/llvm-profdata merge -o demo.profdata demo.profraw
+<NDK_PATH>/toolchains/llvm/prebuilt/<ARCH>/llvm-profdata order demo.profdata -o demo.orderfile
 ```
 
 ## Load Steps
@@ -51,10 +39,11 @@ python3 create_orderfile.py --profile-file demo.prof --mapping-file mapping.txt 
    `set(USE_PROFILE "${CMAKE_SOURCE_DIR}/demo.orderfile")` and make sure
    `set(GENERATE_PROFILES ON)` is commented.
 
-1. If you want to validate the shared library's layout is different, you need to
+2. If you want to validate the shared library's layout is different, you need to
    find `liborderfiledemo.so` and run `nm`
 
 ```
+mv demo.orderfile orderfile/app/src/main/cpp
 nm -n liborderfiledemo.so
 ```
 

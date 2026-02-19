@@ -11,13 +11,13 @@ const char kLogTag[] = "orderfiledemo";
 #ifdef GENERATE_PROFILES
 extern "C" int __llvm_profile_set_filename(const char*);
 extern "C" int __llvm_profile_initialize_file(void);
-extern "C" int __llvm_orderfile_dump(void);
+extern "C" int __llvm_profile_dump(void);
 #endif
 
 void DumpProfileDataIfNeeded(const char* temp_dir) {
 #ifdef GENERATE_PROFILES
   char profile_location[PATH_MAX] = {};
-  snprintf(profile_location, sizeof(profile_location), "%s/demo.output",
+  snprintf(profile_location, sizeof(profile_location), "%s/demo.profraw",
            temp_dir);
   if (__llvm_profile_set_filename(profile_location) == -1) {
     __android_log_print(ANDROID_LOG_ERROR, kLogTag,
@@ -33,14 +33,15 @@ void DumpProfileDataIfNeeded(const char* temp_dir) {
     return;
   }
 
-  if (__llvm_orderfile_dump() == -1) {
+  if (__llvm_profile_dump() == -1) {
     __android_log_print(ANDROID_LOG_ERROR, kLogTag,
-                        "__llvm_orderfile_dump() failed: %s", strerror(errno));
+                        "__llvm_profile_dump() failed: %s", strerror(errno));
     return;
   }
   __android_log_print(ANDROID_LOG_DEBUG, kLogTag, "Wrote profile data to %s",
                       profile_location);
 #else
+  (void)temp_dir; // To avoid unused-parameter warning
   __android_log_print(ANDROID_LOG_DEBUG, kLogTag,
                       "Did not write profile data because the app was not "
                       "built for profile generation");
