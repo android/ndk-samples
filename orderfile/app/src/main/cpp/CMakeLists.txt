@@ -10,8 +10,8 @@ find_package(base CONFIG REQUIRED)
 # If you want to use your generated order file to layout symbols, uncomment USE_PROFILE.
 
 
-#set(GENERATE_PROFILES ON)
-set(USE_PROFILE "${CMAKE_SOURCE_DIR}/demo.orderfile")
+set(GENERATE_PROFILES ON)
+#set(USE_PROFILE "${CMAKE_SOURCE_DIR}/demo.orderfile")
 
 add_app_library(orderfiledemo SHARED orderfile.cpp)
 target_link_libraries(orderfiledemo PRIVATE base::base log)

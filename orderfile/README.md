@@ -29,8 +29,8 @@ cold-start.
 ```
 adb shell "run-as com.example.orderfiledemo sh -c 'cat /data/user/0/com.example.orderfiledemo/cache/demo.profraw' | cat > /data/local/tmp/demo.profraw"
 adb pull /data/local/tmp/demo.profraw .
-<NDK_PATH>/toolchains/llvm/prebuilt/<ARCH>/bin/llvm-profdata merge -o demo.profdata demo.profraw
-<NDK_PATH>/toolchains/llvm/prebuilt/<ARCH>/llvm-profdata order demo.profdata -o demo.orderfile
+<NDK_PATH>/toolchains/llvm/prebuilt/<ARCH>/bin/llvm-profdata merge demo.profraw -o demo.profdata 
+<NDK_PATH>/toolchains/llvm/prebuilt/<ARCH>/bin/llvm-profdata order demo.profdata -o demo.orderfile
 ```
 
 ## Load Steps
