@@ -18,8 +18,9 @@ target_link_libraries(orderfiledemo PRIVATE base::base log)
 
 if(GENERATE_PROFILES)
     # Generating profiles requires any optimization flag aside from -O0.
-    # The mapping file will not generate and the profile instrumentation does not work without an optimization flag. 
-    target_compile_options(orderfiledemo PRIVATE -forder-file-instrumentation -O1 -mllvm -orderfile-write-mapping=mapping.txt)
+    # The mapping file will not generate and the profile instrumentation does not work without an optimization flag.
+    # Temporarily pass "-Wno-deprecated" since the order-file flags will be updated in a future PR
+    target_compile_options(orderfiledemo PRIVATE -forder-file-instrumentation -O1 -mllvm -orderfile-write-mapping=mapping.txt -Wno-deprecated)
     target_link_options(orderfiledemo PRIVATE -forder-file-instrumentation)
     target_compile_definitions(orderfiledemo PRIVATE GENERATE_PROFILES)
 elseif(USE_PROFILE)
