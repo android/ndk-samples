@@ -19,7 +19,7 @@
 
 #include <GLES3/gl32.h>
 #include <android/log.h>
-#include <math.h>
+#include <cmath>
 
 #define DEBUG 1
 

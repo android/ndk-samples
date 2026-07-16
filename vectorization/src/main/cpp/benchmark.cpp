@@ -17,7 +17,7 @@
 #include "benchmark.h"
 
 #include <base/logging.h>
-#include <stdint.h>
+#include <cstdint>
 
 #include <expected>
 #include <functional>

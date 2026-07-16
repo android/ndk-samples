@@ -17,10 +17,10 @@
 #include <android/bitmap.h>
 #include <android/log.h>
 #include <jni.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
 #define LOG_TAG "libplasma"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)

@@ -19,9 +19,8 @@ package com.example.nativemidi;
 
 import android.media.midi.MidiDevice;
 import android.media.midi.MidiDeviceInfo;
-import android.media.midi.MidiManager;
 import android.media.midi.MidiInputPort;
-
+import android.media.midi.MidiManager;
 import java.util.ArrayList;
 
 public class AppMidiManager {

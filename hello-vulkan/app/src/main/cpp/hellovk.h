@@ -18,7 +18,7 @@
 #include <android/log.h>
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
-#include <assert.h>
+#include <cassert>
 #include <vulkan/vulkan.h>
 
 #include <array>
