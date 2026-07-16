@@ -25,8 +25,7 @@ import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -36,6 +35,9 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 public class NativeAudio extends Activity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -78,12 +80,24 @@ public class NativeAudio extends Activity
          * IF we do not have a fast audio path, we pass 0 for sampleRate, which will force native
          * side to pick up the 8Khz sample rate.
          */
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            String nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
-            sampleRate = Integer.parseInt(nativeParam);
-            nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
-            bufSize = Integer.parseInt(nativeParam);
+        AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (myAudioMgr != null) {
+            String sampleRateStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
+            if (sampleRateStr != null) {
+                try {
+                    sampleRate = Integer.parseInt(sampleRateStr);
+                } catch (NumberFormatException e) {
+                    Log.e("NativeAudio", "sampleRate failed.", e);
+                }
+            }
+            String bufSizeStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
+            if (bufSizeStr != null) {
+                try {
+                    bufSize = Integer.parseInt(bufSizeStr);
+                } catch (NumberFormatException e) {
+                    Log.e("NativeAudio", "buffer size failed.", e);
+                }
+            }
         }
         createBufferQueueAudioPlayer(sampleRate, bufSize);
 

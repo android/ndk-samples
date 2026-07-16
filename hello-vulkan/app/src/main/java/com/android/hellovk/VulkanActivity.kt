@@ -26,7 +26,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.androidgamesdk.GameActivity
-import kotlin.system.exitProcess
 
 
 class VulkanActivity : GameActivity() {
@@ -36,8 +35,7 @@ class VulkanActivity : GameActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                System.gc()
-                exitProcess(0)
+                finishAndRemoveTask()
             }
         })
     }
@@ -46,7 +44,7 @@ class VulkanActivity : GameActivity() {
         // This will put the game behind any cutouts and waterfalls on devices which have
         // them, so the corresponding insets will be non-zero.
 
-        // We cannot guarantee that AndroidManifest won't be tweaked
+        // We cannot guarantee that AndroidManifest won't be tweaked,
         // and we don't want to crash if that happens so we suppress warning.
         @SuppressLint("ObsoleteSdkInt")
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
