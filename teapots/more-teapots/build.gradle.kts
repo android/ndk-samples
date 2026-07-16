@@ -7,6 +7,8 @@ android {
 
     defaultConfig {
         applicationId = "com.sample.moreteapots"
+        // 'AImageDecoder' is unavailable: introduced in Android 30 android
+        minSdk = 30
         externalNativeBuild {
             cmake {
                 arguments.add("-DANDROID_STL=c++_static")

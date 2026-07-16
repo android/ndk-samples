@@ -17,18 +17,13 @@
 package com.example.nativeaudio;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
-<<<<<<< HEAD
 import android.util.Log;
-=======
->>>>>>> 9846c64f (Comprehensive cleanup of imports and includes across NDK samples)
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -38,8 +33,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -67,7 +60,6 @@ public class NativeAudio extends Activity
 
     /** Called when the activity is first created. */
     @Override
-    @TargetApi(17)
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
@@ -294,17 +286,15 @@ public class NativeAudio extends Activity
                         setStereoPositionUriAudioPlayer(permille);
                     }
                 });
-        if (Build.VERSION.SDK_INT > 19) {
-            int[]  uriIds = { R.id.uri_soundtrack, R.id.pause_uri,
-                              R.id.play_uri,       R.id.loop_uri,
-                              R.id.mute_left_uri,  R.id.mute_right_uri,
-                              R.id.solo_left_uri,  R.id.solo_right_uri,
-                              R.id.mute_uri,       R.id.enable_stereo_position_uri,
-                              R.id.channels_uri,   R.id.volume_uri,
-                              R.id.pan_uri,        R.id.uri_spinner,};
-            for(int id : uriIds)
-                findViewById(id).setEnabled(false);
-        }
+        int[] uriIds = {R.id.uri_soundtrack, R.id.pause_uri,
+                R.id.play_uri, R.id.loop_uri,
+                R.id.mute_left_uri, R.id.mute_right_uri,
+                R.id.solo_left_uri, R.id.solo_right_uri,
+                R.id.mute_uri, R.id.enable_stereo_position_uri,
+                R.id.channels_uri, R.id.volume_uri,
+                R.id.pan_uri, R.id.uri_spinner,};
+        for(int id : uriIds)
+            findViewById(id).setEnabled(false);
 
         ((Button) findViewById(R.id.record)).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
@@ -415,7 +405,7 @@ public class NativeAudio extends Activity
     public static native void startRecording();
     public static native void shutdown();
 
-    /** Load jni .so on initialization */
+    /* Load jni .so on initialization */
     static {
          System.loadLibrary("native-audio-jni");
     }

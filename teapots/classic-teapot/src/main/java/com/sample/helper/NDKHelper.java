@@ -16,7 +16,6 @@
 
 package com.sample.helper;
 
-import android.annotation.TargetApi;
 import android.app.NativeActivity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -28,14 +27,12 @@ import android.graphics.Matrix;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.opengl.GLUtils;
-import android.os.Build;
 import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
-@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class NDKHelper {
 
     public NDKHelper(NativeActivity act) {
@@ -309,7 +306,6 @@ public class NDKHelper {
     //
     // Audio related helpers
     //
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public int getNativeAudioBufferSize() {
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
         if (SDK_INT >= 17) {

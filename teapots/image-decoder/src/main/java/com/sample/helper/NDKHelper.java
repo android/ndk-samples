@@ -307,7 +307,6 @@ public class NDKHelper {
     //
     // Audio related helpers
     //
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public int getNativeAudioBufferSize() {
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
         if (SDK_INT >= 17) {
