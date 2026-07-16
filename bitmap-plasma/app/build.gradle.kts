@@ -1,0 +1,23 @@
+plugins {
+    id("ndksamples.android.application")
+}
+
+android {
+    namespace = "com.example.plasma"
+    defaultConfig {
+        applicationId = "com.example.plasma"
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    buildFeatures {
+        prefab = true
+    }
+}
+
+dependencies {
+    implementation(project(":base"))
+}

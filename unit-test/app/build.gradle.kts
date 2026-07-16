@@ -1,17 +1,17 @@
 plugins {
-    id "ndksamples.android.application"
-    id "ndksamples.android.kotlin"
+    id("ndksamples.android.application")
+    id("ndksamples.android.kotlin")
 }
 
 android {
-    namespace 'com.example.unittest'
+    namespace = "com.example.unittest"
 
     defaultConfig {
-        applicationId "com.example.unittest"
-        versionCode 1
-        versionName "1.0"
+        applicationId = "com.example.unittest"
+        versionCode = 1
+        versionName = "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
             // junit-gtest and googletest don't currently (August 2025) include
@@ -22,16 +22,16 @@ android {
 
     externalNativeBuild {
         cmake {
-            path file('src/main/cpp/CMakeLists.txt')
+            path = file("src/main/cpp/CMakeLists.txt")
         }
     }
 
     buildFeatures {
-        viewBinding true
-        prefab true
+        viewBinding = true
+        prefab = true
     }
 
-    packagingOptions {
+    packaging {
         jniLibs {
             // Gradle has no way of knowing which of the libraries in our
             // CMakeLists.txt are for the app and which are for tests, so we
@@ -41,19 +41,19 @@ android {
             //
             // If you copy this project, be sure to update this to specify the
             // names of your own test libraries.
-            testOnly += ["**/libapp_tests.so"]
+            testOnly.add("**/libapp_tests.so")
         }
     }
 }
 
 dependencies {
-    implementation project(":base")
-    implementation libs.appcompat
-    implementation libs.material
-    implementation libs.androidx.constraintlayout
-    implementation libs.androidx.junit.gtest
-    implementation libs.googletest
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    implementation(project(":base"))
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.junit.gtest)
+    implementation(libs.googletest)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }

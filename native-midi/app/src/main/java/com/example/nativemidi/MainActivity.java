@@ -183,29 +183,23 @@ public class MainActivity extends Activity
         byte[] keys = {60, 64, 67};         // C Major chord
         byte[] velocities = {60, 60, 60};   // Middling velocity
         byte channel = 0;    // send on channel 0
-        switch (view.getId()) {
-            case R.id.keyDownBtn:
-                // Simulate a key-down
-                mAppMidiManager.sendNoteOn(channel, keys, velocities) ;
-                break;
+        int viewId = view.getId();
+        if (viewId == R.id.keyDownBtn) {
+            // Simulate a key-down
+            mAppMidiManager.sendNoteOn(channel, keys, velocities);
+        } else if (viewId == R.id.keyUpBtn) {
+            // Simulate a key-up (converse of key-down above).
+            mAppMidiManager.sendNoteOff(channel, keys, velocities);
+        } else if (viewId == R.id.progChangeBtn) {
+            // Send a MIDI program change message
+            try {
+                String progNumStr = mProgNumberEdit.getText().toString();
+                int progNum = Integer.parseInt(progNumStr);
 
-            case R.id.keyUpBtn:
-                // Simulate a key-up (converse of key-down above).
-                mAppMidiManager.sendNoteOff(channel, keys, velocities) ;
-                break;
-
-            case R.id.progChangeBtn: {
-                // Send a MIDI program change message
-                try {
-                    String progNumStr = mProgNumberEdit.getText().toString();
-                    int progNum = Integer.parseInt(progNumStr);
-
-                    mAppMidiManager.sendProgramChange(channel, (byte)progNum);
-                } catch (NumberFormatException ex) {
-                    // Maybe let the user know
-                }
+                mAppMidiManager.sendProgramChange(channel, (byte) progNum);
+            } catch (NumberFormatException ex) {
+                // Maybe let the user know
             }
-                break;
         }
     }
 
@@ -214,14 +208,11 @@ public class MainActivity extends Activity
     //
     @Override
     public void onProgressChanged(SeekBar seekBar, int pos, boolean fromUser) {
-        switch (seekBar.getId()) {
-        case R.id.controllerSeekBar:
-            mAppMidiManager.sendController((byte)0, MidiSpec.MIDICC_MODWHEEL, (byte)pos);
-            break;
-
-        case R.id.pitchBendSeekBar:
-            mAppMidiManager.sendPitchBend((byte)0, pos);
-            break;
+        int seekBarId = seekBar.getId();
+        if (seekBarId == R.id.controllerSeekBar) {
+            mAppMidiManager.sendController((byte) 0, MidiSpec.MIDICC_MODWHEEL, (byte) pos);
+        } else if (seekBarId == R.id.pitchBendSeekBar) {
+            mAppMidiManager.sendPitchBend((byte) 0, pos);
         }
     }
 
@@ -236,18 +227,13 @@ public class MainActivity extends Activity
     //
     @Override
     public void onItemSelected(AdapterView<?> spinner, View view, int position, long id) {
-        switch (spinner.getId()) {
-        case R.id.outputDevicesSpinner: {
-                MidiDeviceListItem listItem = (MidiDeviceListItem) spinner.getItemAtPosition(position);
-                mAppMidiManager.openReceiveDevice(listItem.getDeviceInfo());
-            }
-            break;
-
-        case R.id.inputDevicesSpinner: {
-                MidiDeviceListItem listItem = (MidiDeviceListItem)spinner.getItemAtPosition(position);
-                mAppMidiManager.openSendDevice(listItem.getDeviceInfo());
-            }
-            break;
+        int spinnerId = spinner.getId();
+        if (spinnerId == R.id.outputDevicesSpinner) {
+            MidiDeviceListItem listItem = (MidiDeviceListItem) spinner.getItemAtPosition(position);
+            mAppMidiManager.openReceiveDevice(listItem.getDeviceInfo());
+        } else if (spinnerId == R.id.inputDevicesSpinner) {
+            MidiDeviceListItem listItem = (MidiDeviceListItem) spinner.getItemAtPosition(position);
+            mAppMidiManager.openSendDevice(listItem.getDeviceInfo());
         }
     }
 

@@ -1,6 +1,7 @@
 plugins {
     id("ndksamples.android.application")
     id("ndksamples.android.kotlin")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -23,10 +24,6 @@ android {
     buildFeatures {
         compose = true
         prefab = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 

@@ -1,31 +1,31 @@
 plugins {
-    id "ndksamples.android.application"
+    id("ndksamples.android.application")
 }
 
 android {
-    namespace 'com.android.gl2jni'
+    namespace = "com.android.gl2jni"
 
     defaultConfig {
-        applicationId 'com.android.gl2jni'
+        applicationId = "com.android.gl2jni"
         externalNativeBuild {
             cmake {
                 // Available arguments are inside ${SDK}/cmake/.../android.toolchain.cmake file
-                arguments '-DANDROID_STL=c++_static'
+                arguments.add("-DANDROID_STL=c++_static")
             }
         }
     }
 
     externalNativeBuild {
         cmake {
-            path 'src/main/cpp/CMakeLists.txt'
+            path = file("src/main/cpp/CMakeLists.txt")
         }
     }
 
     buildFeatures {
-        prefab true
+        prefab = true
     }
 }
 
 dependencies {
-    implementation project(":base")
+    implementation(project(":base"))
 }

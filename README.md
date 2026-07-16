@@ -7,22 +7,16 @@ For an explanation of the layout of this repository, see
 
 ## Build and run
 
-[![build](https://github.com/android/ndk-samples/actions/workflows/build.yml/badge.svg)](https://github.com/android/ndk-samples/actions)
+1. Clone the repository.
+2. Open the project in Android Studio (Ladybug or newer recommended).
+3. The project will automatically configure the required **NDK** and **CMake** versions
+   defined in the [Version Catalog](gradle/libs.versions.toml).
+4. Select the sample you want to run in the top bar.
+5. Click the play button to run the sample.
 
-1. Clone the repository
-2. Open the whole project in Android Studio
-3. Install CMake 4.1.0 via the SDK Manager (must be done manually until
-   https://issuetracker.google.com/443137057 is fixed).
-4. Select the sample you want to run in the top bar (you may need to sync gradle
-   first)
-5. Click the play button to run the sample
-
-You can also build the samples from the command line if you prefer. Use
-`./gradlew build` to build everything (if you're on Windows, use `.\gradlew.bat`
-instead of `./gradlew`). For individual tasks, see `./gradlew tasks`. To see the
-tasks for an individual sample, run the `tasks` task for that directory. For
-example, `./gradlew :camera:basic:tasks` will show the tasks for the
-`camera/basic` app.
+You can also build the samples from the command line using the Gradle wrapper:
+- macOS/Linux: `./gradlew build`
+- Windows: `.\gradlew.bat build`
 
 ## I just want something to copy from as a starting point
 
@@ -60,6 +54,24 @@ demo when there are only a small number of functions, but it has a number of
 disadvantages. See the [JNI tips] guide for details.
 
 [JNI tips]: https://developer.android.com/ndk/guides/jni-tips#native-libraries
+
+### Modern Build System (Gradle 10 Ready)
+
+This repository follows modern Gradle best practices to ensure high performance
+and future compatibility:
+
+*   **Version Catalog:** All dependency and plugin versions are centralized in
+    `gradle/libs.versions.toml`. This ensures consistency across all 20+ modules
+    and provides a single source of truth for SDK, NDK, and library updates.
+*   **Convention Plugins:** Common build logic (SDK targets, NDK configuration,
+    Kotlin options) is encapsulated in the `build-logic` directory. Individual
+    samples stay lean by applying these shared "recipes."
+*   **Performance Optimizations:** The repository is fully compatible with the
+    **Configuration Cache** and **Parallel Execution**, resulting in near-instant
+    subsequent builds.
+*   **Gradle 10 Readiness:** All `build.gradle` files have been modernized to
+    use assignment syntax (`=`) and modern Kotlin APIs, ensuring a smooth
+    transition to the next generation of the Gradle build system.
 
 ### Version scripts
 

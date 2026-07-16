@@ -1,21 +1,20 @@
 plugins {
-    id "ndksamples.android.application"
-    id "ndksamples.android.kotlin"
+    id("ndksamples.android.application")
+    id("ndksamples.android.kotlin")
 }
 
 android {
-    namespace 'com.example.sanitizers'
+    namespace = "com.example.sanitizers"
 
     defaultConfig {
-        applicationId "com.example.sanitizers"
+        applicationId = "com.example.sanitizers"
         // If you raise minSdk to 23 or higher, make sure you've read the note
         // below about useLegacyPackaging.
         //
         // Note that the hwasan build type will override this. See the
         // androidComponents stanza below.
-        minSdk 21
-        versionCode 1
-        versionName "1.0"
+        versionCode = 1
+        versionName = "1.0"
 
         // The sanitizers aren't all mutually compatible, so this sample is
         // split into a buildType per sanitizer below. For most of those
@@ -45,40 +44,40 @@ android {
         // Now that the defaultConfig abiFilters have been cleared, the
         // buildType abiFilters will actually have an effect. Enable all ABIs,
         // since that's what we want for most of the sanitizers.
-        debug {
+        getByName("debug") {
             ndk {
-                abiFilters(
+                abiFilters.addAll(listOf(
                     "arm64-v8a",
                     "armeabi-v7a",
                     "riscv64",
                     "x86",
                     "x86_64",
-                )
+                ))
             }
 
             // Allows buildTypes which inherit from debug to match dependencies
             // with the debug buildType.
-            matchingFallbacks = ["debug"]
+            matchingFallbacks += "debug"
         }
 
-        release {
+        getByName("release") {
             ndk {
-                abiFilters(
+                abiFilters.addAll(listOf(
                     "arm64-v8a",
                     "armeabi-v7a",
                     "riscv64",
                     "x86",
                     "x86_64",
-                )
+                ))
             }
         }
 
         // HWASan for devices starting from Android 14. Does no longer require a special system image.
         // See https://developer.android.com/ndk/guides/hwasan.
-        hwasan {
-            initWith debug
-            debuggable true
-            packagingOptions {
+        create("hwasan") {
+            initWith(getByName("debug"))
+            isDebuggable = true
+            packaging {
                 jniLibs {
                     // Needed for wrap.sh.
                     useLegacyPackaging = true
@@ -86,7 +85,7 @@ android {
             }
             externalNativeBuild {
                 cmake {
-                    arguments "-DANDROID_STL=c++_shared", "-DSANITIZE=hwasan"
+                    arguments.addAll(listOf("-DANDROID_STL=c++_shared", "-DSANITIZE=hwasan"))
                 }
             }
             ndk {
@@ -95,13 +94,13 @@ android {
                 // ABIs, which the hwasan buildType inherits. We only want
                 // arm64-v8a here.
                 abiFilters.clear()
-                abiFilters "arm64-v8a"
+                abiFilters += "arm64-v8a"
             }
         }
-        asan {
-            initWith debug
-            debuggable true
-            packagingOptions {
+        create("asan") {
+            initWith(getByName("debug"))
+            isDebuggable = true
+            packaging {
                 jniLibs {
                     // Without legacy packaging, the Android package manager
                     // will not extract the libraries from the APK, and the app
@@ -111,23 +110,23 @@ android {
                     // opt-out of the new behavior.
                     //
                     // Note that this won't actually do anything to the sample
-                    // in its default configuration. The sample uses minSdk 21,
+                    // in its default configuration. The sample uses minSdk 23,
                     // and legacy packaging is the default for all builds below
                     // minSdk 23.
-                    useLegacyPackaging true
+                    useLegacyPackaging = true
                 }
             }
             externalNativeBuild {
                 cmake {
-                    arguments "-DANDROID_ARM_MODE=arm", "-DANDROID_STL=c++_shared", "-DSANITIZE=asan"
+                    arguments.addAll(listOf("-DANDROID_ARM_MODE=arm", "-DANDROID_STL=c++_shared", "-DSANITIZE=asan"))
                 }
             }
         }
-        ubsan {
-            initWith debug
+        create("ubsan") {
+            initWith(getByName("debug"))
             externalNativeBuild {
                 cmake {
-                    arguments "-DSANITIZE=ubsan"
+                    arguments.add("-DSANITIZE=ubsan")
                 }
             }
         }
@@ -135,13 +134,13 @@ android {
 
     externalNativeBuild {
         cmake {
-            path file('src/main/cpp/CMakeLists.txt')
+            path = file("src/main/cpp/CMakeLists.txt")
         }
     }
 
     buildFeatures {
-        prefab true
-        viewBinding true
+        prefab = true
+        viewBinding = true
     }
 
     androidComponents {
@@ -152,8 +151,8 @@ android {
 }
 
 dependencies {
-    implementation project(":base")
-    implementation libs.appcompat
-    implementation libs.material
-    implementation libs.androidx.constraintlayout
+    implementation(project(":base"))
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
 }
