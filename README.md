@@ -18,6 +18,8 @@ You can also build the samples from the command line using the Gradle wrapper:
 - macOS/Linux: `./gradlew build`
 - Windows: `.\gradlew.bat build`
 
+To build specific module/app you can use a command like: `./gradlew :camera:basic:tasks`
+
 ## I just want something to copy from as a starting point
 
 The samples in this repository are generally not a good starting point for a
@@ -54,24 +56,6 @@ demo when there are only a small number of functions, but it has a number of
 disadvantages. See the [JNI tips] guide for details.
 
 [JNI tips]: https://developer.android.com/ndk/guides/jni-tips#native-libraries
-
-### Modern Build System (Gradle 10 Ready)
-
-This repository follows modern Gradle best practices to ensure high performance
-and future compatibility:
-
-*   **Version Catalog:** All dependency and plugin versions are centralized in
-    `gradle/libs.versions.toml`. This ensures consistency across all 20+ modules
-    and provides a single source of truth for SDK, NDK, and library updates.
-*   **Convention Plugins:** Common build logic (SDK targets, NDK configuration,
-    Kotlin options) is encapsulated in the `build-logic` directory. Individual
-    samples stay lean by applying these shared "recipes."
-*   **Performance Optimizations:** The repository is fully compatible with the
-    **Configuration Cache** and **Parallel Execution**, resulting in near-instant
-    subsequent builds.
-*   **Gradle 10 Readiness:** All `build.gradle` files have been modernized to
-    use assignment syntax (`=`) and modern Kotlin APIs, ensuring a smooth
-    transition to the next generation of the Gradle build system.
 
 ### Version scripts
 
