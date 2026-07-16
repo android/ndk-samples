@@ -8,10 +8,11 @@ android {
 
     defaultConfig {
         applicationId = "com.example.sanitizers"
-        // If you raise minSdk to 23 or higher, make sure you've read the note
-        // below about useLegacyPackaging.
+        // Since the project's minSdk is 24, we need to use legacy packaging
+        // for ASan and HWASan to work. See the notes in the buildTypes block
+        // below.
         //
-        // Note that the hwasan build type will override this. See the
+        // Note that the hwasan build type will override this. See the
         // androidComponents stanza below.
         versionCode = 1
         versionName = "1.0"
@@ -109,10 +110,9 @@ android {
                     // doesn't work in that configuration, so we need to
                     // opt-out of the new behavior.
                     //
-                    // Note that this won't actually do anything to the sample
-                    // in its default configuration. The sample uses minSdk 23,
-                    // and legacy packaging is the default for all builds below
-                    // minSdk 23.
+                    // Note that since the project is at minSdk 24, legacy
+                    // packaging is now required here as the default for
+                    // minSdk 23 and above is to load from the APK.
                     useLegacyPackaging = true
                 }
             }

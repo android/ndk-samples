@@ -7,7 +7,6 @@ android {
 
     defaultConfig {
         applicationId = "com.sample.imagedecoder"
-        minSdk = 30
         externalNativeBuild {
             cmake {
                 arguments.add("-DANDROID_STL=c++_static")

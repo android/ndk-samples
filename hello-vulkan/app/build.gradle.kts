@@ -24,7 +24,6 @@ android {
 
     defaultConfig {
         applicationId = "com.android.hellovk"
-        // TODO: Figure out why this isn't 24.
         minSdk = 30
         externalNativeBuild {
             cmake {

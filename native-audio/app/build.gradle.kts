@@ -7,7 +7,6 @@ android {
 
     defaultConfig {
         applicationId = "com.example.nativeaudio"
-        minSdk = 24
     }
 
     externalNativeBuild {

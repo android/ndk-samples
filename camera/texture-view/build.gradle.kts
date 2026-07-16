@@ -6,7 +6,6 @@ android {
     namespace = "com.sample.textureview"
     defaultConfig {
         applicationId = "com.sample.camera.textureview"
-        minSdk = 24
         externalNativeBuild {
             cmake {
                 arguments.add("-DANDROID_STL=c++_static")

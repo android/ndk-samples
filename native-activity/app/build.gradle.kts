@@ -11,9 +11,6 @@ android {
 
     defaultConfig {
         applicationId = "com.example.native_activity"
-        // This is the minimum required for using Choreographer directly from the NDK. If you need
-        // to use a lower minSdkVersion, you must use the Java Choreographer API via JNI.
-        minSdk = 24
         externalNativeBuild {
             cmake {
                 arguments.add("-DANDROID_STL=c++_static")

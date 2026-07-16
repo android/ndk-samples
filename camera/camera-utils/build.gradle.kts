@@ -5,10 +5,6 @@ plugins {
 android {
     namespace = "com.android.ndk.samples.camera.utils"
 
-    defaultConfig {
-        minSdk = 24
-    }
-
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")

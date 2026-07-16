@@ -6,7 +6,6 @@ android {
     namespace = "com.sample.camera.basic"
     defaultConfig {
         applicationId = "com.sample.camera.basic"
-        minSdk = 24
         externalNativeBuild {
             cmake {
                 arguments.add("-DANDROID_STL=c++_static")
