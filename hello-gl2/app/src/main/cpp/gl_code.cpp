@@ -21,9 +21,9 @@
 #include <android/log.h>
 #include <base/macros.h>
 #include <jni.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
 
 #define LOG_TAG "libgl2jni"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)

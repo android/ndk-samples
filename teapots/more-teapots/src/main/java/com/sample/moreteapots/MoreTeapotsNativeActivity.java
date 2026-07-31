@@ -19,7 +19,6 @@ package com.sample.moreteapots;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.NativeActivity;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;

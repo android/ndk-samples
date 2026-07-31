@@ -23,7 +23,7 @@
 //--------------------------------------------------------------------------------
 #include "MoreTeapotsRenderer.h"
 
-#include <string.h>
+#include <cstring>
 
 #include <vector>
 

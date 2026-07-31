@@ -15,25 +15,23 @@
  */
 
 plugins {
-    id "ndksamples.android.application"
-    id "ndksamples.android.kotlin"
+    id("ndksamples.android.application")
+    id("ndksamples.android.kotlin")
 }
 
 android {
-    namespace 'com.android.hellovk'
+    namespace = "com.android.hellovk"
 
     defaultConfig {
-        applicationId 'com.android.hellovk'
-        // TODO: Figure out why this isn't 24.
-        minSdk 30
+        applicationId = "com.android.hellovk"
         externalNativeBuild {
             cmake {
                 // Available arguments are inside ${SDK}/cmake/.../android.toolchain.cmake file
-                arguments "-DANDROID_STL=c++_shared"
+                arguments.add("-DANDROID_STL=c++_shared")
             }
         }
         shaders {
-            glslcArgs.addAll(['-c'])
+            glslcArgs.addAll(listOf("-c"))
         }
         ndk {
             // GameActivity doesn't currently (August 2025) include riscv64
@@ -44,17 +42,17 @@ android {
 
     externalNativeBuild {
         cmake {
-            path 'src/main/cpp/CMakeLists.txt'
+            path = file("src/main/cpp/CMakeLists.txt")
         }
     }
 
     buildFeatures {
-        prefab true
-        shaders true
+        prefab = true
+        shaders = true
     }
 }
 
 dependencies {
-    implementation libs.appcompat
-    implementation libs.androidx.games.gameactivity
+    implementation(libs.appcompat)
+    implementation(libs.androidx.games.gameactivity)
 }

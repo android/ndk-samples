@@ -1,0 +1,29 @@
+plugins {
+    id("ndksamples.android.application")
+}
+
+android {
+    namespace = "com.example.hellojnicallback"
+
+    defaultConfig {
+        applicationId = "com.example.hellojnicallback"
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    buildFeatures {
+        prefab = true
+    }
+}
+
+dependencies {
+    implementation(project(":base"))
+    implementation(libs.appcompat)
+    implementation(libs.androidx.constraintlayout)
+}

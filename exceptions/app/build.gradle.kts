@@ -1,0 +1,32 @@
+plugins {
+    id("ndksamples.android.application")
+    id("ndksamples.android.kotlin")
+}
+
+android {
+    namespace = "com.example.exceptions"
+
+    defaultConfig {
+        applicationId = "com.example.exceptions"
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    buildFeatures {
+        prefab = true
+        viewBinding = true
+    }
+}
+
+dependencies {
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+    implementation(project(":base"))
+}

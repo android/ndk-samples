@@ -14,10 +14,10 @@
  * limitations under the License.
  *
  */
-#include <inttypes.h>
+#include <cinttypes>
 #include <jni.h>
 #include <pthread.h>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 #include <atomic>

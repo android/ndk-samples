@@ -37,7 +37,7 @@ static const uint64_t kMaxExposureTime = static_cast<uint64_t>(250000000);
 
 NDKCamera::NDKCamera()
     : cameraMgr_(nullptr),
-      activeCameraId_(""),
+      activeCameraId_(),
       cameraFacing_(ACAMERA_LENS_FACING_BACK),
       cameraOrientation_(0),
       outputContainer_(nullptr),

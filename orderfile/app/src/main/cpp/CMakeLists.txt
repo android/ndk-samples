@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 4.1.0)
 project(OrderfileDemo CXX)
 
 include(AppLibrary)

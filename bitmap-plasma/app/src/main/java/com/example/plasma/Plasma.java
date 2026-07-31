@@ -17,14 +17,13 @@ package com.example.plasma;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Point;
-import android.os.Bundle;
 import android.content.Context;
-import android.view.View;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
+import android.os.Bundle;
 import android.view.Display;
-import android.view.WindowManager;
+import android.view.View;
 
 public class Plasma extends Activity
 {

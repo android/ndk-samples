@@ -17,16 +17,13 @@
 package com.example.nativeaudio;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -36,6 +33,9 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 public class NativeAudio extends Activity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -60,7 +60,6 @@ public class NativeAudio extends Activity
 
     /** Called when the activity is first created. */
     @Override
-    @TargetApi(17)
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
@@ -78,12 +77,24 @@ public class NativeAudio extends Activity
          * IF we do not have a fast audio path, we pass 0 for sampleRate, which will force native
          * side to pick up the 8Khz sample rate.
          */
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            String nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
-            sampleRate = Integer.parseInt(nativeParam);
-            nativeParam = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
-            bufSize = Integer.parseInt(nativeParam);
+        AudioManager myAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (myAudioMgr != null) {
+            String sampleRateStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
+            if (sampleRateStr != null) {
+                try {
+                    sampleRate = Integer.parseInt(sampleRateStr);
+                } catch (NumberFormatException e) {
+                    Log.e("NativeAudio", "sampleRate failed.", e);
+                }
+            }
+            String bufSizeStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
+            if (bufSizeStr != null) {
+                try {
+                    bufSize = Integer.parseInt(bufSizeStr);
+                } catch (NumberFormatException e) {
+                    Log.e("NativeAudio", "buffer size failed.", e);
+                }
+            }
         }
         createBufferQueueAudioPlayer(sampleRate, bufSize);
 
@@ -275,17 +286,15 @@ public class NativeAudio extends Activity
                         setStereoPositionUriAudioPlayer(permille);
                     }
                 });
-        if (Build.VERSION.SDK_INT > 19) {
-            int[]  uriIds = { R.id.uri_soundtrack, R.id.pause_uri,
-                              R.id.play_uri,       R.id.loop_uri,
-                              R.id.mute_left_uri,  R.id.mute_right_uri,
-                              R.id.solo_left_uri,  R.id.solo_right_uri,
-                              R.id.mute_uri,       R.id.enable_stereo_position_uri,
-                              R.id.channels_uri,   R.id.volume_uri,
-                              R.id.pan_uri,        R.id.uri_spinner,};
-            for(int id : uriIds)
-                findViewById(id).setEnabled(false);
-        }
+        int[] uriIds = {R.id.uri_soundtrack, R.id.pause_uri,
+                R.id.play_uri, R.id.loop_uri,
+                R.id.mute_left_uri, R.id.mute_right_uri,
+                R.id.solo_left_uri, R.id.solo_right_uri,
+                R.id.mute_uri, R.id.enable_stereo_position_uri,
+                R.id.channels_uri, R.id.volume_uri,
+                R.id.pan_uri, R.id.uri_spinner,};
+        for(int id : uriIds)
+            findViewById(id).setEnabled(false);
 
         ((Button) findViewById(R.id.record)).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
@@ -396,7 +405,7 @@ public class NativeAudio extends Activity
     public static native void startRecording();
     public static native void shutdown();
 
-    /** Load jni .so on initialization */
+    /* Load jni .so on initialization */
     static {
          System.loadLibrary("native-audio-jni");
     }

@@ -21,12 +21,12 @@
  *   src/com/example/nativeaudio/NativeAudio/NativeAudio.java
  */
 
-#include <assert.h>
+#include <cassert>
 #include <base/macros.h>
 #include <jni.h>
 #include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 // for __android_log_print(ANDROID_LOG_INFO, "YourApp", "formatted message");
 // #include <android/log.h>

@@ -77,7 +77,7 @@ class NDKCamera {
   std::vector<CaptureRequestInfo> requests_;
 
   ACaptureSessionOutputContainer* outputContainer_;
-  ACameraCaptureSession* captureSession_;
+  ACameraCaptureSession* captureSession_{};
   CaptureSessionState captureSessionState_;
 
   // set up exposure control
