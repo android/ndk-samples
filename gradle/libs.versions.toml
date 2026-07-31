@@ -18,7 +18,7 @@ oboe = "1.10.0"
 compileSdk = "37"
 targetSdk = "37"
 minSdk = "24"
-ndk = "29.0.14206865"
+ndk = "28.2.13676358"
 cmake = "4.1.2"
 javaTarget = "17"
 
