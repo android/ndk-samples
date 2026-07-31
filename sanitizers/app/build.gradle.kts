@@ -50,7 +50,6 @@ android {
                 abiFilters.addAll(listOf(
                     "arm64-v8a",
                     "armeabi-v7a",
-                    "riscv64",
                     "x86",
                     "x86_64",
                 ))
@@ -66,7 +65,6 @@ android {
                 abiFilters.addAll(listOf(
                     "arm64-v8a",
                     "armeabi-v7a",
-                    "riscv64",
                     "x86",
                     "x86_64",
                 ))
