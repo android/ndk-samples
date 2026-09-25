@@ -86,7 +86,7 @@ BenchmarkMatrixMultiplication(Backend backend) {
         return MultiplyWithAutoVectorization(t, p);
       });
     case Backend::kCxxSimd:
-#if __NDK_MAJOR__ >= 31
+#if __NDK_MAJOR__ >= 32
 #error check if std::simd works yet
 #endif
       // The libc++ in NDK r27 has only a skeleton implementation of std::simd.
