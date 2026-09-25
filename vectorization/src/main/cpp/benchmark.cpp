@@ -89,7 +89,7 @@ BenchmarkMatrixMultiplication(Backend backend) {
 #if __NDK_MAJOR__ >= 32
 #error check if std::simd works yet
 #endif
-      // The libc++ in NDK r27 has only a skeleton implementation of std::simd.
+      // The libc++ in NDK r31 has only a skeleton implementation of std::simd.
       // Some things we can do without, but it doesn't actually have operator*,
       // which is sort of essential :)
       LOG(INFO) << "Benchmarking std::simd";
