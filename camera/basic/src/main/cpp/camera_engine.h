@@ -63,7 +63,7 @@ class CameraEngine {
   int GetDisplayRotation(void);
 
   struct android_app* app_;
-  ImageFormat savedNativeWinRes_;
+  ImageFormat savedNativeWinRes_{};
   bool cameraGranted_;
   int rotation_;
   volatile bool cameraReady_;

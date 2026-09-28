@@ -20,10 +20,10 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.ndk.samples.vectorization.ui.theme.NDKSamplesTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 // Keep in sync with the definition in benchmark.h.
 enum class Backend(val id: Int, val label: String) {

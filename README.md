@@ -7,22 +7,18 @@ For an explanation of the layout of this repository, see
 
 ## Build and run
 
-[![build](https://github.com/android/ndk-samples/actions/workflows/build.yml/badge.svg)](https://github.com/android/ndk-samples/actions)
+1. Clone the repository.
+2. Open the project in Android Studio (Ladybug or newer recommended).
+3. The project will automatically configure the required **NDK** and **CMake** versions
+   defined in the [Version Catalog](gradle/libs.versions.toml).
+4. Select the sample you want to run in the top bar.
+5. Click the play button to run the sample.
 
-1. Clone the repository
-2. Open the whole project in Android Studio
-3. Install CMake 4.1.0 via the SDK Manager (must be done manually until
-   https://issuetracker.google.com/443137057 is fixed).
-4. Select the sample you want to run in the top bar (you may need to sync gradle
-   first)
-5. Click the play button to run the sample
+You can also build the samples from the command line using the Gradle wrapper:
+- macOS/Linux: `./gradlew build`
+- Windows: `.\gradlew.bat build`
 
-You can also build the samples from the command line if you prefer. Use
-`./gradlew build` to build everything (if you're on Windows, use `.\gradlew.bat`
-instead of `./gradlew`). For individual tasks, see `./gradlew tasks`. To see the
-tasks for an individual sample, run the `tasks` task for that directory. For
-example, `./gradlew :camera:basic:tasks` will show the tasks for the
-`camera/basic` app.
+To build specific module/app you can use a command like: `./gradlew :camera:basic:tasks`
 
 ## I just want something to copy from as a starting point
 

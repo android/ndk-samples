@@ -1,19 +1,18 @@
 plugins {
-    id "ndksamples.android.application"
+    id("ndksamples.android.application")
 }
 
 android {
-    namespace 'com.example.nativeaudio'
+    namespace = "com.example.nativeaudio"
 
     defaultConfig {
-        applicationId 'com.example.nativeaudio'
-        minSdkVersion 23
+        applicationId = "com.example.nativeaudio"
     }
 
     externalNativeBuild {
         cmake {
             // todo: need to disable REVERT for fast audio recording
-            path 'src/main/cpp/CMakeLists.txt'
+            path = file("src/main/cpp/CMakeLists.txt")
         }
     }
 
@@ -24,6 +23,6 @@ android {
 }
 
 dependencies {
-    implementation project(":base")
-    implementation libs.appcompat
+    implementation(project(":base"))
+    implementation(libs.appcompat)
 }

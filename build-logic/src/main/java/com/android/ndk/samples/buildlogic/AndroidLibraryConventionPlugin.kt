@@ -1,34 +1,45 @@
 package com.android.ndk.samples.buildlogic
 
 import com.android.build.api.dsl.LibraryExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.getByType
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+        val libs = target.extensions.getByType<VersionCatalogsExtension>().named("libs")
+        val compileSdkVersion = libs.findVersion("compileSdk").get().requiredVersion.toInt()
+        val minSdkVersion = libs.findVersion("minSdk").get().requiredVersion.toInt()
+        val targetSdkVersion = libs.findVersion("targetSdk").get().requiredVersion.toInt()
+        val ndkVersionStr = libs.findVersion("ndk").get().requiredVersion
+        val cmakeVersionStr = libs.findVersion("cmake").get().requiredVersion
+        val javaVersion = JavaVersion.toVersion(libs.findVersion("javaTarget").get().requiredVersion)
+
         with(target) {
             with(pluginManager) {
                 apply("com.android.library")
             }
 
             extensions.configure<LibraryExtension> {
-                compileSdk = Versions.COMPILE_SDK
-                ndkVersion = Versions.NDK
+                compileSdk = compileSdkVersion
+                ndkVersion = ndkVersionStr
 
                 externalNativeBuild {
                     cmake {
-                        version = Versions.CMAKE
+                        version = cmakeVersionStr
                     }
                 }
 
                 defaultConfig {
-                    minSdk = Versions.MIN_SDK
+                    minSdk = minSdkVersion
                     lint {
-                        targetSdk = Versions.TARGET_SDK
+                        targetSdk = targetSdkVersion
                     }
                     testOptions {
-                        targetSdk = Versions.TARGET_SDK
+                        targetSdk = targetSdkVersion
                     }
                     externalNativeBuild {
                         cmake {
@@ -53,8 +64,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     }
                 }
                 compileOptions {
-                    sourceCompatibility = Versions.JAVA
-                    targetCompatibility = Versions.JAVA
+                    sourceCompatibility = javaVersion
+                    targetCompatibility = javaVersion
                 }
 
                 // Studio will not automatically pass logcat through ndk-stack, so we need to avoid

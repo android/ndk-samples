@@ -15,10 +15,10 @@
  */
 package com.example.hellojnicallback;
 
-import androidx.annotation.Keep;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import androidx.annotation.Keep;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 

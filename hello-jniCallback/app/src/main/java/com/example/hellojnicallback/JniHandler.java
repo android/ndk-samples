@@ -17,8 +17,8 @@
 package com.example.hellojnicallback;
 
 import android.os.Build;
-import androidx.annotation.Keep;
 import android.util.Log;
+import androidx.annotation.Keep;
 
 /*
  * A helper class to demo that JNI could call into:

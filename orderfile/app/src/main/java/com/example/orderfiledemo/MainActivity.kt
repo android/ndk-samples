@@ -1,8 +1,8 @@
 package com.example.orderfiledemo 
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.orderfiledemo .databinding.ActivityMainBinding
+import androidx.appcompat.app.AppCompatActivity
+import com.example.orderfiledemo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 

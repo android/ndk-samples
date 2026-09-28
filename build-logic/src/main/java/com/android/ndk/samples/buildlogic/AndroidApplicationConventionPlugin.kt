@@ -1,31 +1,42 @@
 package com.android.ndk.samples.buildlogic
 
 import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.api.JavaVersion
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.getByType
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+        val libs = target.extensions.getByType<VersionCatalogsExtension>().named("libs")
+        val compileSdkVersion = libs.findVersion("compileSdk").get().requiredVersion.toInt()
+        val minSdkVersion = libs.findVersion("minSdk").get().requiredVersion.toInt()
+        val targetSdkVersion = libs.findVersion("targetSdk").get().requiredVersion.toInt()
+        val ndkVersionStr = libs.findVersion("ndk").get().requiredVersion
+        val cmakeVersionStr = libs.findVersion("cmake").get().requiredVersion
+        val javaVersion = JavaVersion.toVersion(libs.findVersion("javaTarget").get().requiredVersion)
+
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
             }
 
             extensions.configure<ApplicationExtension> {
-                compileSdk = Versions.COMPILE_SDK
-                ndkVersion = Versions.NDK
+                compileSdk = compileSdkVersion
+                ndkVersion = ndkVersionStr
 
                 externalNativeBuild {
                     cmake {
-                        version = Versions.CMAKE
+                        version = cmakeVersionStr
                     }
                 }
 
                 defaultConfig {
-                    minSdk = Versions.MIN_SDK
-                    targetSdk = Versions.TARGET_SDK
+                    minSdk = minSdkVersion
+                    targetSdk = targetSdkVersion
 
                     externalNativeBuild {
                         cmake {
@@ -51,8 +62,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     }
                 }
                 compileOptions {
-                    sourceCompatibility = Versions.JAVA
-                    targetCompatibility = Versions.JAVA
+                    sourceCompatibility = javaVersion
+                    targetCompatibility = javaVersion
                 }
 
                 // Studio will not automatically pass logcat through ndk-stack, so we need to avoid

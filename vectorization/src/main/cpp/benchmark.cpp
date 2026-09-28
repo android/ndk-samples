@@ -17,7 +17,7 @@
 #include "benchmark.h"
 
 #include <base/logging.h>
-#include <stdint.h>
+#include <cstdint>
 
 #include <expected>
 #include <functional>
@@ -31,7 +31,7 @@ constexpr uint32_t kNumRuns = 1'000'000;
 
 namespace samples::vectorization {
 
-Vec4 result;
+Vec4<> result;
 
 /**
  * Benchmarks a given matrix multiply operation.
@@ -52,7 +52,7 @@ Vec4 result;
     std::function<Vec4<>(const Vec4<>&, const Mat4<>&)> func) {
   // TODO: Move to a unit test.
   auto test = func(position, translation);
-  auto expected = Vec4{{20, 10, 10, 1}};
+  auto expected = Vec4<>{{20, 10, 10, 1}};
   CHECK_EQ(test, expected);
 
   auto begin = std::chrono::steady_clock::now();
@@ -71,8 +71,8 @@ Vec4 result;
 
 [[nodiscard]] std::expected<std::chrono::nanoseconds, BenchmarkError>
 BenchmarkMatrixMultiplication(Backend backend) {
-  Vec4 position{{10.0f, 10.0f, 10.0f, 1.0f}};
-  Mat4 translation{{
+  Vec4<> position{{10.0f, 10.0f, 10.0f, 1.0f}};
+  Mat4<> translation{{
       {1.0f, 0.0f, 0.0f, 10.0f},
       {0.0f, 1.0f, 0.0f, 0.0f},
       {0.0f, 0.0f, 1.0f, 0.0f},

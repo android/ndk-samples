@@ -48,6 +48,6 @@ class CameraAppEngine {
   int32_t requestHeight_;
   jobject surface_;
   NDKCamera* camera_;
-  ImageFormat compatibleCameraRes_;
+  ImageFormat compatibleCameraRes_{};
 };
 #endif  // __CAMERA_ENGINE_H__

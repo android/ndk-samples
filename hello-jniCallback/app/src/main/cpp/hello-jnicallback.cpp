@@ -15,12 +15,12 @@
  *
  */
 #include <android/log.h>
-#include <assert.h>
+#include <cassert>
 #include <base/macros.h>
-#include <inttypes.h>
+#include <cinttypes>
 #include <jni.h>
 #include <pthread.h>
-#include <string.h>
+#include <cstring>
 
 // Android log function wrappers
 static const char* kTAG = "hello-jniCallback";

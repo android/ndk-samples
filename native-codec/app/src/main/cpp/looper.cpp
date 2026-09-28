@@ -16,15 +16,15 @@
 
 #include "looper.h"
 
-#include <assert.h>
-#include <errno.h>
+#include <cassert>
+#include <cerrno>
 #include <fcntl.h>
 #include <jni.h>
-#include <limits.h>
+#include <climits>
 #include <pthread.h>
 #include <semaphore.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>

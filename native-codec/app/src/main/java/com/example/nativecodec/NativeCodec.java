@@ -33,8 +33,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import java.io.IOException;
-
 public class NativeCodec extends Activity {
     static final String TAG = "NativeCodec";
 

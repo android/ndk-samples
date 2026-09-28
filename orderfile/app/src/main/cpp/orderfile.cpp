@@ -1,10 +1,10 @@
 #include <android/log.h>
 #include <base/macros.h>
-#include <errno.h>
+#include <cerrno>
 #include <jni.h>
 #include <linux/limits.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 const char kLogTag[] = "orderfiledemo";
 

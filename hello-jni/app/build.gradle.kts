@@ -1,0 +1,31 @@
+plugins {
+    id("ndksamples.android.application")
+    id("ndksamples.android.kotlin")
+}
+
+android {
+    namespace = "com.example.hellojni"
+
+    defaultConfig {
+        applicationId = "com.example.hellojni"
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    buildFeatures {
+        viewBinding = true
+        prefab = true
+    }
+}
+
+dependencies {
+    implementation(project(":base"))
+    implementation(libs.appcompat)
+    implementation(libs.androidx.constraintlayout)
+}

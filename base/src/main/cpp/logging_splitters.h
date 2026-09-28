@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include <inttypes.h>
-#include <time.h>
+#include <cinttypes>
+#include <ctime>
 
 #include <format>
 

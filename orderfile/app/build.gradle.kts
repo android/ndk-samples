@@ -1,0 +1,39 @@
+plugins {
+    id("ndksamples.android.application")
+    id("ndksamples.android.kotlin")
+}
+
+android {
+    namespace = "com.example.orderfiledemo"
+
+    defaultConfig {
+        applicationId = "com.example.orderfiledemo"
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags("")
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    buildFeatures {
+        prefab = true
+        viewBinding = true
+    }
+}
+
+dependencies {
+    implementation(project(":base"))
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+}

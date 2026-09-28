@@ -15,25 +15,24 @@
  */
 
 plugins {
-    id "ndksamples.android.application"
+    id("ndksamples.android.application")
 }
 
 android {
-    namespace 'com.google.sample.tunnel'
+    namespace = "com.google.sample.tunnel"
     defaultConfig {
-        applicationId 'com.google.sample.tunnel'
-        versionCode     1
-        versionName    '1.0'
+        applicationId = "com.google.sample.tunnel"
+        versionCode = 1
+        versionName = "1.0"
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_STL=c++_static'
+                arguments.add("-DANDROID_STL=c++_static")
             }
         }
     }
     externalNativeBuild {
         cmake {
-            path 'src/main/cpp/CMakeLists.txt'
+            path = file("src/main/cpp/CMakeLists.txt")
         }
     }
 }
-
